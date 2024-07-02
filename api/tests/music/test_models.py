@@ -702,3 +702,19 @@ def test_update_library_privacy_level_create_entries(
         actor = actors[actor_name]
         expected_tracks = [tracks[i] for i in expected]
         assert list(models.Track.objects.playable_by(actor)) == expected_tracks
+
+
+@pytest.mark.parametrize(
+    "mimetype, bitrate, quality",
+    [
+        ("audio/mpeg", "20", 0),
+        ("audio/ogg", "180", 1),
+        ("audio/x-m4a", "280", 2),
+        ("audio/opus", "130", 2),
+        ("audio/opus", "161", 3),
+        ("audio/flac", "1312", 3),
+    ],
+)
+def test_save_upload_quality(factories, mimetype, bitrate, quality):
+    upload = factories["music.Upload"](mimetype=mimetype, bitrate=bitrate)
+    assert upload.quality == quality
