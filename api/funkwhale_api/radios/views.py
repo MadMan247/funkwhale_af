@@ -1,5 +1,6 @@
 import pickle
 
+from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
 from django.db.models import Q
 from drf_spectacular.utils import extend_schema
@@ -136,9 +137,12 @@ class V1_RadioSessionTrackViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
         session = serializer.validated_data["session"]
         if not request.user.is_authenticated and not request.session.session_key:
             self.request.session.create()
-        if not request.user == session.user or (
+        if (
             not request.session.session_key == session.session_key
             and not session.session_key
+        ) or not (
+            (isinstance(request.user, AnonymousUser) and session.user is None)
+            or request.user == session.user
         ):
             return Response(status=status.HTTP_403_FORBIDDEN)
 
