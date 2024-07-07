@@ -202,7 +202,7 @@ class Command(BaseCommand):
             dest="prune",
             default=False,
             help=(
-                "Once the import is completed, prune tracks, ablums and artists that aren't linked to any upload."
+                "Once the import is completed, prune tracks, albums and artists that aren't linked to any upload."
             ),
         )
 

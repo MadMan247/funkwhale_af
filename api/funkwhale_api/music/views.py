@@ -377,6 +377,11 @@ class LibraryViewSet(
                 library_id=serializer.validated_data["library"].pk,
                 path=serializer.validated_data["path"],
                 import_reference=serializer.validated_data["import_reference"],
+                prune=serializer.validated_data["prune"],
+                outbox=serializer.validated_data["outbox"],
+                broadcast=serializer.validated_data["broadcast"],
+                batch_size=serializer.validated_data["batch_size"],
+                verbosity=serializer.validated_data["verbosity"],
             )
             return Response(status=201)
         if request.method == "DELETE":

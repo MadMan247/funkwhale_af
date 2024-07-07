@@ -1564,7 +1564,14 @@ def test_fs_import_post(
 
     assert response.status_code == 201
     fs_import.assert_called_once_with(
-        path="test", library_id=library.pk, import_reference="test"
+        path="test",
+        library_id=library.pk,
+        import_reference="test",
+        prune=True,
+        outbox=False,
+        broadcast=False,
+        batch_size=1000,
+        verbosity=1,
     )
     assert cache.get("fs-import:status") == "pending"
 

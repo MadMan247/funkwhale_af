@@ -983,7 +983,16 @@ def update_track_metadata(audio_metadata, track):
 
 @celery.app.task(name="music.fs_import")
 @celery.require_instance(models.Library.objects.all(), "library")
-def fs_import(library, path, import_reference):
+def fs_import(
+    library,
+    path,
+    import_reference,
+    prune=True,
+    outbox=False,
+    broadcast=False,
+    batch_size=1000,
+    verbosity=1,
+):
     if cache.get("fs-import:status") != "pending":
         raise ValueError("Invalid import status")
 
@@ -998,13 +1007,13 @@ def fs_import(library, path, import_reference):
         "reference": import_reference,
         "watch": False,
         "interactive": False,
-        "batch_size": 1000,
+        "batch_size": batch_size,
         "async_": False,
-        "prune": True,
+        "prune": prune,
         "replace": False,
-        "verbosity": 1,
+        "verbosity": verbosity,
         "exit_on_failure": False,
-        "outbox": False,
-        "broadcast": False,
+        "outbox": outbox,
+        "broadcast": broadcast,
     }
     command.handle(**options)

@@ -833,6 +833,11 @@ class FSImportSerializer(serializers.Serializer):
     path = serializers.CharField(allow_blank=True)
     library = serializers.UUIDField()
     import_reference = serializers.CharField()
+    prune = serializers.BooleanField(required=False, default=True)
+    outbox = serializers.BooleanField(required=False, default=False)
+    broadcast = serializers.BooleanField(required=False, default=False)
+    batch_size = serializers.IntegerField(required=False, default=1000)
+    verbosity = serializers.IntegerField(required=False, default=1)
 
     def validate_path(self, value):
         try:
