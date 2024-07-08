@@ -1209,6 +1209,7 @@ def fs_import(
     prune=True,
     outbox=False,
     broadcast=False,
+    replace=False,
     batch_size=1000,
     verbosity=1,
 ):
@@ -1229,7 +1230,7 @@ def fs_import(
         "batch_size": batch_size,
         "async_": False,
         "prune": prune,
-        "replace": False,
+        "replace": replace,
         "verbosity": verbosity,
         "exit_on_failure": False,
         "outbox": outbox,

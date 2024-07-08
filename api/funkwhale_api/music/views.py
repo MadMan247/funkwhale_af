@@ -386,6 +386,7 @@ class LibraryViewSet(
                 prune=serializer.validated_data["prune"],
                 outbox=serializer.validated_data["outbox"],
                 broadcast=serializer.validated_data["broadcast"],
+                replace=serializer.validated_data["replace"],
                 batch_size=serializer.validated_data["batch_size"],
                 verbosity=serializer.validated_data["verbosity"],
             )

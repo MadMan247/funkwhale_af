@@ -1,3 +1,5 @@
+import os
+import pathlib
 import urllib.parse
 
 from django import urls
@@ -903,13 +905,17 @@ class FSImportSerializer(serializers.Serializer):
     prune = serializers.BooleanField(required=False, default=True)
     outbox = serializers.BooleanField(required=False, default=False)
     broadcast = serializers.BooleanField(required=False, default=False)
+    replace = serializers.BooleanField(required=False, default=False)
     batch_size = serializers.IntegerField(required=False, default=1000)
     verbosity = serializers.IntegerField(required=False, default=1)
 
     def validate_path(self, value):
         try:
             utils.browse_dir(settings.MUSIC_DIRECTORY_PATH, value)
-        except (NotADirectoryError, FileNotFoundError, ValueError):
+        except NotADirectoryError:
+            if not os.path.isfile(pathlib.Path(settings.MUSIC_DIRECTORY_PATH) / value):
+                raise serializers.ValidationError("Invalid path")
+        except (FileNotFoundError, ValueError):
             raise serializers.ValidationError("Invalid path")
 
         return value
