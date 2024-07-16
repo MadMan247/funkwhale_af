@@ -2,6 +2,7 @@ from dynamic_preferences import types
 from dynamic_preferences.registries import global_preferences_registry
 
 music = types.Section("music")
+quality_filters = types.Section("quality_filters")
 
 
 @global_preferences_registry.register
@@ -75,4 +76,86 @@ class MbSyncTags(types.BooleanPreference):
         "Funkwhale will query MusicBrainz server to add tags to "
         "the track, artist and album objects."
     )
+    default = False
+
+
+# quality_filters section. Note that the default False is not applied in the fronted
+# (the filter will onlyu be use if set to True)
+@global_preferences_registry.register
+class BitrateFilter(types.ChoicePreference):
+    show_in_api = True
+    section = quality_filters
+    name = "bitrate_filter"
+    verbose_name = "Upload Quality Filter"
+    default = "low"
+    choices = [
+        ("low", "Allow all audio qualities"),
+        ("medium", "Medium : Do not allow low quality"),
+        ("high", "High : only allow high and very-high audio qualities"),
+        ("very_high", "Very High : only allow very-high audio quality"),
+    ]
+    help_text = (
+        "The main page content can be filtered based on audio quality. "
+        "This will exclude lower quality, higher qualities are never excluded. "
+        "Quality Table can be found in the docs."
+    )
+    field_kwargs = {"choices": choices, "required": False}
+
+
+@global_preferences_registry.register
+class HasMbid(types.BooleanPreference):
+    show_in_api = True
+    section = quality_filters
+    name = "has_mbid"
+    verbose_name = "Musicbrainz Ids filter"
+    help_text = "Should we filter out metadata without Musicbrainz Ids ?"
+    default = False
+
+
+@global_preferences_registry.register
+class Format(types.MultipleChoicePreference):
+    show_in_api = True
+    section = quality_filters
+    name = "format"
+    verbose_name = "Allowed Audio Format"
+    default = (["aac", "aif", "aiff", "flac", "mp3", "ogg", "opus"],)
+    choices = [
+        ("ogg", "ogg"),
+        ("opus", "opus"),
+        ("flac", "flac"),
+        ("aif", "aif"),
+        ("aiff", "aiff"),
+        ("aac", "aac"),
+        ("mp3", "mp3"),
+    ]
+    help_text = "Witch audio format to allow"
+
+
+@global_preferences_registry.register
+class AlbumArt(types.BooleanPreference):
+    show_in_api = True
+    section = quality_filters
+    name = "has_cover"
+    verbose_name = "Album art Filter"
+    help_text = "Only Albums with a cover will be displayed in the home page"
+    default = False
+
+
+@global_preferences_registry.register
+class Tags(types.BooleanPreference):
+    show_in_api = True
+    section = quality_filters
+    name = "has_tags"
+    verbose_name = "Tags Filter"
+    help_text = "Only content with at least one tag will be displayed"
+    default = False
+
+
+@global_preferences_registry.register
+class ReleaseDate(types.BooleanPreference):
+    show_in_api = True
+    section = quality_filters
+    name = "has_release_date"
+    verbose_name = "Release date Filter"
+    help_text = "Only content with a release date will be displayed"
     default = False

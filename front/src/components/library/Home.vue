@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { ref, computed } from 'vue'
+import { useStore } from '~/store'
 
 import axios from 'axios'
 
@@ -19,6 +20,9 @@ interface Props {
 withDefaults(defineProps<Props>(), {
   scope: 'all'
 })
+
+const store = useStore()
+const qualityFilters = computed(() => store.getters['instance/qualityFilters'])
 
 const artists = ref([])
 
@@ -63,7 +67,7 @@ fetchData()
         <div class="column">
           <track-widget
             :url="'history/listenings/'"
-            :filters="{ scope, ordering: '-creation_date' }"
+            :filters="{ scope, ordering: '-creation_date', ...qualityFilters}"
             :websocket-handlers="['Listen']"
           >
             <template #title>
@@ -95,7 +99,7 @@ fetchData()
       <div class="ui section hidden divider" />
       <div class="ui stackable one column grid">
         <div class="column">
-          <album-widget :filters="{scope: scope, playable: true, ordering: '-creation_date'}">
+          <album-widget :filters="{scope: scope, playable: true, ordering: '-creation_date', ...qualityFilters}">
             <template #title>
               {{ $t('components.library.Home.header.recentlyAdded') }}
             </template>

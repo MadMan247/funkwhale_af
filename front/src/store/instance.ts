@@ -104,6 +104,12 @@ interface ModerationSettings {
   signup_approval_enabled: { value: boolean }
   signup_form_customization: { value: null }
 }
+interface QualityFiltersSettings {
+  [key: string]: any;
+
+  bitrate_filter: { value: number }
+  has_mbid: { value: boolean }
+}
 
 interface SubsonicSettings {
   enabled: { value: boolean }
@@ -117,6 +123,7 @@ interface Settings {
   instance: InstanceSettings
   users: UsersSettings
   moderation: ModerationSettings
+  quality_filters: QualityFiltersSettings
   subsonic: SubsonicSettings
   ui: UISettings
 }
@@ -189,6 +196,10 @@ const store: Module<State, RootState> = {
         },
         signup_form_customization: { value: null }
       },
+      quality_filters: {
+        bitrate_filter: { value: 0 },
+        has_mbid: { value: false }
+      },
       subsonic: {
         enabled: {
           value: true
@@ -233,7 +244,22 @@ const store: Module<State, RootState> = {
     },
     url: (state) => new URL(state.instanceUrl ?? DEFAULT_INSTANCE_URL),
     domain: (_state, getters) => getters.url.hostname,
-    defaultInstance: () => DEFAULT_INSTANCE_URL
+    defaultInstance: () => DEFAULT_INSTANCE_URL,
+    qualityFilters: (state) => {
+      const qualityFilters = state.settings.quality_filters
+      const filteredQualityFilters: Record<string, any> = {}
+
+      for (const key in qualityFilters) {
+        if (Object.prototype.hasOwnProperty.call(qualityFilters, key)) {
+          if (qualityFilters[key].value === false) {
+            continue
+          } else {
+            filteredQualityFilters[key] = qualityFilters[key].value
+          }
+        }
+      }
+      return filteredQualityFilters
+    }
   },
   actions: {
     setUrl ({ commit }, url) {

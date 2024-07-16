@@ -61,6 +61,18 @@ const groups = computed(() => [
       { name: 'music__only_allow_musicbrainz_tagged_files' },
       { name: 'music__sync_musicbrainz_tags' },
       { name: 'music__musicbrainz_genre_update' }
+    ]
+  },
+  {
+    label: t('views.admin.Settings.header.qualityFilters'),
+    id: 'qualityFilters',
+    settings: [
+      { name: 'quality_filters__has_cover' },
+      { name: 'quality_filters__has_tags' },
+      { name: 'quality_filters__has_mbid' },
+      { name: 'quality_filters__format' },
+      { name: 'quality_filters__bitrate_filter' },
+      { name: 'quality_filters__has_release_date' }
 
     ]
   },
