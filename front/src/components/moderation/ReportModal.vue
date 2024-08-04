@@ -106,7 +106,7 @@ watchEffect(async () => {
   isLoadingReportTypes.value = true
 
   try {
-    const response = await axios.get('instance/nodeinfo/2.0/')
+    const response = await axios.get('instance/nodeinfo/2.1/')
     reportTypes.value = response.data.metadata.reportTypes ?? []
   } catch (error) {
     store.commit('ui/addMessage', {

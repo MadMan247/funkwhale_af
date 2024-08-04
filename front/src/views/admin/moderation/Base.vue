@@ -14,7 +14,7 @@ const labels = computed(() => ({
 }))
 
 const fetchNodeInfo = async () => {
-  const response = await axios.get('instance/nodeinfo/2.0/')
+  const response = await axios.get('instance/nodeinfo/2.1/')
   allowListEnabled.value = get(response.data, 'metadata.allowList.enabled', false)
 }
 

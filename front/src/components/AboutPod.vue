@@ -22,12 +22,20 @@ const longDescription = useMarkdown(() => get(nodeinfo.value, 'metadata.longDesc
 const rules = useMarkdown(() => get(nodeinfo.value, 'metadata.rules', ''))
 const terms = useMarkdown(() => get(nodeinfo.value, 'metadata.terms', ''))
 const contactEmail = computed(() => get(nodeinfo.value, 'metadata.contactEmail'))
-const anonymousCanListen = computed(() => get(nodeinfo.value, 'metadata.library.anonymousCanListen'))
+const anonymousCanListen = computed(() => {
+  const features = get(nodeinfo.value, 'metadata.metadata.feature', []) as string[]
+  const hasAnonymousCanListen = features.includes('anonymousCanListen')
+  return hasAnonymousCanListen
+})
 const allowListEnabled = computed(() => get(nodeinfo.value, 'metadata.allowList.enabled'))
 const version = computed(() => get(nodeinfo.value, 'software.version'))
 const openRegistrations = computed(() => get(nodeinfo.value, 'openRegistrations'))
 const defaultUploadQuota = computed(() => get(nodeinfo.value, 'metadata.defaultUploadQuota'))
-const federationEnabled = computed(() => get(nodeinfo.value, 'metadata.library.federationEnabled'))
+const federationEnabled = computed(() => {
+  const features = get(nodeinfo.value, 'metadata.metadata.feature', []) as string[]
+  const hasAnonymousCanListen = features.includes('federation')
+  return hasAnonymousCanListen
+})
 
 const onDesktop = computed(() => window.innerWidth > 800)
 
@@ -36,10 +44,10 @@ const stats = computed(() => {
 
   const data = {
     users: get(info, 'usage.users.activeMonth', null),
-    hours: get(info, 'metadata.library.music.hours', null),
-    artists: get(info, 'metadata.library.artists.total', null),
-    albums: get(info, 'metadata.library.albums.total', null),
-    tracks: get(info, 'metadata.library.tracks.total', null),
+    hours: get(info, 'metadata.content.local.hoursOfContent', null),
+    artists: get(info, 'metadata.content.local.artists.total', null),
+    albums: get(info, 'metadata.content.local.albums.total', null),
+    tracks: get(info, 'metadata.content.local.tracks.total', null),
     listenings: get(info, 'metadata.usage.listenings.total', null)
   }
 

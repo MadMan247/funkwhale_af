@@ -25,7 +25,14 @@ urlpatterns = [
             ("funkwhale_api.federation.urls", "federation"), namespace="federation"
         ),
     ),
-    re_path(r"^api/v1/auth/", include("funkwhale_api.users.rest_auth_urls")),
+    re_path(
+        r"^api/v1/auth/",
+        include("funkwhale_api.users.rest_auth_urls"),
+    ),
+    re_path(
+        r"^api/v2/auth/",
+        include("funkwhale_api.users.rest_auth_urls"),
+    ),
     re_path(r"^accounts/", include("allauth.urls")),
 ] + plugins_patterns
 

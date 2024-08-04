@@ -49,13 +49,20 @@ export interface NodeInfo {
     nodeName: string
     banner: string
     defaultUploadQuota: number
-    library: {
+    content: {
       federationEnabled: boolean
       anonymousCanListen: boolean
-      tracks?: TotalCount
-      artists?: TotalCount
-      albums?: TotalCount
-      music?: { hours: number }
+      local: {
+        tracks?: TotalCount
+        artists?: TotalCount
+        albums?: TotalCount
+        hoursOfContent?: number }
+    }
+    topMusicCategories: []
+    topPodcastCategories: []
+    federation: {
+      followedInstances: number
+      followingInstances: number
     }
     supportedUploadExtensions: string[]
     allowList: {
@@ -79,6 +86,7 @@ export interface NodeInfo {
       listenings: TotalCount
       downloads: TotalCount
     }
+    features:[]
   }
 }
 
@@ -223,7 +231,7 @@ const store: Module<State, RootState> = {
       try {
         const { href } = new URL(value)
         state.instanceUrl = href
-        axios.defaults.baseURL = `${href}api/v1/`
+        axios.defaults.baseURL = `${href}api/v2/`
 
         // append the URL to the list (and remove existing one if needed)
         const index = state.knownInstances.indexOf(href)

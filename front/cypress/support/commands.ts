@@ -1,7 +1,7 @@
 Cypress.Commands.add('login', () => {
   cy.fixture('testuser.json').then(({ username, password }) => {
     // We need to request a page that sets the csrf cookie
-    cy.request('/api/v1/instance/nodeinfo/2.0/')
+    cy.request('/api/v2/instance/nodeinfo/2.1/')
 
     cy.getCookie('csrftoken').then(($cookie) => {
       cy.request({

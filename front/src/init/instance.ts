@@ -15,12 +15,12 @@ export const install: InitModule = async ({ store, router }) => {
   const fetchNodeInfo = async () => {
     try {
       const [{ data }] = await Promise.all([
-        axios.get<NodeInfo>('instance/nodeinfo/2.0/'),
+        axios.get<NodeInfo>('instance/nodeinfo/2.1/'),
         store.dispatch('instance/fetchSettings')
       ])
 
-      if (data.metadata.library.music?.hours) {
-        data.metadata.library.music.hours = Math.floor(data.metadata.library.music.hours)
+      if (data.metadata.content?.local.hoursOfContent) {
+        data.metadata.content.local.hoursOfContent = Math.floor(data.metadata.content?.local.hoursOfContent)
       }
 
       store.commit('instance/nodeinfo', data)
