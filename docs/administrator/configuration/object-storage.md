@@ -48,6 +48,8 @@ To set up S3-compatible storage, fill out the relevant details in the `.env` fil
 
 :::{dropdown} Environment variables
 
+Internally, Funkwhale uses the `django-storages` library. See [the documentation](https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html) for more details about environment variables.
+
 ```{eval-rst}
 
 .. autodata:: config.settings.common.AWS_QUERYSTRING_AUTH
@@ -61,6 +63,8 @@ To set up S3-compatible storage, fill out the relevant details in the `.env` fil
 .. autodata:: config.settings.common.AWS_STORAGE_BUCKET_NAME
    :noindex:
 .. autodata:: config.settings.common.AWS_S3_CUSTOM_DOMAIN
+   :noindex:
+.. autodata:: config.settings.common.AWS_S3_URL_PROTOCOL
    :noindex:
 .. autodata:: config.settings.common.AWS_S3_ENDPOINT_URL
    :noindex:

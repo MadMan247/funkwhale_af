@@ -609,7 +609,20 @@ if AWS_ACCESS_KEY_ID:
     """
     AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN", default=None)
     """
-    Custom domain to use for your S3 storage.
+    Custom domain for serving your S3 files.
+
+    Useful if your provider offers a CDN-like service for your bucket.
+
+    .. important::
+
+        The URL must not contain a scheme (:attr:`AWS_S3_URL_PROTOCOL` is
+        automatically prepended) nor a trailing slash.
+    """
+    AWS_S3_URL_PROTOCOL = env("AWS_S3_URL_PROTOCOL", default="https:")
+    """
+    Protocol to use when constructing the custom domain (see :attr:`AWS_S3_CUSTOM_DOMAIN`)
+    .. important::
+        It must end with a `:`, remove `//`.
     """
     AWS_S3_ENDPOINT_URL = env("AWS_S3_ENDPOINT_URL", default=None)
     """
