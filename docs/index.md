@@ -110,6 +110,7 @@ specs/user-follow/index
 specs/user-deletion/index
 specs/upload-process/index
 specs/genre-tags/index
+specs/listenings-favorites-sync-with-lb/index
 
 ```
 
