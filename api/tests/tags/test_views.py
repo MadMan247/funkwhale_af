@@ -19,6 +19,22 @@ def test_tags_list(factories, logged_in_api_client):
     assert response.data == expected
 
 
+def test_tags_list_filter(factories, logged_in_api_client):
+    url = reverse("api:v1:tags-list") + "?name_icontains=fz"
+    tag = factories["tags.Tag"](name="fzl")
+
+    expected = {
+        "count": 1,
+        "next": None,
+        "previous": None,
+        "results": [serializers.TagSerializer(tag).data],
+    }
+
+    response = logged_in_api_client.get(url)
+
+    assert response.data == expected
+
+
 def test_tags_list_ordering_length(factories, logged_in_api_client):
     url = reverse("api:v1:tags-list")
     tags = [

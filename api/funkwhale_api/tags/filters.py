@@ -16,10 +16,11 @@ class TagFilter(filters.FilterSet):
             ("__size", "length"),
         )
     )
+    name = filters.CharFilter(field_name="tag_deterministic", lookup_expr="startswith")
 
     class Meta:
         model = models.Tag
-        fields = {"name": ["exact", "startswith"]}
+        fields = {"name"}
 
 
 def get_by_similar_tags(qs, tags):
