@@ -312,23 +312,29 @@ def test_metadata_fallback_ogg_theora(mocker):
             "test.mp3",
             {
                 "title": "Bend",
-                "artists": [
+                "artist_credit": [
                     {
-                        "name": "Binärpilot",
+                        "credit": "Binärpilot",
                         "mbid": uuid.UUID("9c6bddde-6228-4d9f-ad0d-03f6fcb19e13"),
+                        "joinphrase": "; ",
                     },
-                    {"name": "Another artist", "mbid": None},
+                    {
+                        "credit": "Another artist",
+                        "mbid": None,
+                        "joinphrase": "",
+                    },
                 ],
                 "album": {
                     "title": "You Can't Stop Da Funk",
                     "mbid": uuid.UUID("ce40cdb1-a562-4fd8-a269-9269f98d4124"),
                     "release_date": datetime.date(2006, 2, 7),
-                    "artists": [
+                    "artist_credit": [
                         {
-                            "name": "Binärpilot",
+                            "credit": "Binärpilot",
                             "mbid": uuid.UUID("9c6bddde-6228-4d9f-ad0d-03f6fcb19e13"),
+                            "joinphrase": "; ",
                         },
-                        {"name": "Another artist", "mbid": None},
+                        {"credit": "Another artist", "mbid": None, "joinphrase": ""},
                     ],
                 },
                 "position": 2,
@@ -344,25 +350,32 @@ def test_metadata_fallback_ogg_theora(mocker):
             "test.ogg",
             {
                 "title": "Peer Gynt Suite no. 1, op. 46: I. Morning",
-                "artists": [
+                "artist_credit": [
                     {
-                        "name": "Edvard Grieg",
+                        "credit": "Edvard Grieg",
                         "mbid": uuid.UUID("013c8e5b-d72a-4cd3-8dee-6c64d6125823"),
+                        "joinphrase": "; ",
                     },
-                    {"name": "Musopen Symphony Orchestra", "mbid": None},
+                    {
+                        "credit": "Musopen Symphony Orchestra",
+                        "mbid": None,
+                        "joinphrase": "",
+                    },
                 ],
                 "album": {
                     "title": "Peer Gynt Suite no. 1, op. 46",
                     "mbid": uuid.UUID("a766da8b-8336-47aa-a3ee-371cc41ccc75"),
                     "release_date": datetime.date(2012, 8, 15),
-                    "artists": [
+                    "artist_credit": [
                         {
-                            "name": "Edvard Grieg",
+                            "credit": "Edvard Grieg",
                             "mbid": uuid.UUID("013c8e5b-d72a-4cd3-8dee-6c64d6125823"),
+                            "joinphrase": "; ",
                         },
                         {
-                            "name": "Musopen Symphony Orchestra",
+                            "credit": "Musopen Symphony Orchestra",
                             "mbid": uuid.UUID("5b4d7d2d-36df-4b38-95e3-a964234f520f"),
+                            "joinphrase": "",
                         },
                     ],
                 },
@@ -379,25 +392,32 @@ def test_metadata_fallback_ogg_theora(mocker):
             "test.opus",
             {
                 "title": "Peer Gynt Suite no. 1, op. 46: I. Morning",
-                "artists": [
+                "artist_credit": [
                     {
-                        "name": "Edvard Grieg",
+                        "credit": "Edvard Grieg",
                         "mbid": uuid.UUID("013c8e5b-d72a-4cd3-8dee-6c64d6125823"),
+                        "joinphrase": "; ",
                     },
-                    {"name": "Musopen Symphony Orchestra", "mbid": None},
+                    {
+                        "credit": "Musopen Symphony Orchestra",
+                        "mbid": None,
+                        "joinphrase": "",
+                    },
                 ],
                 "album": {
                     "title": "Peer Gynt Suite no. 1, op. 46",
                     "mbid": uuid.UUID("a766da8b-8336-47aa-a3ee-371cc41ccc75"),
                     "release_date": datetime.date(2012, 8, 15),
-                    "artists": [
+                    "artist_credit": [
                         {
-                            "name": "Edvard Grieg",
+                            "credit": "Edvard Grieg",
                             "mbid": uuid.UUID("013c8e5b-d72a-4cd3-8dee-6c64d6125823"),
+                            "joinphrase": "; ",
                         },
                         {
-                            "name": "Musopen Symphony Orchestra",
+                            "credit": "Musopen Symphony Orchestra",
                             "mbid": uuid.UUID("5b4d7d2d-36df-4b38-95e3-a964234f520f"),
+                            "joinphrase": "",
                         },
                     ],
                 },
@@ -414,20 +434,22 @@ def test_metadata_fallback_ogg_theora(mocker):
             "test_theora.ogg",
             {
                 "title": "Drei Kreuze (dass wir hier sind)",
-                "artists": [
+                "artist_credit": [
                     {
-                        "name": "Die Toten Hosen",
+                        "credit": "Die Toten Hosen",
                         "mbid": uuid.UUID("c3bc80a6-1f4a-4e17-8cf0-6b1efe8302f1"),
+                        "joinphrase": "",
                     }
                 ],
                 "album": {
                     "title": "Ballast der Republik",
                     "mbid": uuid.UUID("1f0441ad-e609-446d-b355-809c445773cf"),
                     "release_date": datetime.date(2012, 5, 4),
-                    "artists": [
+                    "artist_credit": [
                         {
-                            "name": "Die Toten Hosen",
+                            "credit": "Die Toten Hosen",
                             "mbid": uuid.UUID("c3bc80a6-1f4a-4e17-8cf0-6b1efe8302f1"),
+                            "joinphrase": "",
                         }
                     ],
                 },
@@ -446,20 +468,22 @@ def test_metadata_fallback_ogg_theora(mocker):
             "sample.flac",
             {
                 "title": "999,999",
-                "artists": [
+                "artist_credit": [
                     {
-                        "name": "Nine Inch Nails",
+                        "credit": "Nine Inch Nails",
                         "mbid": uuid.UUID("b7ffd2af-418f-4be2-bdd1-22f8b48613da"),
+                        "joinphrase": "",
                     }
                 ],
                 "album": {
                     "title": "The Slip",
                     "mbid": uuid.UUID("12b57d46-a192-499e-a91f-7da66790a1c1"),
                     "release_date": datetime.date(2008, 5, 5),
-                    "artists": [
+                    "artist_credit": [
                         {
-                            "name": "Nine Inch Nails",
+                            "credit": "Nine Inch Nails",
                             "mbid": uuid.UUID("b7ffd2af-418f-4be2-bdd1-22f8b48613da"),
+                            "joinphrase": "",
                         }
                     ],
                 },
@@ -497,12 +521,14 @@ def test_track_metadata_serializer(path, expected, mocker):
             },
             [
                 {
-                    "name": "Hello",
+                    "credit": "Hello",
                     "mbid": uuid.UUID("f269d497-1cc0-4ae4-a0c4-157ec7d73fcb"),
+                    "joinphrase": "; ",
                 },
                 {
-                    "name": "World",
+                    "credit": "World",
                     "mbid": uuid.UUID("f269d497-1cc0-4ae4-a0c4-157ec7d73fcd"),
+                    "joinphrase": "",
                 },
             ],
         ),
@@ -513,14 +539,16 @@ def test_track_metadata_serializer(path, expected, mocker):
             },
             [
                 {
-                    "name": "Hello",
+                    "credit": "Hello",
                     "mbid": uuid.UUID("f269d497-1cc0-4ae4-a0c4-157ec7d73fcb"),
+                    "joinphrase": "; ",
                 },
                 {
-                    "name": "World",
+                    "credit": "World",
                     "mbid": uuid.UUID("f269d497-1cc0-4ae4-a0c4-157ec7d73fcd"),
+                    "joinphrase": "; ",
                 },
-                {"name": "Foo", "mbid": None},
+                {"credit": "Foo", "mbid": None, "joinphrase": ""},
             ],
         ),
     ],
@@ -533,8 +561,8 @@ def test_artists_cleaning(raw, expected):
 @pytest.mark.parametrize(
     "data, errored_field",
     [
-        ({"name": "Hello", "mbid": "wrong-uuid"}, "mbid"),  # wrong uuid
-        ({"name": "", "mbid": "f269d497-1cc0-4ae4-a0c4-157ec7d73fcd"}, "name"),
+        ({"credit": "Hello", "mbid": "wrong-uuid"}, "mbid"),  # wrong uuid
+        ({"credit": "", "mbid": "f269d497-1cc0-4ae4-a0c4-157ec7d73fcd"}, "credit"),
     ],
 )
 def test_artist_serializer_validation(data, errored_field):
@@ -584,24 +612,27 @@ def test_fake_metadata_with_serializer():
     expected = {
         "title": "Peer Gynt Suite no. 1, op. 46: I. Morning",
         "description": {"text": "hello there", "content_type": "text/plain"},
-        "artists": [
+        "artist_credit": [
             {
-                "name": "Edvard Grieg",
+                "credit": "Edvard Grieg",
                 "mbid": uuid.UUID("013c8e5b-d72a-4cd3-8dee-6c64d6125823"),
+                "joinphrase": "",
             }
         ],
         "album": {
             "title": "Peer Gynt Suite no. 1, op. 46",
             "mbid": uuid.UUID("a766da8b-8336-47aa-a3ee-371cc41ccc75"),
             "release_date": datetime.date(2012, 8, 15),
-            "artists": [
+            "artist_credit": [
                 {
-                    "name": "Edvard Grieg",
+                    "credit": "Edvard Grieg",
                     "mbid": uuid.UUID("013c8e5b-d72a-4cd3-8dee-6c64d6125823"),
+                    "joinphrase": "; ",
                 },
                 {
-                    "name": "Musopen Symphony Orchestra",
+                    "credit": "Musopen Symphony Orchestra",
                     "mbid": uuid.UUID("5b4d7d2d-36df-4b38-95e3-a964234f520f"),
+                    "joinphrase": "",
                 },
             ],
             "cover_data": None,
@@ -614,6 +645,7 @@ def test_fake_metadata_with_serializer():
     }
     serializer = metadata.TrackMetadataSerializer(data=metadata.FakeMetadata(data))
     assert serializer.is_valid(raise_exception=True) is True
+
     assert serializer.validated_data == expected
 
 
@@ -626,12 +658,12 @@ def test_serializer_album_artist_missing():
 
     expected = {
         "title": "Peer Gynt Suite no. 1, op. 46: I. Morning",
-        "artists": [{"name": "Edvard Grieg", "mbid": None}],
+        "artist_credit": [{"credit": "Edvard Grieg", "mbid": None, "joinphrase": ""}],
         "album": {
             "title": "Peer Gynt Suite no. 1, op. 46",
             "mbid": None,
             "release_date": None,
-            "artists": [],
+            "artist_credit": [],
             "cover_data": None,
         },
     }
@@ -654,12 +686,12 @@ def test_serializer_album_artist_missing():
 def test_serializer_album_default_title_when_missing_or_empty(data):
     expected = {
         "title": "Track",
-        "artists": [{"name": "Artist", "mbid": None}],
+        "artist_credit": [{"credit": "Artist", "mbid": None, "joinphrase": ""}],
         "album": {
             "title": metadata.UNKNOWN_ALBUM,
             "mbid": None,
             "release_date": None,
-            "artists": [],
+            "artist_credit": [],
             "cover_data": None,
         },
     }
@@ -681,12 +713,12 @@ def test_serializer_empty_fields(field_name):
     }
     expected = {
         "title": "Track Title",
-        "artists": [{"name": "Track Artist", "mbid": None}],
+        "artist_credit": [{"credit": "Track Artist", "mbid": None, "joinphrase": ""}],
         "album": {
             "title": "Track Album",
             "mbid": None,
             "release_date": None,
-            "artists": [],
+            "artist_credit": [],
             "cover_data": None,
         },
     }
@@ -698,12 +730,12 @@ def test_serializer_empty_fields(field_name):
 def test_serializer_strict_mode_false():
     data = {}
     expected = {
-        "artists": [{"name": None, "mbid": None}],
+        "artist_credit": [],
         "album": {
             "title": "[Unknown Album]",
             "mbid": None,
             "release_date": None,
-            "artists": [],
+            "artist_credit": [],
             "cover_data": None,
         },
     }
@@ -730,11 +762,21 @@ def test_artist_field_featuring():
         "musicbrainz_artistid": "9a3bf45c-347d-4630-894d-7cf3e8e0b632/cbf9738d-8f81-4a92-bc64-ede09341652d",
     }
 
-    expected = [{"name": "Santana feat. Chris Cornell", "mbid": None}]
+    expected = [
+        {
+            "credit": "Santana",
+            "mbid": uuid.UUID("9a3bf45c-347d-4630-894d-7cf3e8e0b632"),
+            "joinphrase": " feat. ",
+        },
+        {
+            "credit": "Chris Cornell",
+            "mbid": uuid.UUID("cbf9738d-8f81-4a92-bc64-ede09341652d"),
+            "joinphrase": "",
+        },
+    ]
 
     field = metadata.ArtistField()
     value = field.get_value(data)
-
     assert field.to_internal_value(value) == expected
 
 
@@ -756,23 +798,23 @@ def test_acquire_tags_from_genre(genre, expected_tags):
     data = {
         "title": "Track Title",
         "artist": "Track Artist",
+        # "artist_credit": [{"credit": "Track Artist"}],
         "album": "Track Album",
         "genre": genre,
     }
     expected = {
         "title": "Track Title",
-        "artists": [{"name": "Track Artist", "mbid": None}],
+        "artist_credit": [{"credit": "Track Artist", "mbid": None, "joinphrase": ""}],
         "album": {
             "title": "Track Album",
             "mbid": None,
             "release_date": None,
-            "artists": [],
+            "artist_credit": [],
             "cover_data": None,
         },
     }
     if expected_tags:
         expected["tags"] = expected_tags
-
     serializer = metadata.TrackMetadataSerializer(data=metadata.FakeMetadata(data))
     assert serializer.is_valid(raise_exception=True) is True
     assert serializer.validated_data == expected

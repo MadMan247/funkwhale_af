@@ -46,7 +46,28 @@ export default (props: PlayOptionsProps) => {
     return false
   })
 
-  const filterableArtist = computed(() => props.track?.artist ?? props.album?.artist ?? props.artist)
+  const filterableArtist = computed(() => {
+    const artists = []
+    if (props.track?.artist_credit) {
+      props.track.artist_credit.forEach(ac => {
+        if (ac.artist) {
+          artists.push(ac.artist)
+        }
+      })
+    }
+    if (props.album?.artist_credit) {
+      props.album.artist_credit.forEach(ac => {
+        if (ac.artist) {
+          artists.push(ac.artist)
+        }
+      })
+    }
+    if (props.artist) {
+      artists.push(props.artist)
+    }
+
+    return artists
+  })
   const filterArtist = async () => store.dispatch('moderation/hide', { type: 'artist', target: filterableArtist.value })
 
   const addMessage = (tracks: Track[]) => {
@@ -111,7 +132,7 @@ export default (props: PlayOptionsProps) => {
       const artistIds = store.getters['moderation/artistFilters']().map((filter: ContentFilter) => filter.target.id)
       if (artistIds.length) {
         tracks.push(...playlistTracks.filter((track) => {
-          return !((artistIds.includes(track.artist?.id) || track.album) && artistIds.includes(track.album?.artist.id))
+          return !((track.artist_credit?.some(ac => artistIds.includes(ac.artist.id)) || track.album) && track.album?.artist_credit?.some(ac => artistIds.includes(ac.artist.id)))
         }))
       } else {
         tracks.push(...playlistTracks)

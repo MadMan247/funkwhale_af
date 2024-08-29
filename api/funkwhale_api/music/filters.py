@@ -100,9 +100,9 @@ class ArtistFilter(
     tag = TAG_FILTER
     content_category = filters.CharFilter("content_category")
     scope = common_filters.ActorScopeFilter(
-        actor_field="tracks__uploads__library__actor",
+        actor_field="artist_credit__tracks__uploads__library__actor",
         distinct=True,
-        library_field="tracks__uploads__library",
+        library_field="artist_credit__tracks__uploads__library",
     )
     ordering = common_filters.CaseInsensitiveNameOrderingFilter(
         fields=(
@@ -128,14 +128,14 @@ class ArtistFilter(
         }
         hidden_content_fields_mapping = moderation_filters.USER_FILTER_CONFIG["ARTIST"]
         include_channels_field = "channel"
-        library_filter_field = "track__artist"
+        library_filter_field = "track__artist_credit__artist"
 
     def filter_playable(self, queryset, name, value):
         actor = utils.get_actor_from_request(self.request)
         return queryset.playable_by(actor, value).distinct()
 
     def filter_has_albums(self, queryset, name, value):
-        return queryset.filter(albums__isnull=not value)
+        return queryset.filter(artist_credit__albums__isnull=not value)
 
     def filter_has_mbid(self, queryset, name, value):
         return queryset.filter(mbid__isnull=(not value))
@@ -149,8 +149,16 @@ class TrackFilter(
     moderation_filters.HiddenContentFilterSet,
 ):
     q = fields.SearchFilter(
-        search_fields=["title", "album__title", "artist__name"],
-        fts_search_fields=["body_text", "artist__body_text", "album__body_text"],
+        search_fields=[
+            "title",
+            "album__title",
+            "artist_credit__artist__name",
+        ],
+        fts_search_fields=[
+            "body_text",
+            "artist_credit__artist__body_text",
+            "album__body_text",
+        ],
     )
     playable = filters.BooleanFilter(field_name="_", method="filter_playable")
     tag = TAG_FILTER
@@ -173,8 +181,11 @@ class TrackFilter(
             ("size", "size"),
             ("position", "position"),
             ("disc_number", "disc_number"),
-            ("artist__name", "artist__name"),
-            ("artist__modification_date", "artist__modification_date"),
+            ("artist_credit__artist__name", "artist_credit__artist__name"),
+            (
+                "artist_credit__artist__modification_date",
+                "artist_credit__artist__modification_date",
+            ),
             ("?", "random"),
             ("tag_matches", "related"),
         )
@@ -205,16 +216,19 @@ class TrackFilter(
             "mbid": ["exact"],
         }
         hidden_content_fields_mapping = moderation_filters.USER_FILTER_CONFIG["TRACK"]
-        include_channels_field = "artist__channel"
+        include_channels_field = "artist_credit__artist__channel"
         channel_filter_field = "track"
         library_filter_field = "track"
+        artist_credit_filter_field = "artist__credit__artist"
 
     def filter_playable(self, queryset, name, value):
         actor = utils.get_actor_from_request(self.request)
         return queryset.playable_by(actor, value).distinct()
 
     def filter_artist(self, queryset, name, value):
-        return queryset.filter(Q(artist=value) | Q(album__artist=value))
+        return queryset.filter(
+            Q(artist_credit__artist=value) | Q(album__artist_credit__artist=value)
+        )
 
     def filter_format(self, queryset, name, value):
         mimetypes = [utils.get_type_from_ext(e) for e in value.split(",")]
@@ -238,8 +252,8 @@ class UploadFilter(audio_filters.IncludeChannelsFilterSet):
     library = filters.CharFilter("library__uuid")
     channel = filters.CharFilter("library__channel__uuid")
     track = filters.UUIDFilter("track__uuid")
-    track_artist = filters.UUIDFilter("track__artist__uuid")
-    album_artist = filters.UUIDFilter("track__album__artist__uuid")
+    track_artist = filters.UUIDFilter("track__artist_credit__artist__uuid")
+    album_artist = filters.UUIDFilter("track__album__artist_credit__artist__uuid")
     library = filters.UUIDFilter("library__uuid")
     playable = filters.BooleanFilter(field_name="_", method="filter_playable")
     scope = common_filters.ActorScopeFilter(
@@ -273,7 +287,7 @@ class UploadFilter(audio_filters.IncludeChannelsFilterSet):
             "mimetype",
             "import_reference",
         ]
-        include_channels_field = "track__artist__channel"
+        include_channels_field = "track__artist_credit__artist__channel"
 
     def filter_playable(self, queryset, name, value):
         actor = utils.get_actor_from_request(self.request)
@@ -289,10 +303,10 @@ class AlbumFilter(
 ):
     playable = filters.BooleanFilter(field_name="_", method="filter_playable")
     q = fields.SearchFilter(
-        search_fields=["title", "artist__name"],
-        fts_search_fields=["body_text", "artist__body_text"],
+        search_fields=["title", "artist_credit__artist__name"],
+        fts_search_fields=["body_text", "artist_credit__artist__body_text"],
     )
-    content_category = filters.CharFilter("artist__content_category")
+    content_category = filters.CharFilter("artist_credit__artist__content_category")
     tag = TAG_FILTER
     scope = common_filters.ActorScopeFilter(
         actor_field="tracks__uploads__library__actor",
@@ -305,7 +319,10 @@ class AlbumFilter(
             ("creation_date", "creation_date"),
             ("release_date", "release_date"),
             ("title", "title"),
-            ("artist__modification_date", "artist__modification_date"),
+            (
+                "artist_credit__artist__modification_date",
+                "artist_credit__artist__modification_date",
+            ),
             ("?", "random"),
             ("tag_matches", "related"),
         )
@@ -326,15 +343,18 @@ class AlbumFilter(
     )
 
     has_release_date = filters.BooleanFilter(
-        field_name="_",
-        method="filter_has_release_date",
+        field_name="_", method="filter_has_release_date"
+    )
+
+    artist = filters.ModelChoiceFilter(
+        field_name="_", method="filter_artist", queryset=models.Artist.objects.all()
     )
 
     class Meta:
         model = models.Album
-        fields = ["artist", "mbid"]
+        fields = ["artist_credit", "mbid"]
         hidden_content_fields_mapping = moderation_filters.USER_FILTER_CONFIG["ALBUM"]
-        include_channels_field = "artist__channel"
+        include_channels_field = "artist_credit__artist__channel"
         channel_filter_field = "track__album"
         library_filter_field = "track__album"
 
@@ -353,6 +373,9 @@ class AlbumFilter(
 
     def filter_has_release_date(self, queryset, name, value):
         return queryset.filter(release_date__isnull=(not value))
+
+    def filter_artist(self, queryset, name, value):
+        return queryset.filter(artist_credit__artist=value)
 
 
 class LibraryFilter(filters.FilterSet):

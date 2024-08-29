@@ -241,12 +241,12 @@ Given the above example, Funkwhale would create the following `ArtistCredit` obj
 
 The Funkwhale API needs to return artist credit information in a way that is easily consumed by a client.
 
-Endpoints should include a `credited_artist` filter that allows a client to return results for which artists are credited. This filter should take a list of IDs.
+Endpoints should include a `artist` filter that allows a client to return results for which artists are credited. This filter should take a list of IDs.
 
-To return any albums where the artist is listed in the `artist_credit` field, you can filter by the `artist_id` field using the `credited_artist` filter:
+To return any albums where the artist is listed in the `artist_credit` field, you can filter by the `artist_id` field using the `artist` filter:
 
 ```text
-https://open.audio/api/v2/albums?credited_artist=6451,6452
+https://open.audio/api/v2/albums?artist=6451,6452
 ```
 
 The `credit` field of the `artist_credit` object must also be searchable using a standard query:
