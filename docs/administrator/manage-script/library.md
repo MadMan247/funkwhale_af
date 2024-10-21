@@ -29,7 +29,7 @@ venv/bin/funkwhale-manage prune_library --tracks
 :sync: docker
 
 ```bash
-sudo docker compose run --rm api funkwhale-manage prune_library --tracks
+docker compose run --rm api funkwhale-manage prune_library --tracks
 ```
 
 :::
@@ -52,7 +52,7 @@ venv/bin/funkwhale-manage prune_library --albums
 :sync: docker
 
 ```{code-block} sh
-sudo docker compose run --rm api funkwhale-manage prune_library --albums
+docker compose run --rm api funkwhale-manage prune_library --albums
 ```
 
 :::
@@ -75,7 +75,7 @@ venv/bin/funkwhale-manage prune_library --artists
 :sync: docker
 
 ```{code-block} sh
-sudo docker compose run --rm api funkwhale-manage prune_library --artists
+docker compose run --rm api funkwhale-manage prune_library --artists
 ```
 
 :::
@@ -98,7 +98,7 @@ venv/bin/funkwhale-manage prune_library --tracks --albums --artists
 :sync: docker
 
 ```{code-block} sh
-sudo docker compose run --rm api funkwhale-manage prune_library --tracks --albums --artists
+docker compose run --rm api funkwhale-manage prune_library --tracks --albums --artists
 ```
 
 :::
@@ -121,7 +121,7 @@ venv/bin/funkwhale-manage prune_library --help
 :sync: docker
 
 ```{code-block} sh
-sudo docker compose run --rm api funkwhale-manage prune_library --help
+docker compose run --rm api funkwhale-manage prune_library --help
 ```
 
 :::

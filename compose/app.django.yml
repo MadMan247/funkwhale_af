@@ -1,0 +1,33 @@
+x-django: &django
+  image: funkwhale-api
+  volumes:
+    - ../api:/app
+    - "${MUSIC_DIRECTORY_SERVE_PATH:-../.state/music}:/music:ro"
+    - "../.state/plugins:/srv/funkwhale/plugins"
+    - "../.state/staticfiles:/staticfiles"
+    - "../.state/media:/protected/media"
+    - "../.state/${COMPOSE_PROJECT_NAME:-funkwhale}/media:/data/media"
+  depends_on:
+    postgres:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+  networks:
+    - internal
+
+services:
+  api:
+    <<: *django
+    build:
+      context: ../api
+      dockerfile: Dockerfile.debian
+    command: >
+      sh -c "
+        funkwhale-manage migrate &&
+        funkwhale-manage collectstatic --no-input &&
+        uvicorn --reload config.asgi:application --host 0.0.0.0 --port 5000 --reload-dir config/ --reload-dir funkwhale_api/
+      "
+
+  celeryworker:
+    <<: *django
+    command: celery -A funkwhale_api.taskapp worker -l debug -B --concurrency=${CELERYD_CONCURRENCY}

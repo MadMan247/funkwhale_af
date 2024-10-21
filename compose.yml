@@ -1,0 +1,139 @@
+networks:
+  internal:
+  web:
+    external: true
+
+x-django: &django
+  environment:
+    - DEBUG
+    - DEFAULT_FROM_EMAIL
+
+    - DJANGO_SETTINGS_MODULE
+    - DJANGO_SECRET_KEY
+
+    - EXTERNAL_REQUESTS_VERIFY_SSL
+
+    - "FORCE_HTTPS_URLS=${FORCE_HTTPS_URLS:-False}"
+    - FUNKWHALE_PROTOCOL
+    - "FUNKWHALE_HOSTNAME=${COMPOSE_PROJECT_NAME:-funkwhale}.${FUNKWHALE_DOMAIN}"
+
+    - DATABASE_URL
+    - CACHE_URL
+    - EMAIL_CONFIG
+    - TYPESENSE_API_KEY
+
+    - "STATIC_URL=${FUNKWHALE_PROTOCOL}://${COMPOSE_PROJECT_NAME:-funkwhale}.${FUNKWHALE_DOMAIN}/static/"
+    - "MEDIA_URL=${FUNKWHALE_PROTOCOL}://${COMPOSE_PROJECT_NAME:-funkwhale}.${FUNKWHALE_DOMAIN}/media/"
+
+    - STATIC_ROOT
+    - MEDIA_ROOT
+
+    - FUNKWHALE_SPA_HTML_ROOT
+    - LDAP_ENABLED
+    - BROWSABLE_API_ENABLED
+    - "MUSIC_DIRECTORY_PATH=${MUSIC_DIRECTORY_PATH:-/music}"
+
+    - C_FORCE_ROOT
+    - PYTHONDONTWRITEBYTECODE
+    - PYTHONTRACEMALLOC
+
+  dns: 172.17.0.1
+  dns_search: funkwhale.test
+
+services:
+  front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile.dev
+    ports:
+      - "${VUE_PORT:-8080}:${VUE_PORT:-8080}"
+    environment:
+      - HOST
+      - VUE_PORT
+    volumes:
+      - "./front:/app"
+      - "/app/node_modules"
+      - "./po:/po"
+    networks:
+      - internal
+    command: "yarn dev --host"
+
+  api:
+    extends:
+      file: ./compose/app.django.yml
+      service: api
+    <<: *django
+
+  celeryworker:
+    extends:
+      file: ./compose/app.django.yml
+      service: celeryworker
+    <<: *django
+
+  nginx:
+    extends:
+      file: ./compose/app.nginx.yml
+      service: nginx
+    environment:
+      - "MUSIC_DIRECTORY_PATH=${MUSIC_DIRECTORY_PATH:-/music}"
+      - "FUNKWHALE_HOSTNAME=${COMPOSE_PROJECT_NAME:-funkwhale}.${FUNKWHALE_DOMAIN}"
+
+      - FUNKWHALE_PROTOCOL
+
+      - FUNKWHALE_API_HOST
+      - FUNKWHALE_API_PORT
+
+      - FUNKWHALE_FRONT_IP
+      - FUNKWHALE_FRONT_PORT
+
+      - NGINX_MAX_BODY_SIZE
+
+      - STATIC_ROOT
+      - "MEDIA_ROOT=${MEDIA_ROOT:-/data/media}"
+    networks:
+      - web
+      - internal
+
+    labels:
+      - "traefik.enable=true"
+
+      - "traefik.http.routers.test-funkwhale-${COMPOSE_PROJECT_NAME:-funkwhale}-web.rule=Host(`${COMPOSE_PROJECT_NAME:-funkwhale}.${FUNKWHALE_DOMAIN}`)"
+      - "traefik.http.routers.test-funkwhale-${COMPOSE_PROJECT_NAME:-funkwhale}-web.entrypoints=web"
+
+      - "traefik.http.routers.test-funkwhale-${COMPOSE_PROJECT_NAME:-funkwhale}-webs.rule=Host(`${COMPOSE_PROJECT_NAME:-funkwhale}.${FUNKWHALE_DOMAIN}`)"
+      - "traefik.http.routers.test-funkwhale-${COMPOSE_PROJECT_NAME:-funkwhale}-webs.entrypoints=webs"
+
+      - "traefik.http.routers.test-funkwhale-${COMPOSE_PROJECT_NAME:-funkwhale}-webs.tls=true"
+      - "traefik.http.routers.test-funkwhale-${COMPOSE_PROJECT_NAME:-funkwhale}-webs.tls.domains[0].main=${COMPOSE_PROJECT_NAME:-funkwhale}.${FUNKWHALE_DOMAIN}"
+
+  postgres:
+    image: "postgres:${POSTGRES_VERSION:-15}-alpine"
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD
+    command: postgres ${POSTGRES_ARGS:-}
+    volumes:
+      - "./.state/${COMPOSE_PROJECT_NAME:-funkwhale}/postgres:/var/lib/postgresql/data"
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - "./.state/${COMPOSE_PROJECT_NAME:-funkwhale}/redis:/data"
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  typesense:
+    extends:
+      file: ./compose/app.typesense.yml
+      service: typesense

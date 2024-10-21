@@ -1,0 +1,13 @@
+http:
+  routers:
+    dashboard-web:
+      rule: Host(`traefik.funkwhale.test`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
+      service: api@internal
+      entryPoints:
+        - web
+    dashboard-webs:
+      rule: Host(`traefik.funkwhale.test`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
+      service: api@internal
+      entryPoints:
+        - webs
+      tls: true

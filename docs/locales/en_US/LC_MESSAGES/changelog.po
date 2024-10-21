@@ -9171,10 +9171,10 @@ msgstr ""
 #~ "using-the-repository>`_"
 #~ msgstr ""
 
-#~ msgid "```sh sudo docker-compose down ```"
+#~ msgid "```docker compose down ```"
 #~ msgstr ""
 
-#~ msgid "```sh sudo docker compose up -d ```"
+#~ msgid "```docker compose up -d ```"
 #~ msgstr ""
 
 #~ msgid ""
@@ -10079,4 +10079,3 @@ msgstr ""
 #~ "shortcut to toggle the currently playing"
 #~ " track as a favorite (#53)"
 #~ msgstr ""
-

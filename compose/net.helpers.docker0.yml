@@ -1,0 +1,5 @@
+services:
+  keep-docker0-up:
+    extends:
+      file: ./net.helpers.yml
+      service: keep-docker0-up

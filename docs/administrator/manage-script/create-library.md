@@ -47,7 +47,7 @@ venv/bin/funkwhale-manage create_library username1 --name="Library 1" --privacy-
 :sync: docker
 
 ```{code-block} sh
-sudo docker compose run --rm api funkwhale-manage create_library username1 --name="Library 1" --privacy-level="everyone"
+docker compose run --rm api funkwhale-manage create_library username1 --name="Library 1" --privacy-level="everyone"
 ```
 
 :::
@@ -79,7 +79,7 @@ venv/bin/funkwhale-manage create_library username1
 :sync: docker
 
 ```{code-block} sh
-sudo docker compose run --rm api funkwhale-manage create_library username1
+docker compose run --rm api funkwhale-manage create_library username1
 ```
 
 :::
@@ -111,7 +111,7 @@ venv/bin/funkwhale-manage create_library username1 --name="Library 1" --privacy-
 :sync: docker
 
 ```{code-block} sh
-sudo docker compose run --rm api funkwhale-manage create_library username1 --name="Library 1" --privacy-level="everyone"
+docker compose run --rm api funkwhale-manage create_library username1 --name="Library 1" --privacy-level="everyone"
 ```
 
 :::

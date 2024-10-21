@@ -224,10 +224,13 @@ ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[]) + [FUNKWHALE_HOSTNA
 List of allowed hostnames for which the Funkwhale server will answer.
 """
 
-CSRF_TRUSTED_ORIGINS = [urlparse(o, FUNKWHALE_PROTOCOL).geturl() for o in ALLOWED_HOSTS]
+CSRF_TRUSTED_ORIGINS = [
+    urlparse("//" + o, FUNKWHALE_PROTOCOL).geturl() for o in ALLOWED_HOSTS
+]
 """
 List of origins that are trusted for unsafe requests
 We simply consider all allowed hosts to be trusted origins
+See DJANGO_ALLOWED_HOSTS in .env.example for details
 See https://docs.djangoproject.com/en/4.2/ref/settings/#csrf-trusted-origins
 """
 

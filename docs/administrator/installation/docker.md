@@ -126,19 +126,19 @@ Once you've filled in your environment file, you can set up Funkwhale. Follow th
 
    ```{code-block} sh
    cd /srv/funkwhale
-   sudo docker compose pull
+   docker compose pull
    ```
 
 2. Bring up the database container so you can run the database migrations.
 
    ```{code-block} sh
-   sudo docker compose up -d postgres
+   docker compose up -d postgres
    ```
 
 3. Run the database migrations.
 
    ```{code-block} sh
-   sudo docker compose run --rm api funkwhale-manage migrate
+   docker compose run --rm api funkwhale-manage migrate
    ```
 
    ````{note}
@@ -154,13 +154,13 @@ Once you've filled in your environment file, you can set up Funkwhale. Follow th
 4. Create your superuser.
 
    ```{code-block} sh
-   sudo docker compose run --rm api funkwhale-manage fw users create --superuser
+   docker compose run --rm api funkwhale-manage fw users create --superuser
    ```
 
 5. Launch all the containers to bring up your pod.
 
    ```{code-block} sh
-   sudo docker compose up -d
+   docker compose up -d
    ```
 
 That's it! Your Funkwhale pod is now up and running.
@@ -266,7 +266,7 @@ The frontend container ships default Nginx templates which serve content to the 
 6. Bring the `front` container up again to pick up the changes.
 
    ```{code-block} sh
-   sudo docker compose up -d front
+   docker compose up -d front
    ```
 
 That's it! The container mounts your custom nginx files and uses its values to serve Funkwhale content. To revert to the default values, comment out the volumes by adding a `#` in front of them and bring the `front` container back up.

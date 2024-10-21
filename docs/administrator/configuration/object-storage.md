@@ -162,7 +162,7 @@ Serving files from an object store requires some changes to the reverse proxy.
    :sync: docker
 
    ```{code-block} sh
-   sudo docker compose restart
+   docker compose restart
    sudo systemctl restart nginx
    ```
 

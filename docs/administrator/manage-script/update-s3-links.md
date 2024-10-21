@@ -60,7 +60,7 @@ This command doesn't move files. It only updates the location of the file to its
 3. Run the `funkwhale-manage` command line interface to update your in-place imports.
 
    ```{code-block} console
-   $ sudo docker compose run --rm api funkwhale-manage inplace_to_s3 --no-dry-run
+   $ docker compose run --rm api funkwhale-manage inplace_to_s3 --no-dry-run
    ```
 
 :::
@@ -101,7 +101,7 @@ This command doesn't move files. It only updates the location of the file to its
 3. Run the `funkwhale-manage` command line interface to update your in-place imports.
 
    ```{code-block} console
-   $ sudo docker compose run --rm api funkwhale-manage inplace_to_s3 --source "/music" --no-dry-run
+   $ docker compose run --rm api funkwhale-manage inplace_to_s3 --source "/music" --no-dry-run
    ```
 
 :::
@@ -144,7 +144,7 @@ All in-place imports in the `/music` folder are updated to reference the `/music
 3. Run the `funkwhale-manage` command line interface to update your in-place imports.
 
    ```{code-block} console
-   $ sudo docker compose run --rm api funkwhale-manage inplace_to_s3 --source "/music" --target "/new_import" --no-dry-run
+   $ docker compose run --rm api funkwhale-manage inplace_to_s3 --source "/music" --target "/new_import" --no-dry-run
    ```
 
 :::

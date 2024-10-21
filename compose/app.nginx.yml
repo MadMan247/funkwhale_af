@@ -1,0 +1,18 @@
+services:
+  nginx:
+    image: nginx
+    depends_on:
+      - api
+      - front
+    volumes:
+      - "${MUSIC_DIRECTORY_SERVE_PATH:-../.state/music}:${MUSIC_DIRECTORY_PATH:-/music}:ro"
+
+      - ./etc/nginx/conf.dev:/etc/nginx/templates/default.conf.template:ro
+      - ../deploy/funkwhale_proxy.conf:/etc/nginx/funkwhale_proxy.conf:ro
+
+      - ../front:/frontend:ro
+      - ../.state/staticfiles:/usr/share/nginx/html/staticfiles:ro
+      - ../.state/media:/protected/media:ro
+      - ../.state/${COMPOSE_PROJECT_NAME:-funkwhale}/media:/data/media:ro
+    networks:
+      - internal

@@ -25,7 +25,7 @@ venv/bin/funkwhale-manage check_inplace_files
 :sync: docker
 
 ```{code-block} sh
-sudo docker compose run --rm api funkwhale-manage check_inplace_files
+docker compose run --rm api funkwhale-manage check_inplace_files
 ```
 
 :::

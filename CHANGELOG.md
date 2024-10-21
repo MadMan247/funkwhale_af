@@ -402,13 +402,13 @@ Update instructions:
   2. Stop your containers using the **docker-compose** syntax.
 
   ```sh
-  sudo docker-compose down
+  docker compose down
   ```
 
   3. Bring the containers back up using the **docker compose** syntax.
 
   ```sh
-  sudo docker compose up -d
+  docker compose up -d
   ```
 
   After this you can continue to use the **docker compose** syntax for all Docker management tasks.

@@ -36,7 +36,7 @@ Try to keep your tests small and focused. Each test should test a single functio
 Test files must target a module and follow the `funkwhale_api` directory structure. If you write tests for `funkwhale_api/myapp/views.py`, you should put them in `tests/myapp/test_views.py`.
 ```
 
-We provide utilities and fixtures to make writing tests as easy as possible. You can see the list of available fixtures by running `sudo docker compose -f dev.yml run --rm api pytest --fixtures`.
+We provide utilities and fixtures to make writing tests as easy as possible. You can see the list of available fixtures by running `docker compose run --rm api pytest --fixtures`.
 
 ### Factories
 
@@ -134,17 +134,17 @@ def test_downgrade_not_superuser_skips_email(factories, mocker):
 You can run all tests in the pytest suite with the following command:
 
 ```sh
-sudo docker compose -f dev.yml run --rm api pytest
+docker compose run --rm api pytest
 ```
 
 Run a specific test file by calling pytest against it:
 
 ```sh
-sudo docker compose -f dev.yml run --rm api pytest tests/music/test_models.py
+docker compose run --rm api pytest tests/music/test_models.py
 ```
 
 You can check the full list of options by passing the `-h` flag:
 
 ```sh
-sudo docker compose -f dev.yml run --rm api pytest -h
+docker compose run --rm api pytest -h
 ```

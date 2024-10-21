@@ -1,0 +1,17 @@
+http:
+  services:
+    test-funkwhale-mailpit:
+      loadbalancer:
+        servers:
+          - url: "http://172.17.0.1:8025"
+        passhostheader: true
+  routers:
+    test-funkwhale-mailpit-web:
+      entrypoints: web
+      rule: Host(`mailpit.funkwhale.test`)
+      service: test-funkwhale-mailpit
+    test-funkwhale-mailpit-webs:
+      entrypoints: webs
+      rule: Host(`mailpit.funkwhale.test`)
+      service: test-funkwhale-mailpit
+      tls: true

@@ -1,0 +1,71 @@
+FROM python:3.12-slim AS builder
+
+ARG POETRY_VERSION=1.8
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+ENV VIRTUAL_ENV=/venv
+ENV PATH="/venv/bin:$PATH"
+
+ENV POETRY_HOME=/opt/poetry
+ENV POETRY_NO_INTERACTION=1
+ENV POETRY_VIRTUALENVS_IN_PROJECT=1
+ENV POETRY_VIRTUALENVS_CREATE=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+# Tell Poetry where to place its cache and virtual environment
+ENV POETRY_CACHE_DIR=/opt/.cache
+
+RUN pip install "poetry==${POETRY_VERSION}"
+
+RUN --mount=type=cache,target=/var/lib/apt/lists \
+      apt update; \
+      apt install -y \
+        build-essential \
+        python3-dev \
+        libldap-dev \
+        libsasl2-dev \
+        slapd \
+        ldap-utils \
+        tox \
+        lcov \
+        valgrind
+
+WORKDIR /app
+
+COPY pyproject.toml .
+
+RUN python3 -m venv --system-site-packages ${VIRTUAL_ENV} && . ${VIRTUAL_ENV}/bin/activate
+RUN --mount=type=cache,target=/opt/.cache \
+      poetry install --no-root --extras typesense
+
+FROM python:3.12-slim AS runtime
+
+ARG POETRY_VERSION=1.8
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+ENV VIRTUAL_ENV=/venv
+ENV PATH="/venv/bin:$PATH"
+
+RUN --mount=type=cache,target=/var/lib/apt/lists \
+      apt update; \
+      apt install -y \
+        ffmpeg \
+        gettext \
+        libjpeg-dev \
+        libldap-2.5-0 \
+        libmagic1 \
+        libpq5 \
+        libxml2 \
+        libxslt1.1
+RUN pip install "poetry==${POETRY_VERSION}"
+
+COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
+
+WORKDIR /app
+
+COPY . /app
+RUN poetry install --extras typesense
+
+CMD ["./docker/server.sh"]

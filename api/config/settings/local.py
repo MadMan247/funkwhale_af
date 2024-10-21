@@ -2,8 +2,7 @@
 Local settings
 
 - Run in Debug mode
-- Use console backend for e-mails
-- Add Django Debug Toolbar
+- Add Django Debug Toolbar when INTERNAL_IPS are given and match the request
 - Add django-extensions as app
 """
 
@@ -24,11 +23,6 @@ TEMPLATES[0]["OPTIONS"]["debug"] = DEBUG
 SECRET_KEY = env(
     "DJANGO_SECRET_KEY", default="mc$&b=5j#6^bv7tld1gyjp2&+^-qrdy=0sw@r5sua*1zp4fmxc"
 )
-
-# Mail settings
-# ------------------------------------------------------------------------------
-EMAIL_HOST = "localhost"
-EMAIL_PORT = 1025
 
 # django-debug-toolbar
 # ------------------------------------------------------------------------------
@@ -147,5 +141,3 @@ MIDDLEWARE = (
     "funkwhale_api.common.middleware.ProfilerMiddleware",
     "funkwhale_api.common.middleware.PymallocMiddleware",
 ) + MIDDLEWARE
-
-TYPESENSE_API_KEY = "apikey"

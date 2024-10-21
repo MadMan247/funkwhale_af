@@ -24,7 +24,7 @@ Before you remove any data, you need to stop the Funkwhale containers.
 2. Stop the containers
 
    ```{code-block} sh
-   sudo docker compose down
+   docker compose down
    ```
 
 ## Remove the reverse proxy
@@ -80,7 +80,7 @@ This action is __irreversible__. Make sure you have [backed up your data](../upg
 Once you have stopped the containers, you can delete all containers and associated volumes.
 
 ```{code-block} sh
-sudo docker compose rm -fsv
+docker compose rm -fsv
 ```
 
 ## Remove the Funkwhale directory

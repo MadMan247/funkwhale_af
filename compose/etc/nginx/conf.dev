@@ -161,7 +161,7 @@ server {
         return 302 ${FUNKWHALE_PROTOCOL}://${FUNKWHALE_HOSTNAME}/api/v1/instance/spa-manifest.json;
     }
 
-    location /staticfiles/ {
+    location /static/ {
         alias /usr/share/nginx/html/staticfiles/;
     }
 }

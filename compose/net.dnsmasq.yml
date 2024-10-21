@@ -1,0 +1,7 @@
+services:
+  dnsmasq:
+    image: jamesmorrison/dnsmasq
+    volumes:
+      - ./etc/dnsmasq/dnsmasq.conf:/etc/dnsmasq.conf
+      - ./etc/dnsmasq/funkwhale.test.conf:/etc/dnsmasq.d/funkwhale.test.conf
+    network_mode: host

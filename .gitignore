@@ -93,6 +93,7 @@ docs/_build
 front/tauri/gen
 
 /data/
+.state
 .env
 
 po/*.po
@@ -103,16 +104,20 @@ _build
 # Docker
 docker-bake.*.json
 metadata.json
+compose/var/test.*
 
 # Linting
 .eslintcache
 tsconfig.tsbuildinfo
-
-# Vscode
-.vscode/
 
 # Nix
 .direnv/
 .envrc
 flake.nix
 flake.lock
+
+# Vscode
+.vscode/
+
+# Zed
+.zed/

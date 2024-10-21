@@ -1,0 +1,15 @@
+x-verify: &verify
+  init: true
+  image: "busybox"
+  network_mode: bridge
+  dns: 172.17.0.1
+  dns_search: funkwhale.test
+
+services:
+  verify-external-connectivity:
+    <<: *verify
+    command: ping -c 1 funkwhale.audio
+
+  verify-internal-connectivity:
+    <<: *verify
+    command: "ping -c 1 ${COMPOSE_PROJECT_NAME:-funkwhale}.funkwhale.test"

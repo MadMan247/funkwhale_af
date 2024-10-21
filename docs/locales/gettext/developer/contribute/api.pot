@@ -109,7 +109,7 @@ msgid "Test files must target a module and follow the `funkwhale_api` directory 
 msgstr ""
 
 #: ../../developer/contribute/api.md:39
-msgid "We provide utilities and fixtures to make writing tests as easy as possible. You can see the list of available fixtures by running `sudo docker compose -f dev.yml run --rm api pytest --fixtures`."
+msgid "We provide utilities and fixtures to make writing tests as easy as possible. You can see the list of available fixtures by running `docker compose run --rm api pytest --fixtures`."
 msgstr ""
 
 #: ../../developer/contribute/api.md:41

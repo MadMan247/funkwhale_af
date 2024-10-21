@@ -1,1 +1,1 @@
-../docker/nginx/conf.dev
+../compose/etc/nginx/conf.dev

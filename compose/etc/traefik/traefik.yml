@@ -1,0 +1,20 @@
+providers:
+  docker:
+    exposedByDefault: false
+  file:
+    directory: /etc/traefik/dynamic
+    watch: true
+
+log:
+  level: debug
+
+api:
+  insecure: true
+
+entryPoints:
+  traefik:
+    address: "172.17.0.1:8008"
+  web:
+    address: "172.17.0.1:80"
+  webs:
+    address: "172.17.0.1:443"

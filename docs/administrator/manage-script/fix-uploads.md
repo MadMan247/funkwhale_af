@@ -23,7 +23,7 @@ venv/bin/funkwhale-manage fix_uploads --mimetype
 :sync: docker
 
 ```{code-block} sh
-sudo docker compose run --rm api funkwhale-manage fix_uploads --mimetype
+docker compose run --rm api funkwhale-manage fix_uploads --mimetype
 ```
 
 :::
@@ -48,7 +48,7 @@ venv/bin/funkwhale-manage fix_uploads --audio-data
 :sync: docker
 
 ```{code-block} sh
-sudo docker compose run --rm api funkwhale-manage fix_uploads --audio-data
+docker compose run --rm api funkwhale-manage fix_uploads --audio-data
 ```
 
 :::
@@ -73,7 +73,7 @@ venv/bin/funkwhale-manage fix_uploads --size
 :sync: docker
 
 ```{code-block} sh
-sudo docker compose run --rm api funkwhale-manage fix_uploads --size
+docker compose run --rm api funkwhale-manage fix_uploads --size
 ```
 
 :::
@@ -98,7 +98,7 @@ venv/bin/funkwhale-manage fix_uploads --checksum
 :sync: docker
 
 ```{code-block} sh
-sudo docker compose run --rm api funkwhale-manage fix_uploads --checksum
+docker compose run --rm api funkwhale-manage fix_uploads --checksum
 ```
 
 :::
@@ -123,7 +123,7 @@ venv/bin/funkwhale-manage fix_uploads --batch-size 500
 :sync: docker
 
 ```{code-block} sh
-sudo docker compose run --rm api funkwhale-manage fix_uploads --batch-size 500
+docker compose run --rm api funkwhale-manage fix_uploads --batch-size 500
 ```
 
 :::

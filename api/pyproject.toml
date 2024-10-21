@@ -36,7 +36,7 @@ django-cacheops = "==7.0.2"
 django-cleanup = "==8.1.0"
 django-cors-headers = "==4.3.1"
 django-dynamic-preferences = "==1.14.0"
-django-environ = "==0.10.0"
+django-environ = "==0.11.2"
 django-filter = "==23.5"
 django-oauth-toolkit = "2.2.0"
 django-redis = "==5.2.0"
@@ -46,7 +46,7 @@ djangorestframework = "==3.14.0"
 drf-spectacular = "==0.26.5"
 markdown = "==3.4.4"
 persisting-theory = "==1.0"
-psycopg2 = "==2.9.9"
+psycopg2-binary = "==2.9.9"
 redis = "==5.0.1"
 
 # Django LDAP
@@ -159,28 +159,29 @@ python_files = [
 testpaths = ["tests"]
 addopts = "-p no:warnings"
 env = [
-  "SECRET_KEY=test",
-  "EMAIL_CONFIG=consolemail://",
   "CELERY_BROKER_URL=memory://",
   "CELERY_TASK_ALWAYS_EAGER=True",
-  "FUNKWHALE_HOSTNAME_SUFFIX=",
-  "FUNKWHALE_HOSTNAME_PREFIX=",
-  "FUNKWHALE_HOSTNAME=test.federation",
-  "FEDERATION_HOSTNAME=test.federation",
-  "FUNKWHALE_URL=https://test.federation",
-  "DEBUG_TOOLBAR_ENABLED=False",
-  "DEBUG=False",
-  "WEAK_PASSWORDS=True",
   "CREATE_IMAGE_THUMBNAILS=False",
-  "FORCE_HTTPS_URLS=False",
-  "FUNKWHALE_SPA_HTML_ROOT=http://noop/",
-  "PROXY_MEDIA=true",
-  "MUSIC_USE_DENORMALIZATION=true",
+  "DEBUG=False",
+  "DEBUG_TOOLBAR_ENABLED=False",
+  "DISABLE_PASSWORD_VALIDATORS=false",
+  "DISABLE_PASSWORD_VALIDATORS=false",
+  "EMAIL_CONFIG=consolemail://",
   "EXTERNAL_MEDIA_PROXY_ENABLED=true",
-  "DISABLE_PASSWORD_VALIDATORS=false",
-  "DISABLE_PASSWORD_VALIDATORS=false",
+  "FEDERATION_HOSTNAME=test.federation",
+  "FORCE_HTTPS_URLS=False",
+  "FUNKWHALE_HOSTNAME=test.federation",
+  "FUNKWHALE_HOSTNAME_PREFIX=",
+  "FUNKWHALE_HOSTNAME_SUFFIX=",
   "FUNKWHALE_PLUGINS=",
+  "FUNKWHALE_SPA_HTML_ROOT=http://noop/",
+  "FUNKWHALE_URL=https://test.federation",
   "MUSIC_DIRECTORY_PATH=/music",
+  "MUSIC_USE_DENORMALIZATION=true",
+  "PROXY_MEDIA=true",
+  "SECRET_KEY=test",
+  "TYPESENSE_API_KEY=apikey",
+  "WEAK_PASSWORDS=True",
 ]
 
 [tool.coverage.run]

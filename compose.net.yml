@@ -1,0 +1,15 @@
+name: funkwhale-net
+include:
+  - path: compose/net.dnsmasq.yml
+  - path: compose/net.traefik.yml
+  - path: compose/net.mailpit.yml
+  # Nowadays people rarely use the default `bridge` network in
+  # Docker (called `docker0` on the host system), why it often
+  # has no containers present.
+  # While we try to attach to the interface with the two services
+  # above, its link state will only be `UP` if at least one
+  # containers is connected, what this noop helper is for.
+  # Comment out the following line if you have other containers
+  # present on the docker0 network.
+  - path: compose/net.helpers.docker0.yml
+  - path: compose/net.verify.yml

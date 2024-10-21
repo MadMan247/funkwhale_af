@@ -144,7 +144,7 @@ msgstr ""
 msgid ""
 "We provide utilities and fixtures to make writing tests as easy as "
 "possible. You can see the list of available fixtures by running `sudo "
-"docker compose -f dev.yml run --rm api pytest --fixtures`."
+"docker compose run --rm api pytest --fixtures`."
 msgstr ""
 
 #: ../../developer_documentation/contribute/api.md:41
@@ -183,4 +183,3 @@ msgstr ""
 #: ../../developer_documentation/contribute/api.md:146
 msgid "You can check the full list of options by passing the `-h` flag:"
 msgstr ""
-

@@ -1,0 +1,7 @@
+name: funkwhale-docs
+networks:
+  web:
+    external: true
+include:
+  - path: compose/docs.sphinx.yml
+  - path: compose/docs.openapi.yml

@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM node:18-alpine as builder
+FROM --platform=$BUILDPLATFORM node:18-alpine AS builder
 
 RUN apk add --no-cache jq bash coreutils python3 build-base
 
@@ -13,7 +13,7 @@ COPY src /app/src
 COPY index.html pwa-manifest.json tsconfig.json vite.config.ts /app/
 RUN yarn build:deployment
 
-FROM nginx:1.23.4-alpine as production
+FROM nginx:1.23.4-alpine AS production
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY docker/funkwhale.conf.template /etc/nginx/templates/default.conf.template

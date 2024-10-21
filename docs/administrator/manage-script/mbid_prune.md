@@ -25,7 +25,7 @@ venv/bin/funkwhale-manage prune_non_mbid_content
 :sync: docker
 
 ```{code-block} sh
-sudo docker compose run --rm api funkwhale-manage prune_non_mbid_content
+docker compose run --rm api funkwhale-manage prune_non_mbid_content
 ```
 
 :::

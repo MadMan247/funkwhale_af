@@ -67,3 +67,6 @@ mailhog
 *.sqlite3
 api/music
 api/media
+
+# Docker state
+.state

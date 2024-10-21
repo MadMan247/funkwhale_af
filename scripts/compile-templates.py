@@ -7,7 +7,7 @@ env = Environment(
 
 files = [
     {
-        "output": "docker/nginx/conf.dev",
+        "output": "docker/etc/nginx/conf.dev",
         "config": {"proxy_frontend": True, "inside_docker": True},
     },
     {

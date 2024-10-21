@@ -62,7 +62,7 @@ On your {term}`destination server`, follow the [installation guide](docker.md). 
 Once you have finished the installation, stop the Funkwhale services. These shouldn't be running when you copy your existing data over.
 
 ```{code-block} sh
-sudo docker compose stop
+docker compose stop
 ```
 
 :::
@@ -87,7 +87,7 @@ sudo -u postgres -H pg_dump funkwhale > /srv/funkwhale/dump.sql
 :sync: docker
 
 ```{code-block} sh
-sudo docker compose exec postgres pg_dumpall -c -U postgres > dump.sql
+docker compose exec postgres pg_dumpall -c -U postgres > dump.sql
 ```
 
 :::
@@ -157,19 +157,19 @@ You need to initialize the postgres container on your {term}`destination server`
    CREATE USER funkwhale; \
    GRANT ALL PRIVILEGES ON DATABASE funkwhale TO funkwhale;" > init.sql # Create an init.sql file with the correct permissions
 
-   sudo docker compose run --rm postgres psql -U postgres -d postgres < "init.sql" # Import the init.sql file
+   docker compose run --rm postgres psql -U postgres -d postgres < "init.sql" # Import the init.sql file
    ```
 
 2. Import your database backup.
 
    ```{code-block} sh
-   sudo docker compose run --rm postgres psql -U postgres -d postgres < "dump.sql"
+   docker compose run --rm postgres psql -U postgres -d postgres < "dump.sql"
    ```
 
 3. When the import finishes, run the `funkwhale-manage migrate` command to set up the database.
 
    ```{code-block} sh
-   sudo docker compose run --rm api funkwhale-manage migrate
+   docker compose run --rm api funkwhale-manage migrate
    ```
 
 :::
@@ -198,7 +198,7 @@ sudo systemctl start funkwhale.target
 :sync: docker
 
 ```{code-block} sh
-sudo docker compose up -d
+docker compose up -d
 ```
 
 :::
