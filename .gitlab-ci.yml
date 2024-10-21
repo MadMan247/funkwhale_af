@@ -175,6 +175,7 @@ lint_api:
     - changes: [api/**/*]
 
   image: $CI_REGISTRY/funkwhale/ci/python-funkwhale-api:3.11
+  cache: *api_cache
   before_script:
     - cd api
     - make install

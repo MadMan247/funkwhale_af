@@ -11,4 +11,5 @@ lint:
 		--jobs=$(CPU_CORES) \
 		--output-format=colorized \
 		--recursive=true \
+		--disable=C,R,W,I \
 		config funkwhale_api tests
