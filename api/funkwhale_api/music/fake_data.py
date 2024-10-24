@@ -7,11 +7,11 @@ from funkwhale_api.music import factories
 
 
 def create_data(count=25):
-    artists = factories.ArtistFactory.create_batch(size=count)
-    for artist in artists:
-        print("Creating data for", artist)
+    acs = factories.ArtistCreditFactory.create_batch(size=count)
+    for ac in acs:
+        print("Creating data for", ac.artist)
         albums = factories.AlbumFactory.create_batch(
-            artist=artist, size=random.randint(1, 5)
+            artist_credit=ac, size=random.randint(1, 5)
         )
         for album in albums:
             factories.UploadFactory.create_batch(
