@@ -166,6 +166,7 @@
       "label": {
         "addArtistContentFilter": "Ocultar contenido de este artista…",
         "duration": "Duración",
+        "enterFullscreen": "Entrar en modo de pantalla completa",
         "exitFullscreen": "Entrar en modo pantalla completa",
         "favorite": "Pista favorita",
         "next": "Próxima canción",
@@ -346,7 +347,8 @@
               "true": "Sí"
             },
             "type": {
-              "long": "Texto largo"
+              "long": "Texto largo",
+              "short": "Texto corto"
             }
           }
         }
@@ -371,7 +373,8 @@
         },
         "help": {
           "discography": "Publica la música que haces como una bonita discografía de álbumes y sencillos.",
-          "podcast": "Aloja tus episodios y mantén a tu comunidad actualizada."
+          "podcast": "Aloja tus episodios y mantén a tu comunidad actualizada.",
+          "podcastFields": "Usado para el campo itunes:email y itunes:name requerido por ciertas plataformas como Spotify o iTunes"
         },
         "label": {
           "category": "Categoría",
