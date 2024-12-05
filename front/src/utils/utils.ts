@@ -1,5 +1,6 @@
 import type { Track, Album, ArtistCredit, QueueItemSource } from '~/types'
 import { useStore } from '~/store'
+import type { QueueTrack } from '~/composables/audio/queue'
 
 const store = useStore()
 
@@ -15,7 +16,7 @@ export function generateTrackCreditString (track: Track | Album | null): string 
   return artistCredits.join('')
 }
 
-export function generateTrackCreditStringFromQueue (track: QueueItemSource | null): string | null {
+export function generateTrackCreditStringFromQueue (track: QueueTrack | QueueItemSource | null): string | null {
   if (!track || !track.artistCredit || track.artistCredit.length === 0) {
     return null
   }

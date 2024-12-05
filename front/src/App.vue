@@ -10,6 +10,8 @@ import { useStore } from '~/store'
 import onKeyboardShortcut from '~/composables/onKeyboardShortcut'
 import useLogger from '~/composables/useLogger'
 
+import { generateTrackCreditStringFromQueue } from '~/utils/utils'
+
 const ChannelUploadModal = defineAsyncComponent(() => import('~/components/channels/UploadModal.vue'))
 const PlaylistModal = defineAsyncComponent(() => import('~/components/playlists/PlaylistModal.vue'))
 const FilterModal = defineAsyncComponent(() => import('~/components/moderation/FilterModal.vue'))
@@ -32,7 +34,7 @@ const getTrackInformationText = (track: QueueTrack | undefined) => {
     return null
   }
 
-  return `♫ ${track.title} – ${track.artistCredit} ♫`
+  return `♫ ${track.title} – ${generateTrackCreditStringFromQueue(track)} ♫`
 }
 
 // Update title

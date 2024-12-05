@@ -141,3 +141,14 @@ MIDDLEWARE = (
     "funkwhale_api.common.middleware.ProfilerMiddleware",
     "funkwhale_api.common.middleware.PymallocMiddleware",
 ) + MIDDLEWARE
+
+REST_FRAMEWORK.update(
+    {
+        "TEST_REQUEST_RENDERER_CLASSES": [
+            "rest_framework.renderers.MultiPartRenderer",
+            "rest_framework.renderers.JSONRenderer",
+            "rest_framework.renderers.TemplateHTMLRenderer",
+            "funkwhale_api.playlists.renderers.PlaylistXspfRenderer",
+        ],
+    }
+)

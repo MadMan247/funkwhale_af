@@ -14,6 +14,8 @@ import SemanticModal from '~/components/semantic/Modal.vue'
 import TrackTable from '~/components/audio/track/Table.vue'
 import PlayButton from '~/components/audio/PlayButton.vue'
 
+import PlaylistDropdown from '~/components/playlists/PlaylistDropdown.vue'
+
 import useErrorHandler from '~/composables/useErrorHandler'
 
 interface Props {
@@ -157,6 +159,11 @@ const deletePlaylist = async () => {
                 </div>
               </template>
             </dangerous-button>
+            <div class="ui hidden horizontal divider" />
+            <playlist-dropdown
+              :playlist="playlist"
+              @import="fetchData"
+            />
           </div>
         </div>
         <semantic-modal

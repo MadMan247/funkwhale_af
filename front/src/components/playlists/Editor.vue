@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { generateTrackCreditString } from '~/utils/utils'
+
 import type { Playlist, PlaylistTrack, BackendError, APIErrorResponse } from '~/types'
 
 import { useI18n } from 'vue-i18n'
@@ -289,7 +291,7 @@ const insertMany = async (insertedTracks: number[], allowDuplicates: boolean) =>
                   </td>
                   <td colspan="4">
                     <strong>{{ plt.track.title }}</strong><br>
-                    {{ plt.track.artist.name }}
+                    {{ generateTrackCreditString(plt.track) }}
                   </td>
                   <td class="right aligned">
                     <button

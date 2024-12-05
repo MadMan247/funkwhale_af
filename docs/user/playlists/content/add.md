@@ -84,3 +84,15 @@ You can add tracks from any page with a track table. This includes artist pages,
 4. Select {guilabel}`+ Add track` next to the playlist you want to add the track to.
 
 Well done! You've added the track to your playlist.
+
+## Rebuild the playlist with xspf file
+
+```{warning}
+This will delete all content from the playlist and replace it with the one from the xspf file.
+```
+
+You can import an xspf file. Funkwhale will try to match the metadata from the file to Funkwhale database. If the match didn't succeeded the Track will be ignored :
+
+1. Go to the playlist page
+2. Click on the kebab menu ({fa}`ellipsis-v`)
+3. click on "Rebuild playlist"

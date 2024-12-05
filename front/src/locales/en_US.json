@@ -2896,6 +2896,19 @@
         "placeholder": {
           "noPlaylists": "No playlists have been created yet"
         }
+      },
+      "PlaylistDropdown": {
+        "button": {
+          "import": {
+            "header": "Rebuild playlist",
+            "description": "This will update the playlist with the content of the xspf file. Existing playlist tracks will be deleted"
+          },
+          "export": {
+            "header": "Download playlist",
+            "description": "This will provide an xspf file with the playlist data"
+          }
+        },
+        "more": "More"
       }
     },
     "radios": {
