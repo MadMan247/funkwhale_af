@@ -3,23 +3,79 @@ from django.contrib.auth.models import AnonymousUser
 from django.db.models import Q
 
 from funkwhale_api.common import fields
-from funkwhale_api.users.factories import UserFactory
+from funkwhale_api.favorites import models as favorite_models
+from funkwhale_api.history import models
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        (AnonymousUser(), Q(privacy_level="everyone")),
-        (
-            UserFactory.build(pk=1),
-            Q(privacy_level__in=["instance", "everyone"])
-            | Q(privacy_level="me", user=UserFactory.build(pk=1)),
-        ),
-    ],
-)
-def test_privacy_level_query(user, expected):
+def test_privacy_level_query(factories):
+    user = factories["users.User"](with_actor=True)
+    user_query = (
+        Q(privacy_level__in=["instance", "everyone"])
+        | Q(privacy_level="me", user=user)
+        | Q(
+            privacy_level="followers",
+            user__actor__in=user.actor.get_approved_followings(),
+        )
+        | Q(user__isnull=True)
+    )
+
     query = fields.privacy_level_query(user)
-    assert query == expected
+    assert str(query) == str(user_query)
+
+    user = AnonymousUser()
+    user_query = Q(privacy_level="everyone")
+    query = fields.privacy_level_query(user)
+    assert str(query) == str(user_query)
+
+
+def test_privacy_level_query_followers(factories):
+    user = factories["users.User"](with_actor=True)
+    target = factories["users.User"](with_actor=True, privacy_level="followers")
+    userfollow = factories["federation.Follow"](
+        actor=user.actor, target=target.actor, approved=True
+    )
+    assert user.actor.get_approved_followings()[0] == target.actor
+
+    listening = factories["history.Listening"](actor=userfollow.target)
+    favorite = factories["favorites.TrackFavorite"](actor=userfollow.target)
+    factories["history.Listening"]()
+    factories["favorites.TrackFavorite"]()
+    factories["favorites.TrackFavorite"]()
+    queryset = models.Listening.objects.all().filter(
+        fields.privacy_level_query(user, "actor__user__privacy_level", "actor__user")
+    )
+    fav_qs = favorite_models.TrackFavorite.objects.all().filter(
+        fields.privacy_level_query(user, "actor__user__privacy_level", "actor__user")
+    )
+
+    assert listening in queryset
+    assert favorite in fav_qs
+
+
+def test_privacy_level_query_not_followers(factories):
+    user = factories["users.User"](with_actor=True)
+    target = factories["users.User"](privacy_level="followers")
+    target.create_actor()
+    target.refresh_from_db()
+
+    userfollow = factories["federation.Follow"](target=target.actor, approved=True)
+    listening = factories["history.Listening"](actor=userfollow.target)
+    favorite = factories["favorites.TrackFavorite"](actor=userfollow.target)
+
+    factories["history.Listening"]()
+    factories["history.Listening"]()
+    factories["favorites.TrackFavorite"]()
+    factories["favorites.TrackFavorite"]()
+
+    queryset = models.Listening.objects.all().filter(
+        fields.privacy_level_query(user, "actor__user__privacy_level", "actor__user")
+    )
+    fav_qs = favorite_models.TrackFavorite.objects.all().filter(
+        fields.privacy_level_query(user, "actor__user__privacy_level", "actor__user")
+    )
+
+    assert listening not in queryset
+    assert favorite not in fav_qs
 
 
 def test_generic_relation_field(factories):

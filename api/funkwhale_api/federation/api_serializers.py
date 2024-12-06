@@ -1,4 +1,5 @@
 import datetime
+from urllib.parse import urlparse
 
 from django.conf import settings
 from django.core import validators
@@ -97,6 +98,30 @@ class LibraryFollowSerializer(serializers.ModelSerializer):
         return federation_serializers.APIActorSerializer(o.actor).data
 
 
+class FollowSerializer(serializers.ModelSerializer):
+    target = common_serializers.RelatedField(
+        "fid", federation_serializers.APIActorSerializer(), required=True
+    )
+    actor = serializers.SerializerMethodField()
+
+    class Meta:
+        model = models.Follow
+        fields = ["creation_date", "actor", "uuid", "target", "approved"]
+        read_only_fields = ["uuid", "actor", "approved", "creation_date"]
+
+    def validate_target(self, v):
+        request_actor = self.context["actor"]
+        if v == request_actor:
+            raise serializers.ValidationError("You cannot follow yourself")
+        if v.received_follows.filter(actor=request_actor).exists():
+            raise serializers.ValidationError("You are already following this user")
+        return v
+
+    @extend_schema_field(federation_serializers.APIActorSerializer)
+    def get_actor(self, o):
+        return federation_serializers.APIActorSerializer(o.actor).data
+
+
 def serialize_generic_relation(activity, obj):
     data = {"type": obj._meta.label}
     if data["type"] == "federation.Actor":
@@ -106,9 +131,11 @@ def serialize_generic_relation(activity, obj):
 
     if data["type"] == "music.Library":
         data["name"] = obj.name
-    if data["type"] == "federation.LibraryFollow":
+    if (
+        data["type"] == "federation.LibraryFollow"
+        or data["type"] == "federation.Follow"
+    ):
         data["approved"] = obj.approved
-
     return data
 
 
@@ -178,6 +205,17 @@ FETCH_OBJECT_CONFIG = {
 FETCH_OBJECT_FIELD = common_fields.GenericRelation(FETCH_OBJECT_CONFIG)
 
 
+def convert_url_to_webginfer(url):
+    parsed_url = urlparse(url)
+    domain = parsed_url.netloc  # e.g., "node1.funkwhale.test"
+    path_parts = parsed_url.path.strip("/").split("/")
+    # Ensure the path is in the expected format
+    if len(path_parts) > 0 and path_parts[0].startswith("@"):
+        username = path_parts[0][1:]  # Remove the '@'
+        return f"{username}@{domain}"
+    return None
+
+
 class FetchSerializer(serializers.ModelSerializer):
     actor = federation_serializers.APIActorSerializer(read_only=True)
     object = serializers.CharField(write_only=True)
@@ -207,6 +245,10 @@ class FetchSerializer(serializers.ModelSerializer):
         ]
 
     def validate_object(self, value):
+        if value.startswith("https://"):
+            converted = convert_url_to_webginfer(value)
+            if converted:
+                value = converted
         # if value is a webginfer lookup, we craft a special url
         if value.startswith("@"):
             value = value.lstrip("@")

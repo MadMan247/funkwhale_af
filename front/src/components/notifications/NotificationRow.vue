@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Notification, LibraryFollow } from '~/types'
+import type { Notification, LibraryFollow, UserFollow } from '~/types'
 
 import { computed, ref, watchEffect, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -29,7 +29,9 @@ const notificationData = computed(() => {
   const activity = props.initialItem.activity
 
   if (activity.type === 'Follow') {
-    if (activity.object && activity.object.type === 'music.Library') {
+    if (activity.type === 'Follow' && activity.object?.type === 'music.Library') {
+      const libraryFollow = activity.related_object as LibraryFollow
+
       const detailUrl = { name: 'library.detail.edit', params: { id: activity.object.uuid } }
 
       if (activity.related_object?.approved === null) {
@@ -40,13 +42,13 @@ const notificationData = computed(() => {
             buttonClass: 'success',
             icon: 'check',
             label: t('components.notifications.NotificationRow.button.approve'),
-            handler: () => approveLibraryFollow(activity.related_object)
+            handler: () => approveLibraryFollow(libraryFollow)
           },
           rejectFollow: {
             buttonClass: 'danger',
             icon: 'x',
             label: t('components.notifications.NotificationRow.button.reject'),
-            handler: () => rejectLibraryFollow(activity.related_object)
+            handler: () => rejectLibraryFollow(libraryFollow)
           }
         }
       } else if (activity.related_object?.approved) {
@@ -61,6 +63,39 @@ const notificationData = computed(() => {
         message: t('components.notifications.NotificationRow.message.libraryReject', { username: username.value, library: activity.object.name })
       }
     }
+    if (activity.object && activity.object.type === 'federation.Actor') {
+      const userFollow = activity.related_object as UserFollow
+      const detailUrl = { name: 'profile.full', params: { username: activity.actor.preferred_username, domain: activity.actor.domain } }
+
+      if (activity.related_object?.approved === null) {
+        return {
+          detailUrl,
+          message: t('components.notifications.NotificationRow.message.userPendingFollow', { username: username.value, user: activity.object.target?.full_username }),
+          acceptFollow: {
+            buttonClass: 'success',
+            icon: 'check',
+            label: t('components.notifications.NotificationRow.button.approve'),
+            handler: () => approveUserFollow(userFollow)
+          },
+          rejectFollow: {
+            buttonClass: 'danger',
+            icon: 'x',
+            label: t('components.notifications.NotificationRow.button.reject'),
+            handler: () => rejectUserFollow(userFollow)
+          }
+        }
+      } else if (activity.related_object?.approved) {
+        return {
+          detailUrl,
+          message: t('components.notifications.NotificationRow.message.userFollow', { username: username.value, user: activity.actor.full_username })
+        }
+      }
+
+      return {
+        detailUrl,
+        message: t('components.notifications.NotificationRow.message.userReject', { username: username.value, user: activity.actor.full_username })
+      }
+    }
   }
 
   if (activity.type === 'Accept') {
@@ -68,6 +103,12 @@ const notificationData = computed(() => {
       return {
         detailUrl: { name: 'content.remote.index' },
         message: t('components.notifications.NotificationRow.message.libraryAcceptFollow', { username: username.value, library: activity.related_object.name })
+      }
+    }
+    if (activity.object?.type === 'federation.Actor') {
+      return {
+        detailUrl: { name: 'content.remote.index' },
+        message: t('components.notifications.NotificationRow.message.userAcceptFollow', { username: username.value, user: activity.actor.full_username })
       }
     }
   }
@@ -97,6 +138,18 @@ const approveLibraryFollow = async (follow: LibraryFollow) => {
 
 const rejectLibraryFollow = async (follow: LibraryFollow) => {
   await axios.post(`federation/follows/library/${follow.uuid}/reject/`)
+  follow.approved = false
+  item.value.is_read = true
+}
+
+const approveUserFollow = async (follow: UserFollow) => {
+  await axios.post(`federation/follows/user/${follow.uuid}/accept/`)
+  follow.approved = true
+  item.value.is_read = true
+}
+
+const rejectUserFollow = async (follow: UserFollow) => {
+  await axios.post(`federation/follows/user/${follow.uuid}/reject/`)
   follow.approved = false
   item.value.is_read = true
 }

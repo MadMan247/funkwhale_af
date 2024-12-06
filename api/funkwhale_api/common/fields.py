@@ -24,8 +24,20 @@ def privacy_level_query(user, lookup_field="privacy_level", user_field="user"):
     if user.is_anonymous:
         return models.Q(**{lookup_field: "everyone"})
 
-    return models.Q(**{f"{lookup_field}__in": ["instance", "everyone"]}) | models.Q(
-        **{lookup_field: "me", user_field: user}
+    followers_query = models.Q(
+        **{
+            f"{lookup_field}": "followers",
+            f"{user_field}__actor__in": user.actor.get_approved_followings(),
+        }
+    )
+    # Federated TrackFavorite don't have an user associated with the trackfavorite.actor
+    no_user_query = models.Q(**{f"{user_field}__isnull": True})
+
+    return (
+        models.Q(**{f"{lookup_field}__in": ["instance", "everyone"]})
+        | models.Q(**{lookup_field: "me", user_field: user})
+        | followers_query
+        | no_user_query
     )
 
 

@@ -88,6 +88,11 @@ class ArtistCreditFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "music.ArtistCredit"
 
+    class Params:
+        local = factory.Trait(
+            artist=factory.SubFactory(ArtistFactory, local=True),
+        )
+
 
 @registry.register
 class AlbumFactory(
@@ -128,6 +133,7 @@ class AlbumFactory(
 class TrackFactory(
     tags_factories.TaggableFactory, NoUpdateOnCreate, factory.django.DjangoModelFactory
 ):
+    uuid = factory.Faker("uuid4")
     fid = factory.Faker("federation_url")
     title = factory.Faker("sentence", nb_words=3)
     mbid = factory.Faker("uuid4")
@@ -144,7 +150,13 @@ class TrackFactory(
         )
 
         local = factory.Trait(
-            fid=factory.Faker("federation_url", local=True), album__local=True
+            fid=factory.Faker(
+                "federation_url",
+                local=True,
+                prefix="/federation/music/tracks",
+                obj_uuid=factory.SelfAttribute("..uuid"),
+            ),
+            album__local=True,
         )
         with_cover = factory.Trait(
             attachment_cover=factory.SubFactory(common_factories.AttachmentFactory)
@@ -212,6 +224,11 @@ class UploadFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
         in_place = factory.Trait(audio_file=None, mimetype=None)
         playable = factory.Trait(
             import_status="finished", library__privacy_level="everyone"
+        )
+        local = factory.Trait(
+            fid=factory.Faker("federation_url", local=True),
+            track__local=True,
+            library__local=True,
         )
 
     @factory.post_generation

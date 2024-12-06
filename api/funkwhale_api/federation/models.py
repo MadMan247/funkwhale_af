@@ -218,7 +218,6 @@ class Actor(models.Model):
         on_delete=models.SET_NULL,
         related_name="iconed_actor",
     )
-
     objects = ActorQuerySet.as_manager()
 
     class Meta:
@@ -251,8 +250,14 @@ class Actor(models.Model):
         follows = self.received_follows.filter(approved=True)
         return self.followers.filter(pk__in=follows.values_list("actor", flat=True))
 
+    def get_approved_followings(self):
+        follows = self.emitted_follows.filter(approved=True)
+        return Actor.objects.filter(pk__in=follows.values_list("target", flat=True))
+
     def should_autoapprove_follow(self, actor):
         if self.get_channel():
+            return True
+        if self.user.privacy_level == "public":
             return True
         return False
 

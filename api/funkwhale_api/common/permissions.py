@@ -56,3 +56,59 @@ class OwnerPermission(BasePermission):
         if not owner or not request.user.is_authenticated or owner != request.user:
             raise owner_exception
         return True
+
+
+class PrivacyLevelPermission(BasePermission):
+    """
+    Ensure the request actor have access to the object considering the privacylevel configuration
+    of the user.
+    request.user is None if actor, else its Anonymous if user is not auth.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        if (
+            not hasattr(obj, "user")
+            and hasattr(obj, "actor")
+            and not obj.actor.is_local
+        ):
+            # it's a remote actor object. It should be public.
+            # But we could trigger an update of the remote actor data
+            # to avoid leaking data (#2326)
+            return True
+
+        privacy_level = (
+            obj.actor.user.privacy_level
+            if hasattr(obj, "actor")
+            else obj.user.privacy_level
+        )
+        obj_actor = obj.actor if hasattr(obj, "actor") else obj.user.actor
+
+        if privacy_level == "everyone":
+            return True
+
+        # user is anonymous
+        if hasattr(request, "actor"):
+            request_actor = request.actor
+        elif request.user and request.user.is_authenticated:
+            request_actor = request.user.actor
+        else:
+            return False
+
+        if privacy_level == "instance":
+            # user is local
+            if request.user and hasattr(request.user, "actor"):
+                return True
+            elif hasattr(request, "actor") and request.actor and request.actor.is_local:
+                return True
+            else:
+                return False
+
+        elif privacy_level == "me" and obj_actor == request_actor:
+            return True
+
+        elif privacy_level == "followers" and (
+            request_actor in obj.user.actor.get_approved_followers()
+        ):
+            return True
+        else:
+            return False

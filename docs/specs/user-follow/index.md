@@ -33,6 +33,7 @@ Funkwhale users broadcast the following activity when using the software:
 
 1. **Favoriting** content
 2. **Listening** to content
+3. **Playlist** creation and update
 
 Users across the federated web should be able to follow Funkwhale accounts to receive this activity in their streams.
 
@@ -50,7 +51,7 @@ This specification outlines the workflows for the following actions for **local*
 1. User discovery
 2. User follows
 3. User unfollows
-4. User blocking
+4. User blocking (#1456)
 
 ### User discovery
 
@@ -119,7 +120,7 @@ Following a user is a process by which a **requesting user** subscribes to the a
 Follow requests should be handled by an endpoint using a `POST` request. This request must immediately return a status message to the client.
 
 ```text
-POST /api/v2/users/{id}/follow
+POST api/v1/federation/follows/user/ -d '{"target":"https://node1.funkwhale.test/federation/actors/{id}"}'
 ```
 
 When the server receives a `follow` request, it creates a `follow_request` object containing the status of the follow request which is used to display request information to the target user in their notifications.
@@ -178,7 +179,7 @@ Following a user is a process by which a **requesting user** unsubscribes from t
 Follow requests should be handled by an endpoint using a `POST` request. This request must immediately return a status message to the client.
 
 ```text
-POST /api/v2/users/{id}/unfollow
+DELETE api/v1/federation/follows/user/{id}
 ```
 
 #### ActivityPub behavior
@@ -202,56 +203,6 @@ sequenceDiagram
 #### Web app behavior
 
 When a **requesting user** unfollows a **target user**, the UI must update to visually indicate that the action has succeeded. All activities relating to the **target user** must be visually hidden.
-
-### Blocking users
-
-When one user blocks another, no information may be shared between them. Blocking is a unilateral action that can be taken by both **requesting** and **target** actors to prevent the other from interacting with them.
-
-#### API behavior
-
-Block requests should be handled by an endpoint using a `POST` request. This request must immediately return a status message to the client.
-
-```text
-POST /api/v2/users/{id}/block
-```
-
-#### ActivityPub behavior
-
-If the the **blocked user** is on a different server to the **blocking user**, the request is handled using the [ActivityPub `Block` activity][block] with the **blocked user's** [`Actor`][actor] as a target.
-
-1. A [`Block` activity][block] is posted to the **blocking user's** [outbox collection][outbox] with the **blocked user's** [`Actor`][actor] the target
-   - If the **blocked user** was previously in the **blocking user's** [following collection][following], they are removed
-   - If the **blocked user** was previously in the **blocking user's** [followers collection][followers], they are removed
-
-:::{warning}
-As noted in the ActivityPub spec, the **blocked user** must _not_ be informed of the `Block` activity.
-:::
-
-#### Web app behavior
-
-When a **blocking user** blocks a **blocked user**, the UI must update to visually indicate that the action has succeeded. All activities relating to the **blocked user** must be visually hidden.
-
-If a **blocking user** navigates to the profile of a **blocked user** who has blocked them, the UI _must not_ reflect that they are blocked. The **blocking user** must be able to send a follow request which is _not_ sent to the **blocked user**.
-
-### Unblocking users
-
-**Blocking users** can unilaterally reverse blocks they have imposed on **blocked users**. This enables them to request to follow the **blocked user's** activities again.
-
-#### API behavior
-
-Unblock requests should be handled by an endpoint using a `POST` request. This request must immediately return a status message to the client.
-
-```text
-POST /api/v2/users/{id}/unblock
-```
-
-#### ActivityPub behavior
-
-If the **blocked user** is on a different server to the **blocking user**, the request is handled using the [ActivityPub `Undo` activity][undo].
-
-#### Web app behavior
-
-When a **blocking user** unblocks a **blocked user**, the UI must update to visually indicate that the action has succeeded. The **Follow** button must become active and interactive again.
 
 ## Availability
 

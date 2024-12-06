@@ -121,7 +121,6 @@ class User(AbstractUser):
     # updated on logout or password change, to invalidate JWT
     secret_key = models.UUIDField(default=uuid.uuid4, null=True)
     privacy_level = fields.get_privacy_field()
-
     # Unfortunately, Subsonic API assumes a MD5/password authentication
     # scheme, which is weak in terms of security, and not achievable
     # anyway since django use stronger schemes for storing passwords.

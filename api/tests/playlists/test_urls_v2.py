@@ -6,6 +6,7 @@ from django.urls import reverse
 
 
 def test_can_get_playlist_list(factories, logged_in_api_client):
+    logged_in_api_client.user.create_actor()
     factories["playlists.Playlist"].create_batch(5)
     url = reverse("api:v2:playlists:playlists-list")
     headers = {"Content-Type": "application/json"}
@@ -17,6 +18,7 @@ def test_can_get_playlist_list(factories, logged_in_api_client):
 
 
 def test_can_get_playlists_octet_stream(factories, logged_in_api_client):
+    logged_in_api_client.user.create_actor()
     pl = factories["playlists.Playlist"]()
     factories["playlists.PlaylistTrack"](playlist=pl)
     factories["playlists.PlaylistTrack"](playlist=pl)
@@ -32,6 +34,7 @@ def test_can_get_playlists_octet_stream(factories, logged_in_api_client):
 
 
 def test_can_get_playlists_json(factories, logged_in_api_client):
+    logged_in_api_client.user.create_actor()
     pl = factories["playlists.Playlist"]()
     url = reverse("api:v2:playlists:playlists-detail", kwargs={"pk": pl.pk})
     response = logged_in_api_client.get(url, format="json")
@@ -40,6 +43,7 @@ def test_can_get_playlists_json(factories, logged_in_api_client):
 
 
 def test_can_get_user_playlists_list(factories, logged_in_api_client):
+    logged_in_api_client.user.create_actor()
     user = factories["users.User"]()
     factories["playlists.Playlist"](user=user)
 
@@ -52,7 +56,8 @@ def test_can_get_user_playlists_list(factories, logged_in_api_client):
     assert data["count"] == 1
 
 
-def test_can_post_user_playlists(factories, logged_in_api_client):
+def test_can_post_user_playlists(logged_in_api_client):
+    logged_in_api_client.user.create_actor()
     playlist = {"name": "Les chiennes de l'hexagone", "privacy_level": "me"}
     url = reverse("api:v2:playlists:playlists-list")
 
@@ -64,6 +69,7 @@ def test_can_post_user_playlists(factories, logged_in_api_client):
 
 
 def test_can_post_playlists_octet_stream(factories, logged_in_api_client):
+    logged_in_api_client.user.create_actor()
     artist = factories["music.Artist"](name="Davinhor")
     album = factories["music.Album"](
         title="Racisme en pls", artist_credit__artist=artist
@@ -80,6 +86,7 @@ def test_can_post_playlists_octet_stream(factories, logged_in_api_client):
 
 
 def test_can_post_playlists_octet_stream_invalid_track(factories, logged_in_api_client):
+    logged_in_api_client.user.create_actor()
     url = reverse("api:v2:playlists:playlists-list")
     data = open("./tests/playlists/test.xspf", "rb").read()
     response = logged_in_api_client.post(url, data=data, format="xspf")
@@ -89,6 +96,7 @@ def test_can_post_playlists_octet_stream_invalid_track(factories, logged_in_api_
 
 
 def test_can_patch_playlists_octet_stream(factories, logged_in_api_client):
+    logged_in_api_client.user.create_actor()
     pl = factories["playlists.Playlist"](user=logged_in_api_client.user)
     artist = factories["music.Artist"](name="Davinhor")
     album = factories["music.Album"](
@@ -107,6 +115,7 @@ def test_can_patch_playlists_octet_stream(factories, logged_in_api_client):
 
 
 def test_can_get_playlists_track(factories, logged_in_api_client):
+    logged_in_api_client.user.create_actor()
     pl = factories["playlists.Playlist"]()
     plt = factories["playlists.PlaylistTrack"](playlist=pl)
     url = reverse("api:v2:playlists:playlists-tracks", kwargs={"pk": pl.pk})
@@ -118,6 +127,7 @@ def test_can_get_playlists_track(factories, logged_in_api_client):
 
 
 def test_can_get_playlists_releases(factories, logged_in_api_client):
+    logged_in_api_client.user.create_actor()
     playlist = factories["playlists.Playlist"]()
     plt = factories["playlists.PlaylistTrack"](playlist=playlist)
     url = reverse("api:v2:playlists:playlists-albums", kwargs={"pk": playlist.pk})
@@ -128,6 +138,7 @@ def test_can_get_playlists_releases(factories, logged_in_api_client):
 
 
 def test_can_get_playlists_artists(factories, logged_in_api_client):
+    logged_in_api_client.user.create_actor()
     playlist = factories["playlists.Playlist"]()
     plt = factories["playlists.PlaylistTrack"](playlist=playlist)
     url = reverse("api:v2:playlists:playlists-artists", kwargs={"pk": playlist.pk})

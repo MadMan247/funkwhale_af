@@ -642,3 +642,126 @@ def test_index_libraries_page(factories, api_client, preferences):
 
     assert response.status_code == 200
     assert response.data == expected
+
+
+def test_get_followers(factories, logged_in_api_client):
+    actor = logged_in_api_client.user.create_actor()
+    factories["federation.Follow"](target=actor, approved=True)
+    factories["federation.Follow"](target=actor, approved=True)
+    factories["federation.Follow"](target=actor, approved=True)
+    factories["federation.Follow"](target=actor, approved=True)
+    factories["federation.Follow"](target=actor, approved=True)
+
+    url = reverse(
+        "federation:actors-followers",
+        kwargs={"preferred_username": actor.preferred_username},
+    )
+    response = logged_in_api_client.get(url)
+    assert response.data["totalItems"] == 5
+
+
+def test_get_following(factories, logged_in_api_client):
+    actor = logged_in_api_client.user.create_actor()
+    factories["federation.Follow"](actor=actor, approved=True)
+    factories["federation.Follow"](actor=actor, approved=True)
+    factories["federation.Follow"](actor=actor, approved=True)
+    factories["federation.Follow"](actor=actor, approved=True)
+    factories["federation.Follow"](actor=actor, approved=True)
+
+    url = reverse(
+        "federation:actors-following",
+        kwargs={"preferred_username": actor.preferred_username},
+    )
+    response = logged_in_api_client.get(url)
+    assert response.data["totalItems"] == 5
+
+
+def test_get_likes(factories, logged_in_api_client):
+    actor = logged_in_api_client.user.create_actor()
+    factories["favorites.TrackFavorite"](actor=actor)
+    factories["favorites.TrackFavorite"](actor=actor)
+    factories["favorites.TrackFavorite"](actor=actor)
+    factories["favorites.TrackFavorite"](actor=actor)
+    factories["favorites.TrackFavorite"](actor=actor)
+
+    url = reverse(
+        "federation:actors-likes",
+        kwargs={"preferred_username": actor.preferred_username},
+    )
+    response = logged_in_api_client.get(url)
+    assert response.data["totalItems"] == 5
+
+
+def test_get_listenings(factories, logged_in_api_client):
+    actor = logged_in_api_client.user.create_actor()
+    factories["history.Listening"](actor=actor)
+    factories["history.Listening"](actor=actor)
+    factories["history.Listening"](actor=actor)
+    factories["history.Listening"](actor=actor)
+    factories["history.Listening"](actor=actor)
+
+    url = reverse(
+        "federation:actors-listens",
+        kwargs={"preferred_username": actor.preferred_username},
+    )
+    response = logged_in_api_client.get(url)
+    assert response.data["totalItems"] == 5
+
+
+@pytest.mark.parametrize(
+    "privacy_level, expected", [("me", 403), ("instance", 200), ("everyone", 200)]
+)
+def test_get_listenings_honours_privacy_level(
+    factories, logged_in_api_client, privacy_level, expected
+):
+    user = factories["users.User"](with_actor=True, privacy_level=privacy_level)
+    factories["history.Listening"](actor=user.actor)
+
+    url = reverse(
+        "federation:actors-listens",
+        kwargs={"preferred_username": user.actor.preferred_username},
+    )
+    response = logged_in_api_client.get(url)
+    assert response.status_code == expected
+
+
+@pytest.mark.parametrize(
+    "privacy_level, expected", [("me", 403), ("instance", 200), ("everyone", 200)]
+)
+def test_get_favorite(factories, logged_in_api_client, privacy_level, expected):
+    user = factories["users.User"](with_actor=True, privacy_level=privacy_level)
+    favorite = factories["favorites.TrackFavorite"](actor=user.actor, local=True)
+    url = reverse(
+        "federation:music:likes-detail",
+        kwargs={"uuid": favorite.uuid},
+    )
+    response = logged_in_api_client.get(url)
+    assert response.status_code == expected
+
+
+@pytest.mark.parametrize(
+    "privacy_level, expected", [("me", 403), ("instance", 403), ("everyone", 200)]
+)
+def test_get_favorite_anonymous(factories, api_client, privacy_level, expected):
+    user = factories["users.User"](with_actor=True, privacy_level=privacy_level)
+    favorite = factories["favorites.TrackFavorite"](actor=user.actor, local=True)
+    url = reverse(
+        "federation:music:likes-detail",
+        kwargs={"uuid": favorite.uuid},
+    )
+    response = api_client.get(url)
+    assert response.status_code == expected
+
+
+@pytest.mark.parametrize(
+    "privacy_level, expected", [("me", 403), ("instance", 200), ("everyone", 200)]
+)
+def test_get_listening(factories, logged_in_api_client, privacy_level, expected):
+    user = factories["users.User"](with_actor=True, privacy_level=privacy_level)
+    listening = factories["history.Listening"](actor=user.actor, local=True)
+    url = reverse(
+        "federation:music:listenings-detail",
+        kwargs={"uuid": listening.uuid},
+    )
+    response = logged_in_api_client.get(url)
+    assert response.status_code == expected

@@ -257,6 +257,25 @@ Review the configuration:
 docker compose config
 ```
 
+### Set up local data for development
+
+You can create local data to mimic a live environment.
+
+Add some fake data to populate the database. The following command creates 25 artists with random albums, tracks, and metadata.
+
+```sh
+artists=25 # Adds 25 fake artists
+command="from funkwhale_api.music import fake_data; fake_data.create_data($artists)"
+echo $command | docker compose run --rm -T api funkwhale-manage shell -i python
+```
+
+This will launch a development funkwhale instance with a super user having `COMPOSE_PROJECT_NAME` as username and `funkwhale` as password. Libraries, listenings and music data will be associated with the superuser :
+
+```sh
+export COMPOSE_PROJECT_NAME=node2 ;  export VUE_PORT=8882 ; docker compose run --rm api funkwhale-manage migrate ; echo "from funkwhale_api.music import fake_data; fake_data.create_data(super_user_name=\"$COMPOSE_PROJECT_NAME\")" | docker compose run --rm -T api funkwhale-manage shell -i python ;  docker compose up
+
+```
+
 ### Lifecycle
 
 Recycle individual containers:

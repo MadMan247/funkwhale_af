@@ -67,8 +67,8 @@ class ManageUserSerializer(serializers.ModelSerializer):
             "date_joined",
             "last_activity",
             "permissions",
-            "privacy_level",
             "upload_quota",
+            "privacy_level",
             "full_username",
         )
         read_only_fields = [

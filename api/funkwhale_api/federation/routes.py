@@ -3,6 +3,8 @@ import uuid
 
 from django.db.models import Q
 
+from funkwhale_api.favorites import models as favorites_models
+from funkwhale_api.history import models as history_models
 from funkwhale_api.music import models as music_models
 
 from . import activity, actors, models, serializers
@@ -611,3 +613,130 @@ def outbox_delete_album(context):
             to=[activity.PUBLIC_ADDRESS, {"type": "instances_with_followers"}],
         ),
     }
+
+
+@outbox.register({"type": "Like", "object.type": "Track"})
+def outbox_create_track_favorite(context):
+    track = context["track"]
+    actor = context["actor"]
+
+    serializer = serializers.ActivitySerializer(
+        {
+            "type": "Like",
+            "id": context["id"],
+            "object": {"type": "Track", "id": track.fid},
+        }
+    )
+    yield {
+        "type": "Like",
+        "actor": actor,
+        "payload": with_recipients(
+            serializer.data,
+            to=[{"type": "followers", "target": actor}],
+        ),
+    }
+
+
+@outbox.register({"type": "Dislike", "object.type": "Track"})
+def outbox_delete_favorite(context):
+    favorite = context["favorite"]
+    actor = favorite.actor
+    serializer = serializers.ActivitySerializer(
+        {"type": "Dislike", "object": {"type": "Track", "id": favorite.track.fid}}
+    )
+    yield {
+        "type": "Dislike",
+        "actor": actor,
+        "payload": with_recipients(
+            serializer.data,
+            to=[{"type": "followers", "target": actor}],
+        ),
+    }
+
+
+@inbox.register({"type": "Like", "object.type": "Track"})
+def inbox_create_favorite(payload, context):
+    serializer = serializers.TrackFavoriteSerializer(data=payload)
+    serializer.is_valid(raise_exception=True)
+    instance = serializer.save()
+    return {"object": instance}
+
+
+@inbox.register({"type": "Dislike", "object.type": "Track"})
+def inbox_delete_favorite(payload, context):
+    actor = context["actor"]
+    track_id = payload["object"].get("id")
+
+    query = Q(track__fid=track_id) & Q(actor=actor)
+    try:
+        favorite = favorites_models.TrackFavorite.objects.get(query)
+    except favorites_models.TrackFavorite.DoesNotExist:
+        logger.debug(
+            "Discarding deletion of unkwnown favorite with track : %s", track_id
+        )
+        return
+    favorite.delete()
+
+
+# to do : test listening routes and broadcast
+
+
+@outbox.register({"type": "Listen", "object.type": "Track"})
+def outbox_create_listening(context):
+    track = context["track"]
+    actor = context["actor"]
+
+    serializer = serializers.ActivitySerializer(
+        {
+            "type": "Listen",
+            "id": context["id"],
+            "object": {"type": "Track", "id": track.fid},
+        }
+    )
+    yield {
+        "type": "Listen",
+        "actor": actor,
+        "payload": with_recipients(
+            serializer.data,
+            to=[{"type": "followers", "target": actor}],
+        ),
+    }
+
+
+@outbox.register({"type": "Delete", "object.type": "Listen"})
+def outbox_delete_listening(context):
+    listening = context["listening"]
+    actor = listening.actor
+    serializer = serializers.ActivitySerializer(
+        {"type": "Delete", "object": {"type": "Listen", "id": listening.fid}}
+    )
+    yield {
+        "type": "Delete",
+        "actor": actor,
+        "payload": with_recipients(
+            serializer.data,
+            to=[{"type": "followers", "target": actor}],
+        ),
+    }
+
+
+@inbox.register({"type": "Listen", "object.type": "Track"})
+def inbox_create_listening(payload, context):
+    serializer = serializers.ListeningSerializer(data=payload)
+    serializer.is_valid(raise_exception=True)
+    instance = serializer.save()
+    return {"object": instance}
+
+
+@inbox.register({"type": "Delete", "object.type": "Listen"})
+def inbox_delete_listening(payload, context):
+    actor = context["actor"]
+    listening_id = payload["object"].get("id")
+
+    query = Q(fid=listening_id) & Q(actor=actor)
+    try:
+        favorite = history_models.Listening.objects.get(query)
+    except history_models.Listening.DoesNotExist:
+        logger.debug("Discarding deletion of unkwnown listening %s", listening_id)
+        return
+    favorite.delete()

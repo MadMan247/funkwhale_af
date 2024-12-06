@@ -170,6 +170,14 @@ export interface LibraryFollow {
   type?: 'music.Library' | 'federation.LibraryFollow'
   target: Library
 }
+export interface UserFollow {
+  uuid: string
+  approved: boolean
+
+  name: string
+  type?: 'federation.Actor' | 'federation.UserFollow'
+  target?: Actor
+}
 
 export interface Cover {
   uuid: string
@@ -481,11 +489,10 @@ export interface UserRequest {
 export type Activity = {
   actor: Actor
   creation_date: string
-  related_object: LibraryFollow
+  related_object: LibraryFollow | UserFollow
   type: 'Follow' | 'Accept'
-  object: LibraryFollow
+  object: LibraryFollow | UserFollow
 }
-
 export interface Notification {
   id: number
   is_read: boolean

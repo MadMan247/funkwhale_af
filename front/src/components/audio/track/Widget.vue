@@ -174,9 +174,9 @@ watch(() => props.websocketHandlers.includes('Listen'), (to) => {
               >
                 <router-link
                   class="left floated"
-                  :to="{name: 'profile.overview', params: {username: object.user.username}}"
+                  :to="{name: 'profile.overview', params: {username: object.actor.name}}"
                 >
-                  <span class="at symbol" />{{ object.user.username }}
+                  <span class="at symbol" />{{ object.actor.name }}
                 </router-link>
                 <span class="right floated"><human-date :date="object.creation_date" /></span>
               </div>

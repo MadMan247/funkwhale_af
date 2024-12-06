@@ -314,9 +314,12 @@ class FunkwhaleProvider(internet_provider.Provider):
     not random enough
     """
 
-    def federation_url(self, prefix="", local=False):
+    def federation_url(self, prefix="", obj_uuid=None, local=False):
+        if not obj_uuid:
+            obj_uuid = uuid.uuid4()
+
         def path_generator():
-            return f"{prefix}/{uuid.uuid4()}"
+            return f"{prefix}/{obj_uuid}"
 
         domain = settings.FEDERATION_HOSTNAME if local else self.domain_name()
         protocol = "https"

@@ -170,6 +170,7 @@ class FollowFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
 
 @registry.register
 class MusicLibraryFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
+    uuid = factory.Faker("uuid4")
     actor = factory.SubFactory(ActorFactory)
     privacy_level = "me"
     name = factory.Faker("sentence")
@@ -185,7 +186,13 @@ class MusicLibraryFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
 
     class Params:
         local = factory.Trait(
-            fid=None, actor=factory.SubFactory(ActorFactory, local=True)
+            fid=factory.Faker(
+                "federation_url",
+                local=True,
+                prefix="federation/music/libraries",
+                obj_uuid=factory.SelfAttribute("..uuid"),
+            ),
+            actor=factory.SubFactory(ActorFactory, local=True),
         )
 
 

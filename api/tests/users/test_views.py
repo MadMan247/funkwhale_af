@@ -190,10 +190,10 @@ def test_can_request_password_reset(
 
 
 def test_user_can_patch_his_own_settings(logged_in_api_client):
+    logged_in_api_client.user.create_actor()
     user = logged_in_api_client.user
     payload = {"privacy_level": "me"}
     url = reverse("api:v1:users:users-detail", kwargs={"username": user.username})
-
     response = logged_in_api_client.patch(url, payload)
 
     assert response.status_code == 200

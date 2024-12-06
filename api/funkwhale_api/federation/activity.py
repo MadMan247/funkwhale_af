@@ -119,6 +119,9 @@ def should_reject(fid, actor_id=None, payload={}):
 
 @transaction.atomic
 def receive(activity, on_behalf_of, inbox_actor=None):
+    """
+    Receive an activity, find his recipients and save it to the database before dispatching it
+    """
     from funkwhale_api.moderation import mrf
 
     from . import models, serializers, tasks
@@ -223,6 +226,9 @@ class InboxRouter(Router):
         """
         from . import api_serializers, models
 
+        logger.debug(
+            f"[federation] Inbox dispatch payload : {payload} with context : {context}"
+        )
         handlers = self.get_matching_handlers(payload)
         for handler in handlers:
             if call_handlers:
@@ -293,6 +299,33 @@ def schedule_key_rotation(actor_id, delay):
     tasks.rotate_actor_key.apply_async(kwargs={"actor_id": actor_id}, countdown=delay)
 
 
+def activity_pass_privacy_level(context, routing):
+    TYPE_FOLLOW_USER_PRIVACY_LEVEL = ["Listen", "Like"]
+    TYPE_IGNORE_USER_PRIVACY_LEVEL = ["Delete", "Accept", "Follow"]
+    MUSIC_OBJECT_TYPE = ["Audio", "Track", "Album", "Artist"]
+
+    actor = context.get("actor", False)
+    type = routing.get("type", False)
+    object_type = routing.get("object", {}).get("type", None)
+
+    if type:
+        if type in TYPE_IGNORE_USER_PRIVACY_LEVEL:
+            return True
+        if type in TYPE_FOLLOW_USER_PRIVACY_LEVEL and actor and actor.is_local:
+            if actor.user.privacy_level in [
+                "me",
+                "instance",
+            ]:
+                return False
+            return True
+
+    # We do not consider music metadata has private
+    if object_type in MUSIC_OBJECT_TYPE:
+        return True
+
+    return True
+
+
 class OutboxRouter(Router):
     @transaction.atomic
     def dispatch(self, routing, context):
@@ -305,6 +338,7 @@ class OutboxRouter(Router):
 
         from . import models, tasks
 
+        logger.debug(f"[federation] Outbox dispatch context : {context}")
         allow_list_enabled = preferences.get("moderation__allow_list_enabled")
         allowed_domains = None
         if allow_list_enabled:
@@ -313,6 +347,10 @@ class OutboxRouter(Router):
                     "name", flat=True
                 )
             )
+
+        if not activity_pass_privacy_level(context, routing):
+            logger.info("[federation] Discarding outbox dispatch due to privacy_level")
+            return
 
         for route, handler in self.routes:
             if not match_route(route, routing):

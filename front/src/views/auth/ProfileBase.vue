@@ -5,7 +5,7 @@ import { onBeforeRouteUpdate } from 'vue-router'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useStore } from '~/store'
-
+import UserFollowButton from '~/components/federation/UserFollowButton.vue'
 import axios from 'axios'
 
 import useErrorHandler from '~/composables/useErrorHandler'
@@ -123,6 +123,10 @@ watch(props, fetchData, { immediate: true })
               </router-link>
             </div>
           </button>
+          <user-follow-button
+            v-if="$store.state.auth.authenticated && object && object.full_username !== $store.state.auth.fullUsername"
+            :actor="object"
+          />
           <h1 class="ui center aligned icon header">
             <i
               v-if="!object.icon"

@@ -13,6 +13,9 @@ from rest_framework import serializers
 
 from funkwhale_api.common import models as common_models
 from funkwhale_api.common import utils as common_utils
+from funkwhale_api.favorites import models as favorites_models
+from funkwhale_api.federation import activity, actors, contexts, jsonld, models, utils
+from funkwhale_api.history import models as history_models
 from funkwhale_api.moderation import models as moderation_models
 from funkwhale_api.moderation import serializers as moderation_serializers
 from funkwhale_api.moderation import signals as moderation_signals
@@ -20,8 +23,6 @@ from funkwhale_api.music import licenses
 from funkwhale_api.music import models as music_models
 from funkwhale_api.music import tasks as music_tasks
 from funkwhale_api.tags import models as tags_models
-
-from . import activity, actors, contexts, jsonld, models, utils
 
 logger = logging.getLogger(__name__)
 
@@ -341,9 +342,11 @@ class ActorSerializer(jsonld.JsonLdSerializer):
             ret["url"] = [
                 {
                     "type": "Link",
-                    "href": instance.channel.get_absolute_url()
-                    if instance.channel.artist.is_local
-                    else instance.get_absolute_url(),
+                    "href": (
+                        instance.channel.get_absolute_url()
+                        if instance.channel.artist.is_local
+                        else instance.get_absolute_url()
+                    ),
                     "mediaType": "text/html",
                 },
                 {
@@ -437,9 +440,11 @@ class ActorSerializer(jsonld.JsonLdSerializer):
             common_utils.attach_file(
                 actor,
                 "attachment_icon",
-                {"url": new_value["url"], "mimetype": new_value.get("mediaType")}
-                if new_value
-                else None,
+                (
+                    {"url": new_value["url"], "mimetype": new_value.get("mediaType")}
+                    if new_value
+                    else None
+                ),
             )
 
         rss_url = get_by_media_type(
@@ -492,9 +497,11 @@ def create_or_update_channel(actor, rss_url, attributed_to_fid, **validated_data
         common_utils.attach_file(
             artist,
             "attachment_cover",
-            {"url": new_value["url"], "mimetype": new_value.get("mediaType")}
-            if new_value
-            else None,
+            (
+                {"url": new_value["url"], "mimetype": new_value.get("mediaType")}
+                if new_value
+                else None
+            ),
         )
     tags = [t["name"] for t in validated_data.get("tags", []) or []]
     tags_models.set_tags(artist, *tags)
@@ -645,7 +652,6 @@ class FollowSerializer(serializers.Serializer):
 
     def save(self, **kwargs):
         target = self.validated_data["object"]
-
         if target._meta.label == "music.Library":
             follow_class = models.LibraryFollow
         else:
@@ -813,7 +819,9 @@ class UndoFollowSerializer(serializers.Serializer):
                 actor=validated_data["actor"], target=target
             ).get()
         except follow_class.DoesNotExist:
-            raise serializers.ValidationError("No follow to remove")
+            raise serializers.ValidationError(
+                f"No follow to remove follow_class = {follow_class}"
+            )
         return validated_data
 
     def to_representation(self, instance):
@@ -880,7 +888,6 @@ class ActivitySerializer(serializers.Serializer):
             object_serializer = OBJECT_SERIALIZERS[type]
         except KeyError:
             raise serializers.ValidationError(f"Unsupported type {type}")
-
         serializer = object_serializer(data=value)
         serializer.is_valid(raise_exception=True)
         return serializer.data
@@ -1310,9 +1317,9 @@ class ArtistSerializer(MusicEntitySerializer):
             "name": instance.name,
             "published": instance.creation_date.isoformat(),
             "musicbrainzId": str(instance.mbid) if instance.mbid else None,
-            "attributedTo": instance.attributed_to.fid
-            if instance.attributed_to
-            else None,
+            "attributedTo": (
+                instance.attributed_to.fid if instance.attributed_to else None
+            ),
             "tag": self.get_tags_repr(instance),
         }
         include_content(d, instance.description)
@@ -1404,12 +1411,12 @@ class AlbumSerializer(MusicEntitySerializer):
             "name": instance.title,
             "published": instance.creation_date.isoformat(),
             "musicbrainzId": str(instance.mbid) if instance.mbid else None,
-            "released": instance.release_date.isoformat()
-            if instance.release_date
-            else None,
-            "attributedTo": instance.attributed_to.fid
-            if instance.attributed_to
-            else None,
+            "released": (
+                instance.release_date.isoformat() if instance.release_date else None
+            ),
+            "attributedTo": (
+                instance.attributed_to.fid if instance.attributed_to else None
+            ),
             "tag": self.get_tags_repr(instance),
         }
 
@@ -1501,9 +1508,11 @@ class TrackSerializer(MusicEntitySerializer):
             "musicbrainzId": str(instance.mbid) if instance.mbid else None,
             "position": instance.position,
             "disc": instance.disc_number,
-            "license": instance.local_license["identifiers"][0]
-            if instance.local_license
-            else None,
+            "license": (
+                instance.local_license["identifiers"][0]
+                if instance.local_license
+                else None
+            ),
             "copyright": instance.copyright if instance.copyright else None,
             "artist_credit": ArtistCreditSerializer(
                 instance.artist_credit.all(),
@@ -1513,9 +1522,9 @@ class TrackSerializer(MusicEntitySerializer):
             "album": AlbumSerializer(
                 instance.album, context={"include_ap_context": False}
             ).data,
-            "attributedTo": instance.attributed_to.fid
-            if instance.attributed_to
-            else None,
+            "attributedTo": (
+                instance.attributed_to.fid if instance.attributed_to else None
+            ),
             "tag": self.get_tags_repr(instance),
         }
         include_content(data, instance.description)
@@ -1713,9 +1722,11 @@ class UploadSerializer(jsonld.JsonLdSerializer):
                 },
             ],
             "track": TrackSerializer(track, context={"include_ap_context": False}).data,
-            "to": contexts.AS.Public
-            if instance.library.privacy_level == "everyone"
-            else "",
+            "to": (
+                contexts.AS.Public
+                if instance.library.privacy_level == "everyone"
+                else ""
+            ),
             "attributedTo": instance.library.actor.fid,
         }
         if instance.modification_date:
@@ -1935,9 +1946,9 @@ class ChannelUploadSerializer(jsonld.JsonLdSerializer):
             "name": upload.track.title,
             "attributedTo": upload.library.channel.actor.fid,
             "published": upload.creation_date.isoformat(),
-            "to": contexts.AS.Public
-            if upload.library.privacy_level == "everyone"
-            else "",
+            "to": (
+                contexts.AS.Public if upload.library.privacy_level == "everyone" else ""
+            ),
             "url": [
                 {
                     "type": "Link",
@@ -2026,9 +2037,11 @@ class ChannelUploadSerializer(jsonld.JsonLdSerializer):
             common_utils.attach_file(
                 track,
                 "attachment_cover",
-                {"url": new_value["url"], "mimetype": new_value.get("mediaType")}
-                if new_value
-                else None,
+                (
+                    {"url": new_value["url"], "mimetype": new_value.get("mediaType")}
+                    if new_value
+                    else None
+                ),
             )
 
         common_utils.attach_content(
@@ -2152,3 +2165,79 @@ class IndexSerializer(jsonld.JsonLdSerializer):
         if self.context.get("include_ap_context", True):
             d["@context"] = jsonld.get_default_context()
         return d
+
+
+class TrackFavoriteSerializer(jsonld.JsonLdSerializer):
+    type = serializers.ChoiceField(choices=[contexts.AS.Like])
+    id = serializers.URLField(max_length=500)
+    object = serializers.URLField(max_length=500)
+    actor = serializers.URLField(max_length=500)
+
+    class Meta:
+        jsonld_mapping = {
+            "object": jsonld.first_id(contexts.AS.object),
+            "actor": jsonld.first_id(contexts.AS.actor),
+        }
+
+    def to_representation(self, favorite):
+        payload = {
+            "type": "Like",
+            "id": favorite.fid,
+            "actor": favorite.actor.fid,
+            "object": favorite.track.fid,
+        }
+        if self.context.get("include_ap_context", True):
+            payload["@context"] = jsonld.get_default_context()
+        return payload
+
+    def create(self, validated_data):
+        actor = actors.get_actor(validated_data["actor"])
+        track = utils.retrieve_ap_object(
+            validated_data["object"],
+            actor=actors.get_service_actor(),
+            serializer_class=TrackSerializer,
+        )
+        return favorites_models.TrackFavorite.objects.create(
+            fid=validated_data.get("id"),
+            uuid=uuid.uuid4(),
+            actor=actor,
+            track=track,
+        )
+
+
+class ListeningSerializer(jsonld.JsonLdSerializer):
+    type = serializers.ChoiceField(choices=[contexts.AS.Listen])
+    id = serializers.URLField(max_length=500)
+    object = serializers.URLField(max_length=500)
+    actor = serializers.URLField(max_length=500)
+
+    class Meta:
+        jsonld_mapping = {
+            "object": jsonld.first_id(contexts.AS.object),
+            "actor": jsonld.first_id(contexts.AS.actor),
+        }
+
+    def to_representation(self, listening):
+        payload = {
+            "type": "Listen",
+            "id": listening.fid,
+            "actor": listening.actor.fid,
+            "object": listening.track.fid,
+        }
+        if self.context.get("include_ap_context", True):
+            payload["@context"] = jsonld.get_default_context()
+        return payload
+
+    def create(self, validated_data):
+        actor = actors.get_actor(validated_data["actor"])
+        track = utils.retrieve_ap_object(
+            validated_data["object"],
+            actor=actors.get_service_actor(),
+            serializer_class=TrackSerializer,
+        )
+        return history_models.Listening.objects.create(
+            fid=validated_data.get("id"),
+            uuid=validated_data["id"].rstrip("/").split("/")[-1],
+            actor=actor,
+            track=track,
+        )

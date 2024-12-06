@@ -192,7 +192,9 @@ class FavoritesRadio(SessionRadio):
 
     def get_queryset(self, **kwargs):
         qs = super().get_queryset(**kwargs)
-        track_ids = kwargs["user"].track_favorites.all().values_list("track", flat=True)
+        track_ids = (
+            kwargs["user"].actor.track_favorites.all().values_list("track", flat=True)
+        )
         return qs.filter(
             pk__in=track_ids, artist_credit__artist__content_category="music"
         )
@@ -335,15 +337,17 @@ class SimilarRadio(RelatedObjectRadio):
             SELECT next, count(next) AS c
             FROM (
                 SELECT
-                    track_id,
-                    creation_date,
-                    LEAD(track_id) OVER (
-                        PARTITION by user_id order by creation_date asc
+                    history_listening.track_id,
+                    history_listening.creation_date,
+                    LEAD(history_listening.track_id) OVER (
+                        PARTITION BY history_listening.actor_id ORDER BY history_listening.creation_date ASC
                     ) AS next
                 FROM history_listening
-                INNER JOIN users_user ON (users_user.id = user_id)
-                WHERE users_user.privacy_level = 'instance' OR users_user.privacy_level = 'everyone' OR user_id = %s
-                ORDER BY creation_date ASC
+                INNER JOIN federation_actor ON federation_actor.id = history_listening.actor_id
+                INNER JOIN users_user ON users_user.actor_id = federation_actor.id
+                WHERE users_user.privacy_level = 'instance' OR users_user.privacy_level = 'everyone' \
+                    OR history_listening.actor_id = %s
+                ORDER BY history_listening.creation_date ASC
             ) t WHERE track_id = %s AND next != %s GROUP BY next ORDER BY c DESC;
             """
             cursor.execute(query, [self.session.user_id, seed, seed])
@@ -380,7 +384,9 @@ class LessListenedRadio(SessionRadio):
 
     def get_queryset(self, **kwargs):
         qs = super().get_queryset(**kwargs)
-        listened = self.session.user.listenings.all().values_list("track", flat=True)
+        listened = self.session.user.actor.listenings.all().values_list(
+            "track", flat=True
+        )
         return (
             qs.filter(artist_credit__artist__content_category="music")
             .exclude(pk__in=listened)
@@ -396,7 +402,9 @@ class LessListenedLibraryRadio(SessionRadio):
 
     def get_queryset(self, **kwargs):
         qs = super().get_queryset(**kwargs)
-        listened = self.session.user.listenings.all().values_list("track", flat=True)
+        listened = self.session.user.actor.listenings.all().values_list(
+            "track", flat=True
+        )
         tracks_ids = self.session.user.actor.attributed_tracks.all().values_list(
             "id", flat=True
         )

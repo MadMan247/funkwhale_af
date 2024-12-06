@@ -4,6 +4,7 @@ from rest_framework import mixins, viewsets
 from config import plugins
 from funkwhale_api.activity import record
 from funkwhale_api.common import fields, permissions
+from funkwhale_api.federation import routes
 from funkwhale_api.music import utils as music_utils
 from funkwhale_api.music.models import Track
 from funkwhale_api.users.oauth import permissions as oauth_permissions
@@ -18,9 +19,7 @@ class ListeningViewSet(
     viewsets.GenericViewSet,
 ):
     serializer_class = serializers.ListeningSerializer
-    queryset = models.Listening.objects.all().select_related(
-        "user__actor__attachment_icon"
-    )
+    queryset = models.Listening.objects.all().select_related("actor__attachment_icon")
 
     permission_classes = [
         oauth_permissions.ScopePermission,
@@ -29,6 +28,7 @@ class ListeningViewSet(
     required_scope = "listenings"
     anonymous_policy = "setting"
     owner_checks = ["write"]
+    owner_field = "actor.user"
     filterset_class = filters.ListeningFilter
 
     def get_serializer_class(self):
@@ -38,10 +38,19 @@ class ListeningViewSet(
 
     def perform_create(self, serializer):
         r = super().perform_create(serializer)
+        instance = serializer.instance
         plugins.trigger_hook(
             plugins.LISTENING_CREATED,
-            listening=serializer.instance,
+            listening=instance,
             confs=plugins.get_confs(self.request.user),
+        )
+        routes.outbox.dispatch(
+            {"type": "Listen", "object": {"type": "Track"}},
+            context={
+                "track": instance.track,
+                "actor": instance.actor,
+                "id": instance.fid,
+            },
         )
         record.send(serializer.instance)
         return r
@@ -49,7 +58,9 @@ class ListeningViewSet(
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = queryset.filter(
-            fields.privacy_level_query(self.request.user, "user__privacy_level")
+            fields.privacy_level_query(
+                self.request.user, "actor__user__privacy_level", "actor__user"
+            )
         )
         tracks = (
             Track.objects.with_playable_uploads(

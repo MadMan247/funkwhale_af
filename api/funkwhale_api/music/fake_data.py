@@ -1,25 +1,63 @@
 """
 Populates the database with fake data
 """
+
+import logging
 import random
 
-from funkwhale_api.music import factories
+from funkwhale_api.cli import users
+from funkwhale_api.federation import factories as federation_factories
+from funkwhale_api.history import factories as history_factories
+from funkwhale_api.music import factories as music_factories
+from funkwhale_api.users import serializers
+
+logger = logging.getLogger(__name__)
 
 
-def create_data(count=25):
-    acs = factories.ArtistCreditFactory.create_batch(size=count)
-    for ac in acs:
-        print("Creating data for", ac.artist)
-        albums = factories.AlbumFactory.create_batch(
-            artist_credit=ac, size=random.randint(1, 5)
-        )
-        for album in albums:
-            factories.UploadFactory.create_batch(
-                track__album=album,
-                size=random.randint(3, 18),
-                playable=True,
-                in_place=True,
+def create_data(count=2, super_user_name=None):
+    super_user = None
+    if super_user_name:
+        try:
+            super_user = users.handler_create_user(
+                username=str(super_user_name),
+                password="funkwhale",
+                email=f"{super_user_name}eat@the.rich",
+                is_superuser=True,
+                is_staff=True,
+                upload_quota=None,
             )
+        except serializers.ValidationError as e:
+            for field, errors in e.detail.items():
+                if (
+                    "A user with that username already exists"
+                    or "A user is already registered with this e-mail address"
+                    in errors[0]
+                ):
+                    print(
+                        f"Superuser {super_user_name} already in db. Skipping fake-data creation"
+                    )
+                    continue
+                else:
+                    raise e
+        print(f"Superuser with username {super_user_name} and password `funkwhale`")
+
+        library = federation_factories.MusicLibraryFactory(
+            actor=(
+                super_user.actor if super_user else federation_factories.ActorFactory()
+            ),
+            local=True,
+        )
+        uploads = music_factories.UploadFactory.create_batch(
+            size=random.randint(3, 18),
+            playable=True,
+            library=library,
+            local=True,
+        )
+        for upload in uploads:
+            history_factories.ListeningFactory(
+                track=upload.track, actor=upload.library.actor
+            )
+        print("Created fid", upload.track.fid)
 
 
 if __name__ == "__main__":
