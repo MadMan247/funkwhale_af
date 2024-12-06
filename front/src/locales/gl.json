@@ -2844,6 +2844,19 @@
           "name": "A miña fantástica lista"
         }
       },
+      "PlaylistDropdown": {
+        "button": {
+          "export": {
+            "description": "Descargarás un ficheiro xspf cos datos da lista de reprodución",
+            "header": "Descargar lista de reprodución"
+          },
+          "import": {
+            "description": "Isto vai actualizar a lista de reprodución co contido do ficheiro xspf. As listas existentes serán eliminadas",
+            "header": "Reconstruír lista"
+          }
+        },
+        "more": "Máis"
+      },
       "PlaylistModal": {
         "button": {
           "addDuplicate": "Engadir igualmente",
