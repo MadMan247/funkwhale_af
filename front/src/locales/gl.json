@@ -2781,14 +2781,18 @@
           "libraryAcceptFollow": "{ username } aceptou o teu seguimento da biblioteca \"{ library }\"",
           "libraryFollow": "{ username } segue a túa biblioteca \"{ library }\"",
           "libraryPendingFollow": "{ username } quere seguir a túa biblioteca \"{ library }\"",
-          "libraryReject": "Rexeitaches a solicitude de {username} para seguir \"{library}\""
+          "libraryReject": "Rexeitaches a solicitude de {username} para seguir \"{library}\"",
+          "userAcceptFollow": "{username} aceptou o teu seguimento",
+          "userFollow": "{username} seguiute",
+          "userPendingFollow": "{username} quere seguirte",
+          "userReject": "Rexeitaches a solicitude de {username} para seguirte"
         }
       }
     },
     "playlists": {
       "Card": {
         "meta": {
-          "tracks": "{ n } canción | { n } cancións"
+          "tracks": "Sen cancións | { n } canción | { n } cancións"
         }
       },
       "Editor": {
