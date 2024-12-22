@@ -438,10 +438,66 @@ An `Artist` is a custom object used to store musical artist and podcast creator 
 {
   "type": "Artist",
   "id": "https://awesome.music/federation/music/artists/73c32807-a199-4682-8068-e967f734a320",
-  "name": "Metallica",
+  "name": "Krav Boca",
   "published": "2018-04-08T12:19:05.920415+00:00",
   "musicbrainzId": "65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab"
 }
+```
+
+### ArtistCredit
+
+An `ArtistCredit` is a custom object used to store information about how artists are credited in music objects. We followed [Musicbrainz data structure](https://musicbrainz.org/doc/Artist_Credits).
+
+#### Properties
+
+```{list-table}
+:header-rows: 1
+
+  * - Property
+    - Data type
+    - Description
+  * - `type`*
+    - String
+    - The object type (`ArtistCredit`)
+  * - `id`*
+    - String (URI)
+    - A URI that identifies the artist over federation
+  * - `artist`*
+    - [`Artist` object](#artist)
+    - The credited Artist
+  * - `credit`*
+    - String
+    - How the artist is credited in the object. Can differ from artist.name
+  * - `joinphrase`
+    - String
+    - Concatenated after artist credit. Join the present ArtistCredit with the next one.
+  * - `published`*
+    - Datetime
+    - The date on which the artist was published over the federation
+```
+
+#### Example
+
+```{code-block} json
+{
+    "type": "ArtistCredit",
+    "id": "https://test.federation/federation/music/artistcredit/6dc0071c-0186-4f27-a234-fa5858774400",
+    "artist": {
+        "type": "Artist",
+        "id": "https://white.info//6dc0071c-0186-4f27-a234-fa5858774400",
+        "name": "John Ross",
+        "published": "2024-12-22T21:54:46.391743+00:00",
+        "musicbrainzId": "6dc0071c-0186-4f27-a234-fa5858774400",
+        "attributedTo": None,
+        "tag": [],
+        "image": None,
+    },
+    "joinphrase": "feat. ",
+    "credit": "John Ross",
+    "index": None,
+    "published": "2024-12-22T21:54:46.392309+00:00",
+}
+
 ```
 
 ### Album
@@ -465,9 +521,9 @@ An `Album` is a custom object used to store album and podcast series information
   * - `name`*
     - String
     - The album's title
-  * - `artists`
+  * - `artist_credit`
     - Array of strings
-    - A list of [`Artist` objects](#artist) associated with the albums
+    - A list of [`ArtistCredit` objects](#artistcredit) associated with the albums
   * - `published`*
     - Datetime
     - The date on which the artist was published over the federation
@@ -497,7 +553,7 @@ An `Album` is a custom object used to store album and podcast series information
     "type": "Link",
     "mediaType": "image/jpeg"
   },
-  "artists": [
+  "artist_credit": [
     {}
   ]
 }
@@ -536,9 +592,9 @@ A `Track` is a custom object used to store track information.
   * - `album`
     - [`Album` object](#album)
     - The album that contains the track
-  * - `artists`
-    - Array of [`Artist` objects](#artist)
-    - A list of artists associated to the track. This can differ from the album artists
+  * - `artist_credit`
+    - Array of strings
+    - A list of [`ArtistCredit` objects](#artistcredit) associated with the track. This can differ from the album artists
 ```
 
 #### Example
@@ -547,11 +603,11 @@ A `Track` is a custom object used to store track information.
 {
   "type": "Track",
   "id": "https://awesome.music/federation/music/tracks/82ece296-6397-4e26-be90-bac5f9990240",
-  "name": "For Whom the Bell Tolls",
+  "name": "Shock! Extinction de masse",
   "position": 3,
   "published": "2018-10-02T19:49:35.822537+00:00",
   "musicbrainzId": "771ab043-8821-44f9-b8e0-2733c3126c6d",
-  "artists": [
+  "artist_credit": [
     {}
   ],
   "album": {}
@@ -673,7 +729,7 @@ An `Audio` object is a custom object used to store upload information. It extend
 {
   "type": "Audio",
   "id": "https://awesome.music/federation/music/uploads/88f0bc20-d7fd-461d-a641-dd9ac485e096",
-  "name": "For Whom the Bell Tolls - Ride the Lightning - Metallica",
+  "name": "Krav Boca - Mortem",
   "size": 8656581,
   "bitrate": 320000,
   "duration": 213,
