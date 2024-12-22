@@ -1,16 +1,5 @@
 # Funkwhale federation
 
-```{toctree}
----
-maxdepth: 1
----
-
-frontend
-copy
-api
-
-```
-
 ```{note}
 We aim to keep this document up-to-date to reflect the current state of federation. If you notice an issue, please open a thread on [our forum](https://forum.funkwhale.audio/t/documentation).
 ```
@@ -20,6 +9,14 @@ Funkwhale is a federated platform. Funkwhale pods can share information between 
 ```{contents}
 :local:
 :depth: 2
+```
+
+```{toctree}
+---
+maxdepth: 1
+---
+
+objects
 ```
 
 ## Technologies and standards
