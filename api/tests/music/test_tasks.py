@@ -283,7 +283,7 @@ def test_can_create_track_from_file_metadata_mbid_existing_album_artist(
             "title": "",
             "artist_credit": [
                 {
-                    "credit": "",
+                    "credit": "lol",
                     "joinphrase": "",
                     "mbid": album.artist_credit.all()[0].mbid,
                 }
@@ -1277,6 +1277,68 @@ def test_get_track_from_import_metadata_with_forced_values_album(
     assert upload.track.title == forced_values["title"]
     assert upload.track.album == album
     assert upload.track.artist_credit.all()[0].artist == channel.artist
+
+
+def test_get_track_same_album(factories, mocker, faker):
+    metadata = {
+        "title": "Whole Lotta Love",
+        "position": 1,
+        "disc_number": 1,
+        "album": {
+            "title": "Guitar Heaven: The Greatest Guitar Classics of All Time",
+            "release_date": datetime.date(2010, 9, 17),
+            "artist_credit": [
+                {
+                    "credit": "Santana",
+                    "joinphrase": "",
+                    "artist": {
+                        "name": "artist name",
+                    },
+                }
+            ],
+        },
+        "artist_credit": [
+            {
+                "credit": "Santana",
+                "joinphrase": "",
+                "artist": {
+                    "name": "artist name",
+                },
+            }
+        ],
+    }
+    metadata2 = {
+        "title": "Whole Lotta Love 2",
+        "position": 2,
+        "disc_number": 1,
+        "album": {
+            "title": "Guitar Heaven: The Greatest Guitar Classics of All Time",
+            "release_date": datetime.date(2010, 9, 17),
+            "artist_credit": [
+                {
+                    "credit": "Santana",
+                    "joinphrase": "",
+                    "artist": {
+                        "name": "artist name",
+                    },
+                }
+            ],
+        },
+        "artist_credit": [
+            {
+                "credit": "Santana",
+                "joinphrase": "",
+                "artist": {
+                    "name": "artist name",
+                },
+            }
+        ],
+    }
+    track = tasks._get_track(metadata)
+    track.refresh_from_db()
+    track2 = tasks._get_track(metadata2)
+    track2.refresh_from_db()
+    assert track.album == track2.album
 
 
 def test_process_channel_upload_forces_artist_and_attributed_to(
