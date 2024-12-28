@@ -50,19 +50,19 @@ SWAGGER_RELEASE_URL = https://github.com/swagger-api/swagger-ui/archive/refs/tag
 SWAGGER_BUILD_DIR = swagger
 
 swagger:
-	mkdir "$(SWAGGER_BUILD_DIR)"
+	mkdir "$(BUILD_DIR)/$(SWAGGER_BUILD_DIR)"
 	curl -sSL "$(SWAGGER_RELEASE_URL)" | \
 		tar --extract \
 			--gzip \
-			--directory="$(SWAGGER_BUILD_DIR)" \
+			--directory="$(BUILD_DIR)/$(SWAGGER_BUILD_DIR)" \
 			--strip-components=2 \
 			"swagger-ui-$(SWAGGER_VERSION)/dist"
 
 	sed -i \
 		"s#https://petstore.swagger.io/v2/swagger.json#schema.yml#g" \
-		"$(SWAGGER_BUILD_DIR)/swagger-initializer.js"
+		"$(BUILD_DIR)/$(SWAGGER_BUILD_DIR)/swagger-initializer.js"
 
-	cp schema.yml "$(SWAGGER_BUILD_DIR)/schema.yml"
+	cp schema.yml "$(BUILD_DIR)/$(SWAGGER_BUILD_DIR)/schema.yml"
 
 # Releases
 $(BUILD_DIR)/releases.json: $(BUILD_DIR)
