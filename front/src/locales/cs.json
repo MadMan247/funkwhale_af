@@ -3215,6 +3215,28 @@
     }
   },
   "views": {
+    "ChooseInstance": {
+      "button": {
+        "submit": "Odeslat"
+      },
+      "header": {
+        "chooseInstance": "Zvolte si instanci",
+        "failure": "Na zadanou adresu URL se nelze připojit",
+        "suggestions": "Navržené volby"
+      },
+      "help": {
+        "notFunkwhaleServer": "Na zadané adrese neběží žádný Funkwhale server",
+        "selectPod": "Pro pokračování prosím zvolte Funkwhale instanci, ke které se chcete připojit. Zadejte adresu přímo, nebo vyberte jednu z nabízených možností.",
+        "serverDown": "Server je možná nedostupný"
+      },
+      "label": {
+        "url": "URL instance"
+      },
+      "message": {
+        "currentConnection": "Aktuálně jste připojeni k { 0 }. Když budete pokračovat, budete odpojeni od vaší aktuální instance a vaše lokální data budou vymazána.",
+        "newUrl": "Právě používáte Funkwhale instanci na adrese { url }"
+      }
+    },
     "Notifications": {
       "button": {
         "read": "Označit vše jako přečtené",
@@ -4587,28 +4609,6 @@
           }
         },
         "title": "Rádio"
-      }
-    },
-    "ChooseInstance": {
-      "button": {
-        "submit": "Odeslat"
-      },
-      "header": {
-        "chooseInstance": "Zvolte si instanci",
-        "failure": "Na zadanou adresu URL se nelze připojit",
-        "suggestions": "Navržené volby"
-      },
-      "help": {
-        "notFunkwhaleServer": "Na zadané adrese neběží žádný Funkwhale server",
-        "selectPod": "Pro pokračování prosím zvolte Funkwhale instanci, ke které se chcete připojit. Zadejte adresu přímo, nebo vyberte jednu z nabízených možností.",
-        "serverDown": "Server je možná nedostupný"
-      },
-      "label": {
-        "url": "URL instance"
-      },
-      "message": {
-        "currentConnection": "Aktuálně jste připojeni k { 0 }. Když budete pokračovat, budete odpojeni od vaší aktuální instance a vaše lokální data budou vymazána.",
-        "newUrl": "Právě používáte Funkwhale instanci na adrese { url }"
       }
     }
   }
