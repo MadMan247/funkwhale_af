@@ -3014,6 +3014,27 @@
     }
   },
   "views": {
+    "ChooseInstance": {
+      "button": {
+        "submit": "Enviar"
+      },
+      "header": {
+        "chooseInstance": "Escolha sua instância",
+        "failure": "Não foi possível entrar neste link",
+        "suggestions": "Opções sugeridas"
+      },
+      "help": {
+        "notFunkwhaleServer": "Este link não é de uma instância Funkwhale",
+        "selectPod": "Para continuar, insira a instância Funkwhale que você deseja entrar. Digite o endereço ou selecione uma das sugeridas.",
+        "serverDown": "Parece que o servidor caiu"
+      },
+      "label": {
+        "url": "Link da instância"
+      },
+      "message": {
+        "newUrl": "Você está usando a instância Funkwhale em { url }"
+      }
+    },
     "Notifications": {
       "button": {
         "read": "Marcar tudo como lido",
@@ -4339,27 +4360,6 @@
           }
         },
         "title": "Rádio"
-      }
-    },
-    "ChooseInstance": {
-      "button": {
-        "submit": "Enviar"
-      },
-      "header": {
-        "chooseInstance": "Escolha sua instância",
-        "failure": "Não foi possível entrar neste link",
-        "suggestions": "Opções sugeridas"
-      },
-      "help": {
-        "notFunkwhaleServer": "Este link não é de uma instância Funkwhale",
-        "selectPod": "Para continuar, insira a instância Funkwhale que você deseja entrar. Digite o endereço ou selecione uma das sugeridas.",
-        "serverDown": "Parece que o servidor caiu"
-      },
-      "label": {
-        "url": "Link da instância"
-      },
-      "message": {
-        "newUrl": "Você está usando a instância Funkwhale em { url }"
       }
     }
   }
