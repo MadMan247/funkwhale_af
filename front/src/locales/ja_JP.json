@@ -3056,6 +3056,23 @@
     }
   },
   "views": {
+    "ChooseInstance": {
+      "header": {
+        "chooseInstance": "インスタンスを選んでください",
+        "failure": "入力されたURLにアクセスできません",
+        "suggestions": "おすすめのポッド"
+      },
+      "help": {
+        "notFunkwhaleServer": "入力されたURL先はFunkwhaleのサーバーではありません",
+        "serverDown": "サーバーがダウンしてるかもしれません"
+      },
+      "label": {
+        "url": "FunkwhaleインスタンスのURL"
+      },
+      "message": {
+        "newUrl": "現在{url}のFunkwhaleインスタンスを利用しています"
+      }
+    },
     "Notifications": {
       "button": {
         "read": "全てを既読にする",
@@ -4331,24 +4348,6 @@
           }
         },
         "title": "ラジオ"
-      }
-    },
-    "ChooseInstance": {
-      "button": {},
-      "header": {
-        "chooseInstance": "インスタンスを選んでください",
-        "failure": "入力されたURLにアクセスできません",
-        "suggestions": "おすすめのポッド"
-      },
-      "help": {
-        "notFunkwhaleServer": "入力されたURL先はFunkwhaleのサーバーではありません",
-        "serverDown": "サーバーがダウンしてるかもしれません"
-      },
-      "label": {
-        "url": "FunkwhaleインスタンスのURL"
-      },
-      "message": {
-        "newUrl": "現在{url}のFunkwhaleインスタンスを利用しています"
       }
     }
   }
