@@ -9,6 +9,7 @@ from funkwhale_api.cli import users
 from funkwhale_api.federation import factories as federation_factories
 from funkwhale_api.history import factories as history_factories
 from funkwhale_api.music import factories as music_factories
+from funkwhale_api.playlists import factories as playlist_factories
 from funkwhale_api.users import serializers
 
 logger = logging.getLogger(__name__)
@@ -58,6 +59,15 @@ def create_data(count=2, super_user_name=None):
                 track=upload.track, actor=upload.library.actor
             )
         print("Created fid", upload.track.fid)
+
+        playlist = playlist_factories.PlaylistFactory(
+            name="playlist test public",
+            privacy_level="everyone",
+            actor=(
+                super_user.actor if super_user else federation_factories.ActorFactory()
+            ),
+        )
+        playlist_factories.PlaylistTrackFactory(playlist=playlist, track=upload.track)
 
 
 if __name__ == "__main__":

@@ -295,6 +295,8 @@ CONTEXTS = [
                 "Artist": "fw:Artist",
                 "ArtistCredit": "fw:ArtistCredit",
                 "Library": "fw:Library",
+                "Playlist": "fw:Playlist",
+                "PlaylistTrack": "fw:PlaylistTrack",
                 "bitrate": {"@id": "fw:bitrate", "@type": "xsd:nonNegativeInteger"},
                 "size": {"@id": "fw:size", "@type": "xsd:nonNegativeInteger"},
                 "position": {"@id": "fw:position", "@type": "xsd:nonNegativeInteger"},
@@ -319,6 +321,7 @@ CONTEXTS = [
                 "copyright": "fw:copyright",
                 "category": "schema:category",
                 "language": "schema:inLanguage",
+                "playlist": {"@id": "fw:playlist", "@type": "@id"},
             }
         },
     },

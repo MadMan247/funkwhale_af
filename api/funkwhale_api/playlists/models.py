@@ -1,14 +1,23 @@
+import datetime
+import uuid
+
 from django.db import models, transaction
 from django.db.models import Q
 from django.db.models.expressions import OuterRef, Subquery
+from django.urls import reverse
 from django.utils import timezone
 from rest_framework import exceptions
 
-from funkwhale_api.common import fields, preferences
+from funkwhale_api.common import fields
+from funkwhale_api.common import models as common_models
+from funkwhale_api.common import preferences
+from funkwhale_api.common import utils as common_utils
+from funkwhale_api.federation import models as federation_models
+from funkwhale_api.federation import utils as federation_utils
 from funkwhale_api.music import models as music_models
 
 
-class PlaylistQuerySet(models.QuerySet):
+class PlaylistQuerySet(models.QuerySet, common_models.LocalFromFidQuerySet):
     def with_tracks_count(self):
         return self.annotate(_tracks_count=models.Count("playlist_tracks"))
 
@@ -67,22 +76,40 @@ class PlaylistQuerySet(models.QuerySet):
             return self.exclude(playlist_tracks__in=plts).distinct()
 
 
-class Playlist(models.Model):
+class Playlist(federation_models.FederationMixin):
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True)
     name = models.CharField(max_length=50)
-    user = models.ForeignKey(
-        "users.User", related_name="playlists", on_delete=models.CASCADE
+    actor = models.ForeignKey(
+        "federation.Actor", related_name="playlists", on_delete=models.CASCADE
     )
     creation_date = models.DateTimeField(default=timezone.now)
     modification_date = models.DateTimeField(auto_now=True)
     privacy_level = fields.get_privacy_field()
 
     objects = PlaylistQuerySet.as_manager()
+    federation_namespace = "playlists"
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
         return f"/library/playlists/{self.pk}"
+
+    def get_federation_id(self):
+        if self.fid:
+            return self.fid
+        return federation_utils.full_url(
+            reverse(
+                f"federation:music:{self.federation_namespace}-detail",
+                kwargs={"uuid": self.uuid},
+            )
+        )
+
+    def save(self, **kwargs):
+        if not self.pk and not self.fid:
+            self.fid = self.get_federation_id()
+
+        return super().save(**kwargs)
 
     @transaction.atomic
     def insert(self, plt, index=None, allow_duplicates=True):
@@ -159,9 +186,20 @@ class Playlist(models.Model):
 
         self.save(update_fields=["modification_date"])
         start = total
+
         plts = [
             PlaylistTrack(
-                creation_date=now, playlist=self, track=track, index=start + i
+                creation_date=now,
+                playlist=self,
+                track=track,
+                index=start + i,
+                uuid=(new_uuid := uuid.uuid4()),
+                fid=federation_utils.full_url(
+                    reverse(
+                        f"federation:music:{self.federation_namespace}-detail",
+                        kwargs={"uuid": new_uuid},  # Use the newly generated UUID
+                    )
+                ),
             )
             for i, track in enumerate(tracks)
         ]
@@ -187,8 +225,45 @@ class Playlist(models.Model):
                 }
             )
 
+    def schedule_scan(self, actor, force=False):
+        """Update playlist tracks if playlist is a remote one. If it's a local playlist it send an update activity
+        on the remote server which will trigger a scan"""
 
-class PlaylistTrackQuerySet(models.QuerySet):
+        latest_scan = (
+            self.scans.exclude(status="errored").order_by("-creation_date").first()
+        )
+        delay_between_scans = datetime.timedelta(seconds=3600 * 24)
+        now = timezone.now()
+        if (
+            not force
+            and latest_scan
+            and latest_scan.creation_date + delay_between_scans > now
+        ):
+            return
+
+        from . import tasks
+
+        scan = self.scans.create(
+            total_files=len(self.playlist_tracks.all()), actor=actor
+        )
+
+        if self.actor.is_local:
+            from funkwhale_api.federation import routes
+
+            routes.outbox.dispatch(
+                {"type": "Update", "object": {"type": "Playlist"}},
+                context={"playlist": self, "actor": self.actor},
+            )
+            scan.status = "finished"
+            return scan
+        else:
+            common_utils.on_commit(
+                tasks.start_playlist_scan.delay, playlist_scan_id=scan.pk
+            )
+            return scan
+
+
+class PlaylistTrackQuerySet(models.QuerySet, common_models.LocalFromFidQuerySet):
     def for_nested_serialization(self, actor=None):
         tracks = music_models.Track.objects.with_playable_uploads(actor)
         tracks = tracks.prefetch_related(
@@ -228,7 +303,8 @@ class PlaylistTrackQuerySet(models.QuerySet):
         return PlaylistTrack.objects.get(pk=plt_id)
 
 
-class PlaylistTrack(models.Model):
+class PlaylistTrack(federation_models.FederationMixin):
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True)
     track = models.ForeignKey(
         "music.Track", related_name="playlist_tracks", on_delete=models.CASCADE
     )
@@ -239,6 +315,7 @@ class PlaylistTrack(models.Model):
     creation_date = models.DateTimeField(default=timezone.now)
 
     objects = PlaylistTrackQuerySet.as_manager()
+    federation_namespace = "playlist-tracks"
 
     class Meta:
         ordering = ("-playlist", "index")
@@ -251,3 +328,34 @@ class PlaylistTrack(models.Model):
         if index is not None and update_indexes:
             playlist.remove(index)
         return r
+
+    def get_federation_id(self):
+        if self.fid:
+            return self.fid
+        return federation_utils.full_url(
+            reverse(
+                f"federation:music:{self.federation_namespace}-detail",
+                kwargs={"uuid": self.uuid},
+            )
+        )
+
+    def save(self, **kwargs):
+        if not self.pk and not self.fid:
+            self.fid = self.get_federation_id()
+
+        return super().save(**kwargs)
+
+
+class PlaylistScan(models.Model):
+    actor = models.ForeignKey(
+        "federation.Actor", null=True, blank=True, on_delete=models.CASCADE
+    )
+    playlist = models.ForeignKey(
+        Playlist, related_name="scans", on_delete=models.CASCADE
+    )
+    total_files = models.PositiveIntegerField(default=0)
+    processed_files = models.PositiveIntegerField(default=0)
+    errored_files = models.PositiveIntegerField(default=0)
+    status = models.CharField(default="pending", max_length=25)
+    creation_date = models.DateTimeField(default=timezone.now)
+    modification_date = models.DateTimeField(null=True, blank=True)

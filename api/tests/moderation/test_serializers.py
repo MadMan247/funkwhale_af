@@ -159,7 +159,7 @@ def test_report_serializer_save_anonymous(factories, mocker):
         ("music.Album", {"attributed": True}, "attributed_to"),
         ("music.Track", {"attributed": True}, "attributed_to"),
         ("music.Library", {}, "actor"),
-        ("playlists.Playlist", {"user__with_actor": True}, "user.actor"),
+        ("playlists.Playlist", {}, "actor"),
         ("federation.Actor", {}, "self"),
         ("audio.Channel", {}, "attributed_to"),
     ],

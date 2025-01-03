@@ -252,7 +252,7 @@ def test_prune_non_mbid_content(factories):
 
 
 def test_create_playlist_from_folder_structure(factories, tmp_path):
-    user = factories["users.User"]()
+    user = factories["users.User"](with_actor=True)
     c = create_playlist_from_folder_structure.Command()
     options = {
         "dir_name": DATA_DIR,

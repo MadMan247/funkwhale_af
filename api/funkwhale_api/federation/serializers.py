@@ -22,6 +22,7 @@ from funkwhale_api.moderation import signals as moderation_signals
 from funkwhale_api.music import licenses
 from funkwhale_api.music import models as music_models
 from funkwhale_api.music import tasks as music_tasks
+from funkwhale_api.playlists import models as playlists_models
 from funkwhale_api.tags import models as tags_models
 
 logger = logging.getLogger(__name__)
@@ -972,7 +973,7 @@ class PaginatedCollectionSerializer(jsonld.JsonLdSerializer):
         first = common_utils.set_query_parameter(conf["id"], page=1)
         current = first
         last = common_utils.set_query_parameter(conf["id"], page=paginator.num_pages)
-        d = {
+        data = {
             "id": conf["id"],
             "attributedTo": conf["actor"].fid,
             "totalItems": paginator.count,
@@ -981,10 +982,10 @@ class PaginatedCollectionSerializer(jsonld.JsonLdSerializer):
             "first": first,
             "last": last,
         }
-        d.update(get_additional_fields(conf))
+        data.update(get_additional_fields(conf))
         if self.context.get("include_ap_context", True):
-            d["@context"] = jsonld.get_default_context()
-        return d
+            data["@context"] = jsonld.get_default_context()
+        return data
 
 
 class LibrarySerializer(PaginatedCollectionSerializer):
@@ -2241,3 +2242,178 @@ class ListeningSerializer(jsonld.JsonLdSerializer):
             actor=actor,
             track=track,
         )
+
+
+class PlaylistTrackSerializer(jsonld.JsonLdSerializer):
+    type = serializers.ChoiceField(choices=[contexts.FW.PlaylistTrack])
+    id = serializers.URLField(max_length=500)
+    track = serializers.URLField(max_length=500)
+    index = serializers.IntegerField()
+    creation_date = serializers.DateTimeField()
+    playlist = serializers.URLField(max_length=500, required=False)
+
+    class Meta:
+        model = playlists_models.PlaylistTrack
+        jsonld_mapping = {
+            "track": jsonld.first_id(contexts.FW.track),
+            "playlist": jsonld.first_id(contexts.FW.playlist),
+            "index": jsonld.first_val(contexts.FW.index),
+            "creation_date": jsonld.first_val(contexts.AS.published),
+        }
+
+    def to_representation(self, plt):
+        payload = {
+            "type": "PlaylistTrack",
+            "id": plt.fid,
+            "track": plt.track.fid,
+            "index": plt.index,
+            "attributedTo": plt.playlist.actor.fid,
+            "published": plt.creation_date.isoformat(),
+        }
+        if self.context.get("include_ap_context", True):
+            payload["@context"] = jsonld.get_default_context()
+
+        if self.context.get("include_playlist", True):
+            payload["playlist"] = plt.playlist.fid
+        return payload
+
+    def create(self, validated_data):
+        track = utils.retrieve_ap_object(
+            validated_data["track"],
+            actor=self.context.get("fetch_actor"),
+            queryset=music_models.Track,
+            serializer_class=TrackSerializer,
+        )
+        playlist = utils.retrieve_ap_object(
+            validated_data["playlist"],
+            actor=self.context.get("fetch_actor"),
+            queryset=playlists_models.Playlist,
+            serializer_class=PlaylistTrackSerializer,
+        )
+
+        defaults = {
+            "track": track,
+            "index": validated_data["index"],
+            "creation_date": validated_data["creation_date"],
+            "playlist": playlist,
+        }
+
+        plt, created = playlists_models.PlaylistTrack.objects.update_or_create(
+            defaults,
+            **{
+                "uuid": validated_data["id"].rstrip("/").split("/")[-1],
+                "fid": validated_data["id"],
+            },
+        )
+
+        return plt
+
+
+class PlaylistSerializer(jsonld.JsonLdSerializer):
+    """
+    Used for playlist activities
+    """
+
+    type = serializers.ChoiceField(choices=[contexts.FW.Playlist, contexts.AS.Create])
+    id = serializers.URLField(max_length=500)
+    uuid = serializers.UUIDField(required=False)
+    name = serializers.CharField(required=False)
+    attributedTo = serializers.URLField(max_length=500, required=False)
+    published = serializers.DateTimeField(required=False)
+    updated = serializers.DateTimeField(required=False)
+    audience = serializers.ChoiceField(
+        choices=[None, "https://www.w3.org/ns/activitystreams#Public"],
+        required=False,
+        allow_null=True,
+        allow_blank=True,
+    )
+    updateable_fields = [
+        ("name", "title"),
+        ("attributedTo", "attributed_to"),
+    ]
+
+    class Meta:
+        model = playlists_models.Playlist
+        jsonld_mapping = common_utils.concat_dicts(
+            MUSIC_ENTITY_JSONLD_MAPPING,
+            {
+                "updated": jsonld.first_val(contexts.AS.published),
+                "audience": jsonld.first_id(contexts.AS.audience),
+                "attributedTo": jsonld.first_id(contexts.AS.attributedTo),
+            },
+        )
+
+    def to_representation(self, playlist):
+        payload = {
+            "type": "Playlist",
+            "id": playlist.fid,
+            "name": playlist.name,
+            "attributedTo": playlist.actor.fid,
+            "published": playlist.creation_date.isoformat(),
+            "audience": playlist.privacy_level,
+        }
+        payload["audience"] = (
+            contexts.AS.Public if playlist.privacy_level == "everyone" else ""
+        )
+        if playlist.modification_date:
+            payload["updated"] = playlist.modification_date.isoformat()
+        if self.context.get("include_ap_context", True):
+            payload["@context"] = jsonld.get_default_context()
+        return payload
+
+    def create(self, validated_data):
+        actor = utils.retrieve_ap_object(
+            validated_data["attributedTo"],
+            actor=self.context.get("fetch_actor"),
+            queryset=models.Actor,
+            serializer_class=ActorSerializer,
+        )
+        ap_to_fw_data = {
+            "actor": actor,
+            "name": validated_data["name"],
+            "creation_date": validated_data["published"],
+            "privacy_level": validated_data["audience"],
+        }
+        playlist, created = playlists_models.Playlist.objects.update_or_create(
+            defaults=ap_to_fw_data,
+            **{
+                "fid": validated_data["id"],
+                "uuid": validated_data.get(
+                    "uuid", validated_data["id"].rstrip("/").split("/")[-1]
+                ),
+            },
+        )
+        return playlist
+
+    def validate(self, data):
+        validated_data = super().validate(data)
+        if validated_data["audience"] not in [
+            "https://www.w3.org/ns/activitystreams#Public",
+            "everyone",
+        ]:
+            raise serializers.ValidationError("Privacy_level must be everyone")
+
+        validated_data["audience"] = "everyone"
+        return validated_data
+
+
+class PlaylistCollectionSerializer(PaginatedCollectionSerializer):
+    """
+    Used for the federation view.
+    """
+
+    type = serializers.ChoiceField(choices=[contexts.FW.Playlist])
+
+    def to_representation(self, playlist):
+        conf = {
+            "id": playlist.fid,
+            "name": playlist.name,
+            "page_size": 100,
+            "actor": playlist.actor,
+            "items": playlist.playlist_tracks.order_by("index").prefetch_related(
+                "tracks",
+            ),
+            "type": "Playlist",
+        }
+        r = super().to_representation(conf)
+        return r

@@ -198,7 +198,7 @@ export interface Playlist {
   id: number
   name: string
   modification_date: string
-  user: User
+  actor: Actor
   privacy_level: PrivacyLevel
   tracks_count: number
   duration: number

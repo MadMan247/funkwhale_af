@@ -8,7 +8,7 @@ from django.urls import reverse
 def test_can_get_playlist_list(factories, logged_in_api_client):
     logged_in_api_client.user.create_actor()
     factories["playlists.Playlist"].create_batch(5)
-    url = reverse("api:v2:playlists:playlists-list")
+    url = reverse("api:v2:playlists-list")
     headers = {"Content-Type": "application/json"}
     response = logged_in_api_client.get(url, headers=headers)
     data = json.loads(response.content)
@@ -24,7 +24,7 @@ def test_can_get_playlists_octet_stream(factories, logged_in_api_client):
     factories["playlists.PlaylistTrack"](playlist=pl)
     factories["playlists.PlaylistTrack"](playlist=pl)
 
-    url = reverse("api:v2:playlists:playlists-detail", kwargs={"pk": pl.pk})
+    url = reverse("api:v2:playlists-detail", kwargs={"pk": pl.pk})
     headers = {"Accept": "application/octet-stream"}
     response = logged_in_api_client.get(url, headers=headers)
     el = etree.fromstring(response.content)
@@ -36,7 +36,7 @@ def test_can_get_playlists_octet_stream(factories, logged_in_api_client):
 def test_can_get_playlists_json(factories, logged_in_api_client):
     logged_in_api_client.user.create_actor()
     pl = factories["playlists.Playlist"]()
-    url = reverse("api:v2:playlists:playlists-detail", kwargs={"pk": pl.pk})
+    url = reverse("api:v2:playlists-detail", kwargs={"pk": pl.pk})
     response = logged_in_api_client.get(url, format="json")
     assert response.status_code == 200
     assert response.data["name"] == pl.name
@@ -44,10 +44,10 @@ def test_can_get_playlists_json(factories, logged_in_api_client):
 
 def test_can_get_user_playlists_list(factories, logged_in_api_client):
     logged_in_api_client.user.create_actor()
-    user = factories["users.User"]()
-    factories["playlists.Playlist"](user=user)
+    user = factories["users.User"](with_actor=True)
+    factories["playlists.Playlist"](actor=user.actor)
 
-    url = reverse("api:v2:playlists:playlists-list")
+    url = reverse("api:v2:playlists-list")
     url = resolve_url(url) + "?user=me"
     response = logged_in_api_client.get(url)
     data = json.loads(response.content.decode("utf-8"))
@@ -59,7 +59,7 @@ def test_can_get_user_playlists_list(factories, logged_in_api_client):
 def test_can_post_user_playlists(logged_in_api_client):
     logged_in_api_client.user.create_actor()
     playlist = {"name": "Les chiennes de l'hexagone", "privacy_level": "me"}
-    url = reverse("api:v2:playlists:playlists-list")
+    url = reverse("api:v2:playlists-list")
 
     response = logged_in_api_client.post(url, playlist, format="json")
     data = json.loads(response.content.decode("utf-8"))
@@ -77,7 +77,7 @@ def test_can_post_playlists_octet_stream(factories, logged_in_api_client):
     factories["music.Track"](
         title="Opinel 12", artist_credit__artist=artist, album=album
     )
-    url = reverse("api:v2:playlists:playlists-list")
+    url = reverse("api:v2:playlists-list")
     data = open("./tests/playlists/test.xspf", "rb").read()
     response = logged_in_api_client.post(url, data=data, format="xspf")
     data = json.loads(response.content)
@@ -87,7 +87,7 @@ def test_can_post_playlists_octet_stream(factories, logged_in_api_client):
 
 def test_can_post_playlists_octet_stream_invalid_track(factories, logged_in_api_client):
     logged_in_api_client.user.create_actor()
-    url = reverse("api:v2:playlists:playlists-list")
+    url = reverse("api:v2:playlists-list")
     data = open("./tests/playlists/test.xspf", "rb").read()
     response = logged_in_api_client.post(url, data=data, format="xspf")
     data = json.loads(response.content)
@@ -97,7 +97,7 @@ def test_can_post_playlists_octet_stream_invalid_track(factories, logged_in_api_
 
 def test_can_patch_playlists_octet_stream(factories, logged_in_api_client):
     logged_in_api_client.user.create_actor()
-    pl = factories["playlists.Playlist"](user=logged_in_api_client.user)
+    pl = factories["playlists.Playlist"](actor=logged_in_api_client.user.actor)
     artist = factories["music.Artist"](name="Davinhor")
     album = factories["music.Album"](
         title="Racisme en pls", artist_credit__artist=artist
@@ -105,7 +105,7 @@ def test_can_patch_playlists_octet_stream(factories, logged_in_api_client):
     track = factories["music.Track"](
         title="Opinel 12", artist_credit__artist=artist, album=album
     )
-    url = reverse("api:v2:playlists:playlists-detail", kwargs={"pk": pl.pk})
+    url = reverse("api:v2:playlists-detail", kwargs={"pk": pl.pk})
     data = open("./tests/playlists/test.xspf", "rb").read()
     response = logged_in_api_client.patch(url, data=data, format="xspf")
     pl.refresh_from_db()
@@ -118,7 +118,7 @@ def test_can_get_playlists_track(factories, logged_in_api_client):
     logged_in_api_client.user.create_actor()
     pl = factories["playlists.Playlist"]()
     plt = factories["playlists.PlaylistTrack"](playlist=pl)
-    url = reverse("api:v2:playlists:playlists-tracks", kwargs={"pk": pl.pk})
+    url = reverse("api:v2:playlists-tracks", kwargs={"pk": pl.pk})
     response = logged_in_api_client.get(url)
     data = json.loads(response.content.decode("utf-8"))
     assert response.status_code == 200
@@ -130,7 +130,7 @@ def test_can_get_playlists_releases(factories, logged_in_api_client):
     logged_in_api_client.user.create_actor()
     playlist = factories["playlists.Playlist"]()
     plt = factories["playlists.PlaylistTrack"](playlist=playlist)
-    url = reverse("api:v2:playlists:playlists-albums", kwargs={"pk": playlist.pk})
+    url = reverse("api:v2:playlists-albums", kwargs={"pk": playlist.pk})
     response = logged_in_api_client.get(url)
     data = json.loads(response.content)
     assert response.status_code == 200
@@ -141,7 +141,7 @@ def test_can_get_playlists_artists(factories, logged_in_api_client):
     logged_in_api_client.user.create_actor()
     playlist = factories["playlists.Playlist"]()
     plt = factories["playlists.PlaylistTrack"](playlist=playlist)
-    url = reverse("api:v2:playlists:playlists-artists", kwargs={"pk": playlist.pk})
+    url = reverse("api:v2:playlists-artists", kwargs={"pk": playlist.pk})
     response = logged_in_api_client.get(url)
     data = json.loads(response.content)
     assert response.status_code == 200

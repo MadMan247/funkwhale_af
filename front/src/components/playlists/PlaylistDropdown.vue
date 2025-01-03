@@ -95,7 +95,7 @@ const triggerFileInput = () => {
           {{ labels.export }}
         </div>
         <div
-          v-if="$store.state.auth.profile && playlist.user.id === $store.state.auth.profile.id"
+          v-if="$store.state.auth.authenticated && playlist.actor.full_username !== $store.state.auth.fullUsername"
           role="button"
           class="basic item"
           :title="t('components.playlists.PlaylistDropdown.button.import.description')"

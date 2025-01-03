@@ -7,7 +7,6 @@ from funkwhale_api.music.serializers import TrackActivitySerializer, TrackSerial
 from . import models
 
 
-# to do : to deprecate ? this is only a local activity, the federated activities serializers are in `/federation`
 class TrackFavoriteActivitySerializer(activity_serializers.ModelSerializer):
     type = serializers.SerializerMethodField()
     object = TrackActivitySerializer(source="track")

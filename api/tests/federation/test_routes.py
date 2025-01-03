@@ -1,3 +1,5 @@
+from unittest.mock import Mock
+
 import pytest
 
 from funkwhale_api.favorites import models as favorites_models
@@ -12,6 +14,7 @@ from funkwhale_api.federation import (
 )
 from funkwhale_api.history import models as history_models
 from funkwhale_api.moderation import serializers as moderation_serializers
+from funkwhale_api.playlists import models as playlists_models
 
 
 @pytest.mark.parametrize(
@@ -22,6 +25,10 @@ from funkwhale_api.moderation import serializers as moderation_serializers
         ({"type": "Reject"}, routes.inbox_reject_follow),
         ({"type": "Create", "object": {"type": "Audio"}}, routes.inbox_create_audio),
         (
+            {"type": "Create", "object": {"type": "Playlist"}},
+            routes.inbox_create_playlist,
+        ),
+        (
             {"type": "Update", "object": {"type": "Library"}},
             routes.inbox_update_library,
         ),
@@ -31,11 +38,19 @@ from funkwhale_api.moderation import serializers as moderation_serializers
         ),
         ({"type": "Delete", "object": {"type": "Audio"}}, routes.inbox_delete_audio),
         ({"type": "Delete", "object": {"type": "Album"}}, routes.inbox_delete_album),
+        (
+            {"type": "Delete", "object": {"type": "Playlist"}},
+            routes.inbox_delete_playlist,
+        ),
         ({"type": "Undo", "object": {"type": "Follow"}}, routes.inbox_undo_follow),
         ({"type": "Update", "object": {"type": "Artist"}}, routes.inbox_update_artist),
         ({"type": "Update", "object": {"type": "Album"}}, routes.inbox_update_album),
         ({"type": "Update", "object": {"type": "Track"}}, routes.inbox_update_track),
         ({"type": "Update", "object": {"type": "Audio"}}, routes.inbox_update_audio),
+        (
+            {"type": "Update", "object": {"type": "Playlist"}},
+            routes.inbox_update_playlist,
+        ),
         ({"type": "Delete", "object": {"type": "Person"}}, routes.inbox_delete_actor),
         ({"type": "Delete", "object": {"type": "Tombstone"}}, routes.inbox_delete),
         ({"type": "Flag"}, routes.inbox_flag),
@@ -62,6 +77,10 @@ def test_inbox_routes(route, handler):
         ({"type": "Reject"}, routes.outbox_reject_follow),
         ({"type": "Create", "object": {"type": "Audio"}}, routes.outbox_create_audio),
         (
+            {"type": "Create", "object": {"type": "Playlist"}},
+            routes.outbox_create_playlist,
+        ),
+        (
             {"type": "Update", "object": {"type": "Library"}},
             routes.outbox_update_library,
         ),
@@ -74,6 +93,10 @@ def test_inbox_routes(route, handler):
         ({"type": "Undo", "object": {"type": "Follow"}}, routes.outbox_undo_follow),
         ({"type": "Update", "object": {"type": "Track"}}, routes.outbox_update_track),
         ({"type": "Update", "object": {"type": "Audio"}}, routes.outbox_update_audio),
+        (
+            {"type": "Update", "object": {"type": "Playlist"}},
+            routes.outbox_update_playlist,
+        ),
         (
             {"type": "Delete", "object": {"type": "Tombstone"}},
             routes.outbox_delete_actor,
@@ -92,6 +115,10 @@ def test_inbox_routes(route, handler):
         (
             {"type": "Like", "object": {"type": "Track"}},
             routes.outbox_create_track_favorite,
+        ),
+        (
+            {"type": "Delete", "object": {"type": "Playlist"}},
+            routes.outbox_delete_playlist,
         ),
     ],
 )
@@ -1135,4 +1162,121 @@ def test_inbox_create_listening(factories, mocker):
     ).exists()
 
 
-# to do : test dislike
+def test_outbox_create_playlist(factories, mocker):
+    user = factories["users.User"](with_actor=True)
+    playlist = factories["playlists.Playlist"](actor=user.actor)
+
+    activity = list(
+        routes.outbox_create_playlist(
+            {"playlist": playlist, "actor": user.actor, "id": playlist.fid}
+        )
+    )[0]
+    serializer = serializers.ActivitySerializer(
+        {
+            "type": "Create",
+            "id": playlist.fid,
+            "actor": playlist.actor,
+            "object": serializers.PlaylistSerializer(playlist).data,
+        }
+    )
+    expected = serializer.data
+    expected["to"] = [{"type": "followers", "target": playlist.actor}]
+    assert dict(activity["payload"]) == dict(expected)
+    assert activity["actor"] == playlist.actor
+
+
+def test_inbox_create_playlist(factories, mocker):
+    actor = factories["federation.Actor"]()
+    playlist = factories["playlists.Playlist"](
+        actor=actor, local=True, privacy_level="everyone"
+    )
+    plt = factories["playlists.PlaylistTrack"](playlist=playlist, index=0, local=True)
+
+    playlist_data = serializers.PlaylistSerializer(playlist).data
+    init = mocker.spy(serializers.PlaylistSerializer, "__init__")
+    create = mocker.spy(serializers.PlaylistSerializer, "create")
+
+    mock_session = Mock()
+    mock_response = Mock()
+    mock_response.raise_for_status.return_value = None
+    mock_response.json.side_effect = [
+        playlist_data,
+    ]
+    mock_session.get.return_value = mock_response
+    mocker.patch(
+        "funkwhale_api.federation.utils.session.get_session",
+        return_value=mock_session,
+    )
+    mocker.patch("funkwhale_api.music.tasks.populate_album_cover")
+
+    playlist.delete()
+
+    assert not playlists_models.PlaylistTrack.objects.filter(uuid=plt.uuid).exists()
+
+    result = routes.inbox_create_playlist(
+        {"object": playlist_data},
+        context={
+            "actor": playlist.actor,
+            "raise_exception": True,
+        },
+    )
+
+    assert init.call_count == 1
+    args = init.call_args
+    args[1]["data"]["updated"] = result["object"].modification_date.isoformat()
+    assert args[1]["data"] == serializers.PlaylistSerializer(result["object"]).data
+    assert create.call_count == 1
+
+    assert playlists_models.Playlist.objects.filter(actor=playlist.actor).exists()
+    assert playlists_models.Playlist.objects.filter(uuid=playlist.uuid).exists()
+    # doesn't exist since we use playlist scan to add tracks to the playlist
+    assert not playlists_models.PlaylistTrack.objects.filter(uuid=plt.uuid).exists()
+    assert serializers.PlaylistSerializer(result["object"]).data == playlist_data
+
+
+def test_inbox_delete_playlist(factories, mocker):
+    actor = factories["federation.Actor"]()
+    playlist = factories["playlists.Playlist"](actor=actor, local=True)
+    plt = factories["playlists.PlaylistTrack"](playlist=playlist, index=0, local=True)
+    factories["playlists.PlaylistTrack"](playlist=playlist, index=1, local=True)
+    factories["playlists.PlaylistTrack"](playlist=playlist, index=2, local=True)
+    playlist_data = serializers.PlaylistSerializer(playlist).data
+
+    routes.inbox_delete_playlist(
+        {"object": playlist_data},
+        context={
+            "actor": plt.playlist.actor,
+            "raise_exception": True,
+        },
+    )
+    assert not playlists_models.Playlist.objects.filter(fid=plt.playlist.fid).exists()
+    assert not playlists_models.PlaylistTrack.objects.filter(fid=plt.fid).exists()
+
+
+def test_inbox_update_playlist(factories, mocker):
+    actor = factories["federation.Actor"](local=True)
+    playlist = factories["playlists.Playlist"](
+        actor=actor, local=True, privacy_level="everyone"
+    )
+    playlist_updated = factories["playlists.Playlist"](
+        actor=actor, local=True, privacy_level="everyone"
+    )
+
+    factories["playlists.PlaylistTrack"](playlist=playlist, index=0, local=True)
+    factories["playlists.PlaylistTrack"](playlist=playlist, index=1, local=True)
+    factories["playlists.PlaylistTrack"](playlist=playlist, index=2, local=True)
+
+    playlist_data = serializers.PlaylistSerializer(playlist_updated).data
+    playlist_data["id"] = str(playlist.fid)
+
+    routes.inbox_update_playlist(
+        {"object": playlist_data},
+        context={
+            "actor": playlist.actor,
+            "raise_exception": True,
+        },
+    )
+    should_be_updated = playlists_models.Playlist.objects.get(fid=playlist.fid)
+    expected = serializers.PlaylistSerializer(should_be_updated).data
+    playlist_data["updated"] = expected["updated"]
+    assert serializers.PlaylistSerializer(should_be_updated).data == playlist_data

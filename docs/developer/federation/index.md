@@ -846,3 +846,77 @@ An `Audio` object is a custom object used to store upload information. It extend
 Funkwhale uses the `attributedTo` property to denote the actor responsible for an object. If an object has an `attributedTo` attributed, the associated actor can perform activities to it, including [`Update`](#update) and [`Delete`](#delete).
 
 Funkwhale also attributes all objects on a domain with the domain's [Service actor](#service-actor)
+
+## Scapping Collections
+
+Playlists objects are a custom ordered collection[Ordered Collection](https://www.w3.org/TR/activitystreams-vocabulary/#dfn-orderedcollection) containing `PlaylistTracks` objects.
+The `id` of the playlist is the endpoint where playlist information can be gathered. If no page is specified it will only give the playlist metadata :
+
+```{code-block} json
+{
+    "id": "https://node1.funkwhale.test/federation/music/playlists/c1c36f15-f49e-4da6-abd4-17b9b438c348",
+    "attributedTo": "https://node1.funkwhale.test/federation/actors/node1",
+    "totalItems": 0,
+    "type": "Playlist",
+    "current": "https://node1.funkwhale.test/federation/music/playlists/c1c36f15-f49e-4da6-abd4-17b9b438c348?page=1",
+    "first": "https://node1.funkwhale.test/federation/music/playlists/c1c36f15-f49e-4da6-abd4-17b9b438c348?page=1",
+    "last": "https://node1.funkwhale.test/federation/music/playlists/c1c36f15-f49e-4da6-abd4-17b9b438c348?page=1",
+    "name": "zef",
+    "@context": [
+        "https://www.w3.org/ns/activitystreams",
+        "https://w3id.org/security/v1",
+        "https://funkwhale.audio/ns",
+        {
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "Hashtag": "as:Hashtag",
+        },
+    ],
+}
+
+```
+
+Note that a limited amount of information is send. Full [Playlist](###Playlist) objects are sent through Activities.
+
+The [PlaylisTracks](###PlaylistTrack) will be sent in a [CollectionPage](https://www.w3.org/TR/activitystreams-vocabulary/#dfn-collectionpage) if a page is specified in the playlist url :
+
+```{code-block} json
+{
+    "id": "https://test.federation/federation/music/playlists/1efba9b2-8218-4ac2-bdce-f9dd8bbd510c?page=1",
+    "partOf": "https://test.federation/federation/music/playlists/1efba9b2-8218-4ac2-bdce-f9dd8bbd510c",
+    "totalItems": 5,
+    "type": "CollectionPage",
+    "first": "https://test.federation/federation/music/playlists/1efba9b2-8218-4ac2-bdce-f9dd8bbd510c?page=1",
+    "last": "https://test.federation/federation/music/playlists/1efba9b2-8218-4ac2-bdce-f9dd8bbd510c?page=1",
+    "items": [
+        {
+            "type": "PlaylistTrack",
+            "id": "https://test.federation/federation/music/playlists/2861fc4a-f3b6-4740-8586-c4573140b994",
+            "track": "https://simon.biz//34d56bbd-5096-4ac7-ada9-2d11ea731317",
+            "index": 0,
+            "attributedTo": "https://wallace-salazar.com/users/ryanrachel953",
+            "published": "2024-12-04T11:50:16.625013+00:00",
+            "playlist": "https://test.federation/federation/music/playlists/1efba9b2-8218-4ac2-bdce-f9dd8bbd510c",
+        },
+        {
+            "type": "PlaylistTrack",
+            "id": "https://test.federation/federation/music/playlists/96a46881-9544-438a-9e34-b7a1b5ecbc7a",
+            "track": "https://fuller.info//a8977c57-5704-469a-a2ae-fa7b213bb370",
+            "index": 1,
+            "attributedTo": "https://wallace-salazar.com/users/ryanrachel953",
+            "published": "2024-12-04T11:50:16.631200+00:00",
+            "playlist": "https://test.federation/federation/music/playlists/1efba9b2-8218-4ac2-bdce-f9dd8bbd510c",
+        },
+    ],
+    "attributedTo": "https://wallace-salazar.com/users/ryanrachel953",
+    "@context": [
+        "https://www.w3.org/ns/activitystreams",
+        "https://w3id.org/security/v1",
+        "https://funkwhale.audio/ns",
+        {
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "Hashtag": "as:Hashtag",
+        },
+    ],
+}
+
+```

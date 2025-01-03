@@ -16,6 +16,7 @@ from funkwhale_api.history import models as history_models
 from funkwhale_api.moderation import models as moderation_models
 from funkwhale_api.music import models as music_models
 from funkwhale_api.music import utils as music_utils
+from funkwhale_api.playlists import models as playlists_models
 
 from . import (
     activity,
@@ -703,3 +704,34 @@ class ListeningsViewSet(
 
         serializer = self.get_serializer(instance)
         return response.Response(serializer.data)
+
+
+class PlaylistViewSet(
+    FederationMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
+):
+    authentication_classes = [authentication.SignatureAuthentication]
+    permission_classes = [common_permissions.PrivacyLevelPermission]
+    renderer_classes = renderers.get_ap_renderers()
+    queryset = playlists_models.Playlist.objects.local().select_related("actor")
+    serializer_class = serializers.PlaylistCollectionSerializer
+    lookup_field = "uuid"
+
+    def retrieve(self, request, *args, **kwargs):
+        playlist = self.get_object()
+        if utils.should_redirect_ap_to_html(request.headers.get("accept")):
+            return redirect_to_html(playlist.get_absolute_url())
+
+        conf = {
+            "id": playlist.fid,
+            "actor": playlist.actor,
+            "name": playlist.name,
+            "items": playlist.playlist_tracks.order_by("index").prefetch_related(
+                "track",
+            ),
+            "item_serializer": serializers.PlaylistTrackSerializer,
+        }
+        return get_collection_response(
+            conf=conf,
+            querystring=request.GET,
+            collection_serializer=serializers.PlaylistCollectionSerializer(playlist),
+        )

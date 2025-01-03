@@ -12,12 +12,14 @@ from funkwhale_api.users import models as user_models
 
 def get_or_create_playlist(self, playlist_name, user, **options):
     playlist = playlist_models.Playlist.objects.filter(
-        Q(user=user) & Q(name=playlist_name)
+        Q(actor=user.actor) & Q(name=playlist_name)
     ).first()
     if not playlist:
         if options["no_dry_run"]:
             playlist = playlist_models.Playlist.objects.create(
-                name=playlist_name, user=user, privacy_level=options["privacy_level"]
+                name=playlist_name,
+                actor=user.actor,
+                privacy_level=options["privacy_level"],
             )
             return playlist
 
@@ -26,7 +28,9 @@ def get_or_create_playlist(self, playlist_name, user, **options):
         )
         if response.lower() in "yes":
             playlist = playlist_models.Playlist.objects.create(
-                name=playlist_name, user=user, privacy_level=options["privacy_level"]
+                name=playlist_name,
+                actor=user.actor,
+                privacy_level=options["privacy_level"],
             )
             return playlist
     else:

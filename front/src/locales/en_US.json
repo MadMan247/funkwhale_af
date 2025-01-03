@@ -3731,7 +3731,7 @@
           "header": {
             "accountData": "Account data",
             "activePolicy": "This domain is subject to specific moderation rules",
-            "activity": "Activty",
+            "activity": "Activity",
             "audioContent": "Audio content",
             "localAccount": "Local account",
             "noPolicy": "You don't have any rule in place for this account."
@@ -3818,7 +3818,7 @@
           },
           "header": {
             "activePolicy": "This domain is subject to specific moderation rules",
-            "activity": "Activty",
+            "activity": "Activity",
             "audioContent": "Audio content",
             "instanceData": "Instance data",
             "noPolicy": "You don't have any rule in place for this domain."

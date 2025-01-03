@@ -3,7 +3,7 @@ from rest_framework import exceptions
 
 
 def test_can_insert_plt(factories):
-    plt = factories["playlists.PlaylistTrack"]()
+    plt = factories["playlists.PlaylistTrack"](index=None)
     modification_date = plt.playlist.modification_date
 
     assert plt.index is None

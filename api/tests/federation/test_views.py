@@ -5,7 +5,7 @@ from django.urls import reverse
 from funkwhale_api.common import utils
 from funkwhale_api.federation import actors, serializers
 from funkwhale_api.federation import utils as federation_utils
-from funkwhale_api.federation import webfinger
+from funkwhale_api.federation import views, webfinger
 
 
 def test_authenticate_allows_anonymous_actor_fetch_when_allow_list_enabled(
@@ -765,3 +765,40 @@ def test_get_listening(factories, logged_in_api_client, privacy_level, expected)
     )
     response = logged_in_api_client.get(url)
     assert response.status_code == expected
+
+
+def test_playlist_retrieve(factories, api_client):
+    playlist = factories["playlists.Playlist"](local=True)
+    url = reverse("federation:music:playlists-detail", kwargs={"uuid": playlist.uuid})
+    response = api_client.get(url)
+    expected = serializers.PlaylistCollectionSerializer(playlist).data
+
+    assert response.status_code == 200
+    assert response.data == expected
+
+
+def test_playlist_get_collection_response(factories, mocker):
+    actor = factories["federation.Actor"]()
+    playlist = factories["playlists.Playlist"](actor=actor, local=True)
+    plt = factories["playlists.PlaylistTrack"](playlist=playlist, index=4, local=True)
+    factories["playlists.PlaylistTrack"](playlist=playlist, index=0, local=True)
+    factories["playlists.PlaylistTrack"](playlist=playlist, index=1, local=True)
+    factories["playlists.PlaylistTrack"](playlist=playlist, index=2, local=True)
+    factories["playlists.PlaylistTrack"](playlist=playlist, index=3, local=True)
+
+    conf = {
+        "id": playlist.fid,
+        "actor": playlist.actor,
+        "items": playlist.playlist_tracks.order_by("index").prefetch_related(
+            "track",
+        ),
+        "item_serializer": serializers.PlaylistTrackSerializer,
+    }
+    playlist_data = views.get_collection_response(
+        conf=conf,
+        querystring={"uuid": playlist.uuid, "page": 1},
+        collection_serializer=serializers.PlaylistCollectionSerializer(playlist),
+    )
+
+    assert playlist_data.data["totalItems"] == 5
+    assert playlist_data.data["items"][4]["track"] == plt.track.fid

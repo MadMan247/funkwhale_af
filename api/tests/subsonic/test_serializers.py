@@ -270,11 +270,12 @@ def test_get_album_list2_serializer(factories):
 def test_playlist_serializer(factories):
     plt = factories["playlists.PlaylistTrack"]()
     playlist = plt.playlist
+    factories["users.User"](actor=playlist.actor)
     qs = music_models.Album.objects.with_tracks_count().order_by("pk")
     expected = {
         "id": playlist.pk,
         "name": playlist.name,
-        "owner": playlist.user.username,
+        "owner": playlist.actor.user.username,
         "public": "false",
         "songCount": 1,
         "duration": 0,
@@ -289,11 +290,12 @@ def test_playlist_detail_serializer(factories):
     plt = factories["playlists.PlaylistTrack"]()
     upload = factories["music.Upload"](track=plt.track)
     playlist = plt.playlist
+    factories["users.User"](actor=playlist.actor)
     qs = music_models.Album.objects.with_tracks_count().order_by("pk")
     expected = {
         "id": playlist.pk,
         "name": playlist.name,
-        "owner": playlist.user.username,
+        "owner": playlist.actor.user.username,
         "public": "false",
         "songCount": 1,
         "duration": 0,

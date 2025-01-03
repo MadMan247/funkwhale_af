@@ -299,14 +299,24 @@ def schedule_key_rotation(actor_id, delay):
     tasks.rotate_actor_key.apply_async(kwargs={"actor_id": actor_id}, countdown=delay)
 
 
-def activity_pass_privacy_level(context, routing):
-    TYPE_FOLLOW_USER_PRIVACY_LEVEL = ["Listen", "Like"]
+def activity_pass_user_privacy_level(context, routing):
+    TYPE_FOLLOW_USER_PRIVACY_LEVEL = ["Listen", "Like", "Create"]
     TYPE_IGNORE_USER_PRIVACY_LEVEL = ["Delete", "Accept", "Follow"]
     MUSIC_OBJECT_TYPE = ["Audio", "Track", "Album", "Artist"]
 
     actor = context.get("actor", False)
     type = routing.get("type", False)
     object_type = routing.get("object", {}).get("type", None)
+
+    if not actor:
+        logger.warning(
+            "No actor provided in activity context : \
+                we cannot follow actor.privacy_level, activity will be sent by default."
+        )
+
+    # We do not consider music metadata has private
+    if object_type in MUSIC_OBJECT_TYPE:
+        return True
 
     if type:
         if type in TYPE_IGNORE_USER_PRIVACY_LEVEL:
@@ -317,11 +327,27 @@ def activity_pass_privacy_level(context, routing):
                 "instance",
             ]:
                 return False
+
             return True
+
+    return True
+
+
+def activity_pass_object_privacy_level(context, routing):
+    MUSIC_OBJECT_TYPE = ["Audio", "Track", "Album", "Artist"]
+
+    # we only support playlist federation for now
+    object = context.get("playlist", False)
+
+    obj_privacy_level = object.privacy_level if object else None
+    object_type = routing.get("object", {}).get("type", None)
 
     # We do not consider music metadata has private
     if object_type in MUSIC_OBJECT_TYPE:
         return True
+
+    if object and obj_privacy_level and obj_privacy_level in ["me", "instance"]:
+        return False
 
     return True
 
@@ -348,8 +374,16 @@ class OutboxRouter(Router):
                 )
             )
 
-        if not activity_pass_privacy_level(context, routing):
-            logger.info("[federation] Discarding outbox dispatch due to privacy_level")
+        if activity_pass_user_privacy_level(context, routing) is False:
+            logger.info(
+                "[federation] Discarding outbox dispatch due to user privacy_level"
+            )
+            return
+
+        if activity_pass_object_privacy_level(context, routing) is False:
+            logger.info(
+                "[federation] Discarding outbox dispatch due to object privacy_level"
+            )
             return
 
         for route, handler in self.routes:
@@ -435,6 +469,7 @@ class OutboxRouter(Router):
             )
 
             for a in activities:
+                logger.info(f"[federation] OUtbox sending activity : {a.pk}")
                 funkwhale_utils.on_commit(tasks.dispatch_outbox.delay, activity_id=a.pk)
             return activities
 

@@ -14,14 +14,20 @@ Users will be able to click on a "Follow playlist" button. The playlist content 
 
 #### Backend
 
-Adding a playlist to a library is an ActivityPub `Follow`. The follow request is made to an actor specially created for the playlist.
-Endpoints and logic should follow the actual ActivityPub implementation :
+In the context of an user A following user B owner of Playlist B. The User A will receive an `Create` activity when User B create a playlist. `Update` activities with `Playlist` objects will be send to the Instance A service actor. They **don't** contain PlalistTracks, only the playlist metatadat is added to database. Playlist tracks are imported thanks to the playlist scan. Or in some case through playlist track create activity.
 
-- The follow request is accepted automatically if the playlist is public
-- When accepted, the playlist is added to the local pod, the playlist actor is created has followed by the local actor
+Since `PlaylistTrack` object can be updated a lot, instead of sending a bunch of `PlaylistTrack` updates we only send one `Playlist` update (default is on per day, defined in `schedule_scan` function). We use a celery task, it will send an playlist `Update` activity to remote servers if playlist is a local one and will trigger a playlist scan if playlist is a remote one.
 
-For better understandability, the playlist actor should be named after the playlist name and the user actor owning the playlist. For example, if John has a "Rock" playlist, the actor should be called: john_rock_playlist.
-Add playlist update activities to notifications.
+To follow activitypub standard and since playlist metadata update shouldn't happen to much we will trigger a playlist scan each time we receive a playlist update activiy.
+
+The scan will get the playlist track by querying the playlist federation endpoint. It return a ordered Collection. Each element of the collection is added to the local database.
+When the scan start we delete all `PlaylistTracks` from the playlist. I could be more optimized to send `Delete activities` on `PlaylistTrack` objects. But since were are not sure and since and way more easy to delete the tracks we do it this way for now.
+
+The `PlaylistTrack` object will only support `Create` activities, since update or delete would trigger a lot of them and they are not interesting (we use playlist scan instead).
+`Create` activities will be send to User A followers.
+If a `PlaylistTrack` `Create` is sent and the index is not the good one it eans the receiving instance isn't up to date -> we trigger a full playlistscan
+
+This will allow to receive notification when a user Add a track to a playlist. Other playlist actions will be silent but the playlist will be kept updated.
 
 #### Frontend
 
@@ -42,3 +48,9 @@ Add playlist update activities to notifications.
 ### Minimum Viable Product
 
 ### Next Steps
+
+- [ ] Add playlist update activities to notifications.
+- [ ] Create a frontend thread with Update Playlist activities
+- [ ] Update the federation search to include Playlist objects
+- [ ] Adding a playlist to a user library as an ActivityPub `Like`
+- [ ] Check if sending whole big playlists become a problem.

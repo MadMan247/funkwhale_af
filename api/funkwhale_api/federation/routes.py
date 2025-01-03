@@ -6,6 +6,7 @@ from django.db.models import Q
 from funkwhale_api.favorites import models as favorites_models
 from funkwhale_api.history import models as history_models
 from funkwhale_api.music import models as music_models
+from funkwhale_api.playlists import models as playlist_models
 
 from . import activity, actors, models, serializers
 
@@ -678,9 +679,6 @@ def inbox_delete_favorite(payload, context):
     favorite.delete()
 
 
-# to do : test listening routes and broadcast
-
-
 @outbox.register({"type": "Listen", "object.type": "Track"})
 def outbox_create_listening(context):
     track = context["track"]
@@ -740,3 +738,104 @@ def inbox_delete_listening(payload, context):
         logger.debug("Discarding deletion of unkwnown listening %s", listening_id)
         return
     favorite.delete()
+
+
+@outbox.register({"type": "Create", "object.type": "Playlist"})
+def outbox_create_playlist(context):
+    playlist = context["playlist"]
+
+    serializer = serializers.ActivitySerializer(
+        {
+            "type": "Create",
+            "actor": playlist.actor,
+            "id": playlist.fid,
+            "object": serializers.PlaylistSerializer(playlist).data,
+        }
+    )
+    yield {
+        "type": "Create",
+        "actor": playlist.actor,
+        "payload": with_recipients(
+            serializer.data,
+            to=[{"type": "followers", "target": playlist.actor}],
+        ),
+    }
+
+
+@outbox.register({"type": "Delete", "object.type": "Playlist"})
+def outbox_delete_playlist(context):
+    playlist = context["playlist"]
+    actor = playlist.actor
+    serializer = serializers.ActivitySerializer(
+        {"type": "Delete", "object": {"type": "Playlist", "id": playlist.fid}}
+    )
+    yield {
+        "type": "Delete",
+        "actor": actor,
+        "payload": with_recipients(
+            serializer.data,
+            to=[activity.PUBLIC_ADDRESS, {"type": "instances_with_followers"}],
+        ),
+    }
+
+
+@inbox.register({"type": "Create", "object.type": "Playlist"})
+def inbox_create_playlist(payload, context):
+    serializer = serializers.PlaylistSerializer(data=payload["object"])
+    serializer.is_valid(raise_exception=True)
+    instance = serializer.save()
+    return {"object": instance}
+
+
+@inbox.register({"type": "Delete", "object.type": "Playlist"})
+def inbox_delete_playlist(payload, context):
+    actor = context["actor"]
+    playlist_id = payload["object"].get("id")
+
+    query = Q(fid=playlist_id) & Q(actor=actor)
+    try:
+        playlist = playlist_models.Playlist.objects.get(query)
+    except playlist_models.Playlist.DoesNotExist:
+        logger.debug("Discarding deletion of unkwnown listening %s", playlist_id)
+        return
+    playlist.playlist_tracks.all().delete()
+    playlist.delete()
+
+
+@inbox.register({"type": "Update", "object.type": "Playlist"})
+def inbox_update_playlist(payload, context):
+    actor = context["actor"]
+    playlist_id = payload["object"].get("id")
+
+    if not actor.playlists.filter(fid=playlist_id).exists():
+        logger.debug("Discarding update of unkwnown playlist_id %s", playlist_id)
+        return
+
+    serializer = serializers.PlaylistSerializer(data=payload["object"])
+    if serializer.is_valid(raise_exception=True):
+        playlist = serializer.save()
+        # we trigger a scan since we use this activity to avoid sending many PlaylistTracks activities
+        playlist.schedule_scan(actors.get_service_actor())
+        return
+    else:
+        logger.debug(
+            "Discarding update of playlist_id %s because of payload errors: %s",
+            playlist_id,
+            serializer.errors,
+        )
+
+
+@outbox.register({"type": "Update", "object.type": "Playlist"})
+def outbox_update_playlist(context):
+    playlist = context["playlist"]
+    serializer = serializers.ActivitySerializer(
+        {"type": "Update", "object": serializers.PlaylistSerializer(playlist).data}
+    )
+    yield {
+        "type": "Update",
+        "actor": playlist.actor,
+        "payload": with_recipients(
+            serializer.data,
+            to=[{"type": "followers", "target": playlist.actor}],
+        ),
+    }

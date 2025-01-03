@@ -53,8 +53,8 @@ const images = computed(() => {
         </router-link>
       </strong>
       <div class="description">
-        <user-link
-          :user="playlist.user"
+        <actor-link
+          :actor="playlist.actor"
           :avatar="false"
           class="left floated"
         />

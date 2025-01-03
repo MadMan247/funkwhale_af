@@ -5,6 +5,7 @@ import os
 
 import requests
 from django.conf import settings
+from django.core.cache import cache
 from django.db import transaction
 from django.db.models import F, Q
 from django.db.models.deletion import Collector
@@ -18,6 +19,7 @@ from funkwhale_api.common import preferences, session
 from funkwhale_api.common import utils as common_utils
 from funkwhale_api.moderation import mrf
 from funkwhale_api.music import models as music_models
+from funkwhale_api.playlists import models as playlists_models
 from funkwhale_api.taskapp import celery
 
 from . import (
@@ -665,3 +667,14 @@ def check_single_remote_instance_availability(domain):
         domain.reachable = False
         domain.save()
         return domain.reachable
+
+
+@celery.app.task(name="federation.trigger_playlist_ap_update")
+def trigger_playlist_ap_update(playlist):
+    for playlist_uuid in cache.get("playlists_for_ap_update"):
+        routes.outbox.dispatch(
+            {"type": "Update", "object": {"type": "Playlist"}},
+            context={
+                "playlist": playlists_models.Playlist.objects.get(uuid=playlist_uuid)
+            },
+        )

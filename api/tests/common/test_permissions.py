@@ -7,10 +7,12 @@ from funkwhale_api.common import permissions
 
 def test_owner_permission_owner_field_ok(nodb_factories, api_request):
     playlist = nodb_factories["playlists.Playlist"]()
+    nodb_factories["users.User"](actor=playlist.actor)
     view = APIView.as_view()
     permission = permissions.OwnerPermission()
     request = api_request.get("/")
-    setattr(request, "user", playlist.user)
+    setattr(request, "user", playlist.actor.user)
+    setattr(view, "owner_field", "actor.user")
     check = permission.has_object_permission(request, view, playlist)
 
     assert check is True
@@ -24,7 +26,7 @@ def test_owner_permission_owner_field_not_ok(
     permission = permissions.OwnerPermission()
     request = api_request.get("/")
     setattr(request, "user", anonymous_user)
-
+    setattr(view, "owner_field", "actor.user")
     with pytest.raises(Http404):
         permission.has_object_permission(request, view, playlist)
 

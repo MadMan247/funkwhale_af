@@ -10,6 +10,7 @@ import funkwhale_api
 from funkwhale_api.moderation import filters as moderation_filters
 from funkwhale_api.music import models as music_models
 from funkwhale_api.music import views as music_views
+from funkwhale_api.playlists import models
 from funkwhale_api.subsonic import renderers, serializers
 
 
@@ -648,8 +649,9 @@ def test_get_playlists(f, db, logged_in_api_client, factories):
     logged_in_api_client.user.create_actor()
     url = reverse("api:subsonic:subsonic-get_playlists")
     assert url.endswith("getPlaylists") is True
+
     playlist1 = factories["playlists.PlaylistTrack"](
-        playlist__user=logged_in_api_client.user
+        playlist__actor__user=logged_in_api_client.user
     ).playlist
     playlist2 = factories["playlists.PlaylistTrack"](
         playlist__privacy_level="everyone"
@@ -658,9 +660,16 @@ def test_get_playlists(f, db, logged_in_api_client, factories):
         playlist__privacy_level="instance"
     ).playlist
     # private
-    factories["playlists.PlaylistTrack"](playlist__privacy_level="me")
+    plt = factories["playlists.PlaylistTrack"](playlist__privacy_level="me")
     # no track
-    factories["playlists.Playlist"](privacy_level="everyone")
+    playlist4 = factories["playlists.Playlist"](privacy_level="everyone")
+
+    factories["users.User"](actor=playlist1.actor)
+    factories["users.User"](actor=playlist2.actor)
+    factories["users.User"](actor=playlist3.actor)
+    factories["users.User"](actor=playlist4.actor)
+    factories["users.User"](actor=plt.playlist.actor)
+
     response = logged_in_api_client.get(url, {"f": f})
 
     qs = (
@@ -681,8 +690,10 @@ def test_get_playlist(f, db, logged_in_api_client, factories):
     url = reverse("api:subsonic:subsonic-get_playlist")
     assert url.endswith("getPlaylist") is True
     playlist = factories["playlists.PlaylistTrack"](
-        playlist__user=logged_in_api_client.user
+        playlist__actor__user=logged_in_api_client.user
     ).playlist
+    factories["users.User"](actor=playlist.actor)
+
     response = logged_in_api_client.get(url, {"f": f, "id": playlist.pk})
 
     qs = playlist.__class__.objects.with_tracks_count()
@@ -696,7 +707,8 @@ def test_get_playlist(f, db, logged_in_api_client, factories):
 def test_update_playlist(f, db, logged_in_api_client, factories):
     url = reverse("api:subsonic:subsonic-update_playlist")
     assert url.endswith("updatePlaylist") is True
-    playlist = factories["playlists.Playlist"](user=logged_in_api_client.user)
+    actor = logged_in_api_client.user.create_actor()
+    playlist = factories["playlists.Playlist"](actor=actor)
     factories["playlists.PlaylistTrack"](index=0, playlist=playlist)
     new_track = factories["music.Track"]()
     response = logged_in_api_client.get(
@@ -720,7 +732,8 @@ def test_update_playlist(f, db, logged_in_api_client, factories):
 def test_delete_playlist(f, db, logged_in_api_client, factories):
     url = reverse("api:subsonic:subsonic-delete_playlist")
     assert url.endswith("deletePlaylist") is True
-    playlist = factories["playlists.Playlist"](user=logged_in_api_client.user)
+    actor = logged_in_api_client.user.create_actor()
+    playlist = factories["playlists.Playlist"](actor=actor)
     response = logged_in_api_client.get(url, {"f": f, "id": playlist.pk})
     assert response.status_code == 200
     with pytest.raises(playlist.__class__.DoesNotExist):
@@ -733,11 +746,12 @@ def test_create_playlist(f, db, logged_in_api_client, factories):
     assert url.endswith("createPlaylist") is True
     track1 = factories["music.Track"]()
     track2 = factories["music.Track"]()
+    actor = logged_in_api_client.user.create_actor()
     response = logged_in_api_client.get(
         url, {"f": f, "name": "hello", "songId": [track1.pk, track2.pk]}
     )
     assert response.status_code == 200
-    playlist = logged_in_api_client.user.playlists.latest("id")
+    playlist = models.Playlist.objects.filter(actor=actor).latest("id")
     assert playlist.playlist_tracks.count() == 2
     for i, t in enumerate([track1, track2]):
         plt = playlist.playlist_tracks.get(track=t)
@@ -753,7 +767,8 @@ def test_create_playlist(f, db, logged_in_api_client, factories):
 def test_create_playlist_with_update(f, db, logged_in_api_client, factories):
     url = reverse("api:subsonic:subsonic-create_playlist")
     assert url.endswith("createPlaylist") is True
-    playlist = factories["playlists.Playlist"](user=logged_in_api_client.user)
+    actor = logged_in_api_client.user.create_actor()
+    playlist = factories["playlists.Playlist"](actor=actor)
     factories["playlists.PlaylistTrack"](index=0, playlist=playlist)
     track1 = factories["music.Track"]()
     track2 = factories["music.Track"]()

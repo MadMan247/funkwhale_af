@@ -5,11 +5,10 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
-from funkwhale_api.federation import serializers as federation_serializers
+from funkwhale_api.federation.serializers import APIActorSerializer
 from funkwhale_api.music import tasks
 from funkwhale_api.music.models import Album, Artist, Track
 from funkwhale_api.music.serializers import TrackSerializer
-from funkwhale_api.users.serializers import UserBasicSerializer
 
 from . import models
 
@@ -33,16 +32,15 @@ class PlaylistSerializer(serializers.ModelSerializer):
     tracks_count = serializers.SerializerMethodField(read_only=True)
     duration = serializers.SerializerMethodField(read_only=True)
     album_covers = serializers.SerializerMethodField(read_only=True)
-    user = UserBasicSerializer(read_only=True)
     is_playable = serializers.SerializerMethodField()
-    actor = serializers.SerializerMethodField()
+    actor = APIActorSerializer(read_only=True)
 
     class Meta:
         model = models.Playlist
         fields = (
             "id",
             "name",
-            "user",
+            "actor",
             "modification_date",
             "creation_date",
             "privacy_level",
@@ -54,25 +52,12 @@ class PlaylistSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ["id", "modification_date", "creation_date"]
 
-    @extend_schema_field(federation_serializers.APIActorSerializer)
-    def get_actor(self, obj):
-        actor = obj.user.actor
-        if actor:
-            return federation_serializers.APIActorSerializer(actor).data
-
     @extend_schema_field(OpenApiTypes.BOOL)
     def get_is_playable(self, obj):
-        try:
-            return bool(obj.playable_plts)
-        except AttributeError:
-            return None
+        return getattr(obj, "is_playable_by_actor", False)
 
     def get_tracks_count(self, obj) -> int:
-        try:
-            return obj.tracks_count
-        except AttributeError:
-            # no annotation?
-            return obj.playlist_tracks.count()
+        return getattr(obj, "tracks_count", obj.playlist_tracks.count())
 
     def get_duration(self, obj) -> int:
         try:
@@ -173,7 +158,7 @@ class XspfSerializer(serializers.Serializer):
         pl = models.Playlist.objects.create(
             name=validated_data["title"],
             privacy_level="private",
-            user=validated_data["request"].user,
+            actor=validated_data["request"].user.actor,
         )
         pl.insert_many(validated_data["tracks"])
 

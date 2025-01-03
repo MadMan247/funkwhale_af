@@ -100,9 +100,9 @@ def find_object(
 
 def get_playlist_qs(request):
     qs = playlists_models.Playlist.objects.filter(
-        fields.privacy_level_query(request.user)
+        fields.privacy_level_query(request.user, "privacy_level", "actor__user")
     )
-    qs = qs.with_tracks_count().exclude(_tracks_count=0).select_related("user")
+    qs = qs.with_tracks_count().exclude(_tracks_count=0).select_related("actor__user")
     return qs.order_by("-creation_date")
 
 
@@ -627,7 +627,7 @@ class SubsonicViewSet(viewsets.GenericViewSet):
         url_name="update_playlist",
         url_path="updatePlaylist",
     )
-    @find_object(lambda request: request.user.playlists.all(), field="playlistId")
+    @find_object(lambda request: request.user.actor.playlists.all(), field="playlistId")
     def update_playlist(self, request, *args, **kwargs):
         playlist = kwargs.pop("obj")
         data = request.GET or request.POST
@@ -672,7 +672,7 @@ class SubsonicViewSet(viewsets.GenericViewSet):
         url_name="delete_playlist",
         url_path="deletePlaylist",
     )
-    @find_object(lambda request: request.user.playlists.all())
+    @find_object(lambda request: request.user.actor.playlists.all())
     def delete_playlist(self, request, *args, **kwargs):
         playlist = kwargs.pop("obj")
         playlist.delete()
@@ -700,7 +700,7 @@ class SubsonicViewSet(viewsets.GenericViewSet):
                 }
             )
         if playListId:
-            playlist = request.user.playlists.get(pk=playListId)
+            playlist = request.user.actor.playlists.get(pk=playListId)
             createPlaylist = False
         if not name and not playlist:
             return response.Response(
@@ -712,7 +712,7 @@ class SubsonicViewSet(viewsets.GenericViewSet):
                 }
             )
         if createPlaylist:
-            playlist = request.user.playlists.create(name=name)
+            playlist = request.user.actor.playlists.create(name=name)
         ids = []
         for i in data.getlist("songId"):
             try:
@@ -731,7 +731,7 @@ class SubsonicViewSet(viewsets.GenericViewSet):
                     pass
             if sorted_tracks:
                 playlist.insert_many(sorted_tracks)
-        playlist = request.user.playlists.with_tracks_count().get(pk=playlist.pk)
+        playlist = request.user.actor.playlists.with_tracks_count().get(pk=playlist.pk)
         data = {"playlist": serializers.get_playlist_detail_data(playlist)}
         return response.Response(data)
 

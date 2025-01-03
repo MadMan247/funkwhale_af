@@ -254,7 +254,7 @@ def get_playlist_data(playlist):
     return {
         "id": playlist.pk,
         "name": playlist.name,
-        "owner": playlist.user.username,
+        "owner": playlist.actor.user.username,
         "public": "false",
         "songCount": playlist._tracks_count,
         "duration": 0,

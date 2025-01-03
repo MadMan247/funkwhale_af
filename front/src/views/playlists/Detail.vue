@@ -95,7 +95,7 @@ const deletePlaylist = async () => {
           <div class="content">
             {{ playlist.name }}
             <div class="sub header">
-              {{ $t('views.playlists.Detail.meta.tracks', { username: playlist.user.username }, playlist.tracks_count) }}
+              {{ $t('views.playlists.Detail.meta.tracks', { username: playlist.actor.name }, playlist.tracks_count) }}
               <br>
               <duration :seconds="playlist.duration" />
             </div>
@@ -114,7 +114,7 @@ const deletePlaylist = async () => {
           </div>
           <div class="ui buttons">
             <button
-              v-if="$store.state.auth.profile && playlist.user.id === $store.state.auth.profile?.id"
+              v-if="$store.state.auth.profile && playlist.actor.full_username === store.state.auth.fullUsername"
               class="ui icon labeled button"
               @click="edit = !edit"
             >
@@ -137,7 +137,7 @@ const deletePlaylist = async () => {
               {{ $t('views.playlists.Detail.button.embed') }}
             </button>
             <dangerous-button
-              v-if="$store.state.auth.profile && playlist.user.id === $store.state.auth.profile.id"
+              v-if="$store.state.auth.profile && playlist.actor.full_username === store.state.auth.fullUsername"
               class="ui labeled danger icon button"
               :action="deletePlaylist"
             >

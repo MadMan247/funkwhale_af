@@ -235,7 +235,7 @@ def get_target_owner(target):
         music_models.Album: lambda t: t.attributed_to,
         music_models.Track: lambda t: t.attributed_to,
         music_models.Library: lambda t: t.actor,
-        playlists_models.Playlist: lambda t: t.user.actor,
+        playlists_models.Playlist: lambda t: t.actor,
         federation_models.Actor: lambda t: t,
     }
 
