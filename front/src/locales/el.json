@@ -1771,6 +1771,15 @@
     }
   },
   "views": {
+    "ChooseInstance": {
+      "button": {
+        "submit": "Υποβολή"
+      },
+      "header": {
+        "chooseInstance": "Επιλέξτε το instance σας",
+        "failure": "Δεν είναι δυνατή η σύνδεση στο συγκεκριμένο URL"
+      }
+    },
     "Notifications": {
       "header": {
         "funkwhaleSupport": "Σας αρέσει το Funkwhale;"
@@ -2450,15 +2459,6 @@
             "header": "Θέλετε να διαγράψετε το ράδιο \"{ radio }\";"
           }
         }
-      }
-    },
-    "ChooseInstance": {
-      "button": {
-        "submit": "Υποβολή"
-      },
-      "header": {
-        "chooseInstance": "Επιλέξτε το instance σας",
-        "failure": "Δεν είναι δυνατή η σύνδεση στο συγκεκριμένο URL"
       }
     }
   }
