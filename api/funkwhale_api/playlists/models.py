@@ -78,14 +78,14 @@ class PlaylistQuerySet(models.QuerySet, common_models.LocalFromFidQuerySet):
 
 class Playlist(federation_models.FederationMixin):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True)
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
     actor = models.ForeignKey(
         "federation.Actor", related_name="playlists", on_delete=models.CASCADE
     )
     creation_date = models.DateTimeField(default=timezone.now)
     modification_date = models.DateTimeField(auto_now=True)
     privacy_level = fields.get_privacy_field()
-
+    description = models.TextField(max_length=5000, null=True, blank=True)
     objects = PlaylistQuerySet.as_manager()
     federation_namespace = "playlists"
 

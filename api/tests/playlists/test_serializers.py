@@ -89,3 +89,30 @@ def test_playlist_serializer(factories, to_api_date):
     serializer = serializers.PlaylistSerializer(playlist)
 
     assert serializer.data == expected
+
+
+# to do :
+
+# @pytest.mark.parametrize(
+#     "field,before,after",
+#     [
+#         ("privacy_level", "me", "everyone"),
+#         ("name", "Before", "After"),
+#         ("description", "Before", "After"),
+#     ],
+# )
+# def test_update_playlist_privacy_level_broadcasts_to_followers(
+#     factories, field, before, after, mocker
+# ):
+#     dispatch = mocker.patch("funkwhale_api.federation.routes.outbox.dispatch")
+#     playlist = factories["playlists.Playlist"](**{field: before})
+
+#     serializer = serializers.PlaylistSerializer(
+#         playlist, data={field: after}, partial=True
+#     )
+#     assert serializer.is_valid(raise_exception=True)
+#     serializer.save()
+
+#     dispatch.assert_called_once_with(
+#         {"type": "Update", "object": {"type": "Library"}}, context={"library": library}
+#     )

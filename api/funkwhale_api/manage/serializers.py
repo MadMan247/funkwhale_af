@@ -572,7 +572,6 @@ class ManageLibrarySerializer(serializers.ModelSerializer):
     domain = serializers.CharField(source="domain_name")
     actor = ManageBaseActorSerializer()
     uploads_count = serializers.SerializerMethodField()
-    followers_count = serializers.SerializerMethodField()
 
     class Meta:
         model = music_models.Library
@@ -582,14 +581,11 @@ class ManageLibrarySerializer(serializers.ModelSerializer):
             "fid",
             "url",
             "name",
-            "description",
             "domain",
             "is_local",
             "creation_date",
             "privacy_level",
             "uploads_count",
-            "followers_count",
-            "followers_url",
             "actor",
         ]
         read_only_fields = [
@@ -605,10 +601,6 @@ class ManageLibrarySerializer(serializers.ModelSerializer):
     def get_uploads_count(self, obj) -> int:
         return getattr(obj, "_uploads_count", int(obj.uploads_count))
 
-    @extend_schema_field(OpenApiTypes.INT)
-    def get_followers_count(self, obj):
-        return getattr(obj, "followers_count", None)
-
 
 class ManageNestedLibrarySerializer(serializers.ModelSerializer):
     domain = serializers.CharField(source="domain_name")
@@ -622,12 +614,10 @@ class ManageNestedLibrarySerializer(serializers.ModelSerializer):
             "fid",
             "url",
             "name",
-            "description",
             "domain",
             "is_local",
             "creation_date",
             "privacy_level",
-            "followers_url",
             "actor",
         ]
 

@@ -329,7 +329,6 @@ class LibraryForOwnerSerializer(serializers.ModelSerializer):
             "uuid",
             "fid",
             "name",
-            "description",
             "privacy_level",
             "uploads_count",
             "size",
@@ -526,6 +525,26 @@ class UploadForOwnerSerializer(UploadSerializer):
             raise serializers.ValidationError("upload_quota_reached")
 
         return f
+
+
+class UploadBulkUpdateSerializer(serializers.Serializer):
+    uuid = serializers.UUIDField()
+    privacy_level = serializers.ChoiceField(
+        choices=models.LIBRARY_PRIVACY_LEVEL_CHOICES
+    )
+
+    def validate(self, data):
+        try:
+            upload = models.Upload.objects.get(uuid=data["uuid"])
+        except models.Upload.DoesNotExist:
+            raise serializers.ValidationError(
+                f"Upload with uuid {data['uuid']} does not exist"
+            )
+
+        upload.library = upload.library.actor.libraries.get(
+            privacy_level=data["privacy_level"]
+        )
+        return upload
 
 
 class UploadActionSerializer(common_serializers.ActionSerializer):

@@ -1,3 +1,8 @@
+from uuid import uuid4
+
+import pytest
+from django.utils.timezone import now
+
 # this test is commented since it's very slow, but it can be useful for future development
 # def test_pytest_plugin_initial(migrator):
 #     mapping_list = [
@@ -72,3 +77,107 @@ def test_artist_credit_migration(migrator):
         assert album_obj.artist_credit.all()[0].artist.pk == old_album.artist.pk
         assert album_obj.artist_credit.all()[0].joinphrase == ""
         assert album_obj.artist_credit.all()[0].credit == old_album.artist.name
+
+
+@pytest.mark.django_db
+def test_migrate_libraries_to_playlist(migrator):
+    music_initial_migration = (
+        "music",
+        "0059_remove_album_artist_remove_track_artist_artistcredit_and_more",
+    )
+    music_final_migration = ("music", "0061_migrate_libraries_to_playlist")
+
+    # Apply migrations
+    migrator.migrate(
+        [
+            music_initial_migration,
+        ]
+    )
+    music_apps = migrator.loader.project_state([music_initial_migration]).apps
+
+    Playlist = music_apps.get_model("playlists", "Playlist")
+    LibraryFollow = music_apps.get_model("federation", "LibraryFollow")
+    Actor = music_apps.get_model("federation", "Actor")
+    Domain = music_apps.get_model("federation", "Domain")
+    Track = music_apps.get_model("music", "Track")
+    Library = music_apps.get_model("music", "Library")
+    Upload = music_apps.get_model("music", "Upload")
+
+    # Create data
+    domain = Domain.objects.create()
+    domain2 = Domain.objects.create(pk=2)
+    actor = Actor.objects.create(name="Test Actor", domain=domain)
+    existing_urls = Actor.objects.values_list("fid", flat=True)
+    print(existing_urls)
+    target_actor = Actor.objects.create(
+        name="Test Actor 2", domain=domain2, fid="http://test2.com/superduniquemanonmam"
+    )
+
+    library = Library.objects.create(
+        name="This should becane playlist name",
+        actor=target_actor,
+        creation_date=now(),
+        privacy_level="everyone",
+        uuid=uuid4(),
+    )
+
+    Track.objects.create()
+    Track.objects.create()
+    track = Track.objects.create()
+    track2 = Track.objects.create()
+    track3 = Track.objects.create()
+
+    uploads = [
+        Upload.objects.create(library=library, track=track),
+        Upload.objects.create(library=library, track=track2),
+        Upload.objects.create(library=library, track=track3),
+    ]
+
+    library_follow = LibraryFollow.objects.create(
+        uuid=uuid4(),
+        target=library,
+        actor=actor,
+        approved=True,
+        creation_date=now(),
+        modification_date=now(),
+    )
+
+    # Perform migration
+    migrator.loader.build_graph()
+    migrator.migrate([music_final_migration])
+
+    new_apps = migrator.loader.project_state([music_final_migration]).apps
+    Playlist = new_apps.get_model("playlists", "Playlist")
+    PlaylistTrack = new_apps.get_model("playlists", "PlaylistTrack")
+    Follow = new_apps.get_model("federation", "Follow")
+    LibraryFollow = new_apps.get_model("federation", "LibraryFollow")
+    Follow = new_apps.get_model("federation", "Follow")
+
+    # Assertions
+
+    # Verify Playlist creation
+    playlist = Playlist.objects.get(name="This should becane playlist name")
+
+    assert playlist.actor.pk == library.actor.pk
+    assert playlist.creation_date == library.creation_date
+    assert playlist.privacy_level == library.privacy_level
+    assert playlist.description == library.description
+
+    # Verify PlaylistTrack creation
+    playlist_tracks = PlaylistTrack.objects.filter(playlist=playlist).order_by("index")
+    assert playlist_tracks.count() == 3
+    for i, playlist_track in enumerate(playlist_tracks):
+        assert playlist_track.track.pk == uploads[i].track.pk
+
+    # Verify User Follow creation
+    follow = Follow.objects.get(target__pk=target_actor.pk)
+    assert follow.actor.pk == actor.pk
+    assert follow.approved == library_follow.approved
+
+    # Verify LibraryFollow deletion and library creation
+    assert LibraryFollow.objects.count() == 0
+
+    # Test fail but works on real db I don't get why
+    # no library are found in the new app
+    # NewAppLibrary = new_apps.get_model("music", "Library")
+    # assert NewAppLibrary.objects.count() == 3

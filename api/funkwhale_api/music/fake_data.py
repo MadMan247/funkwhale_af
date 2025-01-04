@@ -10,7 +10,7 @@ from funkwhale_api.federation import factories as federation_factories
 from funkwhale_api.history import factories as history_factories
 from funkwhale_api.music import factories as music_factories
 from funkwhale_api.playlists import factories as playlist_factories
-from funkwhale_api.users import serializers
+from funkwhale_api.users import models, serializers
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +37,7 @@ def create_data(count=2, super_user_name=None):
                     print(
                         f"Superuser {super_user_name} already in db. Skipping fake-data creation"
                     )
+                    super_user = models.User.objects.get(username=super_user_name)
                     continue
                 else:
                     raise e
@@ -68,6 +69,9 @@ def create_data(count=2, super_user_name=None):
             ),
         )
         playlist_factories.PlaylistTrackFactory(playlist=playlist, track=upload.track)
+        federation_factories.LibraryFollowFactory.create_batch(
+            size=random.randint(3, 18), actor=super_user.actor
+        )
 
 
 if __name__ == "__main__":

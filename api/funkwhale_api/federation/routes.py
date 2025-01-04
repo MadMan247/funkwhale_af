@@ -166,7 +166,7 @@ def outbox_follow(context):
 def outbox_create_audio(context):
     upload = context["upload"]
     channel = upload.library.get_channel()
-    followers_target = channel.actor if channel else upload.library
+    followers_target = channel.actor if channel else upload.library.actor
     actor = channel.actor if channel else upload.library.actor
     if channel:
         serializer = serializers.ChannelCreateUploadSerializer(upload)
@@ -310,8 +310,8 @@ def outbox_delete_audio(context):
     uploads = context["uploads"]
     library = uploads[0].library
     channel = library.get_channel()
-    followers_target = channel.actor if channel else library
     actor = channel.actor if channel else library.actor
+    followers_target = channel.actor if channel else actor
     serializer = serializers.ActivitySerializer(
         {
             "type": "Delete",
@@ -677,6 +677,9 @@ def inbox_delete_favorite(payload, context):
         )
         return
     favorite.delete()
+
+
+# to do : test listening routes and broadcast
 
 
 @outbox.register({"type": "Listen", "object.type": "Track"})

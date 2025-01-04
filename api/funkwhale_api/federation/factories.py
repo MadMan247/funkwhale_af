@@ -173,13 +173,9 @@ class MusicLibraryFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
     uuid = factory.Faker("uuid4")
     actor = factory.SubFactory(ActorFactory)
     privacy_level = "me"
-    name = factory.Faker("sentence")
-    description = factory.Faker("sentence")
+    name = privacy_level
     uploads_count = 0
     fid = factory.Faker("federation_url")
-    followers_url = factory.LazyAttribute(
-        lambda o: o.fid + "/followers" if o.fid else None
-    )
 
     class Meta:
         model = "music.Library"

@@ -24,6 +24,7 @@ from funkwhale_api.common import validators as common_validators
 from funkwhale_api.federation import keys
 from funkwhale_api.federation import models as federation_models
 from funkwhale_api.federation import utils as federation_utils
+from funkwhale_api.music import models as music_models
 
 
 def get_token(length=5):
@@ -455,6 +456,22 @@ def create_actor(user, **kwargs):
     args["public_key"] = public.decode("utf-8")
 
     return federation_models.Actor.objects.create(user=user, **args)
+
+
+def create_user_libraries(user):
+    for privacy_level, l in music_models.LIBRARY_PRIVACY_LEVEL_CHOICES:
+        music_models.Library.objects.create(
+            actor=user.actor,
+            privacy_level=privacy_level,
+            name=privacy_level,
+            uuid=(new_uuid := uuid.uuid4()),
+            fid=federation_utils.full_url(
+                reverse(
+                    "federation:music:playlists-detail",
+                    kwargs={"uuid": new_uuid},
+                )
+            ),
+        )
 
 
 @receiver(ldap_populate_user)

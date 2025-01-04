@@ -293,11 +293,8 @@ class AlbumViewSet(
 
 
 class LibraryViewSet(
-    mixins.CreateModelMixin,
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
     lookup_field = "uuid"
@@ -331,42 +328,6 @@ class LibraryViewSet(
             qs = qs.viewable_by(actor)
 
         return qs
-
-    def perform_create(self, serializer):
-        serializer.save(actor=self.request.user.actor)
-
-    @transaction.atomic
-    def perform_destroy(self, instance):
-        routes.outbox.dispatch(
-            {"type": "Delete", "object": {"type": "Library"}},
-            context={"library": instance},
-        )
-        instance.delete()
-
-    @extend_schema(
-        responses=federation_api_serializers.LibraryFollowSerializer(many=True)
-    )
-    @action(
-        methods=["get"],
-        detail=True,
-    )
-    @transaction.non_atomic_requests
-    def follows(self, request, *args, **kwargs):
-        library = self.get_object()
-        queryset = (
-            library.received_follows.filter(target__actor=self.request.user.actor)
-            .prefetch_related("actor", "target__actor")
-            .order_by("-creation_date")
-        )
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = federation_api_serializers.LibraryFollowSerializer(
-                page, many=True, required=False
-            )
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True, required=False)
-        return Response(serializer.data)
 
     # TODO quickfix, basically specifying the response would be None
     @extend_schema(responses=None)
@@ -830,7 +791,7 @@ class UploadViewSet(
         return Response(payload, status=200)
 
     @action(methods=["post"], detail=False)
-    def action(self, request, *args, **kwargs):
+    def perform_upload_action(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = serializers.UploadActionSerializer(request.data, queryset=queryset)
         serializer.is_valid(raise_exception=True)
@@ -859,6 +820,23 @@ class UploadViewSet(
             context={"uploads": [instance]},
         )
         instance.delete()
+
+    @action(detail=False, methods=["patch"])
+    def bulk_update(self, request, *args, **kwargs):
+        """
+        Used to move an upload from one library to another. Receive a upload uuid and a privacy_level
+        """
+        serializer = serializers.UploadBulkUpdateSerializer(
+            data=request.data, many=True
+        )
+        serializer.is_valid(raise_exception=True)
+
+        models.Upload.objects.bulk_update(serializer.validated_data, ["library"])
+
+        return Response(
+            serializers.UploadForOwnerSerializer(serializer.validated_data).data,
+            status=200,
+        )
 
 
 class Search(views.APIView):

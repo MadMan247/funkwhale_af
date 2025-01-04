@@ -370,7 +370,7 @@ def test_outbox_create_audio(factories, mocker):
         }
     )
     expected = serializer.data
-    expected["to"] = [{"type": "followers", "target": upload.library}]
+    expected["to"] = [{"type": "followers", "target": upload.library.actor}]
 
     assert dict(activity["payload"]) == dict(expected)
     assert activity["actor"] == upload.library.actor
@@ -685,7 +685,7 @@ def test_outbox_delete_audio(factories):
         {"type": "Delete", "object": {"type": "Audio", "id": [upload.fid]}}
     ).data
 
-    expected["to"] = [{"type": "followers", "target": upload.library}]
+    expected["to"] = [{"type": "followers", "target": upload.library.actor}]
 
     assert dict(activity["payload"]) == dict(expected)
     assert activity["actor"] == upload.library.actor

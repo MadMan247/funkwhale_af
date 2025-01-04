@@ -114,7 +114,7 @@ class RegisterSerializer(RS):
                 user_request_id=user_request.pk,
                 new_status=user_request.status,
             )
-
+        models.create_user_libraries(user)
         return user
 
 

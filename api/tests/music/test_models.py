@@ -263,7 +263,7 @@ def test_library(factories):
     now = timezone.now()
     actor = factories["federation.Actor"]()
     library = factories["music.Library"](
-        name="Hello world", description="hello", actor=actor, privacy_level="instance"
+        name="Hello world", actor=actor, privacy_level="instance"
     )
 
     assert library.creation_date >= now

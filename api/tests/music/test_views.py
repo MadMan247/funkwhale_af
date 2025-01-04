@@ -640,25 +640,6 @@ def test_listen_transcode_in_place(
     )
 
 
-def test_user_can_create_library(factories, logged_in_api_client):
-    actor = logged_in_api_client.user.create_actor()
-    url = reverse("api:v1:libraries-list")
-
-    response = logged_in_api_client.post(
-        url, {"name": "hello", "description": "world", "privacy_level": "me"}
-    )
-    library = actor.libraries.first()
-
-    assert response.status_code == 201
-
-    assert library.actor == actor
-    assert library.name == "hello"
-    assert library.description == "world"
-    assert library.privacy_level == "me"
-    assert library.fid == library.get_federation_id()
-    assert library.followers_url == library.fid + "/followers"
-
-
 def test_user_can_list_their_library(factories, logged_in_api_client):
     actor = logged_in_api_client.user.create_actor()
     library = factories["music.Library"](actor=actor)
@@ -712,17 +693,7 @@ def test_user_cannot_delete_other_actors_library(factories, logged_in_api_client
     url = reverse("api:v1:libraries-detail", kwargs={"uuid": library.uuid})
     response = logged_in_api_client.delete(url)
 
-    assert response.status_code == 404
-
-
-def test_library_delete_via_api_triggers_outbox(factories, mocker):
-    dispatch = mocker.patch("funkwhale_api.federation.routes.outbox.dispatch")
-    library = factories["music.Library"]()
-    view = views.LibraryViewSet()
-    view.perform_destroy(library)
-    dispatch.assert_called_once_with(
-        {"type": "Delete", "object": {"type": "Library"}}, context={"library": library}
-    )
+    assert response.status_code == 405
 
 
 def test_user_cannot_get_other_not_playable_uploads(factories, logged_in_api_client):
@@ -935,25 +906,6 @@ def test_user_can_patch_draft_upload_status_triggers_processing(
     assert response.status_code == 200
     assert upload.import_status == "pending"
     m.assert_called_once_with(tasks.process_upload.delay, upload_id=upload.pk)
-
-
-def test_user_can_list_own_library_follows(factories, logged_in_api_client):
-    actor = logged_in_api_client.user.create_actor()
-    library = factories["music.Library"](actor=actor)
-    another_library = factories["music.Library"](actor=actor)
-    follow = factories["federation.LibraryFollow"](target=library)
-    factories["federation.LibraryFollow"](target=another_library)
-
-    url = reverse("api:v1:libraries-follows", kwargs={"uuid": library.uuid})
-
-    response = logged_in_api_client.get(url)
-
-    assert response.data == {
-        "count": 1,
-        "next": None,
-        "previous": None,
-        "results": [federation_api_serializers.LibraryFollowSerializer(follow).data],
-    }
 
 
 @pytest.mark.parametrize("entity", ["artist", "album", "track"])
@@ -1615,3 +1567,25 @@ def test_album_create_artist_credit(factories, logged_in_api_client):
         url, {"artist": artist.pk, "title": "super album"}, format="json"
     )
     assert response.status_code == 204
+
+
+def test_can_patch_upload_list(factories, logged_in_api_client):
+    url = reverse("api:v1:uploads-bulk-update")
+    actor = logged_in_api_client.user.create_actor()
+    upload = factories["music.Upload"](library__actor=actor)
+    upload2 = factories["music.Upload"](library__actor=actor)
+    factories["music.Library"](actor=actor, privacy_level="everyone")
+
+    response = logged_in_api_client.patch(
+        url,
+        [
+            {"uuid": upload.uuid, "privacy_level": "everyone"},
+            {"uuid": upload2.uuid, "privacy_level": "everyone"},
+        ],
+        format="json",
+    )
+    upload.refresh_from_db()
+    upload2.refresh_from_db()
+
+    assert response.status_code == 200
+    assert upload.library.privacy_level == "everyone"

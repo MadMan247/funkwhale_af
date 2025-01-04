@@ -311,7 +311,6 @@ def test_library_library(spa_html, no_api_auth, client, factories, settings):
         },
         {"tag": "meta", "property": "og:type", "content": "website"},
         {"tag": "meta", "property": "og:title", "content": library.name},
-        {"tag": "meta", "property": "og:description", "content": library.description},
         {
             "tag": "link",
             "rel": "alternate",

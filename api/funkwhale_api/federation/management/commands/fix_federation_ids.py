@@ -9,7 +9,7 @@ MODELS = [
     (music_models.Album, ["fid"]),
     (music_models.Track, ["fid"]),
     (music_models.Upload, ["fid"]),
-    (music_models.Library, ["fid", "followers_url"]),
+    (music_models.Library, ["fid"]),
     (
         federation_models.Actor,
         [

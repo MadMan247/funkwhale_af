@@ -627,12 +627,6 @@ def get_actors_from_audience(urls):
             final_query, Q(pk__in=actor_follows.values_list("actor", flat=True))
         )
 
-        library_follows = models.LibraryFollow.objects.filter(
-            queries["followed"], approved=True
-        )
-        final_query = funkwhale_utils.join_queries_or(
-            final_query, Q(pk__in=library_follows.values_list("actor", flat=True))
-        )
     if not final_query:
         return models.Actor.objects.none()
     return models.Actor.objects.filter(final_query)

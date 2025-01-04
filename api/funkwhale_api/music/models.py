@@ -1319,10 +1319,8 @@ class Library(federation_models.FederationMixin):
     actor = models.ForeignKey(
         "federation.Actor", related_name="libraries", on_delete=models.CASCADE
     )
-    followers_url = models.URLField(max_length=500)
     creation_date = models.DateTimeField(default=timezone.now)
     name = models.CharField(max_length=100)
-    description = models.TextField(max_length=5000, null=True, blank=True)
     privacy_level = models.CharField(
         choices=LIBRARY_PRIVACY_LEVEL_CHOICES, default="me", max_length=25
     )

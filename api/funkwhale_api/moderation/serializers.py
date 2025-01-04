@@ -164,7 +164,6 @@ class LibraryStateSerializer(serializers.ModelSerializer):
             "uuid",
             "fid",
             "name",
-            "description",
             "creation_date",
             "privacy_level",
         ]

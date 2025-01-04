@@ -548,13 +548,11 @@ def test_music_library_serializer_to_ap(factories):
         "type": "Library",
         "id": library.fid,
         "name": library.name,
-        "summary": library.description,
         "attributedTo": library.actor.fid,
         "totalItems": 0,
         "current": library.fid + "?page=1",
         "last": library.fid + "?page=1",
         "first": library.fid + "?page=1",
-        "followers": library.followers_url,
     }
 
     assert serializer.data == expected
@@ -569,10 +567,8 @@ def test_music_library_serializer_from_public(factories, mocker):
         "@context": jsonld.get_default_context(),
         "audience": "https://www.w3.org/ns/activitystreams#Public",
         "name": "Hello",
-        "summary": "World",
         "type": "Library",
         "id": "https://library.id",
-        "followers": "https://library.id/followers",
         "attributedTo": actor.fid,
         "totalItems": 12,
         "first": "https://library.id?page=1",
@@ -589,8 +585,6 @@ def test_music_library_serializer_from_public(factories, mocker):
     assert library.uploads_count == data["totalItems"]
     assert library.privacy_level == "everyone"
     assert library.name == "Hello"
-    assert library.description == "World"
-    assert library.followers_url == data["followers"]
 
     retrieve.assert_called_once_with(
         actor.fid,
@@ -609,10 +603,8 @@ def test_music_library_serializer_from_private(factories, mocker):
         "@context": jsonld.get_default_context(),
         "audience": "",
         "name": "Hello",
-        "summary": "World",
         "type": "Library",
         "id": "https://library.id",
-        "followers": "https://library.id/followers",
         "attributedTo": actor.fid,
         "totalItems": 12,
         "first": "https://library.id?page=1",
@@ -629,8 +621,6 @@ def test_music_library_serializer_from_private(factories, mocker):
     assert library.uploads_count == data["totalItems"]
     assert library.privacy_level == "me"
     assert library.name == "Hello"
-    assert library.description == "World"
-    assert library.followers_url == data["followers"]
     retrieve.assert_called_once_with(
         actor.fid,
         actor=None,
@@ -647,10 +637,8 @@ def test_music_library_serializer_from_ap_update(factories, mocker):
         "@context": jsonld.get_default_context(),
         "audience": "https://www.w3.org/ns/activitystreams#Public",
         "name": "Hello",
-        "summary": "World",
         "type": "Library",
         "id": library.fid,
-        "followers": "https://library.id/followers",
         "attributedTo": actor.fid,
         "totalItems": 12,
         "first": "https://library.id?page=1",
@@ -666,8 +654,6 @@ def test_music_library_serializer_from_ap_update(factories, mocker):
     assert library.uploads_count == data["totalItems"]
     assert library.privacy_level == "everyone"
     assert library.name == "Hello"
-    assert library.description == "World"
-    assert library.followers_url == data["followers"]
 
 
 def test_activity_pub_artist_serializer_to_ap(factories):

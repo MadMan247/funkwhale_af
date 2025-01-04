@@ -387,7 +387,6 @@ class MusicLibraryViewSet(
             "id": lb.get_federation_id(),
             "actor": lb.actor,
             "name": lb.name,
-            "summary": lb.description,
             "items": lb.uploads.for_federation()
             .order_by("-creation_date")
             .prefetch_related(

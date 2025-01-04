@@ -995,8 +995,6 @@ class LibrarySerializer(PaginatedCollectionSerializer):
     actor = serializers.URLField(max_length=500, required=False)
     attributedTo = serializers.URLField(max_length=500, required=False)
     name = serializers.CharField()
-    summary = serializers.CharField(allow_blank=True, allow_null=True, required=False)
-    followers = serializers.URLField(max_length=500)
     audience = serializers.ChoiceField(
         choices=["", "./", None, "https://www.w3.org/ns/activitystreams#Public"],
         required=False,
@@ -1013,9 +1011,7 @@ class LibrarySerializer(PaginatedCollectionSerializer):
             PAGINATED_COLLECTION_JSONLD_MAPPING,
             {
                 "name": jsonld.first_val(contexts.AS.name),
-                "summary": jsonld.first_val(contexts.AS.summary),
                 "audience": jsonld.first_id(contexts.AS.audience),
-                "followers": jsonld.first_id(contexts.AS.followers),
                 "actor": jsonld.first_id(contexts.AS.actor),
                 "attributedTo": jsonld.first_id(contexts.AS.attributedTo),
             },
@@ -1037,7 +1033,6 @@ class LibrarySerializer(PaginatedCollectionSerializer):
         conf = {
             "id": library.fid,
             "name": library.name,
-            "summary": library.description,
             "page_size": 100,
             "attributedTo": library.actor,
             "actor": library.actor,
@@ -1048,7 +1043,6 @@ class LibrarySerializer(PaginatedCollectionSerializer):
         r["audience"] = (
             contexts.AS.Public if library.privacy_level == "everyone" else ""
         )
-        r["followers"] = library.followers_url
         return r
 
     def create(self, validated_data):
@@ -1068,8 +1062,6 @@ class LibrarySerializer(PaginatedCollectionSerializer):
             defaults={
                 "uploads_count": validated_data["totalItems"],
                 "name": validated_data["name"],
-                "description": validated_data.get("summary"),
-                "followers_url": validated_data["followers"],
                 "privacy_level": privacy[validated_data["audience"]],
             },
         )

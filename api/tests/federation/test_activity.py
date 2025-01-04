@@ -1,5 +1,3 @@
-import uuid
-
 import pytest
 from django.db.models import Q
 from django.urls import reverse
@@ -246,9 +244,6 @@ def test_should_reject(factories, params, policy_kwargs, expected):
 
 def test_get_actors_from_audience_urls(settings, db):
     settings.FEDERATION_HOSTNAME = "federation.hostname"
-    library_uuid1 = uuid.uuid4()
-    library_uuid2 = uuid.uuid4()
-
     urls = [
         "https://wrong.url",
         "https://federation.hostname"
@@ -257,21 +252,15 @@ def test_get_actors_from_audience_urls(settings, db):
         + reverse("federation:actors-detail", kwargs={"preferred_username": "alice"}),
         "https://federation.hostname"
         + reverse("federation:actors-detail", kwargs={"preferred_username": "bob"}),
-        "https://federation.hostname"
-        + reverse("federation:music:libraries-detail", kwargs={"uuid": library_uuid1}),
-        "https://federation.hostname"
-        + reverse("federation:music:libraries-detail", kwargs={"uuid": library_uuid2}),
+        "https://federation.hostname",
         activity.PUBLIC_ADDRESS,
     ]
     followed_query = Q(target__followers_url=urls[0])
     for url in urls[1:-1]:
         followed_query |= Q(target__followers_url=url)
     actor_follows = models.Follow.objects.filter(followed_query, approved=True)
-    library_follows = models.LibraryFollow.objects.filter(followed_query, approved=True)
     expected = models.Actor.objects.filter(
-        Q(fid__in=urls[0:-1])
-        | Q(pk__in=actor_follows.values_list("actor", flat=True))
-        | Q(pk__in=library_follows.values_list("actor", flat=True))
+        Q(fid__in=urls[0:-1]) | Q(pk__in=actor_follows.values_list("actor", flat=True))
     )
     assert str(activity.get_actors_from_audience(urls).query) == str(expected.query)
 
@@ -478,17 +467,9 @@ def test_prepare_deliveries_and_inbox_items(factories, preferences):
     )
     remote_actor3 = factories["federation.Actor"](shared_inbox_url=None)
     remote_actor4 = factories["federation.Actor"]()
-
-    library = factories["music.Library"]()
-    library_follower_local = factories["federation.LibraryFollow"](
-        target=library, actor__local=True, approved=True
-    ).actor
-    library_follower_remote = factories["federation.LibraryFollow"](
-        target=library, actor__local=False, approved=True
-    ).actor
     # follow not approved
-    factories["federation.LibraryFollow"](
-        target=library, actor__local=False, approved=False
+    factories["federation.Follow"](
+        target=remote_actor3, actor__local=False, approved=False
     )
 
     followed_actor = factories["federation.Actor"]()
@@ -511,7 +492,6 @@ def test_prepare_deliveries_and_inbox_items(factories, preferences):
         remote_actor2,
         remote_actor3,
         activity.PUBLIC_ADDRESS,
-        {"type": "followers", "target": library},
         {"type": "followers", "target": followed_actor},
         {"type": "actor_inbox", "actor": remote_actor4},
     ]
@@ -524,7 +504,6 @@ def test_prepare_deliveries_and_inbox_items(factories, preferences):
             models.InboxItem(actor=local_actor1, type="to"),
             models.InboxItem(actor=local_actor2, type="to"),
             models.InboxItem(actor=local_actor3, type="to"),
-            models.InboxItem(actor=library_follower_local, type="to"),
             models.InboxItem(actor=actor_follower_local, type="to"),
         ],
         key=lambda v: v.actor.pk,
@@ -535,7 +514,6 @@ def test_prepare_deliveries_and_inbox_items(factories, preferences):
             models.Delivery(inbox_url=remote_actor1.shared_inbox_url),
             models.Delivery(inbox_url=remote_actor3.inbox_url),
             models.Delivery(inbox_url=remote_actor4.inbox_url),
-            models.Delivery(inbox_url=library_follower_remote.inbox_url),
             models.Delivery(inbox_url=actor_follower_remote.inbox_url),
         ],
         key=lambda v: v.inbox_url,
@@ -549,7 +527,6 @@ def test_prepare_deliveries_and_inbox_items(factories, preferences):
         remote_actor2.fid,
         remote_actor3.fid,
         activity.PUBLIC_ADDRESS,
-        library.followers_url,
         followed_actor.followers_url,
         remote_actor4.fid,
     ]

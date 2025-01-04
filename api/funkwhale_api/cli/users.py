@@ -49,6 +49,7 @@ def handler_create_user(
             utils.logger.warn("Unknown permission %s", permission)
     utils.logger.debug("Creating actor…")
     user.actor = models.create_actor(user)
+    models.create_user_libraries(user)
     user.save()
     return user
 

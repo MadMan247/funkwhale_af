@@ -219,7 +219,6 @@ def test_music_library_retrieve_page_public(factories, api_client):
             "actor": library.actor,
             "page": Paginator([upload], 1).page(1),
             "name": library.name,
-            "summary": library.description,
         }
     ).data
 

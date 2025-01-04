@@ -12,7 +12,6 @@ def test_library_serializer(factories, to_api_date):
         "uuid": str(library.uuid),
         "actor": serializers.APIActorSerializer(library.actor).data,
         "name": library.name,
-        "description": library.description,
         "creation_date": to_api_date(library.creation_date),
         "uploads_count": library.uploads_count,
         "privacy_level": library.privacy_level,

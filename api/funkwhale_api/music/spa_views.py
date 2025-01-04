@@ -340,7 +340,6 @@ def library_library(request, uuid, redirect_to_ap):
         {"tag": "meta", "property": "og:url", "content": library_url},
         {"tag": "meta", "property": "og:type", "content": "website"},
         {"tag": "meta", "property": "og:title", "content": obj.name},
-        {"tag": "meta", "property": "og:description", "content": obj.description},
     ]
 
     if preferences.get("federation__enabled"):

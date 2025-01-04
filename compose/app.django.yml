@@ -23,7 +23,6 @@ services:
       dockerfile: Dockerfile.debian
     command: >
       sh -c "
-        funkwhale-manage migrate &&
         funkwhale-manage collectstatic --no-input &&
         uvicorn --reload config.asgi:application --host 0.0.0.0 --port 5000 --reload-dir config/ --reload-dir funkwhale_api/
       "

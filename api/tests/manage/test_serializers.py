@@ -447,16 +447,13 @@ def test_manage_library_serializer(factories, now, to_api_date):
         "fid": library.fid,
         "url": library.url,
         "uuid": str(library.uuid),
-        "followers_url": library.followers_url,
         "domain": library.domain_name,
         "is_local": library.is_local,
         "name": library.name,
-        "description": library.description,
         "privacy_level": library.privacy_level,
         "creation_date": to_api_date(library.creation_date),
         "actor": serializers.ManageBaseActorSerializer(library.actor).data,
         "uploads_count": 44,
-        "followers_count": 42,
     }
     s = serializers.ManageLibrarySerializer(library)
 

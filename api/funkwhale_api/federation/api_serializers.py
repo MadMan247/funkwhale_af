@@ -56,7 +56,6 @@ class LibrarySerializer(serializers.ModelSerializer):
             "uuid",
             "actor",
             "name",
-            "description",
             "creation_date",
             "uploads_count",
             "privacy_level",
