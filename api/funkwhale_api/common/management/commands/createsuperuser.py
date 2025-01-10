@@ -1,5 +1,4 @@
-import os
-
+from django.conf import settings
 from django.contrib.auth.management.commands.createsuperuser import (
     Command as BaseCommand,
 )
@@ -12,7 +11,8 @@ class Command(BaseCommand):
         Creating Django Superusers would bypass some of our username checks, which can lead to unexpected behaviour.
         We therefore prohibit the execution of the command.
         """
-        if not os.environ.get("FORCE") == "1":
+        force = settings.FORCE
+        if not force == 1:
             raise CommandError(
                 "Running createsuperuser on your Funkwhale instance bypasses some of our checks "
                 "which can lead to unexpected behavior of your instance. We therefore suggest to "

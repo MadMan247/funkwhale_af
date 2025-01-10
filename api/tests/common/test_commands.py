@@ -1,6 +1,5 @@
-import os
-
 import pytest
+from django.conf import settings
 from django.core.management import call_command
 from django.core.management.base import CommandError
 
@@ -119,12 +118,13 @@ commands = ["createsuperuser", "makemigrations"]
 @pytest.mark.parametrize("command", commands)
 def test_blocked_commands(command):
     with pytest.raises(CommandError):
+        setattr(settings, "FORCE", 0)
         call_command(command)
 
 
 @pytest.mark.parametrize("command", commands)
 def test_unblocked_commands(command, mocker):
-    mocker.patch.dict(os.environ, {"FORCE": "1"})
+    setattr(settings, "FORCE", 1)
 
     call_command(command)
 
