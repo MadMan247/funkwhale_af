@@ -790,8 +790,25 @@ class UploadViewSet(
             cover_data["content"] = base64.b64encode(cover_data["content"])
         return Response(payload, status=200)
 
+    @action(detail=False, methods=["patch"])
+    def bulk_update(self, request, *args, **kwargs):
+        """
+        Used to move an upload from one library to another. Receive a upload uuid and a privacy_level
+        """
+        serializer = serializers.UploadBulkUpdateSerializer(
+            data=request.data, many=True
+        )
+        serializer.is_valid(raise_exception=True)
+
+        models.Upload.objects.bulk_update(serializer.validated_data, ["library"])
+
+        return Response(
+            serializers.UploadForOwnerSerializer(serializer.validated_data).data,
+            status=200,
+        )
+
     @action(methods=["post"], detail=False)
-    def perform_upload_action(self, request, *args, **kwargs):
+    def action(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = serializers.UploadActionSerializer(request.data, queryset=queryset)
         serializer.is_valid(raise_exception=True)
@@ -820,23 +837,6 @@ class UploadViewSet(
             context={"uploads": [instance]},
         )
         instance.delete()
-
-    @action(detail=False, methods=["patch"])
-    def bulk_update(self, request, *args, **kwargs):
-        """
-        Used to move an upload from one library to another. Receive a upload uuid and a privacy_level
-        """
-        serializer = serializers.UploadBulkUpdateSerializer(
-            data=request.data, many=True
-        )
-        serializer.is_valid(raise_exception=True)
-
-        models.Upload.objects.bulk_update(serializer.validated_data, ["library"])
-
-        return Response(
-            serializers.UploadForOwnerSerializer(serializer.validated_data).data,
-            status=200,
-        )
 
 
 class Search(views.APIView):
