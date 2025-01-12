@@ -56,6 +56,7 @@ AUDIO_EXTENSIONS_AND_MIMETYPE = [
     ("opus", "audio/opus"),
     ("aac", "audio/x-m4a"),
     ("m4a", "audio/x-m4a"),
+    ("m4a", "audio/m4a"),
     ("flac", "audio/x-flac"),
     ("flac", "audio/flac"),
     ("aif", "audio/aiff"),

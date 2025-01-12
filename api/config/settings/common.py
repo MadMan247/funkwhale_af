@@ -114,6 +114,7 @@ else:
         logger.info("Loaded env file at %s/.env", path)
         break
 
+FUNKWHALE_PLUGINS = env("FUNKWHALE_PLUGINS", default="")
 FUNKWHALE_PLUGINS_PATH = env(
     "FUNKWHALE_PLUGINS_PATH", default="/srv/funkwhale/plugins/"
 )

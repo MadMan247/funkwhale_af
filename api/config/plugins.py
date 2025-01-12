@@ -299,6 +299,10 @@ def background_task(name):
 
 
 # HOOKS
+TRIGGER_THIRD_PARTY_UPLOAD = "third_party_upload"
+"""
+Called when a track is being listened
+"""
 LISTENING_CREATED = "listening_created"
 """
 Called when a track is being listened

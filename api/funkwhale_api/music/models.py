@@ -24,6 +24,7 @@ from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import timezone
 
+from config import plugins
 from funkwhale_api import musicbrainz
 from funkwhale_api.common import fields
 from funkwhale_api.common import models as common_models
@@ -522,9 +523,18 @@ class TrackQuerySet(common_models.LocalFromFidQuerySet, models.QuerySet):
 
     def with_playable_uploads(self, actor):
         uploads = Upload.objects.playable_by(actor)
-        return self.prefetch_related(
+        queryset = self.prefetch_related(
             models.Prefetch("uploads", queryset=uploads, to_attr="playable_uploads")
         )
+
+        if queryset and queryset[0].uploads.count() > 0:
+            return queryset
+        else:
+            plugins.trigger_hook(
+                plugins.TRIGGER_THIRD_PARTY_UPLOAD,
+                track=self.first(),
+            )
+            return queryset
 
     def order_for_album(self):
         """
@@ -771,6 +781,8 @@ def get_file_path(instance, filename):
 
     if instance.library.actor.get_user():
         return common_utils.ChunkedPath("tracks")(instance, filename)
+    elif instance.third_party_provider:
+        return common_utils.ChunkedPath("third_party_tracks")(instance, filename)
     else:
         # we cache remote tracks in a different directory
         return common_utils.ChunkedPath("federation_cache/tracks")(instance, filename)
@@ -842,6 +854,9 @@ class Upload(models.Model):
     checksum = models.CharField(max_length=100, db_index=True, null=True, blank=True)
 
     quality = models.IntegerField(choices=quality_choices, default=1)
+
+    third_party_provider = models.CharField(max_length=100, null=True, blank=True)
+
     objects = UploadQuerySet.as_manager()
 
     @property
