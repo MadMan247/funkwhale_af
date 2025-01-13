@@ -16,7 +16,7 @@
   "ignoreDeps": ["$CI_REGISTRY/funkwhale/backend-test-docker"],
   "packageRules": [
     {
-      "matchPaths": ["api/*", "front/*", "docs/*"],
+      "matchFileNames": ["api/*", "front/*", "docs/*"],
       "additionalBranchPrefix": "{{parentDir}}-",
       "semanticCommitScope": "{{parentDir}}"
     },
@@ -54,8 +54,8 @@
       "addLabels": ["Area::Backend"]
     },
     {
-      "matchPackagePatterns": ["^@vueuse/.*"],
-      "groupName": "vueuse"
+      "groupName": "vueuse",
+      "matchPackageNames": ["/^@vueuse/.*/"]
     },
     {
       "matchPackageNames": ["channels", "channels-redis", "daphne"],
@@ -66,7 +66,7 @@
       "allowedVersions": "/\\d+[02468]$/"
     },
     {
-      "matchFiles": ["deploy/docker-compose.yml"],
+      "matchFileNames": ["deploy/docker-compose.yml"],
       "matchPackageNames": ["postgres"],
       "postUpgradeTasks": {
         "commands": [
