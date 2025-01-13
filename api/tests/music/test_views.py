@@ -621,8 +621,6 @@ def test_listen_transcode_in_place(
         source="file://" + os.path.join(DATA_DIR, "test.ogg"),
     )
 
-    assert upload.get_audio_segment()
-
     url = reverse("api:v1:listen-detail", kwargs={"uuid": upload.track.uuid})
     handle_serve = mocker.spy(views, "handle_serve")
     response = logged_in_api_client.get(url, {"to": "mp3"})

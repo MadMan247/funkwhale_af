@@ -7,7 +7,6 @@ import urllib.parse
 import uuid
 
 import arrow
-import pydub
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.postgres.indexes import GinIndex
@@ -939,6 +938,12 @@ class Upload(models.Model):
         if self.source and self.source.startswith("file://"):
             return open(self.source.replace("file://", "", 1), "rb")
 
+    def get_audio_file_path(self):
+        if self.audio_file:
+            return self.audio_file.path
+        if self.source and self.source.startswith("file://"):
+            return self.source.replace("file://", "", 1)
+
     def get_audio_data(self):
         audio_file = self.get_audio_file()
         if not audio_file:
@@ -951,14 +956,6 @@ class Upload(models.Model):
             "bitrate": audio_data["bitrate"],
             "size": self.get_file_size(),
         }
-
-    def get_audio_segment(self):
-        input = self.get_audio_file()
-        if not input:
-            return
-
-        audio = pydub.AudioSegment.from_file(input)
-        return audio
 
     def get_quality(self):
         extension_to_mimetypes = utils.get_extension_to_mimetype_dict()
@@ -1083,8 +1080,8 @@ class Upload(models.Model):
         )
         version.audio_file.save(new_name, f)
         utils.transcode_audio(
-            audio=self.get_audio_segment(),
-            output=version.audio_file,
+            audio_file_path=self.get_audio_file_path(),
+            output_path=version.audio_file.path,
             output_format=utils.MIMETYPE_TO_EXTENSION[mimetype],
             bitrate=str(bitrate),
         )

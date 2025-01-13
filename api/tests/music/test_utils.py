@@ -1,6 +1,5 @@
 import os
 import pathlib
-import tempfile
 
 import pytest
 
@@ -112,25 +111,6 @@ def test_get_dirs_and_files(path, expected, tmpdir):
     (root_path / "System" / "file.ogg").touch()
 
     assert utils.browse_dir(root_path, path) == expected
-
-
-@pytest.mark.parametrize(
-    "name, expected",
-    [
-        ("sample.flac", {"bitrate": 128000, "length": 0}),
-        ("test.mp3", {"bitrate": 16000, "length": 268}),
-        ("test.ogg", {"bitrate": 128000, "length": 1}),
-        ("test.opus", {"bitrate": 128000, "length": 1}),
-    ],
-)
-def test_transcode_file(name, expected):
-    path = pathlib.Path(os.path.join(DATA_DIR, name))
-    with tempfile.NamedTemporaryFile() as dest:
-        utils.transcode_file(path, pathlib.Path(dest.name))
-        with open(dest.name, "rb") as f:
-            result = {k: round(v) for k, v in utils.get_audio_file_data(f).items()}
-
-            assert result == expected
 
 
 def test_custom_s3_domain(factories, settings):

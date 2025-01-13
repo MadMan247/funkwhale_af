@@ -4,10 +4,10 @@ import pathlib
 
 import magic
 import mutagen
-import pydub
 from django.conf import settings
 from django.core.cache import cache
 from django.db.models import F
+from ffmpeg import FFmpeg
 
 from funkwhale_api.common import throttling
 from funkwhale_api.common.search import get_fts_query  # noqa
@@ -114,15 +114,10 @@ def get_actor_from_request(request):
     return actor
 
 
-def transcode_file(input, output, input_format=None, output_format="mp3", **kwargs):
-    with input.open("rb"):
-        audio = pydub.AudioSegment.from_file(input, format=input_format)
-    return transcode_audio(audio, output, output_format, **kwargs)
-
-
-def transcode_audio(audio, output, output_format, **kwargs):
-    with output.open("wb"):
-        return audio.export(output, format=output_format, **kwargs)
+def transcode_audio(audio_file_path, output_path, output_format="mp3", **kwargs):
+    FFmpeg().input(audio_file_path).output(
+        output_path, format=output_format, **kwargs
+    ).option("y").execute()
 
 
 def increment_downloads_count(upload, user, wsgi_request):
