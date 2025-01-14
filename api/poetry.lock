@@ -1240,19 +1240,19 @@ sqlparse = ">=0.2"
 
 [[package]]
 name = "django-dynamic-preferences"
-version = "1.14.0"
+version = "1.17.0"
 description = "Dynamic global and instance settings for your django project"
 optional = false
 python-versions = "*"
 groups = ["main"]
 files = [
-    {file = "django-dynamic-preferences-1.14.0.tar.gz", hash = "sha256:c00abcb8d524067390a66518cfcd32683b87ad3cc620d5913649fc7707b80833"},
+    {file = "django_dynamic_preferences-1.17.0-py2.py3-none-any.whl", hash = "sha256:1f7111e01235b6273a4038783d92a8bf2826cb4eee7e324779b2dc76e3e00b06"},
+    {file = "django_dynamic_preferences-1.17.0.tar.gz", hash = "sha256:c13520107d13c696997a237f8e7731cef93642837d523b95863a40115f7f2d8f"},
 ]
 
 [package.dependencies]
-django = ">=3.2"
+django = ">=4.2"
 persisting_theory = "1.0"
-six = "*"
 
 [[package]]
 name = "django-environ"
@@ -4807,4 +4807,4 @@ typesense = ["typesense"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10,<3.14"
-content-hash = "a1b769cda7623c1451fe612998ae7b71142b7dd05177f678210ae8c4a51cb630"
+content-hash = "571ad5706c476e2917753d9391ffef4d4341feb8b56288d75d64c08f243fd0e4"
