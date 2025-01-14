@@ -315,6 +315,7 @@ MIDDLEWARE = (
     tuple(plugins.trigger_filter(plugins.MIDDLEWARES_BEFORE, [], enabled=True))
     + tuple(ADDITIONAL_MIDDLEWARES_BEFORE)
     + (
+        "allauth.account.middleware.AccountMiddleware",
         "django.middleware.security.SecurityMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
         "corsheaders.middleware.CorsMiddleware",
