@@ -54,8 +54,8 @@ django-auth-ldap = "==4.1.0"
 python-ldap = "==3.4.4"
 
 # Channels
-channels = { extras = ["daphne"], version = "==4.0.0" }
-channels-redis = "==4.1.0"
+channels = { extras = ["daphne"], version = "==4.2.0" }
+channels-redis = "==4.2.1"
 
 # Celery
 kombu = "5.3.4"
