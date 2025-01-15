@@ -28,7 +28,7 @@ funkwhale-manage = 'funkwhale_api.main:main'
 python = "^3.10,<3.14"
 
 # Django
-dj-rest-auth = "5.0.2"
+dj-rest-auth = "7.0.1"
 django = "4.2.9"
 django-allauth = "0.63.6"
 django-cache-memoize = "0.1.10"
