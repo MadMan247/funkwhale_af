@@ -1,27 +1,30 @@
-from troi import Artist, Element, Playlist, Recording
+from troi import Artist, ArtistCredit, Element, Playlist, Recording
 from troi.patch import Patch
 
 recording_list = [
     Recording(
         name="I Want It That Way",
         mbid="87dfa566-21c3-45ed-bc42-1d345b8563fa",
-        artist=Artist(name="artist_name"),
+        artist_credit=ArtistCredit(artists=[Artist(name="artist_name")]),
     ),
-    Recording(name="Untouchable", artist=Artist(name="Another lol")),
+    Recording(
+        name="Untouchable",
+        artist_credit=ArtistCredit(artists=[Artist(name="Another lol")]),
+    ),
     Recording(
         name="The Perfect Kiss",
         mbid="ec0da94e-fbfe-4eb0-968e-024d4c32d1d0",
-        artist=Artist(name="artist_name2"),
+        artist_credit=ArtistCredit(artists=[Artist(name="artist_name2")]),
     ),
     Recording(
         name="Love Your Voice",
         mbid="93726547-f8c0-4efd-8e16-d2dee76500f6",
-        artist=Artist(name="artist_name"),
+        artist_credit=ArtistCredit(artists=[Artist(name="artist_name")]),
     ),
     Recording(
         name="Hall of Fame",
         mbid="395bd5a1-79cc-4e04-8869-ca9eabc78d09",
-        artist=Artist(name="artist_name_3"),
+        artist_credit=ArtistCredit(artists=[Artist(name="artist_name3")]),
     ),
 ]
 
@@ -34,8 +37,19 @@ class DummyElement(Element):
         return [Playlist]
 
     def read(self, sources):
-        recordings = recording_list
-
+        recordings = [
+            Recording(
+                name="I Want It That Way", mbid="87dfa566-21c3-45ed-bc42-1d345b8563fa"
+            ),
+            Recording(name="Untouchable"),
+            Recording(
+                name="The Perfect Kiss", mbid="ec0da94e-fbfe-4eb0-968e-024d4c32d1d0"
+            ),
+            Recording(
+                name="Love Your Voice", mbid="93726547-f8c0-4efd-8e16-d2dee76500f6"
+            ),
+            Recording(name="Hall of Fame", mbid="395bd5a1-79cc-4e04-8869-ca9eabc78d09"),
+        ]
         return [
             Playlist(
                 name="Test Export Playlist",

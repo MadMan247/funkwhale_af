@@ -57,7 +57,7 @@ def resolve_recordings_to_fw_track(recordings):
 
     for recording in recordings:
         rec = mc.clean_recording(recording.name)
-        artist = mc.clean_artist(recording.artist.name)
+        artist = mc.clean_artist(recording.artist_credit.artists[0].name)
         canonical_name_for_track = delete_non_alnum_characters(artist + rec)
 
         logger.debug(f"Trying to resolve : {canonical_name_for_track}")

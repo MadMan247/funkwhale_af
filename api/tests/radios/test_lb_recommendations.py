@@ -91,7 +91,7 @@ def test_build_radio_queryset_with_redis_and_without_fw_db(factories, mocker):
 
 def test_build_radio_queryset_catch_troi_ConnectTimeout(mocker):
     mocker.patch.object(
-        troi.core.Patch,
+        troi.patch.Patch,
         "generate_playlist",
         side_effect=ConnectTimeout,
     )
@@ -105,7 +105,7 @@ def test_build_radio_queryset_catch_troi_ConnectTimeout(mocker):
 
 def test_build_radio_queryset_catch_troi_no_candidates(mocker):
     mocker.patch.object(
-        troi.core.Patch,
+        troi.patch.Patch,
         "generate_playlist",
     )
     qs = Track.objects.all()
