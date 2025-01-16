@@ -30,7 +30,7 @@ def verify_date(raw_date):
         ts = parse_http_date(raw_date)
     except ValueError as e:
         raise forms.ValidationError(str(e))
-    dt = datetime.datetime.utcfromtimestamp(ts)
+    dt = datetime.datetime.fromtimestamp(ts, datetime.timezone.utc)
     dt = dt.replace(tzinfo=ZoneInfo("UTC"))
     delta = datetime.timedelta(seconds=DATE_HEADER_VALID_FOR)
     now = timezone.now()

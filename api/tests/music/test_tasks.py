@@ -1460,7 +1460,7 @@ def test_tag_albums_from_tracks(queryset_equal_queries, factories, mocker):
     get_tags_from_foreign_key.assert_called_once_with(
         ids=expected_queryset.filter(pk__in=[1, 2]),
         foreign_key_model=models.Track,
-        foreign_key_attr="album",
+        foreign_key_attr="albums",
     )
 
     add_tags_batch.assert_called_once_with(

@@ -128,11 +128,6 @@ class ActorFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
     class Meta:
         model = models.Actor
 
-    class Params:
-        with_real_keys = factory.Trait(
-            keys=factory.LazyFunction(keys.get_key_pair),
-        )
-
     @factory.post_generation
     def local(self, create, extracted, **kwargs):
         if not extracted and not kwargs:
@@ -153,6 +148,26 @@ class ActorFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
             extracted.actor = self
             extracted.save(update_fields=["user"])
         else:
+            user = UserFactory(actor=self, **kwargs)
+            user.actor = self
+            user.save()
+
+    @factory.post_generation
+    def user(self, create, extracted, **kwargs):
+        """
+        Handle the creation or assignment of the related user instance.
+        If `actor__user` is passed, it will be linked; otherwise, no user is created.
+        """
+        if not create:
+            return
+
+        if extracted:  # If a User instance is provided
+            extracted.actor = self
+            extracted.save(update_fields=["actor"])
+        elif kwargs:
+            from funkwhale_api.users.factories import UserFactory
+
+            # Create a User linked to this Actor
             self.user = UserFactory(actor=self, **kwargs)
 
 

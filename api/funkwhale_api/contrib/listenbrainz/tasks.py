@@ -57,7 +57,7 @@ def import_listenbrainz_listenings(user, user_name, since):
         new_ts = max(
             listens,
             key=lambda obj: datetime.datetime.fromtimestamp(
-                obj.listened_at, timezone.utc
+                obj.listened_at, datetime.timezone.utc
             ),
         )
         response = client.get_listens(username=user_name, min_ts=new_ts, count=100)
@@ -74,7 +74,7 @@ def add_lb_listenings_to_db(listens, user):
             == "Funkwhale ListenBrainz plugin"
             and history_models.Listening.objects.filter(
                 creation_date=datetime.datetime.fromtimestamp(
-                    listen.listened_at, timezone.utc
+                    listen.listened_at, datetime.timezone.utc
                 )
             ).exists()
         ):
@@ -103,7 +103,7 @@ def add_lb_listenings_to_db(listens, user):
         user = user
         fw_listen = history_models.Listening(
             creation_date=datetime.datetime.fromtimestamp(
-                listen.listened_at, timezone.utc
+                listen.listened_at, datetime.timezone.utc
             ),
             track=track,
             actor=user.actor,
@@ -125,7 +125,7 @@ def import_listenbrainz_favorites(user, user_name, since):
         last_sync = min(
             response["feedback"],
             key=lambda obj: datetime.datetime.fromtimestamp(
-                obj["created"], timezone.utc
+                obj["created"], datetime.timezone.utc
             ),
         )["created"]
         add_lb_feedback_to_db(response["feedback"], user)
@@ -149,7 +149,7 @@ def add_lb_feedback_to_db(feedbacks, user):
             favorites_models.TrackFavorite.objects.get_or_create(
                 actor=user.actor,
                 creation_date=datetime.datetime.fromtimestamp(
-                    feedback["created"], timezone.utc
+                    feedback["created"], datetime.timezone.utc
                 ),
                 track=track,
                 source="Listenbrainz",

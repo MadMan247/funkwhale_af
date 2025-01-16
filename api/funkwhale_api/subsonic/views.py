@@ -419,12 +419,12 @@ class SubsonicViewSet(viewsets.GenericViewSet):
         queryset = (
             queryset.playable_by(actor)
             .filter(
-                Q(tagged_items__tag__name=genre)
-                | Q(artist_credit__artist__tagged_items__tag__name=genre)
+                Q(tagged_items__tag__name__iexact=genre)
+                | Q(artist_credit__artist__tagged_items__tag__name__iexact=genre)
                 | Q(
-                    artist_credit__albums__artist_credit__artist__tagged_items__tag__name=genre
+                    artist_credit__albums__artist_credit__artist__tagged_items__tag__name__iexact=genre
                 )
-                | Q(artist_credit__albums__tagged_items__tag__name=genre)
+                | Q(artist_credit__albums__tagged_items__tag__name__iexact=genre)
             )
             .prefetch_related("uploads")
             .distinct()
@@ -485,8 +485,8 @@ class SubsonicViewSet(viewsets.GenericViewSet):
         elif type == "byGenre" and data.get("genre"):
             genre = data.get("genre")
             queryset = queryset.filter(
-                Q(tagged_items__tag__name=genre)
-                | Q(artist_credit__artist__tagged_items__tag__name=genre)
+                Q(tagged_items__tag__name__iexact=genre)
+                | Q(artist_credit__artist__tagged_items__tag__name__iexact=genre)
             )
         elif type == "byYear":
             try:

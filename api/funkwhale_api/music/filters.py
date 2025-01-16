@@ -16,7 +16,7 @@ from . import models, utils
 def filter_tags(queryset, name, value):
     non_empty_tags = [v.lower() for v in value if v]
     for tag in non_empty_tags:
-        queryset = queryset.filter(tagged_items__tag__name=tag).distinct()
+        queryset = queryset.filter(tagged_items__tag__name__iexact=tag).distinct()
     return queryset
 
 

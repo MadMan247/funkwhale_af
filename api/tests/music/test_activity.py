@@ -19,7 +19,7 @@ def test_upload_import_status_updated_broadcast(factories, mocker):
     upload = factories["music.Upload"](
         import_status="finished", library__actor__user=user
     )
-    signals.upload_import_status_updated.send(
+    signals.upload_import_status_updated.send_robust(
         sender=None, upload=upload, old_status="pending", new_status="finished"
     )
     group_send.assert_called_once_with(

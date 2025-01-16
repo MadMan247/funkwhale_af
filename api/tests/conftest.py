@@ -391,7 +391,7 @@ def migrator(transactional_db):
 @pytest.fixture(autouse=True)
 def rsa_small_key(settings):
     # smaller size for faster generation, since it's CPU hungry
-    settings.RSA_KEY_SIZE = 512
+    settings.RSA_KEY_SIZE = 1024
 
 
 @pytest.fixture(autouse=True)

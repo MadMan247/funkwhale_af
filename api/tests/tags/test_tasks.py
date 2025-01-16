@@ -3,8 +3,8 @@ from funkwhale_api.tags import models, tasks
 
 
 def test_get_tags_from_foreign_key(factories):
-    rock_tag = factories["tags.Tag"](name="Rock")
-    rap_tag = factories["tags.Tag"](name="Rap")
+    rock_tag = factories["tags.Tag"](name="rock")
+    rap_tag = factories["tags.Tag"](name="rap")
     artist = factories["music.Artist"]()
     factories["music.Track"].create_batch(
         3, artist_credit__artist=artist, set_tags=["rock", "rap"]

@@ -455,7 +455,11 @@ def create_actor(user, **kwargs):
     args["private_key"] = private.decode("utf-8")
     args["public_key"] = public.decode("utf-8")
 
-    return federation_models.Actor.objects.create(user=user, **args)
+    actor = federation_models.Actor.objects.create(**args)
+    user.actor = actor
+    user.save()
+
+    return actor
 
 
 def create_user_libraries(user):

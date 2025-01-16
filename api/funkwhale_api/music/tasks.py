@@ -176,7 +176,7 @@ def fail_import(upload, error_code, detail=None, **fields):
         upload.import_metadata, "funkwhale", "config", "broadcast", default=True
     )
     if broadcast:
-        signals.upload_import_status_updated.send(
+        signals.upload_import_status_updated.send_robust(
             old_status=old_status,
             new_status=upload.import_status,
             upload=upload,
@@ -297,7 +297,7 @@ def process_upload(upload, update_denormalization=True):
             update_fields=["import_details", "import_status", "import_date", "track"]
         )
         if broadcast:
-            signals.upload_import_status_updated.send(
+            signals.upload_import_status_updated.send_robust(
                 old_status=old_status,
                 new_status=upload.import_status,
                 upload=upload,
@@ -341,7 +341,7 @@ def process_upload(upload, update_denormalization=True):
         )
 
     if broadcast:
-        signals.upload_import_status_updated.send(
+        signals.upload_import_status_updated.send_robust(
             old_status=old_status,
             new_status=upload.import_status,
             upload=upload,
@@ -993,7 +993,7 @@ def albums_set_tags_from_tracks(ids=None, dry_run=False):
     data = tags_tasks.get_tags_from_foreign_key(
         ids=qs,
         foreign_key_model=models.Track,
-        foreign_key_attr="album",
+        foreign_key_attr="albums",
     )
     logger.info("Found automatic tags for %s albums…", len(data))
     if dry_run:

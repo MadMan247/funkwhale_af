@@ -11,12 +11,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        CreateCollation(
-            "case_insensitive",
-            provider="icu",
-            locale="und-u-ks-level2",
-            deterministic=False,
-        ),
         migrations.AddField(
             model_name="tag",
             name="mbid",
@@ -25,8 +19,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="tag",
             name="name",
-            field=models.CharField(
-                db_collation="case_insensitive", max_length=100, unique=True
-            ),
+            field=models.CharField(max_length=100, unique=True),
         ),
     ]

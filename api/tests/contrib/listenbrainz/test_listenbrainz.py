@@ -4,7 +4,6 @@ import logging
 import liblistenbrainz
 import pytest
 from django.urls import reverse
-from django.utils import timezone
 
 from config import plugins
 from funkwhale_api.contrib.listenbrainz import funkwhale_ready
@@ -52,7 +51,8 @@ def test_sync_listenings_from_listenbrainz(factories, mocker, caplog):
     factories["music.Track"](mbid="f89db7f8-4a1f-4228-a0a1-e7ba028b7476")
     track = factories["music.Track"](mbid="54c60860-f43d-484e-b691-7ab7ec8de559")
     factories["history.Listening"](
-        creation_date=datetime.datetime.fromtimestamp(1871, timezone.utc), track=track
+        creation_date=datetime.datetime.fromtimestamp(1871, datetime.timezone.utc),
+        track=track,
     )
 
     conf = {

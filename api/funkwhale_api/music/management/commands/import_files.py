@@ -630,7 +630,7 @@ def process_load_queue(stdout, **kwargs):
             for path, event in batched_events.copy().items():
                 if time.time() - event["time"] <= flush_delay:
                     continue
-                now = datetime.datetime.utcnow()
+                now = datetime.datetime.now(datetime.timezone.utc)
                 stdout.write(
                     "{} -- Processing {}:{}...\n".format(
                         now.strftime("%Y/%m/%d %H:%M:%S"), event["type"], event["path"]

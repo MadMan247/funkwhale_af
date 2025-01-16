@@ -7,6 +7,7 @@ import urllib.parse
 import uuid
 
 import arrow
+import slugify
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.postgres.indexes import GinIndex
@@ -775,6 +776,9 @@ TRACK_FILE_IMPORT_STATUS_CHOICES = (
 
 
 def get_file_path(instance, filename):
+    # Convert unicode characters in name to ASCII characters.
+    filename = slugify.slugify(filename, ok=slugify.SLUG_OK + ".", only_ascii=True)
+
     if isinstance(instance, UploadVersion):
         return common_utils.ChunkedPath("transcoded")(instance, filename)
 

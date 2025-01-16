@@ -24,10 +24,10 @@ def get_tags_from_foreign_key(
     objs = foreign_key_model.objects.filter(
         **{f"artist_credit__{foreign_key_attr}__pk__in": ids}
     ).order_by("-id")
-    objs = objs.only("id", f"artist_credit__{foreign_key_attr}_id").prefetch_related(
+    objs = objs.only("id", f"artist_credit__{foreign_key_attr}__id").prefetch_related(
         tagged_items_attr
     )
-    for obj in objs.iterator():
+    for obj in objs.iterator(chunk_size=1000):
         for ac in obj.artist_credit.all():
             # loop on all objects, store the objs tags + counter on the corresponding foreign key
             row_data = data.setdefault(
