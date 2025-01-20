@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 import urllib.parse
 import uuid
 
@@ -1580,6 +1581,50 @@ class TrackSerializer(MusicEntitySerializer):
         return super().update(obj, validated_data)
 
 
+def duration_int_to_xml(duration):
+    if not duration:
+        return None
+
+    multipliers = {"S": 1, "M": 60, "H": 3600, "D": 86400}
+    ret = "P"
+    days, seconds = divmod(int(duration), multipliers["D"])
+    ret += f"{days:d}DT" if days > 0 else "T"
+    hours, seconds = divmod(seconds, multipliers["H"])
+    ret += f"{hours:d}H" if hours > 0 else ""
+    minutes, seconds = divmod(seconds, multipliers["M"])
+    ret += f"{minutes:d}M" if minutes > 0 else ""
+    ret += f"{seconds:d}S" if seconds > 0 or ret == "PT" else ""
+    return ret
+
+
+class DayTimeDurationSerializer(serializers.DurationField):
+    multipliers = {"S": 1, "M": 60, "H": 3600, "D": 86400}
+
+    def to_internal_value(self, value):
+        if isinstance(value, float):
+            return value
+
+        parsed = re.match(
+            r"P([0-9]+D)?T([0-9]+H)?([0-9]+M)?([0-9]+(?:\.[0-9]+)?S)?", str(value)
+        )
+        if parsed is not None:
+            return int(
+                sum(
+                    [
+                        self.multipliers[s[-1]] * float("0" + s[:-1])
+                        for s in parsed.groups()
+                        if s is not None
+                    ]
+                )
+            )
+        self.fail(
+            "invalid", format="https://www.w3.org/TR/xmlschema11-2/#dayTimeDuration"
+        )
+
+    def to_representation(self, value):
+        duration_int_to_xml(value)
+
+
 class UploadSerializer(jsonld.JsonLdSerializer):
     type = serializers.ChoiceField(choices=[contexts.AS.Audio])
     id = serializers.URLField(max_length=500)
@@ -1589,7 +1634,7 @@ class UploadSerializer(jsonld.JsonLdSerializer):
     updated = serializers.DateTimeField(required=False, allow_null=True)
     bitrate = serializers.IntegerField(min_value=0)
     size = serializers.IntegerField(min_value=0)
-    duration = serializers.IntegerField(min_value=0)
+    duration = DayTimeDurationSerializer(min_value=0)
 
     track = TrackSerializer(required=True)
 
@@ -1701,7 +1746,7 @@ class UploadSerializer(jsonld.JsonLdSerializer):
             "published": instance.creation_date.isoformat(),
             "bitrate": instance.bitrate,
             "size": instance.size,
-            "duration": instance.duration,
+            "duration": duration_int_to_xml(instance.duration),
             "url": [
                 {
                     "href": utils.full_url(instance.listen_url_no_download),
@@ -1851,7 +1896,7 @@ class ChannelUploadSerializer(jsonld.JsonLdSerializer):
     url = LinkListSerializer(keep_mediatype=["audio/*"], min_length=1)
     name = serializers.CharField()
     published = serializers.DateTimeField(required=False)
-    duration = serializers.IntegerField(min_value=0, required=False)
+    duration = DayTimeDurationSerializer(required=False)
     position = serializers.IntegerField(min_value=0, allow_null=True, required=False)
     disc = serializers.IntegerField(min_value=1, allow_null=True, required=False)
     album = serializers.URLField(max_length=500, required=False)
@@ -1960,7 +2005,7 @@ class ChannelUploadSerializer(jsonld.JsonLdSerializer):
         if upload.track.local_license:
             data["license"] = upload.track.local_license["identifiers"][0]
 
-        include_if_not_none(data, upload.duration, "duration")
+        include_if_not_none(data, duration_int_to_xml(upload.duration), "duration")
         include_if_not_none(data, upload.track.position, "position")
         include_if_not_none(data, upload.track.disc_number, "disc")
         include_if_not_none(data, upload.track.copyright, "copyright")

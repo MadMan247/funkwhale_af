@@ -798,8 +798,7 @@ An `Audio` object is a custom object used to store upload information. It extend
     - Integer
     - The bitrate of the audio in bytes/s
   * - `duration`*
-    - Integer
-    - The duration of the audio in seconds
+    - The duration of the audio as defined in [as](https://www.w3.org/TR/activitystreams-vocabulary/#dfn-duration)
   * - `library`*
     - String (URI)
     - The ID of the audio's containing [`Library` object](#library)
@@ -826,7 +825,7 @@ An `Audio` object is a custom object used to store upload information. It extend
   "name": "Krav Boca - Mortem",
   "size": 8656581,
   "bitrate": 320000,
-  "duration": 213,
+  "duration": "PT1312S,
   "library": "https://awesome.music/federation/music/libraries/dc702491-f6ce-441b-9da0-cecbed08bcc6",
   "updated": "2018-10-02T19:49:35.646372+00:00",
   "published": "2018-10-02T19:49:35.646359+00:00",

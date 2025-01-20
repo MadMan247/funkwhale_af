@@ -719,7 +719,7 @@ class Track(APIModelMixin):
     @property
     def listen_url(self) -> str:
         # Not using reverse because this is slow
-        return f"/api/v1/listen/{self.uuid}/"
+        return f"/api/v2/listen/{self.uuid}/"
 
     @property
     def local_license(self):

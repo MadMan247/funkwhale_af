@@ -1268,7 +1268,7 @@ def test_activity_pub_upload_serializer_from_ap(factories, mocker, r_mock):
         "name": "Ignored",
         "published": published.isoformat(),
         "updated": updated.isoformat(),
-        "duration": 43,
+        "duration": "PT43S",
         "bitrate": 42,
         "size": 66,
         "url": {"href": "https://audio.file", "type": "Link", "mediaType": "audio/mp3"},
@@ -1337,7 +1337,7 @@ def test_activity_pub_upload_serializer_from_ap(factories, mocker, r_mock):
     assert track_create.call_count == 1
     assert upload.fid == data["id"]
     assert upload.track.fid == data["track"]["id"]
-    assert upload.duration == data["duration"]
+    assert upload.duration == 43
     assert upload.size == data["size"]
     assert upload.bitrate == data["bitrate"]
     assert upload.source == data["url"]["href"]
@@ -1357,7 +1357,7 @@ def test_activity_pub_upload_serializer_from_ap_update(factories, mocker, now, r
         "name": "Ignored",
         "published": now.isoformat(),
         "updated": now.isoformat(),
-        "duration": 42,
+        "duration": "PT42S",
         "bitrate": 42,
         "size": 66,
         "url": {
@@ -1376,7 +1376,7 @@ def test_activity_pub_upload_serializer_from_ap_update(factories, mocker, now, r
     upload.refresh_from_db()
 
     assert upload.fid == data["id"]
-    assert upload.duration == data["duration"]
+    assert upload.duration == 42
     assert upload.size == data["size"]
     assert upload.bitrate == data["bitrate"]
     assert upload.source == data["url"]["href"]
@@ -1408,7 +1408,7 @@ def test_activity_pub_audio_serializer_to_ap(factories):
         "name": upload.track.full_name,
         "published": upload.creation_date.isoformat(),
         "updated": upload.modification_date.isoformat(),
-        "duration": upload.duration,
+        "duration": "PT43S",
         "bitrate": upload.bitrate,
         "size": upload.size,
         "to": contexts.AS.Public,
@@ -1777,7 +1777,7 @@ def test_channel_upload_serializer(factories):
         "content": common_utils.render_html(content.text, content.content_type),
         "to": "https://www.w3.org/ns/activitystreams#Public",
         "position": upload.track.position,
-        "duration": upload.duration,
+        "duration": "PT54S",
         "album": upload.track.album.fid,
         "disc": upload.track.disc_number,
         "copyright": upload.track.copyright,
@@ -1826,7 +1826,7 @@ def test_channel_upload_serializer_from_ap_create(factories, now, mocker):
         "published": now.isoformat(),
         "mediaType": "text/html",
         "content": "<p>Hello</p>",
-        "duration": 543,
+        "duration": "PT543S",
         "position": 4,
         "disc": 2,
         "album": album.fid,
@@ -1875,7 +1875,7 @@ def test_channel_upload_serializer_from_ap_create(factories, now, mocker):
     assert upload.mimetype == payload["url"][1]["mediaType"]
     assert upload.size == payload["url"][1]["size"]
     assert upload.bitrate == payload["url"][1]["bitrate"]
-    assert upload.duration == payload["duration"]
+    assert upload.duration == 543
     assert upload.track.artist_credit.all()[0].artist == channel.artist
     assert upload.track.position == payload["position"]
     assert upload.track.disc_number == payload["disc"]
@@ -1909,7 +1909,7 @@ def test_channel_upload_serializer_from_ap_update(factories, now, mocker):
         "published": now.isoformat(),
         "mediaType": "text/html",
         "content": "<p>Hello</p>",
-        "duration": 543,
+        "duration": "PT543S",
         "position": 4,
         "disc": 2,
         "album": album.fid,
@@ -1959,7 +1959,7 @@ def test_channel_upload_serializer_from_ap_update(factories, now, mocker):
     assert upload.mimetype == payload["url"][1]["mediaType"]
     assert upload.size == payload["url"][1]["size"]
     assert upload.bitrate == payload["url"][1]["bitrate"]
-    assert upload.duration == payload["duration"]
+    assert upload.duration == 543
     assert upload.track.artist_credit.all()[0].artist == channel.artist
     assert upload.track.position == payload["position"]
     assert upload.track.disc_number == payload["disc"]
