@@ -81,11 +81,12 @@ class SignatureAuthentication(authentication.BaseAuthentication):
         fetch_delay = 24 * 3600
         now = timezone.now()
         last_fetch = actor.domain.nodeinfo_fetch_date
-        if not last_fetch or (
-            last_fetch < (now - datetime.timedelta(seconds=fetch_delay))
-        ):
-            tasks.update_domain_nodeinfo(domain_name=actor.domain.name)
-            actor.domain.refresh_from_db()
+        if not actor.domain.is_local:
+            if not last_fetch or (
+                last_fetch < (now - datetime.timedelta(seconds=fetch_delay))
+            ):
+                tasks.update_domain_nodeinfo(domain_name=actor.domain.name)
+                actor.domain.refresh_from_db()
         return actor
 
     def authenticate(self, request):
