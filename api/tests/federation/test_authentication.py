@@ -5,8 +5,10 @@ from funkwhale_api.federation import authentication, exceptions, jsonld, keys
 
 def test_authenticate(factories, mocker, api_request):
     private, public = keys.get_key_pair()
-    factories["federation.Domain"](name="test.federation", nodeinfo_fetch_date=None)
-    actor_url = "https://test.federation/actor"
+    domain = factories["federation.Domain"](
+        name="test.federationnolocal", nodeinfo_fetch_date=None
+    )
+    actor_url = "https://test.federationnolocal/actor"
     mocker.patch(
         "funkwhale_api.federation.actors.get_actor_data",
         return_value={
@@ -42,11 +44,12 @@ def test_authenticate(factories, mocker, api_request):
     authenticator = authentication.SignatureAuthentication()
     user, _ = authenticator.authenticate(django_request)
     actor = django_request.actor
-
+    actor.domain = domain
+    actor.save()
     assert user.is_anonymous is True
     assert actor.public_key == public.decode("utf-8")
     assert actor.fid == actor_url
-    update_domain_nodeinfo.assert_called_once_with(domain_name="test.federation")
+    update_domain_nodeinfo.assert_called_once_with(domain_name="test.federationnolocal")
 
 
 def test_authenticate_skips_blocked_domain(factories, api_request):
