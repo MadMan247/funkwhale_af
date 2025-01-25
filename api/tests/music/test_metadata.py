@@ -187,6 +187,7 @@ def test_can_get_metadata_from_id3_aiff_file(field, value):
         "with_cover.ogg",
         "with_cover.opus",
         "test.m4a",
+        "test_coverart.ogg",
     ],
 )
 def test_can_get_pictures(name):

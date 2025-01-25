@@ -200,7 +200,7 @@ Funkwhale imports the music in your storage directory into the specified library
 
 Funkwhale attempts to import album art for your music library. The import process checks for the following.
 
-1. The cover embedded in the audio files (works with FLAC and MP3 files).
+1. The cover embedded in the audio files (works with FLAC, OGG, MP3 and MP4 files, possibly others).
 2. A `cover.jpg` or `cover.png` in the the track's directory.
 3. An `mbid` in the file's tags. If there is an `mbid`, the import process tries to fetch cover art from Musicbrainz.
 

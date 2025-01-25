@@ -4,6 +4,7 @@ import logging
 from collections.abc import Mapping
 
 import arrow
+import magic
 import mutagen._util
 import mutagen.flac
 import mutagen.oggtheora
@@ -131,6 +132,28 @@ def clean_flac_pictures(apic):
     return pictures
 
 
+def clean_ogg_coverart(metadata_block_picture):
+    pictures = []
+    for b64_data in [metadata_block_picture]:
+        try:
+            data = base64.b64decode(b64_data)
+        except (TypeError, ValueError):
+            continue
+
+        mime = magic.Magic(mime=True)
+        mime.from_buffer(data)
+
+        pictures.append(
+            {
+                "mimetype": mime.from_buffer(data),
+                "content": data,
+                "description": "",
+                "type": mutagen.id3.PictureType.COVER_FRONT,
+            }
+        )
+    return pictures
+
+
 def clean_ogg_pictures(metadata_block_picture):
     pictures = []
     for b64_data in [metadata_block_picture]:
@@ -196,10 +219,16 @@ CONF = {
             "license": {},
             "copyright": {},
             "genre": {},
-            "pictures": {
-                "field": "metadata_block_picture",
-                "to_application": clean_ogg_pictures,
-            },
+            "pictures": [
+                {
+                    "field": "metadata_block_picture",
+                    "to_application": clean_ogg_pictures,
+                },
+                {
+                    "field": "coverart",
+                    "to_application": clean_ogg_coverart,
+                },
+            ],
             "comment": {"field": "comment"},
         },
     },
@@ -221,10 +250,16 @@ CONF = {
             "license": {},
             "copyright": {},
             "genre": {},
-            "pictures": {
-                "field": "metadata_block_picture",
-                "to_application": clean_ogg_pictures,
-            },
+            "pictures": [
+                {
+                    "field": "metadata_block_picture",
+                    "to_application": clean_ogg_pictures,
+                },
+                {
+                    "field": "coverart",
+                    "to_application": clean_ogg_coverart,
+                },
+            ],
             "comment": {"field": "comment"},
         },
     },
@@ -415,25 +450,30 @@ class Metadata(Mapping):
 
     def _get_from_self(self, key, default=NODEFAULT):
         try:
-            field_conf = self._conf["fields"][key]
+            field_confs = self._conf["fields"][key]
         except KeyError:
             raise UnsupportedTag(f"{key} is not supported for this file format")
-        real_key = field_conf.get("field", key)
-        try:
-            getter = field_conf.get("getter", self._conf["getter"])
-            v = getter(self._file, real_key)
-        except KeyError:
-            if default == NODEFAULT:
-                raise TagNotFound(real_key)
-            return default
+        if not isinstance(field_confs, list):
+            field_confs = [field_confs]
 
-        converter = field_conf.get("to_application")
-        if converter:
-            v = converter(v)
-        field = VALIDATION.get(key)
-        if field:
-            v = field.to_python(v)
-        return v
+        for field_conf in field_confs:
+            real_key = field_conf.get("field", key)
+            try:
+                getter = field_conf.get("getter", self._conf["getter"])
+                v = getter(self._file, real_key)
+            except KeyError:
+                continue
+
+            converter = field_conf.get("to_application")
+            if converter:
+                v = converter(v)
+            field = VALIDATION.get(key)
+            if field:
+                v = field.to_python(v)
+            return v
+        if default == NODEFAULT:
+            raise TagNotFound(real_key)
+        return default
 
     def get_picture(self, *picture_types):
         if not picture_types:
