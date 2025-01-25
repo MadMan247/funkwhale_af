@@ -26,8 +26,8 @@ def get_releases() -> List[Dict[str, str]]:
         ],
         text=True,
     )
-
     result = []
+
     for line in output.splitlines():
         date, _, ref = line.partition("|")
         try:
