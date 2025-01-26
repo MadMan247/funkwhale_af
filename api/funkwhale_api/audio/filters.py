@@ -37,7 +37,7 @@ class ChannelFilter(moderation_filters.HiddenContentFilterSet):
         # tuple-mapping retains order
         fields=(
             ("creation_date", "creation_date"),
-            ("artist_credit__artist__modification_date", "modification_date"),
+            ("artist__modification_date", "modification_date"),
             ("?", "random"),
         )
     )
