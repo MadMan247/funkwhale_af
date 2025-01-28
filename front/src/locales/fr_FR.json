@@ -2781,7 +2781,11 @@
           "libraryAcceptFollow": "{ username } a accepté votre suivi de l’audiothèque « { library } »",
           "libraryFollow": "{ username } suit votre audiothèque « { library } »",
           "libraryPendingFollow": "{ username } veut suivre votre audiothèque « { library } »",
-          "libraryReject": "Vous avez rejeté la demande de {username} de suivre \"{library}\""
+          "libraryReject": "Vous avez rejeté la demande de {username} de suivre \"{library}\"",
+          "userAcceptFollow": "{username} a accepté votre demande d'abonnement",
+          "userFollow": "{username} vous suit",
+          "userPendingFollow": "{username} demande à vous suivre",
+          "userReject": "Vous avez refusé la demande d'abonnement de {username}"
         }
       }
     },
@@ -2843,6 +2847,19 @@
         "placeholder": {
           "name": "Ma liste de lecture géniale"
         }
+      },
+      "PlaylistDropdown": {
+        "button": {
+          "export": {
+            "description": "Ceci mettra à disposition un fichier xspf contenant les données de la playlist",
+            "header": "Télécharger la playlist"
+          },
+          "import": {
+            "description": "Ceci mettra à jour la playlist avec le contenu du fichier xspf. Les pistes existantes de la playlist seront supprimées",
+            "header": "Reconstruire la playlist"
+          }
+        },
+        "more": "Plus"
       },
       "PlaylistModal": {
         "button": {
