@@ -83,9 +83,9 @@ def test_artist_credit_migration(migrator):
 def test_migrate_libraries_to_playlist(migrator):
     music_initial_migration = (
         "music",
-        "0059_remove_album_artist_remove_track_artist_artistcredit_and_more",
+        "0060_empty_for_test",
     )
-    music_final_migration = ("music", "0060_migrate_libraries_to_playlist")
+    music_final_migration = ("music", "0061_migrate_libraries_to_playlist")
 
     # Apply migrations
     migrator.migrate(

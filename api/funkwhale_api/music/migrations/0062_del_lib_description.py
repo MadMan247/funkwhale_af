@@ -3,7 +3,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("music", "0060_migrate_libraries_to_playlist"),
+        ("music", "0061_migrate_libraries_to_playlist"),
     ]
     operations = [
         migrations.RemoveField(

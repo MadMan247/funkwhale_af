@@ -100,7 +100,7 @@ def migrate_libraries_to_playlist(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("music", "0059_remove_album_artist_remove_track_artist_artistcredit_and_more"),
+        ("music", "0060_empty_for_test"),
         ("playlists", "0008_playlist_library_drop"),
     ]
     operations = [
