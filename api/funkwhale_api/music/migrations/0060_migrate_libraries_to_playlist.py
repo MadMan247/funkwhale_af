@@ -46,6 +46,7 @@ def migrate_libraries_to_playlist(apps, schema_editor):
             actor=library.actor,
             creation_date=library.creation_date,
             privacy_level=library.privacy_level,
+            description=library.description,
             uuid=(new_uuid := uuid.uuid4()),
             fid=federation_utils.full_url(
                 reverse(
@@ -86,7 +87,7 @@ def migrate_libraries_to_playlist(apps, schema_editor):
                 uuid=(new_uuid := uuid.uuid4()),
                 fid=federation_utils.full_url(
                     reverse(
-                        f"federation:music:playlists-detail",
+                        f"federation:music:libraries-detail",
                         kwargs={"uuid": new_uuid},
                     )
                 ),
@@ -99,7 +100,8 @@ def migrate_libraries_to_playlist(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("music", "0060_remove_library_description_and_more"),
+        ("music", "0059_remove_album_artist_remove_track_artist_artistcredit_and_more"),
+        ("playlists", "0008_playlist_library_drop"),
     ]
     operations = [
         migrations.RunPython(

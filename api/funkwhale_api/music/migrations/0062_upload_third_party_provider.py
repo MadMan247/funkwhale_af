@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("music", "0061_migrate_libraries_to_playlist"),
+        ("music", "0061_del_lib_description"),
     ]
 
     operations = [

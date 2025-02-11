@@ -85,7 +85,7 @@ def test_migrate_libraries_to_playlist(migrator):
         "music",
         "0059_remove_album_artist_remove_track_artist_artistcredit_and_more",
     )
-    music_final_migration = ("music", "0061_migrate_libraries_to_playlist")
+    music_final_migration = ("music", "0060_migrate_libraries_to_playlist")
 
     # Apply migrations
     migrator.migrate(
@@ -110,7 +110,9 @@ def test_migrate_libraries_to_playlist(migrator):
     existing_urls = Actor.objects.values_list("fid", flat=True)
     print(existing_urls)
     target_actor = Actor.objects.create(
-        name="Test Actor 2", domain=domain2, fid="http://test2.com/superduniquemanonmam"
+        name="Test Actor 2",
+        domain=domain2,
+        fid="http://test2.com/superduniquemanonmam",
     )
 
     library = Library.objects.create(
@@ -119,6 +121,7 @@ def test_migrate_libraries_to_playlist(migrator):
         creation_date=now(),
         privacy_level="everyone",
         uuid=uuid4(),
+        description="This is a description",
     )
 
     Track.objects.create()

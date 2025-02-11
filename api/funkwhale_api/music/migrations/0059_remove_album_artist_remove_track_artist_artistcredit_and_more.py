@@ -36,7 +36,7 @@ def set_all_artists_credit(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         ("music", "0058_upload_quality"),
-        ("playlists", "0008_playlist_library_drop"),
+        ("playlists", "0007_alter_playlist_actor_alter_playlisttrack_uuid_and_more"),
     ]
 
     operations = [
