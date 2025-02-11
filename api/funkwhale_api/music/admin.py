@@ -116,7 +116,7 @@ launch_scan.short_description = "Launch scan"
 class LibraryAdmin(admin.ModelAdmin):
     list_display = ["id", "name", "actor", "uuid", "privacy_level", "creation_date"]
     list_select_related = True
-    search_fields = ["actor__username", "name", "description"]
+    search_fields = ["uuid", "name", "actor__preferred_username"]
     list_filter = ["privacy_level"]
     actions = [launch_scan]
 
