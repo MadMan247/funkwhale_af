@@ -42,7 +42,12 @@ RUN set -eux; \
   py3-pillow \
   py3-psycopg2 \
   py3-watchfiles \
-  python3-dev
+  python3-dev \
+  gfortran \
+  libgfortran \
+  openblas-dev \
+  py3-scipy \
+  py3-scikit-learn;
 
 # Create virtual env
 RUN python3 -m venv --system-site-packages /venv
@@ -53,19 +58,28 @@ COPY --from=requirements /dev-requirements.txt /dev-requirements.txt
 
 RUN --mount=type=cache,target=~/.cache/pip; \
   set -eux; \
-  pip3 install --upgrade pip; \
-  pip3 install setuptools wheel; \
+  pip3 install --upgrade pip;
+
+
+RUN --mount=type=cache,target=~/.cache/pip; \
+  set -eux; \
+  pip3 install setuptools wheel;
+
+RUN --mount=type=cache,target=~/.cache/pip; \
+  set -eux; \
   # Currently we are unable to relieably build rust-based packages on armv7. This
   # is why we need to use the packages shipped by Alpine Linux.
   # Since poetry does not allow in-place dependency pinning, we need
   # to install the deps using pip.
-  grep -Ev 'cryptography|lxml|pillow|psycopg2|watchfiles' /requirements.txt \
+  grep -Ev 'cryptography|lxml|pillow|psycopg2|watchfiles|scipy|scikit-learn' /requirements.txt \
   | pip3 install -r /dev/stdin \
   cryptography \
   lxml \
   pillow \
   psycopg2 \
-  watchfiles
+  watchfiles \
+  scipy \
+  scikit-learn;
 
 ARG install_dev_deps=0
 RUN --mount=type=cache,target=~/.cache/pip; \
@@ -102,6 +116,8 @@ RUN set -eux; \
   py3-pillow \
   py3-psycopg2 \
   py3-watchfiles \
+  py3-scipy \
+  py3-scikit-learn \
   python3 \
   tzdata
 
@@ -111,6 +127,7 @@ ENV PATH="/venv/bin:$PATH"
 COPY . /app
 WORKDIR /app
 
+RUN apk add --no-cache gfortran
 RUN --mount=type=cache,target=~/.cache/pip; \
   set -eux; \
   pip3 install --no-deps --editable .
