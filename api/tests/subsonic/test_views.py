@@ -228,6 +228,62 @@ def test_get_album(
 
 
 @pytest.mark.parametrize("f", ["json"])
+def test_get_album_info_2(
+    f, db, logged_in_api_client, factories, mocker, queryset_equal_queries
+):
+    url = reverse("api:subsonic:subsonic-get_album_info_2")
+    assert url.endswith("getAlbumInfo2") is True
+    artist_credit = factories["music.ArtistCredit"]()
+    album = (
+        factories["music.Album"](artist_credit=artist_credit)
+        .__class__.objects.with_duration()
+        .first()
+    )
+    factories["music.Track"].create_batch(size=3, album=album, playable=True)
+    playable_by = mocker.spy(music_models.AlbumQuerySet, "playable_by")
+    expected = {"albumInfo": serializers.GetAlbumSerializer(album).data}
+    response = logged_in_api_client.get(url, {"f": f, "id": album.pk})
+
+    assert response.status_code == 200
+    assert response.data == expected
+
+    playable_by.assert_called_once_with(
+        music_models.Album.objects.with_duration().prefetch_related(
+            "artist_credit__artist"
+        ),
+        None,
+    )
+
+
+@pytest.mark.parametrize("f", ["json"])
+def test_get_album_info(
+    f, db, logged_in_api_client, factories, mocker, queryset_equal_queries
+):
+    url = reverse("api:subsonic:subsonic-get_album_info")
+    assert url.endswith("getAlbumInfo") is True
+    artist_credit = factories["music.ArtistCredit"]()
+    album = (
+        factories["music.Album"](artist_credit=artist_credit)
+        .__class__.objects.with_duration()
+        .first()
+    )
+    factories["music.Track"].create_batch(size=3, album=album, playable=True)
+    playable_by = mocker.spy(music_models.AlbumQuerySet, "playable_by")
+    expected = {"albumInfo": serializers.GetAlbumSerializer(album).data}
+    response = logged_in_api_client.get(url, {"f": f, "id": album.pk})
+
+    assert response.status_code == 200
+    assert response.data == expected
+
+    playable_by.assert_called_once_with(
+        music_models.Album.objects.with_duration().prefetch_related(
+            "artist_credit__artist"
+        ),
+        None,
+    )
+
+
+@pytest.mark.parametrize("f", ["json"])
 def test_get_song(
     f, db, logged_in_api_client, factories, mocker, queryset_equal_queries
 ):
@@ -244,6 +300,32 @@ def test_get_song(
     assert response.data == {
         "song": serializers.get_track_data(track.album, track, upload)
     }
+    playable_by.assert_called_once_with(music_models.Track.objects.all(), None)
+
+
+@pytest.mark.parametrize("f", ["json"])
+def test_get_top_songs(
+    f, db, logged_in_api_client, factories, mocker, queryset_equal_queries
+):
+    url = reverse("api:subsonic:subsonic-get_top_songs")
+    assert url.endswith("getTopSongs") is True
+    artist_credit = factories["music.ArtistCredit"]()
+    album = factories["music.Album"](artist_credit=artist_credit)
+    track = factories["music.Track"](album=album, playable=True)
+    tracks = factories["music.Track"].create_batch(20, album=album, playable=True)
+    factories["music.Upload"](track=track)
+    factories["history.Listening"].create_batch(20, track=track)
+    factories["history.Listening"].create_batch(2, track=tracks[2])
+
+    playable_by = mocker.spy(music_models.TrackQuerySet, "playable_by")
+    response = logged_in_api_client.get(
+        url, {"f": f, "artist": artist_credit.artist.name, "count": 2}
+    )
+
+    assert response.status_code == 200
+    assert response.data["topSongs"][0] == serializers.get_track_data(
+        track.album, track, track.uploads.all()[0]
+    )
     playable_by.assert_called_once_with(music_models.Track.objects.all(), None)
 
 

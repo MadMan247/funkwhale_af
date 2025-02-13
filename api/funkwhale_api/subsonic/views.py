@@ -1,6 +1,7 @@
 """
 Documentation of Subsonic API can be found at http://www.subsonic.org/pages/api.jsp
 """
+
 import datetime
 import functools
 
@@ -90,6 +91,8 @@ def find_object(
                         }
                     }
                 )
+            except qs.model.MultipleObjectsReturned:
+                obj = qs.filter(**{model_field: value})[0]
             kwargs["obj"] = obj
             return func(self, request, *args, **kwargs)
 
@@ -260,6 +263,43 @@ class SubsonicViewSet(viewsets.GenericViewSet):
 
         return response.Response(payload, status=200)
 
+    # This should return last.fm data but we choose to return the pod top song
+    @action(
+        detail=False,
+        methods=["get", "post"],
+        url_name="get_top_songs",
+        url_path="getTopSongs",
+    )
+    @find_object(
+        music_models.Artist.objects.all(),
+        model_field="artist_credit__artist__name",
+        field="artist",
+        filter_playable=True,
+        cast=str,
+    )
+    def get_top_songs(self, request, *args, **kwargs):
+        artist = kwargs.pop("obj")
+        data = request.GET or request.POST
+        try:
+            count = int(data["count"])
+        except KeyError:
+            return response.Response(
+                {
+                    "error": {
+                        "code": 10,
+                        "message": "required parameter 'count' not present",
+                    }
+                }
+            )
+
+        # passing with many=true to make the serializer accept the returned list
+        data = serializers.GetTopSongsSerializer(
+            [artist], context={"count": count}, many=True
+        ).data
+        payload = {"topSongs": data[0]}
+
+        return response.Response(payload, status=200)
+
     @action(
         detail=False,
         methods=["get", "post"],
@@ -287,6 +327,44 @@ class SubsonicViewSet(viewsets.GenericViewSet):
         album = kwargs.pop("obj")
         data = serializers.GetAlbumSerializer(album).data
         payload = {"album": data}
+        return response.Response(payload, status=200)
+
+    # A clone of get_album  (this should return last.fm data but we prefer to send our own metadata)
+    @action(
+        detail=False,
+        methods=["get", "post"],
+        url_name="get_album_info_2",
+        url_path="getAlbumInfo2",
+    )
+    @find_object(
+        music_models.Album.objects.with_duration().prefetch_related(
+            "artist_credit__artist"
+        ),
+        filter_playable=True,
+    )
+    def get_album_info_2(self, request, *args, **kwargs):
+        album = kwargs.pop("obj")
+        data = serializers.GetAlbumSerializer(album).data
+        payload = {"albumInfo": data}
+        return response.Response(payload, status=200)
+
+    # A clone of get_album  (this should return last.fm data but we prefer to send our own metadata)
+    @action(
+        detail=False,
+        methods=["get", "post"],
+        url_name="get_album_info",
+        url_path="getAlbumInfo",
+    )
+    @find_object(
+        music_models.Album.objects.with_duration().prefetch_related(
+            "artist_credit__artist"
+        ),
+        filter_playable=True,
+    )
+    def get_album_info(self, request, *args, **kwargs):
+        album = kwargs.pop("obj")
+        data = serializers.GetAlbumSerializer(album).data
+        payload = {"albumInfo": data}
         return response.Response(payload, status=200)
 
     @action(detail=False, methods=["get", "post"], url_name="stream", url_path="stream")

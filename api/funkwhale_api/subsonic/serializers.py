@@ -226,6 +226,28 @@ class GetSongSerializer(serializers.Serializer):
         return get_track_data(track.album, track, uploads[0])
 
 
+class GetTopSongsSerializer(serializers.Serializer):
+    def to_representation(self, artist):
+        top_tracks = (
+            history_models.Listening.objects.filter(track__artist_credit__artist=artist)
+            .values("track")
+            .annotate(listen_count=Count("id"))
+            .order_by("-listen_count")[: self.context["count"]]
+        )
+        if not len(top_tracks):
+            return {}
+
+        top_tracks_instances = []
+        for track in top_tracks:
+            track = music_models.Track.objects.get(id=track["track"])
+            top_tracks_instances.append(track)
+
+        return [
+            get_track_data(track.album, track, track.uploads.all()[0])
+            for track in top_tracks_instances
+        ]
+
+
 def get_starred_tracks_data(favorites):
     by_track_id = {f.track_id: f for f in favorites}
     tracks = (
@@ -335,15 +357,21 @@ def get_channel_data(channel, uploads):
         "id": str(channel.uuid),
         "url": channel.get_rss_url(),
         "title": channel.artist.name,
-        "description": channel.artist.description.as_plain_text
-        if channel.artist.description
-        else "",
-        "coverArt": f"at-{channel.artist.attachment_cover.uuid}"
-        if channel.artist.attachment_cover
-        else "",
-        "originalImageUrl": channel.artist.attachment_cover.url
-        if channel.artist.attachment_cover
-        else "",
+        "description": (
+            channel.artist.description.as_plain_text
+            if channel.artist.description
+            else ""
+        ),
+        "coverArt": (
+            f"at-{channel.artist.attachment_cover.uuid}"
+            if channel.artist.attachment_cover
+            else ""
+        ),
+        "originalImageUrl": (
+            channel.artist.attachment_cover.url
+            if channel.artist.attachment_cover
+            else ""
+        ),
         "status": "completed",
     }
     if uploads:
@@ -360,12 +388,14 @@ def get_channel_episode_data(upload, channel_id):
         "channelId": str(channel_id),
         "streamId": upload.track.id,
         "title": upload.track.title,
-        "description": upload.track.description.as_plain_text
-        if upload.track.description
-        else "",
-        "coverArt": f"at-{upload.track.attachment_cover.uuid}"
-        if upload.track.attachment_cover
-        else "",
+        "description": (
+            upload.track.description.as_plain_text if upload.track.description else ""
+        ),
+        "coverArt": (
+            f"at-{upload.track.attachment_cover.uuid}"
+            if upload.track.attachment_cover
+            else ""
+        ),
         "isDir": "false",
         "year": upload.track.creation_date.year,
         "publishDate": upload.track.creation_date.isoformat(),
