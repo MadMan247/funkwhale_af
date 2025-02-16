@@ -893,7 +893,7 @@ class SubsonicViewSet(viewsets.GenericViewSet):
                     .select_related("attachment_cover")
                     .get(pk=artist_id)
                 )
-            except (TypeError, ValueError, music_models.Album.DoesNotExist):
+            except (TypeError, ValueError, music_models.Artist.DoesNotExist):
                 return response.Response(
                     {"error": {"code": 70, "message": "cover art not found."}}
                 )
@@ -902,7 +902,7 @@ class SubsonicViewSet(viewsets.GenericViewSet):
             try:
                 attachment_id = id.replace("at-", "")
                 attachment = common_models.Attachment.objects.get(uuid=attachment_id)
-            except (TypeError, ValueError, music_models.Album.DoesNotExist):
+            except (TypeError, ValueError, common_models.Attachment.DoesNotExist):
                 return response.Response(
                     {"error": {"code": 70, "message": "cover art not found."}}
                 )
