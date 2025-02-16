@@ -95,7 +95,7 @@ pycountry = "24.6.1"
 typesense = { version = "==0.21.0", optional = true }
 
 # Dependencies pinning
-ipython = "==8.31.0"
+ipython = "==8.32.0"
 pluralizer = "==1.2.0"
 service-identity = "==24.2.0"
 unicode-slugify = "==0.1.5"
