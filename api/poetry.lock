@@ -1308,14 +1308,14 @@ Django = ">=3.2"
 
 [[package]]
 name = "django-filter"
-version = "24.3"
+version = "25.1"
 description = "Django-filter is a reusable Django application for allowing users to filter querysets dynamically."
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 groups = ["main"]
 files = [
-    {file = "django_filter-24.3-py3-none-any.whl", hash = "sha256:c4852822928ce17fb699bcfccd644b3574f1a2d80aeb2b4ff4f16b02dd49dc64"},
-    {file = "django_filter-24.3.tar.gz", hash = "sha256:d8ccaf6732afd21ca0542f6733b11591030fa98669f8d15599b358e24a2cd9c3"},
+    {file = "django_filter-25.1-py3-none-any.whl", hash = "sha256:4fa48677cf5857b9b1347fed23e355ea792464e0fe07244d1fdfb8a806215b80"},
+    {file = "django_filter-25.1.tar.gz", hash = "sha256:1ec9eef48fa8da1c0ac9b411744b16c3f4c31176c867886e4c48da369c407153"},
 ]
 
 [package.dependencies]
@@ -5074,4 +5074,4 @@ typesense = ["typesense"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10,<3.14"
-content-hash = "16d671714c43e9ffa9ef4a50eda58053f1efd18a17a86a31cb5a0c0d82ce71bb"
+content-hash = "50e7837944e56b580bee6fb7e4e3a02685d7228c0e3e6f42fe0a6fc0202b10fb"
