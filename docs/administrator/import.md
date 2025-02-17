@@ -34,30 +34,6 @@ docker compose run --rm api funkwhale-manage import_files --help
 :local:
 ```
 
-## Get demo music
-
-If you don't have music on your server, you can download creative commons music to test imports with. The Funkwhale project provides a collection courtesy of [Jamendo](https://jamendo.com). To download these tracks:
-
-1. Download the shell script.
-
-   ```{parsed-literal}
-   curl -L -o download-tracks.sh "https://dev.funkwhale.audio/funkwhale/funkwhale/raw/{sub-ref}`version`/demo/download-tracks.sh"
-   ```
-
-2. Download the music list.
-
-   ```{parsed-literal}
-   curl -L -o music.txt "https://dev.funkwhale.audio/funkwhale/funkwhale/raw/{sub-ref}`version`/demo/music.txt" chmod +x download-tracks.sh
-   ```
-
-3. Run the shell script against the music list to download the tracks.
-
-   ```{code-block} sh
-   ./download-tracks.sh music.txt
-   ```
-
-This downloads a set compressed albums to your `data/music` directory and unzips them. You can then import these tracks using the methods in this article.
-
 ## Find your library ID
 
 You need to create a library before you can import music. Follow the instructions in [Create a library](../user/libraries/create.md) to get started.
