@@ -55,19 +55,19 @@
     },
     {
       "groupName": "vueuse",
-      "matchPackageNames": ["/^@vueuse/.*/"]
+      "matchDepNames": ["/^@vueuse/.*/"]
     },
     {
-      "matchPackageNames": ["channels", "channels-redis", "daphne"],
+      "matchDepNames": ["channels", "channels-redis", "daphne"],
       "groupName": "channels"
     },
     {
-      "matchPackageNames": ["node"],
+      "matchDepNames": ["node"],
       "allowedVersions": "/\\d+[02468]$/"
     },
     {
       "matchFileNames": ["deploy/docker-compose.yml"],
-      "matchPackageNames": ["postgres"],
+      "matchDepNames": ["postgres"],
       "postUpgradeTasks": {
         "commands": [
           "echo 'Upgrade Postgres to version {{ newVersion }}. [Make sure to migrate!](https://docs.funkwhale.audio/administrator_documentation/upgrade_docs/docker.html#upgrade-the-postgres-container)' > changes/changelog.d/postgres.update"
@@ -76,7 +76,7 @@
       }
     },
     {
-      "matchPackageNames": ["python"],
+      "matchDepNames": ["python"],
       "rangeStrategy": "widen"
     }
   ]
