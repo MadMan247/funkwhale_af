@@ -173,6 +173,7 @@ class ArtistCreditSerializer(serializers.ModelSerializer):
 
 class AlbumSerializer(OptionalDescriptionMixin, serializers.Serializer):
     artist_credit = ArtistCreditSerializer(many=True)
+    description = common_serializers.ContentSerializer(allow_null=True, required=False)
     cover = CoverField(allow_null=True)
     is_playable = serializers.SerializerMethodField()
     tags = serializers.SerializerMethodField()
@@ -275,7 +276,7 @@ class TrackSerializer(OptionalDescriptionMixin, serializers.Serializer):
     listen_url = serializers.SerializerMethodField()
     tags = serializers.SerializerMethodField()
     attributed_to = APIActorSerializer(allow_null=True)
-
+    description = common_serializers.ContentSerializer(allow_null=True, required=False)
     id = serializers.IntegerField()
     fid = serializers.URLField()
     mbid = serializers.UUIDField()

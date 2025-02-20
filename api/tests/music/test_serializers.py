@@ -198,6 +198,7 @@ def test_album_serializer(factories, to_api_date):
         "is_local": album.is_local,
         "tags": [],
         "attributed_to": federation_serializers.APIActorSerializer(actor).data,
+        "description": None,
     }
     serializer = serializers.AlbumSerializer(
         album.__class__.objects.with_tracks_count().get(pk=album.pk)
@@ -230,6 +231,7 @@ def test_track_album_serializer(factories, to_api_date):
         "is_local": album.is_local,
         "tags": [],
         "attributed_to": federation_serializers.APIActorSerializer(actor).data,
+        "description": None,
     }
     serializer = serializers.AlbumSerializer(
         album.__class__.objects.with_tracks_count().get(pk=album.pk)
@@ -271,6 +273,7 @@ def test_track_serializer(factories, to_api_date):
         "cover": common_serializers.AttachmentSerializer(track.attachment_cover).data,
         "downloads_count": track.downloads_count,
         "is_playable": bool(track.playable_uploads),
+        "description": None,
     }
     serializer = serializers.TrackSerializer(track)
     assert serializer.data == expected
