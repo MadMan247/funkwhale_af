@@ -199,6 +199,9 @@ def test_album_serializer(factories, to_api_date):
         "tags": [],
         "attributed_to": federation_serializers.APIActorSerializer(actor).data,
         "description": None,
+        "tracks": [
+            serializers.TrackSerializer(track).data for track in album.tracks.all()
+        ],
     }
     serializer = serializers.AlbumSerializer(
         album.__class__.objects.with_tracks_count().get(pk=album.pk)
@@ -232,6 +235,9 @@ def test_track_album_serializer(factories, to_api_date):
         "tags": [],
         "attributed_to": federation_serializers.APIActorSerializer(actor).data,
         "description": None,
+        "tracks": [
+            serializers.TrackSerializer(track).data for track in album.tracks.all()
+        ],
     }
     serializer = serializers.AlbumSerializer(
         album.__class__.objects.with_tracks_count().get(pk=album.pk)

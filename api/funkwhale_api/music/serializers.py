@@ -140,10 +140,11 @@ class ArtistWithAlbumsSerializer(OptionalDescriptionMixin, serializers.Serialize
         return getattr(o, "_tracks_count", 0)
 
 
-class SimpleArtistSerializer(serializers.ModelSerializer):
+class ArtistSerializer(serializers.ModelSerializer):
     cover = CoverField(allow_null=True, required=False)
     description = common_serializers.ContentSerializer(allow_null=True, required=False)
     channel = serializers.UUIDField(allow_null=True, required=False)
+    tags = serializers.SerializerMethodField()
 
     class Meta:
         model = models.Artist
@@ -160,59 +161,21 @@ class SimpleArtistSerializer(serializers.ModelSerializer):
             "cover",
             "channel",
             "attributed_to",
+            "tags",
         )
-
-
-class ArtistCreditSerializer(serializers.ModelSerializer):
-    artist = SimpleArtistSerializer()
-
-    class Meta:
-        model = models.ArtistCredit
-        fields = ["artist", "credit", "joinphrase", "index"]
-
-
-class AlbumSerializer(OptionalDescriptionMixin, serializers.Serializer):
-    artist_credit = ArtistCreditSerializer(many=True)
-    description = common_serializers.ContentSerializer(allow_null=True, required=False)
-    cover = CoverField(allow_null=True)
-    is_playable = serializers.SerializerMethodField()
-    tags = serializers.SerializerMethodField()
-    tracks_count = serializers.SerializerMethodField()
-    attributed_to = APIActorSerializer()
-    id = serializers.IntegerField()
-    fid = serializers.URLField()
-    mbid = serializers.UUIDField()
-    title = serializers.CharField()
-    release_date = serializers.DateField()
-    creation_date = serializers.DateTimeField()
-    is_local = serializers.BooleanField()
-    duration = serializers.SerializerMethodField(read_only=True)
-
-    def get_tracks_count(self, o) -> int:
-        return len(o.tracks.all())
-
-    def get_is_playable(self, obj) -> bool:
-        try:
-            return any(
-                [
-                    bool(getattr(t, "is_playable_by_actor", None))
-                    for t in obj.tracks.all()
-                ]
-            )
-        except AttributeError:
-            return None
 
     @extend_schema_field({"type": "array", "items": {"type": "string"}})
     def get_tags(self, obj):
         tagged_items = getattr(obj, "_prefetched_tagged_items", [])
         return [ti.tag.name for ti in tagged_items]
 
-    def get_duration(self, obj) -> int:
-        try:
-            return obj.duration
-        except AttributeError:
-            # no annotation?
-            return 0
+
+class ArtistCreditSerializer(serializers.ModelSerializer):
+    artist = ArtistSerializer()
+
+    class Meta:
+        model = models.ArtistCredit
+        fields = ["artist", "credit", "joinphrase", "index"]
 
 
 class TrackAlbumSerializer(serializers.ModelSerializer):
@@ -316,6 +279,51 @@ class TrackSerializer(OptionalDescriptionMixin, serializers.Serializer):
 
     def get_is_playable(self, obj) -> bool:
         return bool(getattr(obj, "playable_uploads", []))
+
+
+class AlbumSerializer(OptionalDescriptionMixin, serializers.Serializer):
+    artist_credit = ArtistCreditSerializer(many=True)
+    cover = CoverField(allow_null=True)
+    is_playable = serializers.SerializerMethodField()
+    tags = serializers.SerializerMethodField()
+    tracks_count = serializers.SerializerMethodField()
+    attributed_to = APIActorSerializer()
+    id = serializers.IntegerField()
+    fid = serializers.URLField()
+    mbid = serializers.UUIDField()
+    title = serializers.CharField()
+    release_date = serializers.DateField()
+    creation_date = serializers.DateTimeField()
+    is_local = serializers.BooleanField()
+    duration = serializers.SerializerMethodField(read_only=True)
+    tracks = TrackSerializer(many=True, allow_null=True)
+    description = common_serializers.ContentSerializer(allow_null=True, required=False)
+
+    def get_tracks_count(self, o) -> int:
+        return len(o.tracks.all())
+
+    def get_is_playable(self, obj) -> bool:
+        try:
+            return any(
+                [
+                    bool(getattr(t, "is_playable_by_actor", None))
+                    for t in obj.tracks.all()
+                ]
+            )
+        except AttributeError:
+            return None
+
+    @extend_schema_field({"type": "array", "items": {"type": "string"}})
+    def get_tags(self, obj):
+        tagged_items = getattr(obj, "_prefetched_tagged_items", [])
+        return [ti.tag.name for ti in tagged_items]
+
+    def get_duration(self, obj) -> int:
+        try:
+            return obj.duration
+        except AttributeError:
+            # no annotation?
+            return 0
 
 
 @common_serializers.track_fields_for_update("name", "description", "privacy_level")

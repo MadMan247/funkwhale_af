@@ -293,7 +293,17 @@ class AttachmentSerializer(serializers.Serializer):
     file = StripExifImageField(write_only=True)
     urls = serializers.SerializerMethodField()
 
-    @extend_schema_field(OpenApiTypes.OBJECT)
+    @extend_schema_field(
+        {
+            "type": "object",
+            "properties": {
+                "original": {"type": "string"},
+                "small_square_crop": {"type": "string"},
+                "medium_square_crop": {"type": "string"},
+                "large_square_crop": {"type": "string"},
+            },
+        }
+    )
     def get_urls(self, o):
         urls = {}
         urls["source"] = o.url

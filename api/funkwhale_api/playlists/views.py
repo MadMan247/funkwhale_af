@@ -256,5 +256,5 @@ class PlaylistViewSet(
         except models.PlaylistTrack.DoesNotExist:
             return Response(status=404)
         artists = music_models.Artist.objects.filter(pk__in=artists_pks)
-        serializer = music_serializers.SimpleArtistSerializer(artists, many=True)
+        serializer = music_serializers.ArtistSerializer(artists, many=True)
         return Response(serializer.data, status=200)
