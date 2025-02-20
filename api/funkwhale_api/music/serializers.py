@@ -141,7 +141,7 @@ class ArtistWithAlbumsSerializer(OptionalDescriptionMixin, serializers.Serialize
 
 
 class SimpleArtistSerializer(serializers.ModelSerializer):
-    attachment_cover = CoverField(allow_null=True, required=False)
+    cover = CoverField(allow_null=True, required=False)
     description = common_serializers.ContentSerializer(allow_null=True, required=False)
     channel = serializers.UUIDField(allow_null=True, required=False)
 
@@ -157,7 +157,7 @@ class SimpleArtistSerializer(serializers.ModelSerializer):
             "is_local",
             "content_category",
             "description",
-            "attachment_cover",
+            "cover",
             "channel",
             "attributed_to",
         )
