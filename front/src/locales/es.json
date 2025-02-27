@@ -724,7 +724,11 @@
         },
         "help": {
           "copyCode": "Se te mostrará un código para copiar y pegar en la aplicación",
-          "pasteCode": "Copie y pegue el siguiente código en la aplicación:"
+          "pasteCode": "Copie y pegue el siguiente código en la aplicación:",
+          "redirect": "Serás redireccionado a { 0 }"
+        },
+        "message": {
+          "unknownPermissions": "La aplicación también está solicitando los siguientes permisos desconocidos:"
         },
         "title": "Autorizar la aplicación"
       },
@@ -746,6 +750,9 @@
         "link": {
           "createAccount": "Crear una cuenta",
           "resetPassword": "Restablecer tu contraseña"
+        },
+        "message": {
+          "redirect": "Serás redireccionado a {domain} para autenticar"
         },
         "placeholder": {
           "username": "Introduce tu nombre de usuario o correo electrónico"
@@ -797,22 +804,29 @@
           "refresh": "Recargar",
           "remove": "Quitar",
           "removeApp": "Borrar lista de reproducción",
+          "revoke": "Revocar",
+          "revokeAccess": "Revocar acceso",
           "update": "Actualizar",
           "updateSettings": "Actualizar ajustes"
         },
         "description": {
+          "authorizedApps": "Esta es la lista de aplicaciones que tienen acceso a tus datos de la cuenta.",
           "changeEmail": "Cambie la dirección de correo electrónico asociada a su cuenta. Le enviaremos una confirmación a la nueva dirección.",
           "changePassword": {
             "paragraph1": "Cambiar tu contraseña también cambiará la contraseña de la API de Subsonic, si pediste una.",
             "paragraph2": "Tendrás que actualizar tu contraseña en los clientes que usan esta contraseña."
           },
-          "contentFilters": "Los filtros de contenido te ayudan a ocultar los contenidos que no quieres ver en el servicio."
+          "contentFilters": "Los filtros de contenido te ayudan a ocultar los contenidos que no quieres ver en el servicio.",
+          "deleteAccount": "Puedes eliminar permanentemente e irreversiblemente tu cuenta y todos los datos asociados usando el siguiente formulario. Se te pedirá confirmación.",
+          "plugins": "Usa plugins para extender Funkwhale y obtener características adicionales.",
+          "yourApps": "Esta es la lista de aplicaciones que tienes registradas."
         },
         "header": {
           "accountFailure": "No se puede iniciar la sesión",
           "accountSettings": "Configuración de cuenta",
           "authorizedApps": "Aplicaciones autorizadas",
           "avatar": "Avatar",
+          "avatarFailure": "Tu avatar no puede ser guardado",
           "changeEmail": "Confirma tu dirección de correo",
           "changePassword": "Cambiar mi contraseña",
           "contentFilters": "Filtros de contenido",
@@ -821,6 +835,7 @@
           "hiddenArtists": "Explorando artistas",
           "noApps": "No tienes ninguna regla para esta cuenta.",
           "noPersonalApps": "No tienes ninguna regla para esta cuenta.",
+          "passwordFailure": "Tu contraseña no puede ser cambiada",
           "plugins": "Plugins",
           "settingsUpdated": "Ajustes actualizados",
           "updateFailure": "Ajustes actualizados",
@@ -843,6 +858,7 @@
           "newApp": "Crear una nueva lista de reproducción"
         },
         "message": {
+          "confirmDelete": "Tu solicitud de eliminación fue enviada, tu cuenta y contenido serán borrados en breve",
           "currentEmail": "Tienes iniciada actualmente sesión como { email }."
         },
         "modal": {
@@ -855,12 +871,22 @@
             "header": "¿Cambiar tu contraseña?"
           },
           "deleteAccount": {
+            "content": {
+              "warning": "Esto es irreversible y borrará permanentemente tus datos de nuestros servidores. Se cerrará inmediatamente la sesión."
+            },
             "header": "¿Quieres restaurar tu cola de reproducción anterior?"
           },
           "deleteApp": {
             "content": {
               "warning": "Esto borrará por completo esta lista de reproducción y no se podrá deshacer."
-            }
+            },
+            "header": "¿Borrar aplicación {app}?"
+          },
+          "revokeApp": {
+            "content": {
+              "warning": "Esto prevendrá que esta aplicación acceda al servicio en tu nombre."
+            },
+            "header": "¿Revocar el acceso para la aplicación {app}?"
           }
         },
         "table": {
@@ -879,11 +905,15 @@
           "yourApps": {
             "header": {
               "application": "Aplicación",
-              "creationDate": "Fecha de creación"
+              "creationDate": "Fecha de creación",
+              "scopes": "Alcances"
             }
           }
         },
-        "title": "Configuración de Cuenta"
+        "title": "Configuración de Cuenta",
+        "warning": {
+          "deleteAccount": "Tu cuneta será eliminada de nuestros servidores en unos minutos. También notificaremos a otros servidores que podrían copiar algunos de tus datos y así ellos procederán a la eliminación. Por favor tenga en cuenta que algunos de estos servidores podrían estar fuera de línea o no estar dispuestos a cumplir."
+        }
       },
       "SignupForm": {
         "button": {
@@ -895,10 +925,13 @@
         },
         "label": {
           "email": "Dirección de correo electrónico",
+          "invitation": "Código de invitación",
           "password": "Contraseña",
           "username": "Nombre de usuario"
         },
         "message": {
+          "accountCreated": "Tu cuenta fue creada exitosamente. Por favor verifica tu dirección de correo electrónico antes de tratar de iniciar sesión.",
+          "awaitingReview": "Tu solicitud de datos fue enviada exitosamente. Se te notificará por correo electrónico cuando nuestro equipo de moderación halla revisado tu solicitud.",
           "registrationClosed": "La inscripción a esta instancia está cerrada, necesitarás un código de invitación para inscribirte.",
           "requiresReview": "Las inscripciones en este pod están abiertas, pero son revisadas por los moderadores antes de su aprobación."
         },
@@ -974,7 +1007,8 @@
       },
       "AlbumSelect": {
         "label": {
-          "album": "Álbum"
+          "album": "Álbum",
+          "series": "Series"
         },
         "meta": {
           "tracks": "{ n } canción | { n } canciones"
@@ -999,6 +1033,7 @@
           "auth": "Si dejas de seguir esta biblioteca, perderás acceso a su contenido"
         },
         "title": {
+          "subscribe": "Suscribirse",
           "unsubscribe": "{ count } favorito"
         }
       },
@@ -1006,7 +1041,9 @@
         "button": {
           "edit": "Editar",
           "ignore": "Ignorar",
-          "remove": "Quitar"
+          "remove": "Quitar",
+          "resume": "Resumen",
+          "retry": "Reintentar"
         },
         "description": {
           "extensions": "Extensiones soportadas: { extensions }"
@@ -1022,12 +1059,16 @@
           "openBrowser": "Explorar…"
         },
         "message": {
-          "dragAndDrop": "Arrastre y suelte sus archivos aquí o abra el navegador para cargar sus archivos"
+          "dragAndDrop": "Arrastre y suelte sus archivos aquí o abra el navegador para cargar sus archivos",
+          "pending": "Tienes algunas cargas de borradores pendientes de publicación."
         },
         "status": {
           "errored": "Error",
           "pending": "En espera",
           "uploading": "Subiendo"
+        },
+        "warning": {
+          "quota": "No tienes espacio disponible para subir tus archivos. Por favor contacta a los moderadores."
         }
       },
       "UploadMetadataForm": {
@@ -1035,6 +1076,7 @@
           "description": "Descripción",
           "image": "Nombre",
           "position": "Paginación",
+          "tags": "Etiquetas",
           "title": "Título"
         }
       },
@@ -1055,7 +1097,8 @@
           "uploadFiles": "¿Eliminar la biblioteca?"
         },
         "meta": {
-          "files": "{ n } archivo | { n } archivos"
+          "files": "{ n } archivo | { n } archivos",
+          "quota": "Almacenamiento restante: {space}"
         }
       }
     },
@@ -1066,6 +1109,7 @@
           "go": "Ir",
           "launch": "Iniciar",
           "refresh": "Actualiza el contenido de la tabla",
+          "select": "Seleccionar",
           "selectAll": "Seleccionar un filtro",
           "selectCurrentPage": "Seleccionar solo la página actual",
           "selectElement": "Seleccionar { n } elemento | Seleccionar los { n } elementos",
@@ -1116,13 +1160,17 @@
       },
       "ContentForm": {
         "button": {
-          "preview": "Previsualización"
+          "preview": "Previsualización",
+          "write": "Escribir"
         },
         "empty": {
           "noContent": "Archivos pendientes."
         },
         "help": {
           "markdown": "La sintaxis Markdown es compatible."
+        },
+        "placeholder": {
+          "input": "Escribe algunas palabras aquí…"
         }
       },
       "CopyInput": {
@@ -1158,6 +1206,7 @@
       },
       "ExpandableDiv": {
         "button": {
+          "less": "Mostrar menos",
           "more": "Mostrar 1 álbum adicional"
         }
       },
@@ -1173,6 +1222,12 @@
         }
       },
       "LoginModal": {
+        "description": {
+          "noAccess": "No tienes acceso"
+        },
+        "header": {
+          "unauthenticated": "No autenticado"
+        },
         "link": {
           "login": "Iniciar sesión",
           "signup": "Inscripción"
@@ -1182,6 +1237,7 @@
         "button": {
           "cancel": "Cancelar",
           "edit": "Editar",
+          "less": "Mostrar menos",
           "more": "Mostrar 1 álbum adicional",
           "update": "Mi descripción molona"
         },
@@ -1192,10 +1248,16 @@
           "failure": "Error al aplicar la acción"
         }
       },
+      "UserLink": {
+        "link": {
+          "username": "{'@'}{username}"
+        }
+      },
       "UserMenu": {
         "label": {
           "language": "Cambiar idioma",
-          "shortcuts": "Atajos de teclado"
+          "shortcuts": "Atajos de teclado",
+          "theme": "Cambiar tema"
         },
         "link": {
           "about": "Acerca de",
@@ -1221,11 +1283,13 @@
         },
         "label": {
           "language": "Cambiar idioma",
-          "shortcuts": "Atajos de teclado"
+          "shortcuts": "Atajos de teclado",
+          "theme": "Cambiar tema"
         },
         "link": {
           "about": "Acerca de",
           "chat": "Sala de chat",
+          "docs": "Documentación",
           "forum": "Foro",
           "git": "Sistema de seguimiento de incidentes",
           "login": "Iniciar sesión",
@@ -1283,6 +1347,8 @@
         },
         "description": {
           "failure": "Ocurrió un error al intentar actualizar los datos:",
+          "pending": "Nuestro servidor no procesó a tiempo la solicitud de actualización. Se procesará más tarde.",
+          "skipped": "El servidor remoto respondió, pero los datos devueltos no son compatibles con Funkwhale.",
           "success": "Los datos se han actualizado con éxito desde el servidor remoto."
         },
         "header": {
@@ -1294,7 +1360,8 @@
           "success": "Actualización exitosa"
         },
         "loader": {
-          "awaitingResult": "Cargando tus favoritos…"
+          "awaitingResult": "Cargando tus favoritos…",
+          "fetchRequest": "Solicitando una búsqueda…"
         },
         "table": {
           "error": {
@@ -1305,7 +1372,11 @@
             "value": {
               "connectionError": "Imposible conectar con el servidor remoto",
               "httpError": "Ha ocurrido un error HTTP al contactar con el servidor remoto",
-              "invalidAttributesError": "Los datos devueltos por el servidor remoto tenían atributos inválidos o faltaban"
+              "httpStatus": "El servidor remoto respondió con HTTP {status}",
+              "invalidAttributesError": "Los datos devueltos por el servidor remoto tenían atributos inválidos o faltaban",
+              "invalidJsonError": "El servidor remoto devolvió datos JSON o JSON-LD no válidos",
+              "timeoutError": "El servidor remoto no respondió a tiempo",
+              "unknownError": "Error desconocido"
             }
           }
         }
@@ -1338,7 +1409,8 @@
         "meta": {
           "episodes": "{ n } episodio | { n } episodios",
           "tracks": "{ n } canción | { n } canciones"
-        }
+        },
+        "title": "Álbum"
       },
       "AlbumDetail": {
         "description": {
@@ -1363,6 +1435,7 @@
         },
         "link": {
           "discogs": "Buscar música",
+          "django": "Ver en el administrador de Django",
           "domain": "Miembro desde { date }",
           "moderation": "Actualizar regla de moderación",
           "musicbrainz": "Ver en MusicBrainz"
@@ -1383,6 +1456,9 @@
         "header": {
           "edit": "Reproducir canción",
           "suggest": "No podemos añadir la canción a una lista de reproducción"
+        },
+        "message": {
+          "remote": "Este objeto es gestionado por otro servidor, no puedes editarlo."
         }
       },
       "Albums": {
@@ -1396,7 +1472,8 @@
           "browse": "Explorando álbumes"
         },
         "label": {
-          "search": "Buscar"
+          "search": "Buscar",
+          "tags": "Etiquetas"
         },
         "link": {
           "addMusic": "Añadir algo de música"
@@ -1427,6 +1504,7 @@
         },
         "link": {
           "discogs": "Buscar música",
+          "django": "Ver en el administrador de Django",
           "domain": "Miembro desde { date }",
           "moderation": "Actualizar regla de moderación",
           "musicbrainz": "Ver en MusicBrainz",
@@ -1458,12 +1536,18 @@
         },
         "link": {
           "filter": "Ver archivos"
+        },
+        "message": {
+          "filter": "Actualmente estás ocultando contenido relacionado a este artista."
         }
       },
       "ArtistEdit": {
         "header": {
           "edit": "Reproducir canción",
           "suggest": "No podemos añadir la canción a una lista de reproducción"
+        },
+        "message": {
+          "remote": "Este objeto está gestionado por otro servidor, no puedes editarlo."
         }
       },
       "Artists": {
@@ -1479,7 +1563,8 @@
         },
         "label": {
           "excludeCompilation": "Excluir recopilación de artistas",
-          "search": "Nombre del artista"
+          "search": "Nombre del artista",
+          "tags": "Etiquetas"
         },
         "ordering": {
           "direction": {
@@ -1506,7 +1591,13 @@
         "header": {
           "modification": "Fecha de modificación"
         },
+        "link": {
+          "track": "Pista #{id} - {name}"
+        },
         "modal": {
+          "content": {
+            "warning": "La sugerencia será borrada completamente, esta acción es irreversible."
+          },
           "delete": {
             "header": "¿Borrar esta sugerencia?"
           }
@@ -1531,12 +1622,28 @@
       "EditForm": {
         "button": {
           "cancel": "Cancelar",
-          "clear": "Borrar"
+          "clear": "Borrar",
+          "new": "Enviar otra edición",
+          "reset": "Reiniciar al valor inicial",
+          "showAll": "Mostrar todas las ediciones",
+          "showUnreviewed": "Restringir las ediciones sin revición",
+          "submit": "Enviar y aplicar edición",
+          "suggest": "Enviar sugerencia"
+        },
+        "empty": {
+          "suggestEdit": "Sugerir un cambio usando el siguiente formulario"
         },
         "header": {
           "failure": "Error al guardar los cambios",
           "recentEdits": "Añadidos recientemente",
+          "success": "Tu edición fue enviada exitosamente.",
           "unreviewed": "Ediciones recientes en espera de revisión"
+        },
+        "label": {
+          "summary": "Resumen (opcional)"
+        },
+        "message": {
+          "noPermission": "No tienes permiso para editar este objeto, pero puedes sugerir cambios. Una vez enviadas, las sugerencias serán revisadas antes de aprobarse."
         },
         "notApplicable": "N/A",
         "placeholder": {
@@ -1549,15 +1656,21 @@
           "retry": "Biblioteca actualizada"
         },
         "description": {
-          "import": "Reiniciar importación"
+          "import": "Reiniciar importación",
+          "previousImport": "Resultados de tu importación previa:"
+        },
+        "empty": {
+          "noFiles": "0"
         },
         "header": {
           "failure": "Error al guardar los cambios",
+          "local": "Subir música de '~/tu almacenamiento local",
           "server": "Estado de la importación",
           "status": "Estado de la importación"
         },
         "label": {
           "extensions": "Extensiones soportadas: { extensions }",
+          "remainingSpace": "Almacenamiento restante",
           "uploadWidget": "Haga clic para seleccionar los archivos que desea cargar o arrastre y suelte los archivos o directorios"
         },
         "link": {
@@ -1566,7 +1679,9 @@
           "uploading": "Subiendo"
         },
         "message": {
+          "listener": "Esta página está pidiendo que confirmes que quieres irte - los dato que has ingresado podrían no guardarse.",
           "local": {
+            "copyright": "No subas contenido con copyright en una biblioteca pública, de otro modo, podrías estar infringiendo la ley",
             "format": "Las canciones que estás subiendo estén etiquetadas correctamente:",
             "message": "Estás a punto de subir música a tu biblioteca. Antes de continuar asegúrate que:",
             "tag": "Las canciones que estás subiendo estén etiquetadas correctamente."
@@ -1580,6 +1695,7 @@
               "size": "Tamaño",
               "status": "Estado"
             },
+            "progress": "{percent}%",
             "status": {
               "pending": "En espera",
               "uploaded": "Subido",
@@ -1591,6 +1707,7 @@
           "denied": "Subida rechazada, asegúrate que el archivo no es demasiado grande y que no has alcanzado tu cuota",
           "extension": "Tipo de archivo no válido, asegúrese de que está cargando un archivo de audio. Las extensiones de archivo admitidas son { extensions }",
           "network": "Ha ocurrido un error de red al subir este archivo",
+          "retry": "Reintentar",
           "size": "No es posible cargar este archivo, asegúrate que no es demasiado grande",
           "timeout": "Timeout en la subida, intentalo de nuevo"
         }
@@ -1622,9 +1739,11 @@
         "error": {
           "importFailure": "Ocurrió un error durante el proceso de carga. Encontrará más información abajo.",
           "invalidMetadata": {
-            "label": "Metadatos inválidos"
+            "label": "Metadatos inválidos",
+            "message": "Los metadatos incluidos en el archivo no son válidos o faltan algunos campos obligatorios."
           },
           "unknownError": {
+            "label": "Error desconocido",
             "message": "Ha ocurrido un error desconocido"
           }
         },
