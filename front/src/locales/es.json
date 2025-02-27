@@ -723,6 +723,7 @@
           "writeOnly": "Solo escritura"
         },
         "help": {
+          "copyCode": "Se te mostrará un código para copiar y pegar en la aplicación",
           "pasteCode": "Copie y pegue el siguiente código en la aplicación:"
         },
         "title": "Autorizar la aplicación"
