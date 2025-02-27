@@ -374,7 +374,8 @@
         "help": {
           "discography": "Publica la música que haces como una bonita discografía de álbumes y sencillos.",
           "podcast": "Aloja tus episodios y mantén a tu comunidad actualizada.",
-          "podcastFields": "Usado para el campo itunes:email y itunes:name requerido por ciertas plataformas como Spotify o iTunes"
+          "podcastFields": "Usado para el campo itunes:email y itunes:name requerido por ciertas plataformas como Spotify o iTunes",
+          "username": "Usado en URL y para seguir este canal en el Fediverso. No puede ser cambiado luego."
         },
         "label": {
           "category": "Categoría",
@@ -386,7 +387,12 @@
           "name": "Nombre",
           "owner": "Propietario",
           "podcast": "Podcasts",
+          "subcategory": "Subcategoría",
+          "tags": "Etiquetas",
           "username": "Manejo de Fediverse"
+        },
+        "legend": {
+          "purpose": "¿Para qué será usado este canal?"
         },
         "loader": {
           "loading": "Subiendo"
@@ -433,6 +439,9 @@
         },
         "message": {
           "copy": "¡Texto copiado al portapapeles!"
+        },
+        "warning": {
+          "anonymous": "Compartir no funcionará porque esta manada no permite a los usuarios anónimos acceder al contenido."
         }
       },
       "LibraryFollowButton": {
@@ -456,6 +465,7 @@
           "playPlaylist": "Vaciar lista de reproducción",
           "playTrack": "Reproducir canción",
           "playTracks": "Reproducir canción",
+          "report": "Reportar…",
           "startRadio": "Reproducir canciones similares",
           "trackDetails": "Detalles"
         },
@@ -485,7 +495,17 @@
           "unmute": "Activar sonido"
         },
         "meta": {
-          "position": "{ index } de { length }"
+          "position": "{ index } de { length }",
+          "unknownAlbum": "Álbum desconocido",
+          "unknownArtist": "Artista desconocido"
+        }
+      },
+      "PlayerControls": {
+        "labels": {
+          "next": "Pista siguiente",
+          "pause": "Pausa",
+          "play": "Reproducir",
+          "previous": "Pista anterior"
         }
       },
       "Search": {
@@ -503,6 +523,9 @@
         }
       },
       "SearchBar": {
+        "empty": {
+          "noResults": "Perdón, no hay resultados para esta búsqueda"
+        },
         "header": {
           "noResults": "No se han encontrado coincidencias"
         },
@@ -514,11 +537,13 @@
             "podcasts": "Podcasts"
           },
           "search": "Buscar música",
+          "tag": "Etiqueta",
           "track": "Canción"
         },
         "link": {
           "fediverse": "Buscar en Wikipedia",
-          "more": "Más resultados 🡒"
+          "more": "Más resultados 🡒",
+          "rss": "Suscribirse a este podcast vía RSS"
         },
         "placeholder": {
           "search": "Buscar artistas, álbumes, canciones…"
@@ -631,6 +656,7 @@
         },
         "header": {
           "appDetails": "Detalles de la aplicación",
+          "appSecretWarning": "Mantener una copia de este token en un lugar seguro.",
           "editApp": "Error al aplicar la acción"
         },
         "help": {
@@ -644,6 +670,9 @@
         "link": {
           "settings": "Volver a los ajustes"
         },
+        "message": {
+          "appSecretWarning": "No serás capaz de verlo de nuevo una vez que dejes esta pantalla."
+        },
         "title": "Error al aplicar la acción"
       },
       "ApplicationForm": {
@@ -654,14 +683,22 @@
         "header": {
           "failure": "No podemos crear tu cuenta"
         },
+        "help": {
+          "redirectUri": "Usa \"urn:ietf:wg:oauth:2.0:oob\" como URI de redirección si tu aplicación no está alojada en la web."
+        },
         "label": {
           "name": "Nombre",
           "redirectUri": "Redireccionar URI",
           "scopes": {
             "description": "La comprobación de los ámbitos padre \"Lectura\" o \"Escritura\" implica el acceso a todos los ámbitos hijos correspondientes.",
+            "label": "Alcances",
             "read": {
               "description": "Acceso de sólo lectura a los datos del usuario",
               "label": "Leer"
+            },
+            "write": {
+              "description": "Acceso de solo lectura a datos de usuario",
+              "label": "Escritura"
             }
           }
         }
@@ -682,7 +719,8 @@
           "authorize": "Autorizar la aplicación de terceros",
           "authorizeFailure": "Error al aplicar la acción",
           "fetchFailure": "Error al crear la invitación",
-          "readOnly": "Sólo lectura"
+          "readOnly": "Sólo lectura",
+          "writeOnly": "Solo escritura"
         },
         "help": {
           "pasteCode": "Copie y pegue el siguiente código en la aplicación:"
