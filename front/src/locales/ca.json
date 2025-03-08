@@ -2781,7 +2781,11 @@
           "libraryAcceptFollow": "{ username } ha acceptat el seguiment de la biblioteca \"{ library }\"",
           "libraryFollow": "{ username } ha seguit la teva biblioteca \"{ library }\"",
           "libraryPendingFollow": "{ username } vol seguir la teva biblioteca \"{ library }\"",
-          "libraryReject": "Has rebutjat la petició de {username} per seguir \"{library}\""
+          "libraryReject": "Has rebutjat la petició de {username} per seguir \"{library}\"",
+          "userAcceptFollow": "{username} ha acceptat que el seguiu",
+          "userFollow": "{username} et segueix",
+          "userPendingFollow": "{username} vol seguir-vos",
+          "userReject": "Heu rebutjat la sol·licitud de {username} per seguir-vos"
         }
       }
     },
@@ -2843,6 +2847,19 @@
         "placeholder": {
           "name": "La meva impressionant llista de reproducció"
         }
+      },
+      "PlaylistDropdown": {
+        "button": {
+          "export": {
+            "description": "Això proporcionarà un fitxer xspf amb les dades de la llista de reproducció",
+            "header": "Descàrrega la llista de reproducció"
+          },
+          "import": {
+            "description": "Això actualitzarà la llista de reproducció amb el contingut del fitxer xspf. Se suprimiran les pistes existents a la llista de reproducció",
+            "header": "Reconstrueix la llista de reproducció"
+          }
+        },
+        "more": "Més"
       },
       "PlaylistModal": {
         "button": {
@@ -3374,6 +3391,7 @@
           "moderation": "Moderació",
           "music": "Música",
           "playlists": "Llistes de reproducció",
+          "qualityFilters": "Explora els filtres de qualitat de la pàgina",
           "sections": "Seccions",
           "security": "Seguretat",
           "settings": "Paràmetres de la instància",
@@ -4391,7 +4409,7 @@
           },
           "meta": {
             "failedTracks": "Pistes fallides: {tracks}",
-            "lastUpdate": "Última actualització: · ",
+            "lastUpdate": "Última actualització:",
             "tracks": "{ n } pista | { n } pistes"
           },
           "modal": {
