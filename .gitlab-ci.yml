@@ -175,7 +175,7 @@ lint_api:
     - if: $CI_COMMIT_BRANCH =~ /(stable|develop)/
     - changes: [api/**/*]
 
-  image: $CI_REGISTRY/funkwhale/ci/python-funkwhale-api:3.11
+  image: $CI_REGISTRY/funkwhale/ci/python-funkwhale-api:3.13
   cache: *api_cache
   before_script:
     - cd api
@@ -339,7 +339,7 @@ build_api_schema:
     # Add build_docs rules because it depends on the build_api_schema artifact
     - changes: [docs/**/*]
 
-  image: $CI_REGISTRY/funkwhale/ci/python-funkwhale-api:3.11
+  image: $CI_REGISTRY/funkwhale/ci/python-funkwhale-api:3.13
   services:
     - postgres:15-alpine
     - redis:7-alpine
@@ -357,6 +357,11 @@ build_api_schema:
     - poetry run funkwhale-manage migrate
   script:
     - poetry run funkwhale-manage spectacular --file ../docs/schema.yml
+    - diff ../docs/schema.yml ./funkwhale_api/common/schema.yml || (
+      echo "Schema files do not match! run sudo docker compose run --rm
+      api funkwhale-manage spectacular > ./api/funkwhale_api/common/schema.yml" &&
+      exit 1
+      )
   artifacts:
     expire_in: 2 weeks
     paths:
