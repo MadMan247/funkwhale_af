@@ -12,7 +12,7 @@
         "signup": "Rexístrate para poder gardar os teus favoritos, crear listas, descubrir novo contido e moito máis!"
       },
       "header": {
-        "aboutPod": "Acerca desta instancia",
+        "aboutPod": "Sobre esta instancia",
         "findApp": "Usa unha app",
         "funkwhale": "Plataforma social para desfrutar e compartir música",
         "publicContent": "Explorar contido público",
@@ -36,7 +36,7 @@
         "activeUsers": "{ n } usuaria activa | { n } usuarias activas",
         "hoursOfMusic": "hora de música | horas de música"
       },
-      "title": "Acerca de"
+      "title": "Sobre"
     },
     "AboutPod": {
       "feature": {
@@ -54,7 +54,7 @@
         "version": "Versión de Funkwhale"
       },
       "header": {
-        "about": "Acerca desta instancia",
+        "about": "Sobre instancia",
         "contact": "Contactar",
         "features": "Características",
         "rules": "Regras",
@@ -62,7 +62,7 @@
         "terms": "Termos e política de privacidade"
       },
       "link": {
-        "about": "Acerca desta instancia",
+        "about": "Sobre esta instancia",
         "features": "Características",
         "introduction": "Presentación",
         "rules": "Regras",
@@ -86,7 +86,7 @@
         "listeningsCount": "escoita | escoitas",
         "tracksCount": "pista | pistas"
       },
-      "title": "Acerca de"
+      "title": "Sobre"
     },
     "Home": {
       "description": {
@@ -98,8 +98,8 @@
         "signup": "Rexístrate agora para gardar os teus favoritos, crear listas, descubrir novo contido e moito máis!"
       },
       "header": {
-        "about": "Acerca de esta instancia Funkwhale",
-        "aboutFunkwhale": "Acerca de Funkwhale",
+        "about": "Sobre esta instancia Funkwhale",
+        "aboutFunkwhale": "Sobre Funkwhale",
         "contact": "Contactar",
         "links": "Ligazóns útiles",
         "login": "Acceder",
@@ -283,7 +283,7 @@
         "theme": "Decorado"
       },
       "link": {
-        "about": "Acerca desta instancia",
+        "about": "Sobre esta instancia",
         "albums": "Álbums",
         "artists": "Artistas",
         "browse": "Panel",
@@ -1022,7 +1022,7 @@
           "license": "Licenza"
         },
         "link": {
-          "license": "Acerca desta licenza"
+          "license": "Sobre a licenza"
         },
         "option": {
           "none": "Nada"
@@ -1260,7 +1260,7 @@
           "theme": "Cambiar aparencia"
         },
         "link": {
-          "about": "Acerca de",
+          "about": "Sobre",
           "chat": "Sala de conversa",
           "docs": "Documentación",
           "forum": "Foro",
@@ -1287,7 +1287,7 @@
           "theme": "Cambiar aparencia"
         },
         "link": {
-          "about": "Acerca de",
+          "about": "Sobre",
           "chat": "Sala de conversa",
           "docs": "Documentación",
           "forum": "Foro",
@@ -3221,7 +3221,7 @@
       "deny": "Rexeitar",
       "funkwhaleInstance": "Instancia oficial de Funkwhale",
       "message": "As trazas do problema compartiranse con { 0 } para axudarnos a entender como e cando se produce o erro.",
-      "title": "Para mellorar a calidade do noso servizo, gustaríanos recoller algunha información acerca dos fallos durante a sesión."
+      "title": "Para mellorar a calidade do noso servizo, gustaríanos recoller información sobre os fallos durante a sesión."
     },
     "serviceWorker": {
       "actions": {
@@ -4238,7 +4238,7 @@
             "restartImport": "Volta a lanzar importación"
           },
           "button": {
-            "showStatus": "Mostrar información acerca do estado da subida desta canción"
+            "showStatus": "Mostrar información sobre o estado da subida desta canción"
           },
           "empty": {
             "noTracks": "Aínda non se engadiron cancións a esta biblioteca"
