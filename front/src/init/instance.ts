@@ -1,4 +1,4 @@
-import type { NodeInfo } from '~/store/instance'
+import type { components } from '~/generated/types'
 import type { InitModule } from '~/types'
 
 import { whenever } from '@vueuse/core'
@@ -15,7 +15,7 @@ export const install: InitModule = async ({ store, router }) => {
   const fetchNodeInfo = async () => {
     try {
       const [{ data }] = await Promise.all([
-        axios.get<NodeInfo>('instance/nodeinfo/2.1/'),
+        axios.get<components['schemas']['NodeInfo21']>('instance/nodeinfo/2.1/'),
         store.dispatch('instance/fetchSettings')
       ])
 

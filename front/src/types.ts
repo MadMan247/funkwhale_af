@@ -4,6 +4,9 @@ import type { Router } from 'vue-router'
 import type { AxiosError } from 'axios'
 import type { RootState } from '~/store'
 
+// App types are synced from the backend. Run `yarn update-schema`.
+import { type components } from '~/generated/types.ts'
+
 // eslint-disable-next-line
 import type { ComponentPublicInstance } from '@vue/runtime-core'
 import type { QueueTrack } from '~/composables/audio/queue'
@@ -41,190 +44,46 @@ export interface ThemeEntry {
 // Track stuff
 export type ContentCategory = 'podcast' | 'music'
 
-export interface Artist {
-  id: number
-  fid: string
-  mbid?: string
+// Use backend-defined schema types
 
-  name: string
-  description: Content
-  cover?: Cover
-  channel?: Channel
-  // TODO (wvffle): Check if it's Tag[] or string[]
-  tags: string[]
+export type Actor = components['schemas']['FullActor']
+export type Activity = components['schemas']['Activity']
+export type Album = components['schemas']['Album']
+export type ArtistCredit = components['schemas']['ArtistCredit']
+export type Channel = components['schemas']['Channel']
+export type Library = components['schemas']['Library']
+export type License = components['schemas']['License']
+export type Listening = components['schemas']['Listening']
+export type Playlist = components['schemas']['Playlist']
+export type PlaylistTrack = components['schemas']['PlaylistTrack']
+export type PrivacyLevelEnum = components['schemas']['PrivacyLevelEnum']
+export type Radio = components['schemas']['Radio']
+export type SearchResult = components['schemas']['SearchResult']
+export type Tag = components['schemas']['Tag']
+export type Track = components['schemas']['Track']
+export type Usage = components['schemas']['Usage']
+export type LibraryScan = components['schemas']['LibraryScan']
+export type LibraryFollow = components['schemas']['LibraryFollow']
+export type Cover = components['schemas']['CoverField']
+export type RateLimitStatus = components['schemas']['RateLimit']['scopes'][number]
+export type PaginatedAlbumList = components['schemas']['PaginatedAlbumList']
+export type PaginatedChannelList = components['schemas']['PaginatedChannelList']
 
-  content_category: ContentCategory
-  albums: Album[]
-  tracks_count: number
-  attributed_to: Actor
-  is_local: boolean
-  is_playable: boolean
-  modification_date?: string
-}
+export type Artist = components['schemas']['Artist']
 
-export interface ArtistCredit {
-  artist: Artist
-  credit: string
-  joinphrase: string
-  index: number
-}
+export type PrivacyLevel = components['schemas']['LibraryPrivacyLevelEnum']
 
-export interface Album {
-  id: number
-  fid: string
-  mbid?: string
+export type ImportStatus = components['schemas']['ImportStatusEnum']
 
-  title: string
-  description: Content
-  release_date?: string
-  cover?: Cover
-  tags: string[]
+// TODO: Find out which type: `Follow` or `LibraryFollow`
+// export interface UserFollow {
+//   uuid: string
+//   approved: boolean
 
-  artist_credit: ArtistCredit[]
-  tracks_count: number
-  tracks: Track[]
-
-  is_playable: boolean
-  is_local: boolean
-}
-
-export interface Track {
-  id: number
-  fid: string
-  mbid?: string
-
-  title: string
-  description: Content
-  cover?: Cover
-  position?: number
-  copyright?: string
-  license?: License
-  tags: string[]
-  uploads: Upload[]
-  downloads_count: number
-
-  album?: Album
-  artist_credit: ArtistCredit[]
-  disc_number: number
-
-  listen_url: string
-  creation_date: string
-  attributed_to: Actor
-
-  is_playable: boolean
-  is_local: boolean
-}
-
-export interface Channel {
-  id: number
-  uuid: string
-  artist?: Artist
-  actor: Actor
-  attributed_to: Actor
-  url?: string
-  rss_url: string
-  subscriptions_count: number
-  downloads_count: number
-  content_category: ContentCategory
-
-  metadata?: {
-    itunes_category?: unknown
-    itunes_subcategory?: unknown
-    language?: string
-    owner_name?: string
-    owner_email?: string
-  }
-}
-
-export type PrivacyLevel = 'everyone' | 'instance' | 'me'
-
-export interface Library {
-  id: number
-  uuid: string
-  fid?: string
-  name: string
-  actor: Actor
-  uploads_count: number
-  size: number
-  description: string
-  privacy_level: PrivacyLevel
-  creation_date: string
-  follow?: LibraryFollow
-  latest_scan: LibraryScan
-}
-
-export type ImportStatus = 'scanning' | 'pending' | 'finished' | 'errored' | 'draft' | 'skipped'
-export interface LibraryScan {
-  processed_files: number
-  total_files: number
-  status: ImportStatus
-  errored_files: number
-  modification_date: string
-}
-
-export interface LibraryFollow {
-  uuid: string
-  approved: boolean
-
-  name: string
-  type?: 'music.Library' | 'federation.LibraryFollow'
-  target: Library
-}
-export interface UserFollow {
-  uuid: string
-  approved: boolean
-
-  name: string
-  type?: 'federation.Actor' | 'federation.UserFollow'
-  target?: Actor
-}
-
-export interface Cover {
-  uuid: string
-  urls: {
-    original: string
-    medium_square_crop: string
-    large_square_crop: string
-  }
-}
-
-export interface License {
-  code: string
-  name: string
-  url: string
-}
-
-export interface Playlist {
-  id: number
-  name: string
-  modification_date: string
-  actor: Actor
-  privacy_level: PrivacyLevel
-  tracks_count: number
-  duration: number
-  album_covers: string[]
-
-  is_playable: boolean
-}
-
-export interface PlaylistTrack {
-  track: Track
-  position?: number
-}
-
-export interface Radio {
-  id: number
-  name: string
-  user: User
-}
-
-export interface Listening {
-  id: number
-  track: Track
-  user: User
-  actor: Actor
-  creation_date: string
-}
+//   name: string
+//   type?: 'federation.Actor' | 'federation.UserFollow'
+//   target?: Actor
+// }
 
 // API stuff
 // eslint-disable-next-line
@@ -236,19 +95,12 @@ export interface BackendError extends AxiosError {
   rawPayload?: APIErrorResponse
 }
 
+// Backend response now contains pagination fields.
+// Example: PaginatedArtistWithAlbumsList
+// Example: PaginatedAlbumsList
 export interface BackendResponse<T> {
   count: number
   results: T[]
-}
-
-export interface RateLimitStatus {
-  limit?: string
-  scope?: string
-  remaining?: string
-  duration?: string
-  availableSeconds: number
-  reset?: string
-  resetSeconds?: string
 }
 
 // WebSocket stuff
@@ -312,17 +164,17 @@ export interface Upload {
 }
 
 // Profile stuff
-export interface Actor {
-  id: number
-  fid?: string
-  name?: string
-  icon?: Cover
-  summary: string
-  preferred_username: string
-  full_username: string
-  is_local: boolean
-  domain: string
-}
+// export interface Actor {
+//   id: number
+//   fid?: string
+//   name?: string
+//   icon?: Cover
+//   summary: string
+//   preferred_username: string
+//   full_username: string
+//   is_local: boolean
+//   domain: string
+// }
 
 export interface User {
   id: number
@@ -486,22 +338,10 @@ export interface UserRequest {
 }
 
 // Notification stuff
-export type Activity = {
-  actor: Actor
-  creation_date: string
-  related_object: LibraryFollow | UserFollow
-  type: 'Follow' | 'Accept'
-  object: LibraryFollow | UserFollow
-}
 export interface Notification {
   id: number
   is_read: boolean
   activity: Activity
-}
-
-// Tags stuff
-export interface Tag {
-  name: string
 }
 
 // Application stuff

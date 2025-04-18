@@ -16,10 +16,13 @@
     "test": "vitest run",
     "test:unit": "vitest run --coverage",
     "test:generate-mock-server": "msw-auto-mock ../docs/schema.yml -o test/msw-server.ts --node",
-    "lint": "eslint --cache --cache-strategy content --ext .ts,.js,.vue,.json,.html src test cypress public/embed.html",
-    "lint:tsc": "vue-tsc --noEmit --incremental && tsc --noEmit --incremental -p cypress",
-    "fix-fomantic-css": "scripts/fix-fomantic-css.sh",
-    "postinstall": "yarn run fix-fomantic-css"
+    "lint": "yarn lint:es && yarn lint:tsc",
+    "lint:es": "eslint --max-warnings 0 --cache --cache-strategy content --ext .ts,.js,.vue,.json,.html,.cjs . cypress public/embed.html src test ui-docs",
+    "lint:tsc": "vue-tsc --noEmit --incremental && tsc --noEmit --incremental --project tsconfig.json",
+    "generate-types-from-local-schema": "yarn run openapi-typescript ../api/funkwhale_api/common/schema.yml -o src/generated/types.ts",
+    "generate-types-from-remote-schema": "yarn run openapi-typescript https://docs.funkwhale.audio/develop/swagger/schema.yml -o src/generated/types.ts",
+    "fmt:es": "yarn lint:es --fix",
+    "fmt:html": "node --experimental-strip-types node_modules/prettier/bin/prettier.cjs index.html public/embed.html --write"
   },
   "dependencies": {
     "@sentry/tracing": "7.47.0",
