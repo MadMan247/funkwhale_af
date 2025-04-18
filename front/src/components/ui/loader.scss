@@ -1,0 +1,66 @@
+// Modified version of https://github.com/lukehaas/css-loaders
+
+.funkwhale {
+  &.loader-container {
+    position: relative;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .loader,
+  .loader:after {
+    border-radius: 50%;
+    width: 1.5em;
+    height: 1.5em;
+  }
+  .loader {
+    font-size: 1.2em;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -0.75em;
+    margin-top: -0.75em;
+    text-indent: -9999em;
+
+    @include light-theme {
+      border-top: 0.2em solid rgba(0, 0, 0, 0.2);
+      border-right: 0.2em solid rgba(0, 0, 0, 0.2);
+      border-bottom: 0.2em solid rgba(0, 0, 0, 0.2);
+      border-left: 0.2em solid rgba(0, 0, 0, 0.7);
+    }
+
+    @include dark-theme {
+      border-top: 0.2em solid rgba(255, 255, 255, 0.2);
+      border-right: 0.2em solid rgba(255, 255, 255, 0.2);
+      border-bottom: 0.2em solid rgba(255, 255, 255, 0.2);
+      border-left: 0.2em solid rgba(255, 255, 255, 0.7);
+    }
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-animation: load8 .5s infinite linear;
+    animation: load8 .5s infinite linear;
+  }
+  @-webkit-keyframes load8 {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes load8 {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+}

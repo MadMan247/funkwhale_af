@@ -1,0 +1,21 @@
+services:
+  ui:
+    build:
+      context: ../front
+      dockerfile: Dockerfile.dev
+    command: yarn dev:docs --host 0.0.0.0
+    expose: ['5173']
+    ports:
+      - '8003:5173'
+    volumes:
+      - '../front:/app'
+      - '/app/node_modules'
+    networks: ['web']
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.test-funkwhale-ui-web.rule=Host(`ui.funkwhale.test`)'
+      - 'traefik.http.routers.test-funkwhale-ui-web.entrypoints=web'
+      - 'traefik.http.services.test-funkwhale-ui.loadbalancer.server.port=5173'
+      - 'traefik.http.routers.test-funkwhale-ui-webs.rule=Host(`ui.funkwhale.test`)'
+      - 'traefik.http.routers.test-funkwhale-ui-webs.entrypoints=webs'
+      - 'traefik.http.routers.test-funkwhale-ui-webs.tls=true'

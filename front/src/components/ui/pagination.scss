@@ -1,0 +1,78 @@
+.funkwhale {
+  &.pagination {
+
+    @include light-theme {
+      > .goto {
+        border-left: 1px solid var(--fw-gray-200);
+      }
+    }
+
+    @include dark-theme {
+      > .goto {
+        border-left: 1px solid var(--fw-gray-800);
+      }
+    }
+
+    height: 34px;
+    display: flex;
+
+    &.is-small {
+      > .pages {
+        width: auto;
+      }
+      > .goto {
+        margin-right: auto;
+      }
+    }
+
+    > ul.pages {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      > li {
+        margin-top: 0;
+        margin: 0 0.5ch;
+        text-align: center;
+
+        &:not(:first-child):not(:last-child) {
+          width: 34px;
+        }
+
+        > .funkwhale.button {
+          min-width: 34px;
+          margin: 0;
+        }
+
+
+        &:first-child > .funkwhale.button,
+        &:last-child > .funkwhale.button {
+          min-width: 94px;
+          text-align: center;
+        }
+      }
+    }
+
+    > .goto {
+      margin-left: 16px;
+      padding-left: 16px;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+
+      > .funkwhale.input {
+        margin-left: 16px;
+        width: calc(3ch + 32px);
+
+        input {
+          text-align: center;
+          padding: 6px 8px;
+        }
+      }
+    }
+  }
+}

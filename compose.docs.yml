@@ -5,3 +5,4 @@ networks:
 include:
   - path: compose/docs.sphinx.yml
   - path: compose/docs.openapi.yml
+  - path: compose/docs.ui.yml

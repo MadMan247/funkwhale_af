@@ -6,8 +6,11 @@
   "author": "Funkwhale Collective <contact@funkwhale.audio>",
   "scripts": {
     "dev": "vite",
+    "dev:docs": "VP_DOCS=true vitepress dev ui-docs",
     "build": "vite build --mode development",
     "build:deployment": "vite build",
+    "build:docs": "VP_DOCS=true vitepress build ui-docs",
+    "serve:docs": "VP_DOCS=true vitepress serve ui-docs",
     "serve": "vite preview",
     "test": "vitest run",
     "test:unit": "vitest run --coverage",
@@ -18,7 +21,6 @@
     "postinstall": "yarn run fix-fomantic-css"
   },
   "dependencies": {
-    "@funkwhale/ui": "0.2.2",
     "@sentry/tracing": "7.47.0",
     "@sentry/vue": "7.47.0",
     "@tauri-apps/api": "2.0.0-beta.1",
