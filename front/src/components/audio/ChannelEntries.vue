@@ -3,10 +3,13 @@ import type { Cover, Track, BackendResponse, BackendError } from '~/types'
 
 import { clone } from 'lodash-es'
 import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import axios from 'axios'
 import PodcastTable from '~/components/audio/podcast/Table.vue'
 import TrackTable from '~/components/audio/track/Table.vue'
+
+import Loader from '~/components/ui/Loader.vue'
 
 interface Events {
   (e: 'fetched', data: BackendResponse<Track[]>): void
@@ -18,6 +21,7 @@ interface Props {
   defaultCover: Cover | null
   isPodcast: boolean
 }
+const { t } = useI18n()
 
 const emit = defineEmits<Events>()
 const props = withDefaults(defineProps<Props>(), {
@@ -61,51 +65,45 @@ watch(page, fetchData, { immediate: true })
 <template>
   <div>
     <slot />
-    <div class="ui hidden divider" />
-    <div
-      v-if="isLoading"
-      class="ui inverted active dimmer"
-    >
-      <div class="ui loader" />
-    </div>
-    <podcast-table
-      v-if="isPodcast"
-      v-model:page="page"
-      :paginate-by="limit"
-      :default-cover="defaultCover"
-      :is-podcast="isPodcast"
-      :show-art="true"
-      :show-position="false"
-      :tracks="channels"
-      :show-artist="false"
-      :show-album="false"
-      :paginate-results="true"
-      :total="count"
-    />
-    <track-table
-      v-else
-      v-model:page="page"
-      :default-cover="defaultCover"
-      :is-podcast="isPodcast"
-      :show-art="true"
-      :show-position="false"
-      :tracks="channels"
-      :show-artist="false"
-      :show-album="false"
-      :paginate-results="true"
-      :total="count"
-      :paginate-by="limit"
-      :filters="filters"
-    />
-    <template v-if="!isLoading && channels.length === 0">
-      <empty-state
-        :refresh="true"
-        @refresh="fetchData()"
-      >
-        <p>
-          {{ $t('components.audio.ChannelEntries.help.subscribe') }}
-        </p>
-      </empty-state>
-    </template>
+    <Loader v-if="isLoading" />
   </div>
+  <podcast-table
+    v-if="isPodcast"
+    v-model:page="page"
+    :paginate-by="limit"
+    :default-cover="defaultCover"
+    :is-podcast="isPodcast"
+    :show-art="true"
+    :show-position="false"
+    :tracks="channels"
+    :show-artist="false"
+    :show-album="false"
+    :paginate-results="true"
+    :total="count"
+  />
+  <track-table
+    v-else
+    v-model:page="page"
+    :default-cover="defaultCover"
+    :is-podcast="isPodcast"
+    :show-art="true"
+    :show-position="false"
+    :tracks="channels"
+    :show-artist="false"
+    :show-album="false"
+    :paginate-results="true"
+    :total="count"
+    :paginate-by="limit"
+    :filters="filters"
+  />
+  <template v-if="!isLoading && channels.length === 0">
+    <empty-state
+      :refresh="true"
+      @refresh="fetchData()"
+    >
+      <p>
+        {{ t('components.audio.ChannelEntries.help.subscribe') }}
+      </p>
+    </empty-state>
+  </template>
 </template>

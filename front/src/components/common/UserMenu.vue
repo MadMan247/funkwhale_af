@@ -2,6 +2,8 @@
 import { SUPPORTED_LOCALES, setI18nLanguage } from '~/init/locale'
 import { useI18n } from 'vue-i18n'
 import { computed } from 'vue'
+import { useStore } from '~/store'
+import { useRoute } from 'vue-router'
 
 import useThemeList from '~/composables/useThemeList'
 import useTheme from '~/composables/useTheme'
@@ -10,9 +12,13 @@ interface Events {
   (e: 'show:shortcuts-modal'): void
 }
 
+const route = useRoute()
+const store = useStore()
+
 const emit = defineEmits<Events>()
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
+
 const themes = useThemeList()
 const { theme } = useTheme()
 
@@ -48,7 +54,7 @@ const labels = computed(() => ({
         <a
           v-for="(language, key) in SUPPORTED_LOCALES"
           :key="key"
-          :class="[{'active': $i18n.locale === key},'item']"
+          :class="[{'active': locale === key},'item']"
           :value="key"
           @click="setI18nLanguage(key)"
         >{{ language }}</a>
@@ -74,27 +80,27 @@ const labels = computed(() => ({
         </a>
       </div>
     </div>
-    <template v-if="$store.state.auth.authenticated">
+    <template v-if="store.state.auth.authenticated">
       <div class="divider" />
       <router-link
         class="item"
-        :to="{name: 'profile.overview', params: { username: $store.state.auth.username },}"
+        :to="{name: 'profile.overview', params: { username: store.state.auth.username },}"
       >
         <i class="user icon" />
         {{ labels.profile }}
       </router-link>
       <router-link
-        v-if="$store.state.auth.authenticated"
+        v-if="store.state.auth.authenticated"
         class="item"
         :to="{name: 'notifications'}"
       >
         <i class="bell icon" />
         <div
-          v-if="$store.state.ui.notifications.inbox > 0"
+          v-if="store.state.ui.notifications.inbox > 0"
           :title="labels.notifications"
           :class="['ui', 'circular', 'mini', 'right floated', 'accent', 'label']"
         >
-          {{ $store.state.ui.notifications.inbox }}
+          {{ store.state.ui.notifications.inbox }}
         </div>
         {{ labels.notifications }}
       </router-link>
@@ -155,14 +161,14 @@ const labels = computed(() => ({
       {{ labels.shortcuts }}
     </a>
     <router-link
-      v-if="$route.path != '/about'"
+      v-if="route.path != '/about'"
       class="item"
       :to="{ name: 'about' }"
     >
       <i class="question circle outline icon" />
       {{ labels.about }}
     </router-link>
-    <template v-if="$store.state.auth.authenticated && $route.path != '/logout'">
+    <template v-if="store.state.auth.authenticated && route.path != '/logout'">
       <div class="divider" />
       <router-link
         class="item"
@@ -173,7 +179,7 @@ const labels = computed(() => ({
         {{ labels.logout }}
       </router-link>
     </template>
-    <template v-if="!$store.state.auth.authenticated">
+    <template v-if="!store.state.auth.authenticated">
       <div class="divider" />
       <router-link
         class="item"
@@ -183,7 +189,7 @@ const labels = computed(() => ({
         {{ labels.login }}
       </router-link>
     </template>
-    <template v-if="!$store.state.auth.authenticated && $store.state.instance.settings.users.registration_enabled.value">
+    <template v-if="!store.state.auth.authenticated && store.state.instance.settings.users.registration_enabled.value">
       <router-link
         class="item"
         :to="{ name: 'signup' }"

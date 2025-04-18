@@ -1,0 +1,66 @@
+.funkwhale {
+  &.card.playlist-card {
+
+    @include light-theme {
+      > .card-image {
+        > div {
+          --fw-bg-color: var(--fw-pastel-blue-3);
+          background-color: var(--fw-bg-color);
+          &:nth-child(2) {
+            --fw-bg-color: var(--fw-pastel-blue-1);
+          }
+          &:nth-child(3) {
+            --fw-bg-color: var(--fw-pastel-blue-2);
+          }
+          &:nth-child(4) {
+            --fw-bg-color: var(--fw-pastel-blue-4);
+          }
+        }
+      }
+    }
+
+    @include dark-theme {
+      > .card-image {
+        > div {
+          --fw-bg-color: var(--fw-pastel-blue-3);
+          background-color: var(--fw-bg-color);
+          &:nth-child(2) {
+            --fw-bg-color: var(--fw-pastel-blue-1);
+          }
+          &:nth-child(3) {
+            --fw-bg-color: var(--fw-pastel-blue-2);
+          }
+          &:nth-child(4) {
+            --fw-bg-color: var(--fw-pastel-blue-4);
+          }
+        }
+      }
+    }
+
+    --fw-border-radius: 12px;
+    --fw-card-width: 208px;
+    --fw-card-image-width: var(--fw-card-width);
+    --fw-card-padding: 16px;
+
+    > .card-image {
+      border-radius: 0 !important;
+      width: var(--fw-card-image-width);
+      margin: calc(-1 * var(--fw-card-padding)) calc(-1 * var(--fw-card-padding)) 0;
+
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+    }
+
+    > .card-title {
+      font-size: 1rem;
+      text-align: left !important;
+      padding-top: 16px !important;
+    }
+
+    > .card-content {
+      padding-top: 0 !important;
+      text-align: left !important;
+    }
+  }
+}

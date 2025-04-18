@@ -5,7 +5,6 @@ import { whenever, watchDebounced, useCurrentElement, useScrollLock, useFullscre
 import { nextTick, ref, computed, watchEffect, defineAsyncComponent } from 'vue'
 import { useFocusTrap } from '@vueuse/integrations/useFocusTrap'
 import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
 import { useStore } from '~/store'
 
 import { usePlayer } from '~/composables/audio/player'
@@ -14,12 +13,20 @@ import { useQueue } from '~/composables/audio/queue'
 
 import time from '~/utils/time'
 
+import { useI18n } from 'vue-i18n'
+
 import TrackFavoriteIcon from '~/components/favorites/TrackFavoriteIcon.vue'
 import TrackPlaylistIcon from '~/components/playlists/TrackPlaylistIcon.vue'
 import PlayerControls from '~/components/audio/PlayerControls.vue'
 
 import VirtualList from '~/components/vui/list/VirtualList.vue'
 import QueueItem from '~/components/QueueItem.vue'
+
+import Layout from '~/components/ui/Layout.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Link from '~/components/ui/Link.vue'
+import Button from '~/components/ui/Button.vue'
+import ArtistCreditLabel from '~/components/audio/ArtistCreditLabel.vue'
 
 const MilkDrop = defineAsyncComponent(() => import('~/components/audio/visualizer/MilkDrop.vue'))
 
@@ -173,7 +180,7 @@ if (!isWebGLSupported) {
 
 <template>
   <section
-    class="main with-background component-queue"
+    class="main opaque component-queue"
     :aria-label="labels.queue"
   >
     <div
@@ -194,12 +201,12 @@ if (!isWebGLSupported) {
                 <img
                   v-if="fullscreen"
                   class="cover-shadow"
-                  :src="$store.getters['instance/absoluteUrl'](currentTrack.coverUrl)"
+                  :src="store.getters['instance/absoluteUrl'](currentTrack.coverUrl)"
                 >
                 <img
                   ref="cover"
                   alt=""
-                  :src="$store.getters['instance/absoluteUrl'](currentTrack.coverUrl)"
+                  :src="store.getters['instance/absoluteUrl'](currentTrack.coverUrl)"
                 >
               </template>
               <milk-drop
@@ -212,47 +219,40 @@ if (!isWebGLSupported) {
                   v-if="!fullscreen || !idle"
                   class="cover-buttons"
                 >
-                  <tooltip :content="!isWebGLSupported && $t('components.Queue.message.webglUnsupported')">
-                    <button
+                  <tooltip :content="!isWebGLSupported && t('components.Queue.message.webglUnsupported')">
+                    <Button
                       v-if="coverType === CoverType.COVER_ART"
-                      class="ui secondary button"
                       :aria-label="labels.showVisualizer"
                       :title="labels.showVisualizer"
                       :disabled="!isWebGLSupported"
+                      icon="bi-display"
                       @click="coverType = CoverType.MILK_DROP"
-                    >
-                      <i class="icon signal" />
-                    </button>
-                    <button
+                    />
+                    <Button
                       v-else-if="coverType === CoverType.MILK_DROP"
-                      class="ui secondary button"
                       :aria-label="labels.showCoverArt"
                       :title="labels.showCoverArt"
                       :disabled="!isWebGLSupported"
+                      icon="bi-image-fill"
                       @click="coverType = CoverType.COVER_ART"
-                    >
-                      <i class="icon image outline" />
-                    </button>
+                    />
                   </tooltip>
 
-                  <button
+                  <Button
                     v-if="!fullscreen"
-                    class="ui secondary button"
                     :aria-label="labels.fullscreen"
                     :title="labels.fullscreen"
+                    icon="bi-arrows-fullscreen"
                     @click="enter"
-                  >
-                    <i class="icon expand" />
-                  </button>
-                  <button
+                  />
+                  <Button
                     v-else
-                    class="ui secondary button"
+                    secondary
                     :aria-label="labels.exitFullscreen"
                     :title="labels.exitFullscreen"
+                    icon="bi-fullscreen-exit"
                     @click="exit"
-                  >
-                    <i class="icon compress" />
-                  </button>
+                  />
                 </div>
               </Transition>
               <Transition name="queue">
@@ -267,65 +267,53 @@ if (!isWebGLSupported) {
                       v-for="ac in currentTrack.artistCredit"
                       :key="ac.artist.id"
                     >
-                      {{ ac.credit ?? $t('components.Queue.meta.unknownArtist') }}
+                      {{ ac.credit ?? t('components.Queue.meta.unknownArtist') }}
                       <span>{{ ac.joinphrase }}</span>
                     </div>
                     <span class="symbol hyphen middle" />
-                    {{ currentTrack.albumTitle ?? $t('components.Queue.meta.unknownAlbum') }}
+                    {{ currentTrack.albumTitle ?? t('components.Queue.meta.unknownAlbum') }}
                   </h2>
                 </div>
               </Transition>
             </div>
           </div>
           <h1 class="ui header">
-            <div class="content ellipsis">
-              <router-link
-                class="small header discrete link track"
-                :to="{name: 'library.tracks.detail', params: {id: currentTrack.id }}"
-              >
-                {{ currentTrack.title }}
-              </router-link>
-              <div class="sub header ellipsis">
-                <span>
-                  <template
-                    v-for="ac in currentTrack.artistCredit"
-                    :key="ac.artist.id"
-                  >
-                    <router-link
-                      class="discrete link"
-                      :to="{name: 'library.artists.detail', params: {id: ac.artist.id }}"
-                      @click.stop.prevent=""
-                    >
-                      {{ ac.credit ?? $t('components.Queue.meta.unknownArtist') }}
-                    </router-link>
-                    <span>{{ ac.joinphrase }}</span>
-                  </template>
-                </span>
-                <template v-if="currentTrack.albumId !== -1">
-                  <span class="middle slash symbol" />
-                  <router-link
-                    class="discrete link album"
-                    :to="{name: 'library.albums.detail', params: {id: currentTrack.albumId }}"
-                  >
-                    {{ currentTrack.albumTitle ?? $t('components.Queue.meta.unknownAlbum') }}
-                  </router-link>
-                </template>
-              </div>
-            </div>
+            <Link
+              class="track"
+              :to="{name: 'library.tracks.detail', params: {id: currentTrack.id }}"
+            >
+              {{ currentTrack.title }}
+            </Link>
           </h1>
+          <h2>
+            <template v-if="currentTrack.albumId !== -1">
+              <Link
+                class="album"
+                :to="{name: 'library.albums.detail', params: {id: currentTrack.albumId }}"
+              >
+                {{ currentTrack.albumTitle ?? t('components.Queue.meta.unknownAlbum') }}
+              </Link>
+            </template>
+          </h2>
+          <span>
+            <ArtistCreditLabel
+              v-if="currentTrack.artistCredit"
+              :artist-credit="currentTrack.artistCredit"
+            />
+          </span>
           <div
             v-if="currentTrack && errored"
             class="ui small warning message"
           >
             <h3 class="header">
-              {{ $t('components.Queue.header.failure') }}
+              {{ t('components.Queue.header.failure') }}
             </h3>
             <p v-if="hasNext && isPlaying">
-              {{ $t('components.Queue.message.automaticPlay') }}
+              {{ t('components.Queue.message.automaticPlay') }}
               <i class="loading spinner icon" />
             </p>
             <p>
-              {{ $t('components.Queue.warning.connectivity') }}
+              {{ t('components.Queue.warning.connectivity') }}
             </p>
           </div>
           <div
@@ -333,32 +321,40 @@ if (!isWebGLSupported) {
             class="ui small warning message"
           >
             <h3 class="header">
-              {{ $t('components.Queue.header.noSources') }}
+              {{ t('components.Queue.header.noSources') }}
             </h3>
             <p v-if="hasNext && isPlaying">
-              {{ $t('components.Queue.message.automaticPlay') }}
+              {{ t('components.Queue.message.automaticPlay') }}
               <i class="loading spinner icon" />
             </p>
           </div>
-          <div class="additional-controls desktop-and-below">
+          <Spacer
+            :size="16"
+            class="desktop-and-below"
+          />
+          <Layout
+            flex
+            class="additional-controls desktop-and-below"
+          >
             <track-favorite-icon
-              v-if="$store.state.auth.authenticated"
+              v-if="store.state.auth.authenticated"
               :track="currentTrack"
+              ghost
             />
             <track-playlist-icon
-              v-if="$store.state.auth.authenticated"
+              v-if="store.state.auth.authenticated"
               :track="currentTrack"
+              ghost
             />
-            <button
-              v-if="$store.state.auth.authenticated"
-              :class="['ui', 'really', 'basic', 'circular', 'icon', 'button']"
+            <Button
+              v-if="store.state.auth.authenticated"
+              ghost
+              icon="bi-eye-slash"
               :aria-label="labels.addArtistContentFilter"
               :title="labels.addArtistContentFilter"
               @click="hideArtist"
-            >
-              <i :class="['eye slash outline', 'basic', 'icon']" />
-            </button>
-          </div>
+            />
+          </Layout>
           <div class="progress-wrapper">
             <div class="progress-area">
               <div
@@ -386,28 +382,33 @@ if (!isWebGLSupported) {
                 <span class="right floated timer total">{{ time.parse(Math.round(duration)) }}</span>
               </template>
               <template v-else>
-                <span class="left floated timer">{{ $t('components.Queue.meta.startTime') }}</span>
-                <span class="right floated timer">{{ $t('components.Queue.meta.startTime') }}</span>
+                <span class="left floated timer">{{ t('components.Queue.meta.startTime') }}</span>
+                <span class="right floated timer">{{ t('components.Queue.meta.startTime') }}</span>
               </template>
             </div>
           </div>
-          <player-controls class="desktop-and-below" />
+          <player-controls class="desktop-and-below queue-controls" />
         </template>
       </div>
       <div id="queue">
         <div class="ui basic clearing segment">
           <h2 class="ui header">
             <div class="content">
-              <button
-                v-t="'components.Queue.button.close'"
-                class="ui right floated basic button"
-                @click="$store.commit('ui/queueFocused', null)"
+              <Button
+                ghost
+                icon="bi-chevron-down"
+                style="float: right; margin-right: 24px;"
+                @click="store.commit('ui/queueFocused', null)"
               />
-              <button
-                v-t="'components.Queue.button.clear'"
-                class="ui right floated basic button danger"
+              <Button
+                red
+                outline
+                icon="bi-trash-fill"
+                style="float: right; margin-right: 16px;"
                 @click="clear"
-              />
+              >
+                {{ t('components.Queue.button.clear') }}
+              </Button>
               {{ labels.queue }}
               <div class="sub header">
                 <div>
@@ -420,7 +421,10 @@ if (!isWebGLSupported) {
                     </template>
                   </i18n-t>
                   <span class="middle pipe symbol" />
-                  <span v-t="'components.Queue.meta.end'" />
+                  <span
+                    v-t="'components.Queue.meta.end'"
+                    style="margin-right: 8px;"
+                  />
                   <span :title="labels.duration">
                     {{ endsIn }}
                   </span>
@@ -451,30 +455,31 @@ if (!isWebGLSupported) {
           </template>
           <template #footer>
             <div
-              v-if="$store.state.radios.populating"
+              v-if="store.state.radios.populating"
               class="radio-populating"
             >
               <i class="loading spinner icon" />
               {{ labels.populating }}
             </div>
             <div
-              v-if="$store.state.radios.running"
+              v-if="store.state.radios.running"
               class="ui info message radio-message"
             >
               <div class="content">
                 <h3 class="header">
-                  <i class="feed icon" />
-                  {{ $t('components.Queue.header.radio') }}
+                  <i class="bi bi-boombox-fill" />
+                  {{ t('components.Queue.header.radio') }}
                 </h3>
                 <p>
-                  {{ $t('components.Queue.message.radio') }}
+                  {{ t('components.Queue.message.radio') }}
                 </p>
-                <button
-                  class="ui basic primary button"
-                  @click="$store.dispatch('radios/stop')"
+                <Button
+                  primary
+                  icon="bi-stop-fill"
+                  @click="store.dispatch('radios/stop')"
                 >
-                  {{ $t('components.Queue.button.stopRadio') }}
-                </button>
+                  {{ t('components.Queue.button.stopRadio') }}
+                </Button>
               </div>
             </div>
           </template>

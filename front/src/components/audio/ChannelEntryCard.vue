@@ -5,9 +5,14 @@ import { computed } from 'vue'
 
 import { usePlayer } from '~/composables/audio/player'
 import { useQueue } from '~/composables/audio/queue'
+import { useStore } from '~/store'
+import { useRouter } from 'vue-router'
 
 import TrackFavoriteIcon from '~/components/favorites/TrackFavoriteIcon.vue'
 import PlayButton from '~/components/audio/PlayButton.vue'
+
+const store = useStore()
+const router = useRouter()
 
 interface Props {
   entry: Track
@@ -37,30 +42,30 @@ const duration = computed(() => props.entry.uploads.find(upload => upload.durati
     </div>
     <img
       v-if="cover && cover.urls.original"
-      v-lazy="$store.getters['instance/absoluteUrl'](cover.urls.medium_square_crop)"
+      v-lazy="store.getters['instance/absoluteUrl'](cover.urls.medium_square_crop)"
       alt=""
       class="channel-image image"
-      @click="$router.push({name: 'library.tracks.detail', params: {id: entry.id}})"
+      @click="router.push({name: 'library.tracks.detail', params: {id: entry.id}})"
     >
     <img
       v-else-if="entry.artist_credit?.[0].artist.content_category === 'podcast' && defaultCover != undefined"
-      v-lazy="$store.getters['instance/absoluteUrl'](defaultCover.urls.medium_square_crop)"
+      v-lazy="store.getters['instance/absoluteUrl'](defaultCover.urls.medium_square_crop)"
       class="channel-image image"
-      @click="$router.push({name: 'library.tracks.detail', params: {id: entry.id}})"
+      @click="router.push({name: 'library.tracks.detail', params: {id: entry.id}})"
     >
     <img
       v-else-if="entry.album && entry.album.cover && entry.album.cover.urls.original"
-      v-lazy="$store.getters['instance/absoluteUrl'](entry.album.cover.urls.medium_square_crop)"
+      v-lazy="store.getters['instance/absoluteUrl'](entry.album.cover.urls.medium_square_crop)"
       alt=""
       class="channel-image image"
-      @click="$router.push({name: 'library.tracks.detail', params: {id: entry.id}})"
+      @click="router.push({name: 'library.tracks.detail', params: {id: entry.id}})"
     >
     <img
       v-else
       alt=""
       class="channel-image image"
       src="../../assets/audio/default-cover.png"
-      @click="$router.push({name: 'library.tracks.detail', params: {id: entry.id}})"
+      @click="router.push({name: 'library.tracks.detail', params: {id: entry.id}})"
     >
     <div class="ellipsis content">
       <strong>
@@ -78,7 +83,7 @@ const duration = computed(() => props.entry.uploads.find(upload => upload.durati
       />
     </div>
     <div class="meta">
-      <template v-if="$store.state.auth.authenticated && $store.getters['favorites/isFavorite'](entry.id)">
+      <template v-if="store.state.auth.authenticated && store.getters['favorites/isFavorite'](entry.id)">
         <track-favorite-icon
           class="tiny"
           :track="entry"

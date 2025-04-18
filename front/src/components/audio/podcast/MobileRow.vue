@@ -7,6 +7,7 @@ import { useI18n } from 'vue-i18n'
 
 import { usePlayer } from '~/composables/audio/player'
 import { useQueue } from '~/composables/audio/queue'
+import { useStore } from '~/store'
 
 import usePlayOptions from '~/composables/audio/usePlayOptions'
 
@@ -54,6 +55,8 @@ const { isPlaying } = usePlayer()
 const { activateTrack } = usePlayOptions(props)
 
 const { t } = useI18n()
+const store = useStore()
+
 const actionsButtonLabel = computed(() => t('components.audio.podcast.MobileRow.button.actions'))
 </script>
 
@@ -71,13 +74,13 @@ const actionsButtonLabel = computed(() => t('components.audio.podcast.MobileRow.
     >
       <img
         v-if="track.album?.cover?.urls.original"
-        v-lazy="$store.getters['instance/absoluteUrl'](track.album.cover.urls.medium_square_crop)"
+        v-lazy="store.getters['instance/absoluteUrl'](track.album.cover.urls.small_square_crop)"
         alt=""
         class="ui artist-track mini image"
       >
       <img
         v-else-if="track.cover"
-        v-lazy="$store.getters['instance/absoluteUrl'](track.cover.urls.medium_square_crop)"
+        v-lazy="store.getters['instance/absoluteUrl'](track.cover.urls.small_square_crop)"
         alt=""
         class="ui artist-track mini image"
       >
@@ -136,7 +139,7 @@ const actionsButtonLabel = computed(() => t('components.audio.podcast.MobileRow.
       </p>
     </div>
     <div
-      v-if="$store.state.auth.authenticated && track.artist_credit?.[0].artist.content_category !== 'podcast'"
+      v-if="store.state.auth.authenticated && track.artist_credit?.[0].artist.content_category !== 'podcast'"
       :class="[
         'meta',
         'right',

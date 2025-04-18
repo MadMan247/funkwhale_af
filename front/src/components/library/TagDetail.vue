@@ -1,15 +1,23 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useStore } from '~/store'
 
 import ChannelsWidget from '~/components/audio/ChannelsWidget.vue'
 import TrackWidget from '~/components/audio/track/Widget.vue'
-import AlbumWidget from '~/components/audio/album/Widget.vue'
-import ArtistWidget from '~/components/audio/artist/Widget.vue'
+import AlbumWidget from '~/components/album/Widget.vue'
+import ArtistWidget from '~/components/artist/Widget.vue'
 import RadioButton from '~/components/radios/Button.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Button from '~/components/ui/Button.vue'
+import Spacer from '~/components/ui/Spacer.vue'
 
 interface Props {
   id: string
 }
+
+const store = useStore()
+const { t } = useI18n()
 
 const props = defineProps<Props>()
 
@@ -19,81 +27,95 @@ const labels = computed(() => ({
 </script>
 
 <template>
-  <main v-title="labels.title">
-    <section class="ui vertical stripe segment">
-      <h2 class="ui header">
-        <span class="ui circular huge hashtag label component-label">
-          {{ labels.title }}
-        </span>
-      </h2>
-      <radio-button
-        type="tag"
-        :object-id="id"
-      />
-      <router-link
-        v-if="$store.state.auth.availablePermissions['library']"
-        class="ui right floated button"
-        :to="{name: 'manage.library.tags.detail', params: {id: id}}"
-      >
-        <i class="wrench icon" />
-        {{ $t('components.library.TagDetail.link.moderation') }}
-      </router-link>
+  <h1 class="ui header">
+    <span class="funkwhale solid raised secondary pill">
+      <span class="pill-content">
+        {{ labels.title }}
+      </span>
+    </span>
+  </h1>
+  <Layout
+    flex
+    class="buttons"
+  >
+    <radio-button
+      type="tag"
+      :object-id="id"
+    />
+    <Button
+      v-if="store.state.auth.availablePermissions['library']"
+      icon="bi-wrench"
+      secondary
+      :to="{name: 'manage.library.tags.detail', params: {id: id}}"
+    >
+      {{ t('components.library.TagDetail.link.moderation') }}
+    </Button>
+  </Layout>
 
-      <div class="ui hidden divider" />
-      <div class="ui row">
-        <artist-widget
-          :key="'artist' + id"
-          :controls="false"
-          :filters="{playable: true, ordering: '-creation_date', tag: id, include_channels: 'false'}"
-        >
-          <template #title>
-            <router-link :to="{name: 'library.artists.browse', query: {tag: id}}">
-              {{ $t('components.library.TagDetail.link.artists') }}
-            </router-link>
-          </template>
-        </artist-widget>
-        <div class="ui hidden divider" />
-        <div class="ui hidden divider" />
-        <h3 class="ui header">
-          {{ $t('components.library.TagDetail.header.channels') }}
-        </h3>
-        <channels-widget
-          :key="'channels' + id"
-          :show-modification-date="true"
-          :limit="12"
-          :filters="{tag: id, ordering: '-creation_date'}"
-        />
-        <div class="ui hidden divider" />
-        <div class="ui hidden divider" />
-        <album-widget
-          :key="'album' + id"
-          :show-count="true"
-          :controls="false"
-          :filters="{playable: true, ordering: '-creation_date', tag: id}"
-        >
-          <template #title>
-            <router-link :to="{name: 'library.albums.browse', query: {tag: id}}">
-              {{ $t('components.library.TagDetail.link.albums') }}
-            </router-link>
-          </template>
-        </album-widget>
-        <div class="ui hidden divider" />
-        <div class="ui hidden divider" />
-        <track-widget
-          :key="'track' + id"
-          :show-count="true"
-          :limit="12"
-          item-classes="track-item inline"
-          :url="'/tracks/'"
-          :is-activity="false"
-          :filters="{playable: true, ordering: '-creation_date', tag: id}"
-        >
-          <template #title>
-            {{ $t('components.library.TagDetail.header.tracks') }}
-          </template>
-        </track-widget>
-        <div class="ui clearing hidden divider" />
-      </div>
-    </section>
-  </main>
+  <Spacer :size="64" />
+  <artist-widget
+    :key="'artist' + id"
+    :controls="false"
+    :title="t('components.library.TagDetail.header.artists')"
+    :action="{
+      text: t('components.library.TagDetail.link.artists'),
+      to: {name: 'library.artists.browse', query: {tag: id}},
+      secondary: true,
+      solid: true
+    }"
+    :filters="{playable: true, ordering: '-creation_date', tag: id, include_channels: 'false'}"
+  />
+  <Spacer :size="64" />
+  <channels-widget
+    :key="'channels' + id"
+    :show-modification-date="true"
+    :limit="12"
+    :title="t('components.library.TagDetail.header.channels')"
+    :action="{
+      text: t('components.library.TagDetail.link.channels'),
+      to: {name: 'library.channels.browse', query: {tag: id}},
+      secondary: true,
+      solid: true
+    }"
+    :filters="{tag: id, ordering: '-creation_date'}"
+  />
+  <Spacer :size="64" />
+  <album-widget
+    :key="'album' + id"
+    :show-count="true"
+    :controls="false"
+    :filters="{playable: true, ordering: '-creation_date', tag: id}"
+    :title="t('components.library.TagDetail.header.albums')"
+    :action="{
+      text: t('components.library.TagDetail.link.albums'),
+      to: {name: 'library.albums.browse', query: {tag: id}},
+      secondary: true,
+      solid: true
+    }"
+  />
+  <Spacer :size="64" />
+  <track-widget
+    :key="'track' + id"
+    :show-count="true"
+    :limit="12"
+    item-classes="track-item inline"
+    :url="'/tracks/'"
+    :is-activity="false"
+    :filters="{playable: true, ordering: '-creation_date', tag: id}"
+    :title="t('components.library.TagDetail.header.tracks')"
+  />
 </template>
+
+<style lang="scss" scoped>
+  h1 > .pill {
+    border-radius: 100vh;
+    display: inline-block;
+    padding: 10px;
+
+    > .pill-content {
+      font-size: 48px;
+      line-height: 48px;
+      padding: 20px 30px;
+    }
+  }
+</style>

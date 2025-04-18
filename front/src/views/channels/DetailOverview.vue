@@ -4,6 +4,8 @@ import type { Channel, Upload } from '~/types'
 import { computed, ref, reactive, watch } from 'vue'
 import { whenever } from '@vueuse/core'
 import { useStore } from '~/store'
+import { useI18n } from 'vue-i18n'
+import { useModal } from '~/ui/composables/useModal.ts'
 
 import axios from 'axios'
 
@@ -11,11 +13,19 @@ import ChannelEntries from '~/components/audio/ChannelEntries.vue'
 import ChannelSeries from '~/components/audio/ChannelSeries.vue'
 import AlbumModal from '~/components/channels/AlbumModal.vue'
 
+import Loader from '~/components/ui/Loader.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Button from '~/components/ui/Button.vue'
+import Link from '~/components/ui/Link.vue'
+
 import useWebSocketHandler from '~/composables/useWebSocketHandler'
 
 interface Props {
   object: Channel
 }
+
+const { t } = useI18n()
 
 const props = defineProps<Props>()
 
@@ -47,7 +57,7 @@ const isOver = computed(() => pendingUploads.length === processedUploads.value.l
 const isSuccessfull = computed(() => pendingUploads.length === finishedUploads.value.length)
 
 watch(() => store.state.channels.latestPublication, (value) => {
-  if (value?.channel.uuid === props.object.uuid && value.uploads.length > 0) {
+  if (value?.channel.uuid === props.object.uuid && value?.uploads && value?.uploads.length > 0) {
     pendingUploads.push(...value.uploads)
   }
 })
@@ -85,73 +95,69 @@ if (isOwner.value) {
     })
 }
 
-const albumModal = ref()
+const { to, isOpen } = useModal('album')
 </script>
 
 <template>
   <section>
-    <div
+    <Alert
       v-if="pendingUploads.length > 0"
-      class="ui info message"
+      yellow
     >
       <template v-if="isSuccessfull">
-        <i
-          role="button"
-          class="close icon"
+        <Button
+          icon="bi-x"
+          round
+          ghost
+          square-small
+          style="float: right;"
           @click="pendingUploads.length = 0"
         />
         <h3 class="ui header">
-          {{ $t('views.channels.DetailOverview.header.uploadsSuccess') }}
+          {{ t('views.channels.DetailOverview.header.uploadsSuccess') }}
         </h3>
         <p>
-          {{ $t('views.channels.DetailOverview.meta.progress', {finished: processedUploads.length, total: pendingUploads.length}) }}
+          {{ t('views.channels.DetailOverview.meta.progress', {finished: processedUploads.length, total: pendingUploads.length}) }}
         </p>
       </template>
       <template v-else-if="isOver">
         <h3 class="ui header">
-          {{ $t('views.channels.DetailOverview.header.uploadsFailure') }}
+          {{ t('views.channels.DetailOverview.header.uploadsFailure') }}
         </h3>
-        <div class="ui hidden divider" />
-        <router-link
+        <Link
           v-if="skippedUploads.length > 0"
-          class="ui basic button"
+          secondary
+          solid
           :to="{name: 'content.libraries.files', query: {q: 'status:skipped'}}"
         >
-          {{ $t('views.channels.DetailOverview.link.skippedUploads') }}
-        </router-link>
-        <router-link
+          {{ t('views.channels.DetailOverview.link.skippedUploads') }}
+        </Link>
+        <Link
           v-if="erroredUploads.length > 0"
-          class="ui basic button"
+          secondary
+          solid
           :to="{name: 'content.libraries.files', query: {q: 'status:errored'}}"
         >
-          {{ $t('views.channels.DetailOverview.link.erroredUploads') }}
-        </router-link>
+          {{ t('views.channels.DetailOverview.link.erroredUploads') }}
+        </Link>
       </template>
       <template v-else>
-        <div class="ui inline right floated active loader" />
+        <Loader />
         <h3 class="ui header">
-          {{ $t('views.channels.DetailOverview.header.uploadsProcessing') }}
+          {{ t('views.channels.DetailOverview.header.uploadsProcessing') }}
         </h3>
         <p>
-          {{ $t('views.channels.DetailOverview.message.processing') }}
+          {{ t('views.channels.DetailOverview.message.processing') }}
         </p>
         <p>
-          {{ $t('views.channels.DetailOverview.meta.progress', {finished: processedUploads.length, total: pendingUploads.length}) }}
+          {{ t('views.channels.DetailOverview.meta.progress', {finished: processedUploads.length, total: pendingUploads.length}) }}
         </p>
       </template>
-    </div>
-    <div v-if="$store.getters['ui/layoutVersion'] === 'small'">
-      <rendered-description
-        :content="object.artist?.description"
-        :update-url="`channels/${object.uuid}/`"
-        :can-update="false"
-      />
-      <div class="ui hidden divider" />
-    </div>
+    </Alert>
     <channel-entries
       :key="String(episodesKey) + 'entries'"
       :is-podcast="isPodcast"
-      :default-cover="object.artist?.cover"
+      :default-cover="object.artist?.cover || null"
       :limit="25"
       :filters="{channel: object.uuid, ordering: '-creation_date', page_size: '25'}"
     >
@@ -159,16 +165,16 @@ const albumModal = ref()
         <span
           v-if="isPodcast"
         >
-          {{ $t('views.channels.DetailOverview.header.latestEpisodes') }}
+          {{ t('views.channels.DetailOverview.header.latestEpisodes') }}
         </span>
         <span
           v-else
         >
-          {{ $t('views.channels.DetailOverview.header.latestTracks') }}
+          {{ t('views.channels.DetailOverview.header.latestTracks') }}
         </span>
       </h2>
     </channel-entries>
-    <div class="ui hidden divider" />
+    <Spacer />
     <channel-series
       :key="String(seriesKey) + 'series'"
       :filters="seriesFilters"
@@ -178,29 +184,31 @@ const albumModal = ref()
         <span
           v-if="isPodcast"
         >
-          {{ $t('views.channels.DetailOverview.header.series') }}
+          {{ t('views.channels.DetailOverview.header.series') }}
         </span>
         <span
           v-else
         >
-          {{ $t('views.channels.DetailOverview.header.albums') }}
+          {{ t('views.channels.DetailOverview.header.albums') }}
         </span>
         <div
           v-if="isOwner"
           class="actions"
         >
-          <a @click.stop.prevent="albumModal.show = true">
-            <i class="plus icon" />
-            {{ $t('views.channels.DetailOverview.link.addAlbum') }}
-          </a>
+          <Link
+            :to="to"
+          >
+            <i class="bi bi-plus" />
+            {{ t('views.channels.DetailOverview.link.addAlbum') }}
+          </Link>
         </div>
       </h2>
     </channel-series>
     <album-modal
       v-if="isOwner"
-      ref="albumModal"
+      :model-value="object"
       :channel="object"
-      @created="albumModal.show = false; seriesKey = new Date()"
+      @created="isOpen = false; seriesKey = new Date()"
     />
   </section>
 </template>

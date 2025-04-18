@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { InstancePolicy } from '~/types'
+import { useI18n } from 'vue-i18n'
 
 import useMarkdown from '~/composables/useMarkdown'
 
@@ -10,6 +11,8 @@ interface Events {
 interface Props {
   object: InstancePolicy
 }
+
+const { t } = useI18n()
 
 const emit = defineEmits<Events>()
 const props = defineProps<Props>()
@@ -25,18 +28,18 @@ const summary = useMarkdown(() => props.object.summary)
       <i class="user icon" />{{ object.actor }}  &nbsp;
       <template v-if="object.is_active">
         <i class="play icon" />
-        {{ $t('components.manage.moderation.InstancePolicyCard.status.enabled') }}
+        {{ t('components.manage.moderation.InstancePolicyCard.status.enabled') }}
       </template>
       <template v-if="!object.is_active">
         <i class="pause icon" />
-        {{ $t('components.manage.moderation.InstancePolicyCard.status.paused') }}
+        {{ t('components.manage.moderation.InstancePolicyCard.status.paused') }}
       </template>
     </p>
     <div>
-      <p><strong>{{ $t('components.manage.moderation.InstancePolicyCard.header.rule') }}</strong></p>
+      <p><strong>{{ t('components.manage.moderation.InstancePolicyCard.header.rule') }}</strong></p>
       <p v-if="object.block_all">
         <i class="ban icon" />
-        {{ $t('components.manage.moderation.InstancePolicyCard.label.blockAll') }}
+        {{ t('components.manage.moderation.InstancePolicyCard.label.blockAll') }}
       </p>
       <div
         v-else
@@ -48,7 +51,7 @@ const summary = useMarkdown(() => props.object.summary)
         >
           <i class="feed icon" />
           <div class="content">
-            {{ $t('components.manage.moderation.InstancePolicyCard.label.muteActivity') }}
+            {{ t('components.manage.moderation.InstancePolicyCard.label.muteActivity') }}
           </div>
         </div>
         <div
@@ -57,7 +60,7 @@ const summary = useMarkdown(() => props.object.summary)
         >
           <i class="bell icon" />
           <div class="content">
-            {{ $t('components.manage.moderation.InstancePolicyCard.label.muteNotifications') }}
+            {{ t('components.manage.moderation.InstancePolicyCard.label.muteNotifications') }}
           </div>
         </div>
         <div
@@ -66,14 +69,14 @@ const summary = useMarkdown(() => props.object.summary)
         >
           <i class="file icon" />
           <div class="content">
-            {{ $t('components.manage.moderation.InstancePolicyCard.label.rejectMedia') }}
+            {{ t('components.manage.moderation.InstancePolicyCard.label.rejectMedia') }}
           </div>
         </div>
       </div>
     </div>
     <div v-if="summary">
       <div class="ui hidden divider" />
-      <p><strong>{{ $t('components.manage.moderation.InstancePolicyCard.label.reason') }}</strong></p>
+      <p><strong>{{ t('components.manage.moderation.InstancePolicyCard.label.reason') }}</strong></p>
       <sanitized-html :html="summary" />
     </div>
     <div class="ui hidden divider" />
@@ -82,7 +85,7 @@ const summary = useMarkdown(() => props.object.summary)
       @click="emit('update')"
     >
       <i class="edit icon" />
-      {{ $t('components.manage.moderation.InstancePolicyCard.button.edit') }}
+      {{ t('components.manage.moderation.InstancePolicyCard.button.edit') }}
     </button>
   </div>
 </template>

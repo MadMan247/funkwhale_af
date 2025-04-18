@@ -4,6 +4,8 @@ import { useTimeoutFn } from '@vueuse/core'
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import Button from '~/components/ui/Button.vue'
+
 const { volume, mute } = usePlayer()
 const expanded = ref(false)
 
@@ -32,8 +34,10 @@ const scroll = (event: WheelEvent) => {
 </script>
 
 <template>
-  <button
-    class="circular control button"
+  <Button
+    round
+    ghost
+    square
     :class="['component-volume-control', {'expanded': expanded}]"
     @click.prevent.stop=""
     @mouseover="handleOver"
@@ -47,7 +51,7 @@ const scroll = (event: WheelEvent) => {
       :aria-label="labels.unmute"
       @click.prevent.stop="mute"
     >
-      <i class="volume off icon" />
+      <i class="bi bi-volume-mute-fill" />
     </span>
     <span
       v-else-if="volume < 0.5"
@@ -56,7 +60,7 @@ const scroll = (event: WheelEvent) => {
       :aria-label="labels.mute"
       @click.prevent.stop="mute"
     >
-      <i class="volume down icon" />
+      <i class="bi bi-volume-down-fill" />
     </span>
     <span
       v-else
@@ -65,7 +69,7 @@ const scroll = (event: WheelEvent) => {
       :aria-label="labels.mute"
       @click.prevent.stop="mute"
     >
-      <i class="volume up icon" />
+      <i class="bi bi-volume-up-fill" />
     </span>
     <div class="popup">
       <label
@@ -81,5 +85,5 @@ const scroll = (event: WheelEvent) => {
         max="1"
       >
     </div>
-  </button>
+  </Button>
 </template>

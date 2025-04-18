@@ -3,16 +3,20 @@ import type { BackendError } from '~/types'
 
 import axios from 'axios'
 
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import InstancePolicyForm from '~/components/manage/moderation/InstancePolicyForm.vue'
 import InstancePolicyCard from '~/components/manage/moderation/InstancePolicyCard.vue'
-import SemanticModal from '~/components/semantic/Modal.vue'
+import Modal from '~/components/ui/Modal.vue'
+import Button from '~/components/ui/Button.vue'
 
 interface Props {
   target: string
   type: 'domain' | 'actor'
 }
+
+const { t } = useI18n()
 
 const props = defineProps<Props>()
 
@@ -25,6 +29,11 @@ const result = ref()
 const obj = computed(() => result.value?.results[0] ?? null)
 
 const isLoading = ref(false)
+
+watch(show, (newValue) => {
+  if (newValue) fetchData()
+})
+
 const fetchData = async () => {
   const [username, domain] = props.target.split('@')
 
@@ -56,21 +65,18 @@ const fetchData = async () => {
 </script>
 
 <template>
-  <button
-    class="ui button"
+  <Button
     @click.prevent="show = !show"
   >
     <i class="shield icon" />&nbsp;
     <slot>
-      {{ $t('components.manage.moderation.InstancePolicyModal.button.show') }}
+      {{ t('components.manage.moderation.InstancePolicyModal.button.show') }}
     </slot>
-    <semantic-modal
-      v-model:show="show"
-      @show="fetchData"
+    <Modal
+      v-model="show"
+      :title="t('components.manage.moderation.InstancePolicyModal.modal.manage.header', {obj: target})"
+      :cancel="t('components.manage.moderation.InstancePolicyModal.button.close')"
     >
-      <h4 class="header">
-        {{ $t('components.manage.moderation.InstancePolicyModal.modal.manage.header', {obj: target}) }}
-      </h4>
       <div class="content">
         <div class="description">
           <div
@@ -84,7 +90,7 @@ const fetchData = async () => {
           >
             <header class="ui header">
               <h3>
-                {{ $t('components.manage.moderation.InstancePolicyModal.modal.manage.content.warning', {obj: target}) }}
+                {{ t('components.manage.moderation.InstancePolicyModal.modal.manage.content.warning', {obj: target}) }}
               </h3>
             </header>
           </instance-policy-card>
@@ -101,11 +107,6 @@ const fetchData = async () => {
         <div class="ui hidden divider" />
         <div class="ui hidden divider" />
       </div>
-      <div class="actions">
-        <button class="ui deny button">
-          {{ $t('components.manage.moderation.InstancePolicyModal.button.close') }}
-        </button>
-      </div>
-    </semantic-modal>
-  </button>
+    </Modal>
+  </Button>
 </template>

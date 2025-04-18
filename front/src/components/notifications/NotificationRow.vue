@@ -1,11 +1,18 @@
 <script setup lang="ts">
-import type { Notification, LibraryFollow, UserFollow } from '~/types'
+import type { Notification, LibraryFollow } from '~/types'
+import type { components } from '~/generated/types'
+import type { RouteLocationRaw } from 'vue-router'
 
 import { computed, ref, watchEffect, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useStore } from '~/store'
 
 import axios from 'axios'
+
+import Alert from '~/components/ui/Alert.vue'
+import Button from '~/components/ui/Button.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Spacer from '~/components/ui/Spacer.vue'
 
 interface Props {
   initialItem: Notification
@@ -64,22 +71,26 @@ const notificationData = computed(() => {
       }
     }
     if (activity.object && activity.object.type === 'federation.Actor') {
-      const userFollow = activity.related_object as UserFollow
+      // TODO: Correctly type `activity` instead of coercing the field:
+      const userFollow = activity.related_object as components["schemas"]["Follow"]
       const detailUrl = { name: 'profile.full', params: { username: activity.actor.preferred_username, domain: activity.actor.domain } }
 
       if (activity.related_object?.approved === null) {
         return {
           detailUrl,
-          message: t('components.notifications.NotificationRow.message.userPendingFollow', { username: username.value, user: activity.object.target?.full_username }),
+          message: t('components.notifications.NotificationRow.message.userPendingFollow', { username: username.value,
+            // TODO: This is just wrong. Start with fixing the types upstream.
+            // @ts-expect-error `activity.object needs to have a type. Where is it declared?
+            user: activity.object.target?.full_username }),
           acceptFollow: {
             buttonClass: 'success',
-            icon: 'check',
+            icon: 'bi-check',
             label: t('components.notifications.NotificationRow.button.approve'),
             handler: () => approveUserFollow(userFollow)
           },
           rejectFollow: {
             buttonClass: 'danger',
-            icon: 'x',
+            icon: 'bi-x',
             label: t('components.notifications.NotificationRow.button.reject'),
             handler: () => rejectUserFollow(userFollow)
           }
@@ -132,43 +143,63 @@ const handleAction = (handler?: () => void) => {
 
 const approveLibraryFollow = async (follow: LibraryFollow) => {
   await axios.post(`federation/follows/library/${follow.uuid}/accept/`)
+  // TODO: This is not how Axios works. You have to send a request with
+  // the correct type as a parameter.
+  // @ts-expect-error Post this with the axios payload: { ...follow, approved: true}
   follow.approved = true
   item.value.is_read = true
 }
 
 const rejectLibraryFollow = async (follow: LibraryFollow) => {
   await axios.post(`federation/follows/library/${follow.uuid}/reject/`)
+  // TODO: This is not how Axios works. You have to send a request with
+  // the correct type as a parameter.
+  // @ts-expect-error Post this with the axios payload: { ...follow, approved: false}
   follow.approved = false
   item.value.is_read = true
 }
 
-const approveUserFollow = async (follow: UserFollow) => {
+const approveUserFollow = async (follow: components["schemas"]["Follow"]) => {
   await axios.post(`federation/follows/user/${follow.uuid}/accept/`)
+  // TODO: This is not how Axios works. You have to send a request with
+  // the correct type as a parameter.
+  // @ts-expect-error Post this with the axios payload: { ...follow, approved: true}
   follow.approved = true
   item.value.is_read = true
 }
 
-const rejectUserFollow = async (follow: UserFollow) => {
+const rejectUserFollow = async (follow: components["schemas"]["Follow"]) => {
   await axios.post(`federation/follows/user/${follow.uuid}/reject/`)
+
+  // TODO: This is not how Axios works. You have to send a request with
+  // the correct type as a parameter.
+  // @ts-expect-error Post this with the axios payload: { ...follow, approved: false}
   follow.approved = false
   item.value.is_read = true
 }
 </script>
 
 <template>
-  <tr :class="[{'disabled-row': item.is_read}]">
-    <td>
+  <Alert
+    :class="[{'disabled-row': item.is_read}]"
+    :green="item.is_read"
+    :yellow="!item.is_read"
+  >
+    <Layout
+      flex
+      gap-8
+    >
       <actor-link
         class="user"
         :actor="item.activity.actor"
       />
-    </td>
-    <td>
+      <!-- TODO: Make sure `notificationData.detailUrl` has a type that satisfies `RouteLocationRaw` -->
+      <!-- @vue-ignore -->
       <router-link
         v-if="notificationData.detailUrl"
         v-slot="{ navigate }"
         custom
-        :to="notificationData.detailUrl"
+        :to="notificationData.detailUrl as RouteLocationRaw"
       >
         <sanitized-html
           tag="span"
@@ -182,52 +213,53 @@ const rejectUserFollow = async (follow: UserFollow) => {
         v-else
         :html="notificationData.message"
       />
-      <template v-if="notificationData.acceptFollow">
-&nbsp;
-        <button
-          :class="['ui', 'basic', 'tiny', notificationData.acceptFollow.buttonClass || '', 'button']"
-          @click="handleAction(notificationData.acceptFollow?.handler)"
-        >
-          <i
-            v-if="notificationData.acceptFollow.icon"
-            :class="[notificationData.acceptFollow.icon, 'icon']"
-          />
-          {{ notificationData.acceptFollow.label }}
-        </button>
-        <button
-          :class="['ui', 'basic', 'tiny', notificationData.rejectFollow.buttonClass || '', 'button']"
-          @click="handleAction(notificationData.rejectFollow?.handler)"
-        >
-          <i
-            v-if="notificationData.rejectFollow.icon"
-            :class="[notificationData.rejectFollow.icon, 'icon']"
-          />
-          {{ notificationData.rejectFollow.label }}
-        </button>
-      </template>
-    </td>
-    <td><human-date :date="item.activity.creation_date" /></td>
-    <td class="read collapsing">
-      <a
+      <Spacer grow />
+      <human-date :date="item.activity.creation_date" />
+      <Button
         v-if="item.is_read"
         href=""
         :aria-label="labels.markUnread"
         class="discrete link"
         :title="labels.markUnread"
+        icon="bi-arrow-clockwise"
+        yellow
+        square-small
         @click.prevent="read = false"
-      >
-        <i class="redo icon" />
-      </a>
-      <a
+      />
+      <Button
         v-else
         href=""
         :aria-label="labels.markRead"
         class="discrete link"
         :title="labels.markRead"
+        icon="bi-check"
+        green
+        square-small
         @click.prevent="read = true"
+      />
+    </Layout>
+    <Spacer />
+    <template
+      v-if="notificationData.acceptFollow"
+      #actions
+    >
+&nbsp;
+      <Button
+        :class="['ui', 'basic', 'tiny', notificationData.acceptFollow.buttonClass || '', 'button']"
+        :icon="notificationData.acceptFollow.icon"
+        green
+        @click="handleAction(notificationData.acceptFollow?.handler)"
       >
-        <i class="check icon" />
-      </a>
-    </td>
-  </tr>
+        {{ notificationData.acceptFollow.label }}
+      </Button>
+      <Button
+        :class="['ui', 'basic', 'tiny', notificationData.rejectFollow.buttonClass || '', 'button']"
+        :icon="notificationData.rejectFollow.icon"
+        red
+        @click="handleAction(notificationData.rejectFollow?.handler)"
+      >
+        {{ notificationData.rejectFollow.label }}
+      </Button>
+    </template>
+  </Alert>
 </template>

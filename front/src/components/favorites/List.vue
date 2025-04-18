@@ -10,11 +10,16 @@ import { sortedUniq } from 'lodash-es'
 import { useStore } from '~/store'
 
 import axios from 'axios'
-import $ from 'jquery'
 
 import TrackTable from '~/components/audio/track/Table.vue'
 import RadioButton from '~/components/radios/Button.vue'
-import Pagination from '~/components/vui/Pagination.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Header from '~/components/ui/Header.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Link from '~/components/ui/Link.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Pagination from '~/components/ui/Pagination.vue'
+import Loader from '~/components/ui/Loader.vue'
 
 import useSharedLabels from '~/composables/locale/useSharedLabels'
 import useOrdering from '~/composables/navigation/useOrdering'
@@ -58,15 +63,15 @@ const fetchFavorites = async () => {
   isLoading.value = true
 
   const params = {
-    favorites: 'true',
     page: page.value,
     page_size: paginateBy.value,
-    ordering: orderingString.value
+    ordering: orderingString.value,
+    scope: store.state.auth.fullUsername
   }
 
   const measureLoading = logger.time('Loading user favorites')
   try {
-    const response = await axios.get('tracks/', { params })
+    const response = await axios.get('favorites/tracks/', { params })
 
     results.length = 0
     results.push(...response.data.results)
@@ -86,15 +91,19 @@ const fetchFavorites = async () => {
   }
 }
 
-watch(page, fetchFavorites)
-fetchFavorites()
+onMounted(() => {
+  fetchFavorites()
+})
+
+watch([() => paginateBy, page],
+  () => fetchFavorites(),
+  { deep: true }
+)
 
 onOrderingUpdate(() => {
   page.value = 1
   fetchFavorites()
 })
-
-onMounted(() => $('.ui.dropdown').dropdown())
 
 const { t } = useI18n()
 const labels = computed(() => ({
@@ -105,119 +114,140 @@ const paginateOptions = computed(() => sortedUniq([12, 25, 50, paginateBy.value]
 </script>
 
 <template>
-  <main
+  <Layout
     v-title="labels.title"
-    class="main pusher"
+    main
+    stack
+    no-gap
+    align-left
   >
-    <section class="ui vertical center aligned stripe segment">
-      <div :class="['ui', { 'active': isLoading }, 'inverted', 'dimmer']">
-        <div class="ui text loader">
-          {{ $t('components.favorites.List.loader.loading') }}
-        </div>
-      </div>
-      <h2
-        v-if="results"
-        class="ui center aligned icon header"
-      >
-        <i class="circular inverted heart pink icon" />
-        {{ $t('components.favorites.List.header.favorites', $store.state.favorites.count) }}
-      </h2>
-      <radio-button
-        v-if="$store.state.favorites.count > 0"
-        type="favorites"
-      />
-    </section>
-    <section
-      v-if="$store.state.favorites.count > 0"
-      class="ui vertical stripe segment"
+    <Header
+      page-heading
+      :h1="labels.title"
     >
-      <div :class="['ui', { 'loading': isLoading }, 'form']">
-        <div class="fields">
-          <div class="field">
-            <label for="favorites-ordering">
-              {{ $t('components.favorites.List.ordering.label') }}
-            </label>
-            <select
-              id="favorites-ordering"
-              v-model="ordering"
-              class="ui dropdown"
+      <template #action>
+        <RadioButton
+          v-if="store.state.favorites.count > 0"
+          type="favorites"
+        />
+      </template>
+    </Header>
+
+    <Loader v-if="isLoading" />
+    <Layout
+      v-if="store.state.favorites.count > 0"
+      form
+      stack
+      :class="['ui', { 'loading': isLoading }, 'form']"
+    >
+      <Spacer :size="16" />
+      <Layout
+        flex
+        style="justify-content: flex-end;"
+      >
+        <Layout
+          stack
+          no-gap
+          label
+          for="favorites-ordering"
+        >
+          <span class="label">
+            {{ t('components.favorites.List.ordering.label') }}
+          </span>
+          <select
+            id="favorites-ordering"
+            v-model="ordering"
+            class="dropdown"
+          >
+            <option
+              v-for="option in orderingOptions"
+              :key="option[0]"
+              :value="option[0]"
             >
-              <option
-                v-for="option in orderingOptions"
-                :key="option[0]"
-                :value="option[0]"
-              >
-                {{ sharedLabels.filters[option[1]] }}
-              </option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="favorites-ordering-direction">
-              {{ $t('components.favorites.List.ordering.direction.label') }}
-            </label>
-            <select
-              id="favorites-ordering-direction"
-              v-model="orderingDirection"
-              class="ui dropdown"
+              {{ sharedLabels.filters[option[1]] }}
+            </option>
+          </select>
+        </Layout>
+        <Layout
+          stack
+          no-gap
+          label
+          for="favorites-ordering-direction"
+        >
+          <span class="label">
+            {{ t('components.favorites.List.ordering.direction.label') }}
+          </span>
+          <select
+            id="favorites-ordering-direction"
+            v-model="orderingDirection"
+            class="dropdown"
+          >
+            <option value="+">
+              {{ t('components.favorites.List.ordering.direction.ascending') }}
+            </option>
+            <option value="-">
+              {{ t('components.favorites.List.ordering.direction.descending') }}
+            </option>
+          </select>
+        </Layout>
+        <Layout
+          stack
+          no-gap
+          label
+          for="favorites-results"
+        >
+          <span class="label">
+            {{ t('components.favorites.List.pagination.results') }}
+          </span>
+          <select
+            id="favorites-results"
+            v-model="paginateBy"
+            class="dropdown"
+          >
+            <option
+              v-for="opt in paginateOptions"
+              :key="opt"
+              :value="opt"
             >
-              <option value="+">
-                {{ $t('components.favorites.List.ordering.direction.ascending') }}
-              </option>
-              <option value="-">
-                {{ $t('components.favorites.List.ordering.direction.descending') }}
-              </option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="favorites-results">
-              {{ $t('components.favorites.List.pagination.results') }}
-            </label>
-            <select
-              id="favorites-results"
-              v-model="paginateBy"
-              class="ui dropdown"
-            >
-              <option
-                v-for="opt in paginateOptions"
-                :key="opt"
-                :value="opt"
-              >
-                {{ opt }}
-              </option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <track-table
+              {{ opt }}
+            </option>
+          </select>
+        </Layout>
+      </Layout>
+      <Pagination
+        v-if="page && results && count > paginateBy"
+        v-model:page="page"
+        :pages="Math.ceil((count || 0) / paginateBy)"
+        style="grid-column: 1 / -1;"
+      />
+      <TrackTable
         v-if="results"
+        :search="true"
         :show-artist="true"
         :show-album="true"
         :tracks="results"
       />
-      <div class="ui center aligned basic segment">
-        <pagination
-          v-if="results && count > paginateBy"
-          v-model:current="page"
-          :paginate-by="paginateBy"
-          :total="count"
-        />
-      </div>
-    </section>
-    <div
-      v-else
-      class="ui placeholder segment"
+    </Layout>
+    <Alert
+      v-else-if="!isLoading"
+      blue
+      align-items="center"
     >
-      <div class="ui icon header">
-        <i class="broken heart icon" />
-        {{ $t('components.favorites.List.empty.noFavorites') }}
-      </div>
-      <router-link
-        :to="'/library'"
-        class="ui success labeled icon button"
+      <i
+        class="bi bi-heartbreak-fill"
+        style="font-size: 100px;"
+      />
+      <Spacer />
+      {{ t('components.favorites.List.empty.noFavorites') }}
+      <Spacer :size="32" />
+      <Link
+        to="/library"
+        solid
+        primary
+        icon="bi-headphones"
       >
-        <i class="headphones icon" />
-        {{ $t('components.favorites.List.link.library') }}
-      </router-link>
-    </div>
-  </main>
+        {{ t('components.favorites.List.link.library') }}
+      </Link>
+    </Alert>
+  </Layout>
 </template>

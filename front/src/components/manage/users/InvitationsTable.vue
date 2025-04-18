@@ -11,7 +11,11 @@ import moment from 'moment'
 import axios from 'axios'
 
 import ActionTable from '~/components/common/ActionTable.vue'
-import Pagination from '~/components/vui/Pagination.vue'
+import Pagination from '~/components/ui/Pagination.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Input from '~/components/ui/Input.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Loader from '~/components/ui/Loader.vue'
 
 import useSharedLabels from '~/composables/locale/useSharedLabels'
 import useOrdering from '~/composables/navigation/useOrdering'
@@ -100,141 +104,140 @@ const labels = computed(() => ({
 </script>
 
 <template>
-  <div>
-    <div class="ui inline form">
-      <div class="fields">
-        <div class="ui field">
-          <label for="invitations-search">{{ $t('components.manage.users.InvitationsTable.label.search') }}</label>
-          <input
-            id="invitations-search"
-            v-model="query"
-            name="search"
-            type="text"
-            :placeholder="labels.searchPlaceholder"
-          >
-        </div>
-        <div class="field">
-          <label for="invitations-ordering">{{ $t('components.manage.users.InvitationsTable.ordering.label') }}</label>
-          <select
-            id="invitations-ordering"
-            v-model="ordering"
-            class="ui dropdown"
-          >
-            <option
-              v-for="(option, key) in orderingOptions"
-              :key="key"
-              :value="option[0]"
-            >
-              {{ sharedLabels.filters[option[1]] }}
-            </option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="invitations-status">{{ $t('components.manage.users.InvitationsTable.label.status') }}</label>
-          <select
-            id="invitations-status"
-            v-model="isOpen"
-            class="ui dropdown"
-          >
-            <option :value="null">
-              {{ $t('components.manage.users.InvitationsTable.option.all') }}
-            </option>
-            <option :value="true">
-              {{ $t('components.manage.users.InvitationsTable.option.open') }}
-            </option>
-            <option :value="false">
-              {{ $t('components.manage.users.InvitationsTable.option.expired') }}
-            </option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="dimmable">
-      <div
-        v-if="isLoading"
-        class="ui active inverted dimmer"
-      >
-        <div class="ui loader" />
-      </div>
-      <action-table
-        v-if="result"
-        :objects-data="result"
-        :actions="actions"
-        :action-url="'manage/users/invitations/action/'"
-        :filters="actionFilters"
-        @action-launched="fetchData"
-      >
-        <template #header-cells>
-          <th>
-            {{ $t('components.manage.users.InvitationsTable.table.invitation.header.owner') }}
-          </th>
-          <th>
-            {{ $t('components.manage.users.InvitationsTable.table.invitation.header.user') }}
-          </th>
-          <th>
-            {{ $t('components.manage.users.InvitationsTable.table.invitation.header.status') }}
-          </th>
-          <th>
-            {{ $t('components.manage.users.InvitationsTable.table.invitation.header.creationDate') }}
-          </th>
-          <th>
-            {{ $t('components.manage.users.InvitationsTable.table.invitation.header.expirationDate') }}
-          </th>
-          <th>
-            {{ $t('components.manage.users.InvitationsTable.table.invitation.header.code') }}
-          </th>
-        </template>
-        <template
-          #row-cells="scope"
-        >
-          <td>
-            <router-link :to="{name: 'manage.moderation.accounts.detail', params: {id: scope.obj.id }}">
-              {{ scope.obj.owner.username }}
-            </router-link>
-          </td>
-          <td>
-            <span v-if="scope.obj.invited_user">
-              {{ scope.obj.invited_user.username }}
-            </span>
-          </td>
-          <td>
-            <span
-              v-if="scope.obj.users.length > 0"
-              class="ui success basic label"
-            >{{ $t('components.manage.users.InvitationsTable.label.used') }}</span>
-            <span
-              v-else-if="moment().isAfter(scope.obj.expiration_date)"
-              class="ui danger basic label"
-            >{{ $t('components.manage.users.InvitationsTable.label.expired') }}</span>
-            <span
-              v-else
-              class="ui basic label"
-            >{{ $t('components.manage.users.InvitationsTable.label.unused') }}</span>
-          </td>
-          <td>
-            <human-date :date="scope.obj.creation_date" />
-          </td>
-          <td>
-            <human-date :date="scope.obj.expiration_date" />
-          </td>
-          <td>
-            {{ scope.obj.code.toUpperCase() }}
-          </td>
-        </template>
-      </action-table>
-    </div>
-    <div>
-      <pagination
-        v-if="result && result.count > paginateBy"
-        v-model:current="page"
-        :compact="true"
-        :paginate-by="paginateBy"
-        :total="result.count"
+  <Layout
+    form
+    class="ui inline form"
+  >
+    <div class="ui field">
+      <label for="invitations-search">{{ t('components.manage.users.InvitationsTable.label.search') }}</label>
+      <Input
+        id="invitations-search"
+        v-model="query"
+        search
+        name="search"
+        type="text"
+        :placeholder="labels.searchPlaceholder"
       />
-
-      <span v-if="result && result.results.length > 0">
-        {{ $t('components.manage.users.InvitationsTable.pagination.results', { start: ((page-1) * paginateBy) + 1, end: ((page-1) * paginateBy) + result.results.length, total: result.count }, result.results.length) }}
-      </span>
     </div>
+    <Layout flex>
+      <Spacer grow />
+      <div class="field">
+        <label for="invitations-ordering">{{ t('components.manage.users.InvitationsTable.ordering.label') }}</label>
+        <select
+          id="invitations-ordering"
+          v-model="ordering"
+          class="ui dropdown"
+        >
+          <option
+            v-for="(option, key) in orderingOptions"
+            :key="key"
+            :value="option[0]"
+          >
+            {{ sharedLabels.filters[option[1]] }}
+          </option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="invitations-status">{{ t('components.manage.users.InvitationsTable.label.status') }}</label>
+        <select
+          id="invitations-status"
+          v-model="isOpen"
+          class="ui dropdown"
+        >
+          <option :value="null">
+            {{ t('components.manage.users.InvitationsTable.option.all') }}
+          </option>
+          <option :value="true">
+            {{ t('components.manage.users.InvitationsTable.option.open') }}
+          </option>
+          <option :value="false">
+            {{ t('components.manage.users.InvitationsTable.option.expired') }}
+          </option>
+        </select>
+      </div>
+    </Layout>
+  </Layout>
+  <div class="dimmable">
+    <Loader
+      v-if="isLoading"
+    />
+    <action-table
+      v-if="result"
+      :objects-data="result"
+      :actions="actions"
+      :action-url="'manage/users/invitations/action/'"
+      :filters="actionFilters"
+      @action-launched="fetchData"
+    >
+      <template #header-cells>
+        <th>
+          {{ t('components.manage.users.InvitationsTable.table.invitation.header.owner') }}
+        </th>
+        <th>
+          {{ t('components.manage.users.InvitationsTable.table.invitation.header.user') }}
+        </th>
+        <th>
+          {{ t('components.manage.users.InvitationsTable.table.invitation.header.status') }}
+        </th>
+        <th>
+          {{ t('components.manage.users.InvitationsTable.table.invitation.header.creationDate') }}
+        </th>
+        <th>
+          {{ t('components.manage.users.InvitationsTable.table.invitation.header.expirationDate') }}
+        </th>
+        <th>
+          {{ t('components.manage.users.InvitationsTable.table.invitation.header.code') }}
+        </th>
+      </template>
+      <template
+        #row-cells="scope"
+      >
+        <td>
+          <router-link :to="{name: 'manage.moderation.accounts.detail', params: {id: scope.obj.id }}">
+            {{ scope.obj.owner.username }}
+          </router-link>
+        </td>
+        <td>
+          <span v-if="scope.obj.invited_user">
+            {{ scope.obj.invited_user.username }}
+          </span>
+        </td>
+        <td>
+          <span
+            v-if="scope.obj.users.length > 0"
+            class="ui success basic label"
+          >{{ t('components.manage.users.InvitationsTable.label.used') }}</span>
+          <span
+            v-else-if="moment().isAfter(scope.obj.expiration_date)"
+            class="ui danger basic label"
+          >{{ t('components.manage.users.InvitationsTable.label.expired') }}</span>
+          <span
+            v-else
+            class="ui basic label"
+          >{{ t('components.manage.users.InvitationsTable.label.unused') }}</span>
+        </td>
+        <td>
+          <human-date :date="scope.obj.creation_date" />
+        </td>
+        <td>
+          <human-date :date="scope.obj.expiration_date" />
+        </td>
+        <td>
+          {{ scope.obj.code.toUpperCase() }}
+        </td>
+      </template>
+    </action-table>
+  </div>
+  <div>
+    <Pagination
+      v-if="page && result && result.count > paginateBy"
+      v-model:page="page"
+      v-model:pages="result.count"
+      :paginate-by="paginateBy"
+    />
+
+    <span v-if="page && result && result.results.length > 0">
+      {{ t('components.manage.users.InvitationsTable.pagination.results', { start: ((page-1) * paginateBy) + 1, end: ((page-1) * paginateBy) + result.results.length, total: result.count }, result.results.length) }}
+    </span>
   </div>
 </template>

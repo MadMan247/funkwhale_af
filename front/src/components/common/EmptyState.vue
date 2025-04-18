@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
+import Button from '~/components/ui/Button.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+
 interface Events {
   (e: 'refresh'): void
 }
@@ -7,6 +13,8 @@ interface Props {
   refresh?: boolean
 }
 
+const { t } = useI18n()
+
 const emit = defineEmits<Events>()
 withDefaults(defineProps<Props>(), {
   refresh: false
@@ -14,24 +22,28 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <div class="ui small placeholder segment component-placeholder component-empty-state">
+  <Alert
+    blue
+    align-items="center"
+  >
     <h4 class="ui header">
       <div class="content">
         <slot name="title">
-          <i class="search icon" />
-          {{ $t('components.common.EmptyState.header.noResults') }}
+          <i class="bi bi-search" />
+          {{ t('components.common.EmptyState.header.noResults') }}
         </slot>
       </div>
     </h4>
     <div class="inline center aligned text">
       <slot />
-      <button
+      <Spacer :size="16" />
+      <Button
         v-if="refresh"
-        class="ui button"
+        primary
         @click="emit('refresh')"
       >
-        {{ $t('components.common.EmptyState.button.refresh') }}
-      </button>
+        {{ t('components.common.EmptyState.button.refresh') }}
+      </Button>
     </div>
-  </div>
+  </Alert>
 </template>

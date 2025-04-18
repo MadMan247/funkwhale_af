@@ -1,0 +1,67 @@
+.funkwhale {
+  &.card.radio-card {
+    background: var(--fw-bg-color);
+
+    .radio-description {
+      background: var(--fw-bg-color);
+      color: var(--fw-text-color);
+    }
+
+    @include light-theme {
+      --fw-bg-color: var(--fw-pastel-3);
+      --fw-text-color: var(--fw-gray-100);
+
+      .radio-description {
+        --fw-bg-color: var(--fw-pastel-1);
+        --fw-text-color: var(--fw-gray-900);
+      }
+    }
+
+    @include dark-theme {
+      --fw-bg-color: var(--fw-pastel-4);
+      --fw-text-color: var(--fw-gray-100);
+
+      .radio-description {
+        --fw-bg-color: var(--fw-pastel-1);
+        --fw-text-color: var(--fw-gray-900);
+      }
+    }
+    --fw-border-radius: 12px;
+    --fw-card-width: 208px;
+    --fw-card-image-width: var(--fw-card-width);
+    --fw-card-padding: 0;
+
+    text-align: left !important;
+
+    > .card-title {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 16px 16px 0 !important;
+      font-size: 2rem;
+      white-space: initial;
+    }
+
+    .cover-name {
+      position: absolute;
+      top: calc(var(--fw-card-width) - 16px);
+      right: 16px;
+      left: 16px;
+      transform: translateY(-100%);
+
+      font-size: 1.5rem;
+      font-weight: 300;
+    }
+
+    > .card-content {
+      padding-top: 0 !important;
+    }
+
+    .radio-description {
+      text-align: center;
+      font-size: 0.875rem;
+      padding: 16px 16px 22px;
+    }
+  }
+}

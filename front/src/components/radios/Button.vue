@@ -5,12 +5,15 @@ import { useI18n } from 'vue-i18n'
 import { useStore } from '~/store'
 import { computed } from 'vue'
 
+import Button from '~/components/ui/Button.vue'
+
 interface Props {
   customRadioId?: number | null
   type?: string
   clientOnly?: boolean
   objectId?: ObjectId | number | string | null
   radioConfig?: RadioConfig | null
+  playOnly?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -18,7 +21,8 @@ const props = withDefaults(defineProps<Props>(), {
   type: '',
   clientOnly: false,
   objectId: null,
-  radioConfig: null
+  radioConfig: null,
+  playOnly: false
 })
 
 const store = useStore()
@@ -68,20 +72,24 @@ const toggleRadio = () => {
     objectId: props.objectId,
     customRadioId: props.customRadioId,
     clientOnly: props.clientOnly,
-    config: props.radioConfig
+    config: props.radioConfig,
+    playOnly: props.playOnly
   })
 }
 </script>
 
 <template>
-  <button
-    :class="['ui', 'primary', {'inverted': running}, 'icon', 'labeled', 'button']"
+  <Button
+    :is-active="running"
+    primary
+    :round="playOnly"
+    class="play-button"
+    icon="bi-play-fill"
+    :square="store.state.auth.authenticated && type === 'custom'"
     @click="toggleRadio"
   >
-    <i
-      class="ui feed icon"
-      role="button"
-    />
-    {{ buttonLabel }}
-  </button>
+    <div v-if="!playOnly">
+      {{ buttonLabel }}
+    </div>
+  </Button>
 </template>

@@ -9,6 +9,14 @@ import axios from 'axios'
 
 import DomainsTable from '~/components/manage/moderation/DomainsTable.vue'
 
+import Layout from '~/components/ui/Layout.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Header from '~/components/ui/Header.vue'
+import Toggle from '~/components/ui/Toggle.vue'
+import Button from '~/components/ui/Button.vue'
+import Input from '~/components/ui/Input.vue'
+import Alert from '~/components/ui/Alert.vue'
+
 interface Props {
   allowListEnabled: boolean
 }
@@ -48,66 +56,62 @@ const createDomain = async () => {
 
 <template>
   <main v-title="labels.domains">
-    <section class="ui vertical stripe segment">
-      <h2 class="ui left floated header">
-        {{ $t('views.admin.moderation.DomainsList.header.domains') }}
-      </h2>
-      <form
-        class="ui right floated form"
-        @submit.prevent="createDomain"
+    <Layout
+      form
+      @submit.prevent="createDomain"
+    >
+      <Header
+        page-heading
+        :h1="t('views.admin.moderation.DomainsList.header.domains')"
+      />
+      <Alert
+        v-if="errors && errors.length > 0"
+        red
       >
-        <div
-          v-if="errors && errors.length > 0"
-          role="alert"
-          class="ui negative message"
-        >
-          <h4 class="header">
-            {{ $t('views.admin.moderation.DomainsList.header.failure') }}
-          </h4>
-          <ul class="list">
-            <li
-              v-for="(error, key) in errors"
-              :key="key"
-            >
-              {{ error }}
-            </li>
-          </ul>
-        </div>
-        <div class="inline fields">
-          <div class="field">
-            <label for="add-domain">{{ $t('views.admin.moderation.DomainsList.label.addDomain') }}</label>
-            <input
-              id="add-domain"
-              v-model="domainName"
-              type="text"
-              name="domain"
-            >
-          </div>
-          <div
-            v-if="allowListEnabled"
-            class="field"
+        <h4 class="header">
+          {{ t('views.admin.moderation.DomainsList.header.failure') }}
+        </h4>
+        <ul class="list">
+          <li
+            v-for="(error, key) in errors"
+            :key="key"
           >
-            <input
-              id="allowed"
-              v-model="domainAllowed"
-              type="checkbox"
-              name="allowed"
-            >
-            <label for="allowed">{{ $t('views.admin.moderation.DomainsList.label.addToAllowList') }}</label>
-          </div>
-          <div class="field">
-            <button
-              :class="['ui', {'loading': isCreating}, 'success', 'button']"
+            {{ error }}
+          </li>
+        </ul>
+      </Alert>
+      <div class="field">
+        <Input
+          id="add-domain"
+          v-model="domainName"
+          type="text"
+          name="domain"
+          :label="t('views.admin.moderation.DomainsList.label.addDomain')"
+        >
+          <template #input-right>
+            <Button
+              primary
+              :class="[{'loading': isCreating}, 'success']"
               type="submit"
               :disabled="isCreating"
             >
-              {{ $t('views.admin.moderation.DomainsList.button.add') }}
-            </button>
-          </div>
+              {{ t('views.admin.moderation.DomainsList.button.add') }}
+            </Button>
+          </template>
+        </Input>
+        <div
+          v-if="allowListEnabled"
+        >
+          <Toggle
+            id="allowed"
+            v-model="domainAllowed"
+            name="allowed"
+            :label="t('views.admin.moderation.DomainsList.label.addToAllowList')"
+          />
         </div>
-      </form>
-      <div class="ui clearing hidden divider" />
-      <domains-table :allow-list-enabled="allowListEnabled" />
-    </section>
+      </div>
+    </Layout>
+    <Spacer />
+    <domains-table :allow-list-enabled="allowListEnabled" />
   </main>
 </template>

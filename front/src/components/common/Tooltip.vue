@@ -18,7 +18,7 @@ withDefaults(defineProps<Props>(), {
     class="tooltip"
   >
     <slot>
-      <i class="question circle icon" />
+      <i class="bi bi-question-circle" />
     </slot>
   </component>
   <slot v-else />

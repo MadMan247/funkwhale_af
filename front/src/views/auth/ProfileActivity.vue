@@ -1,62 +1,74 @@
 <script setup lang="ts">
 import type { Actor } from '~/types'
 
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useStore } from '~/store'
 
 import PlaylistWidget from '~/components/playlists/Widget.vue'
 import TrackWidget from '~/components/audio/track/Widget.vue'
+import AlbumWidget from '~/components/album/Widget.vue'
 import RadioButton from '~/components/radios/Button.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Header from '~/components/ui/Header.vue'
 
 interface Props {
-  object: Actor
+  object?: Actor
 }
 
 defineProps<Props>()
 
 const recentActivity = ref(0)
+
+const store = useStore()
+const qualityFilters = computed(() => store.getters['instance/qualityFilters'])
+
+const { t } = useI18n()
 </script>
 
 <template>
-  <section>
-    <div>
-      <radio-button
-        v-if="recentActivity > 0"
-        class="right floated"
-        type="account"
-        :object-id="{username: object.preferred_username, fullUsername: object.full_username}"
-        :client-only="true"
-      />
-      <h2 class="ui header">
-        {{ $t('views.auth.ProfileActivity.header.recentlyListened') }}
-      </h2>
-      <div class="ui divider" />
-      <track-widget
-        :url="'history/listenings/'"
-        :filters="{scope: `actor:${object.full_username}`, ordering: '-creation_date'}"
-        @count="recentActivity = $event"
-      />
-    </div>
-    <div class="ui hidden divider" />
-    <div>
-      <h2 class="ui header">
-        {{ $t('views.auth.ProfileActivity.header.recentlyFavorited') }}
-      </h2>
-      <div class="ui divider" />
-      <track-widget
-        :url="'favorites/tracks/'"
-        :filters="{scope: `actor:${object.full_username}`, ordering: '-creation_date'}"
-      />
-    </div>
-    <div class="ui hidden divider" />
-    <div>
-      <h2 class="ui header">
-        {{ $t('views.auth.ProfileActivity.header.playlists') }}
-      </h2>
-      <div class="ui divider" />
-      <playlist-widget
-        :url="'playlists/'"
-        :filters="{scope: `actor:${object.full_username}`, playable: true, ordering: '-modification_date'}"
-      />
-    </div>
-  </section>
+  <Layout
+    stack
+  >
+    <Header
+      :h1="t('views.auth.ProfileBase.link.overview')"
+      page-heading
+    >
+      <template #action>
+        <radio-button
+          v-if="recentActivity > 0 && typeof object?.preferred_username === 'string' && typeof object?.full_username === 'string'"
+          class="right floated"
+          type="account"
+          :object-id="{ username: object?.preferred_username, fullUsername: object?.full_username }"
+          :client-only="true"
+        />
+      </template>
+    </Header>
+
+    <track-widget
+      :url="'history/listenings/'"
+      :filters="{ username: object?.preferred_username, domain: object?.domain, ordering: '-creation_date', playable: true, ...qualityFilters}"
+      :websocket-handlers="['Listen']"
+      :title="t('components.library.Home.header.recentlyListened')"
+      @count="recentActivity = $event"
+    />
+    <Spacer :size="64" />
+    <track-widget
+      :url="'favorites/tracks/'"
+      :filters="{ username: object?.preferred_username ?? '', domain: object?.domain ?? '', playable: true, ordering: '-creation_date'}"
+      :title="t('components.library.Home.header.recentlyFavorited')"
+    />
+    <Spacer />
+    <playlist-widget
+      :url="'playlists/'"
+      :filters="{ username: object?.preferred_username, domain: object?.domain, playable: true, ordering: '-modification_date'}"
+      :title="t('views.auth.ProfileActivity.header.playlists')"
+    />
+    <Spacer />
+    <album-widget
+      :filters="{ username: object?.preferred_username, domain: object?.domain, playable: true, ordering: '-creation_date', ...qualityFilters}"
+      :title="t('components.library.Home.header.recentlyAdded')"
+    />
+  </Layout>
 </template>

@@ -1,0 +1,79 @@
+// Links
+%link,
+.funkwhale.link {
+  @include light-theme {
+    --fw-link-color: var(--fw-blue-400);
+    --fw-link-hover-color: var(--fw-blue-500);
+
+    &.is-secondary {
+      --fw-link-color: var(--fw-gray-600);
+      --fw-link-hover-color: var(--fw-gray-700);
+    }
+  }
+
+  @include dark-theme {
+    --fw-link-color: var(--fw-gray-300);
+    --fw-link-hover-color: var(--fw-gray-400);
+
+    &.is-secondary {
+      --fw-link-color: var(--fw-gray-500);
+      --fw-link-hover-color: var(--fw-gray-600);
+    }
+  }
+
+  // &:not(.is-raw) {
+  //   color: var(--link-color);
+  //   cursor: pointer;
+  //   text-decoration: underline;
+
+  //   &:hover,
+  //   &.is-hovered {
+  //     color: var(--link-hover-color);
+  //   }
+  // }
+}
+
+@if $docs {
+  .VPContent a:not(.funkwhale.link) {
+    &:not(.VPLink):not(.vp-doc .header-anchor):not(.VPDocAsideOutline .outline-link):not(.VPNavBarTitle .title):not(.VPDocFooter .pager-link):not(.is-raw) {
+      @extend %link;
+    }
+  }
+  .VPContent .vp-doc .funkwhale.link {
+    text-decoration: none;
+  }
+} else {
+  a {
+    @extend %link;
+  }
+}
+
+// Horizontal rule
+%hr {
+  border: none;
+  border-bottom: 1px solid var(--fw-border-color);
+
+  @include light-theme {
+    --fw-border-color: var(--fw-gray-200);
+  }
+
+  @include dark-theme {
+    --fw-border-color: var(--fw-gray-800);
+  }
+
+  padding: 8px 0 0 0;
+  margin: 0 0 8px 0;
+}
+
+hr:not(.is-raw) {
+  @extend %hr;
+
+  @if $docs {
+    @extend %hr;
+  }
+}
+
+.funkwhale,
+.funkwhale * {
+  box-sizing: border-box;
+}

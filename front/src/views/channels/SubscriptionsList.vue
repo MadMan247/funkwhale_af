@@ -8,7 +8,10 @@ import axios from 'axios'
 
 import ChannelsWidget from '~/components/audio/ChannelsWidget.vue'
 import RemoteSearchForm from '~/components/RemoteSearchForm.vue'
-import SemanticModal from '~/components/semantic/Modal.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Header from '~/components/ui/Header.vue'
+import Button from '~/components/ui/Button.vue'
+import Modal from '~/components/ui/Modal.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 
@@ -56,66 +59,71 @@ const showSubscribeModal = ref(false)
 </script>
 
 <template>
-  <main
+  <Layout
     v-title="labels.title"
-    class="main pusher"
+    stack
+    main
   >
-    <section class="ui head vertical stripe segment container">
-      <h1 class="ui with-actions header">
-        {{ labels.title }}
-        <div class="actions">
-          <a @click.stop.prevent="showSubscribeModal = true">
-            <i class="plus icon" />
-            {{ $t('views.channels.SubscriptionsList.link.addNew') }}
-          </a>
-        </div>
-      </h1>
-      <semantic-modal
-        v-model:show="showSubscribeModal"
-        class="tiny"
-        :fullscreen="false"
+    <!-- TODO: `yarn lint:tsc` doesn't understand the `Prop` type for `Header` while the language server does. It may be a question of typescript version... Investigate and fix! https://dev.funkwhale.audio/funkwhale/funkwhale/-/issues/2437 -->
+    <!-- @vue-ignore -->
+    <Header
+      :h1="labels.title"
+      :action="{
+        text: t('views.channels.SubscriptionsList.link.addNew'),
+        // @ts-ignore
+        onClick: () => { showSubscribeModal = true },
+        // @ts-ignore
+        primary: true,
+        // @ts-ignore
+        icon: 'bi-plus'
+      }"
+      page-heading
+    />
+    <Modal
+      v-model="showSubscribeModal"
+      :title="t('views.channels.SubscriptionsList.modal.subscription.header')"
+      class="tiny"
+    >
+      <div
+        ref="modalContent"
+        class="scrolling content"
       >
-        <h2 class="header">
-          {{ $t('views.channels.SubscriptionsList.modal.subscription.header') }}
-        </h2>
-        <div
-          ref="modalContent"
-          class="scrolling content"
+        <remote-search-form
+          initial-type="both"
+          :show-submit="false"
+          :standalone="false"
+          :redirect="true"
+          @subscribed="showSubscribeModal = false; reloadWidget()"
+        />
+      </div>
+      <template #actions>
+        <Button
+          secondary
+          @click="showSubscribeModal = false"
         >
-          <remote-search-form
-            initial-type="both"
-            :show-submit="false"
-            :standalone="false"
-            :redirect="true"
-            @subscribed="showSubscribeModal = false; reloadWidget()"
-          />
-        </div>
-        <div class="actions">
-          <button class="ui basic deny button">
-            {{ $t('views.channels.SubscriptionsList.button.cancel') }}
-          </button>
-          <button
-            form="remote-search"
-            type="submit"
-            class="ui primary button"
-          >
-            <i class="bookmark icon" />
-            {{ $t('views.channels.SubscriptionsList.button.subscribe') }}
-          </button>
-        </div>
-      </semantic-modal>
+          {{ t('views.channels.SubscriptionsList.button.cancel') }}
+        </Button>
+        <Button
+          form="remote-search"
+          type="submit"
+          icon="bi-bookmark-check-fill"
+          primary
+        >
+          {{ t('views.channels.SubscriptionsList.button.subscribe') }}
+        </Button>
+      </template>
+    </Modal>
 
-      <inline-search-bar
-        v-model="query"
-        :placeholder="labels.searchPlaceholder"
-        @search="reloadWidget"
-      />
-      <channels-widget
-        :key="widgetKey"
-        :limit="50"
-        :show-modification-date="true"
-        :filters="{q: query, subscribed: 'true', ordering: '-modification_date'}"
-      />
-    </section>
-  </main>
+    <inline-search-bar
+      v-model="query"
+      :placeholder="labels.searchPlaceholder"
+      @search="reloadWidget"
+    />
+    <channels-widget
+      :key="widgetKey"
+      :limit="50"
+      :show-modification-date="true"
+      :filters="{q: query, subscribed: 'true', ordering: '-modification_date'}"
+    />
+  </Layout>
 </template>

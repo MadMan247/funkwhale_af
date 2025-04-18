@@ -6,6 +6,17 @@ import useFormData from '~/composables/useFormData'
 import { ref, computed, reactive } from 'vue'
 import { useStore } from '~/store'
 import useLogger from '~/composables/useLogger'
+import { useI18n } from 'vue-i18n'
+
+import Section from '~/components/ui/Section.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Toggle from '~/components/ui/Toggle.vue'
+import Input from '~/components/ui/Input.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Button from '~/components/ui/Button.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+
+const { t } = useI18n()
 
 interface Props {
   group: SettingsGroup
@@ -96,166 +107,180 @@ const save = async () => {
 </script>
 
 <template>
-  <form
-    :id="group.id"
-    class="ui form component-settings-group"
-    @submit.prevent="save"
+  <!-- TODO: type the different values in `settings` (use generics) -->
+  <!-- eslint-disable vue/valid-v-model -->
+  <Section
+    align-left
+    :h2="group.label"
+    large-section-heading
   >
-    <div class="ui divider" />
-    <h3 class="ui header">
-      {{ group.label }}
-    </h3>
-    <div
-      v-if="errors.length > 0"
-      role="alert"
-      class="ui negative message"
+    <form
+      :id="group.id"
+      class="ui form component-settings-group"
+      style="grid-column: 1 / -1;"
+      @submit.prevent="save"
     >
-      <h4 class="header">
-        {{ $t('components.admin.SettingsGroup.header.error') }}
-      </h4>
-      <ul class="list">
-        <li
-          v-for="(error, key) in errors"
-          :key="key"
-        >
-          {{ error }}
-        </li>
-      </ul>
-    </div>
-    <div
-      v-if="result"
-      class="ui positive message"
-    >
-      {{ $t('components.admin.SettingsGroup.message.success') }}
-    </div>
-    <div
-      v-for="(setting, key) in settings"
-      :key="key"
-      class="ui field"
-    >
-      <template v-if="setting.field.widget.class !== 'CheckboxInput'">
-        <label :for="setting.identifier">{{ setting.verbose_name }}</label>
-        <p v-if="setting.help_text">
-          {{ setting.help_text }}
-        </p>
-      </template>
-      <content-form
-        v-if="setting.fieldType === 'markdown'"
-        v-bind="setting.fieldParams"
-        v-model="values[setting.identifier]"
-      />
-      <!-- eslint-disable vue/valid-v-model -->
-      <signup-form-builder
-        v-else-if="setting.fieldType === 'formBuilder'"
-        v-model="values[setting.identifier] as Form"
-        :signup-approval-enabled="!!values.moderation__signup_approval_enabled"
-      />
-      <!-- eslint-enable vue/valid-v-model -->
-      <input
-        v-else-if="setting.field.widget.class === 'PasswordInput'"
-        :id="setting.identifier"
-        v-model="values[setting.identifier]"
-        :name="setting.identifier"
-        type="password"
-        class="ui input"
-      >
-      <input
-        v-else-if="setting.field.widget.class === 'TextInput'"
-        :id="setting.identifier"
-        v-model="values[setting.identifier]"
-        :name="setting.identifier"
-        type="text"
-        class="ui input"
-      >
-      <input
-        v-else-if="setting.field.class === 'IntegerField'"
-        :id="setting.identifier"
-        v-model.number="values[setting.identifier]"
-        :name="setting.identifier"
-        type="number"
-        class="ui input"
-      >
-      <!-- eslint-disable vue/valid-v-model -->
-      <textarea
-        v-else-if="setting.field.widget.class === 'Textarea'"
-        :id="setting.identifier"
-        v-model="values[setting.identifier] as string"
-        :name="setting.identifier"
-        type="text"
-        class="ui input"
-      />
-      <!-- eslint-enable vue/valid-v-model -->
+      <Spacer :size="16" />
       <div
-        v-else-if="setting.field.widget.class === 'CheckboxInput'"
-        class="ui toggle checkbox"
+        v-for="(setting, key) in settings"
+        :key="key"
+        :class="[$style.field, 'ui', 'field']"
       >
-        <!-- eslint-disable vue/valid-v-model -->
-        <input
-          :id="setting.identifier"
-          v-model="values[setting.identifier] as boolean"
-          :name="setting.identifier"
-          type="checkbox"
-        >
+        <template v-if="setting.field.widget.class !== 'CheckboxInput'">
+          <label :for="setting.identifier">{{ setting.verbose_name }}</label>
+          <p v-if="setting.help_text">
+            {{ setting.help_text }}
+          </p>
+        </template>
+        <content-form
+          v-if="setting.fieldType === 'markdown'"
+          v-bind="setting.fieldParams"
+          v-model="values[setting.identifier]"
+        />
+        <signup-form-builder
+          v-else-if="setting.fieldType === 'formBuilder'"
+          v-model="values[setting.identifier] as Form"
+          :signup-approval-enabled="!!values.moderation__signup_approval_enabled"
+        />
+        <Input
+          v-else-if="setting.field.widget.class === 'PasswordInput'"
+          v-model="values[setting.identifier] as string"
+          password
+          type="password"
+          class="ui input"
+        />
+        <Input
+          v-else-if="setting.field.widget.class === 'TextInput'"
+          v-model="values[setting.identifier] as string"
+          type="text"
+          class="ui input"
+        />
+        <Input
+          v-else-if="setting.field.class === 'IntegerField'"
+          v-model.number="values[setting.identifier] as number"
+          type="number"
+          class="ui input"
+        />
+        <textarea
+          v-else-if="setting.field.widget.class === 'Textarea'"
+          v-model="values[setting.identifier] as string"
+          type="text"
+          class="ui input"
+        />
         <!-- eslint-enable vue/valid-v-model -->
-        <label :for="setting.identifier">{{ setting.verbose_name }}</label>
-        <p v-if="setting.help_text">
-          {{ setting.help_text }}
-        </p>
-      </div>
-      <select
-        v-else-if="setting.field.class === 'MultipleChoiceField'"
-        :id="setting.identifier"
-        v-model="values[setting.identifier]"
-        multiple
-        class="ui search selection dropdown"
-      >
-        <option
-          v-for="v in setting.additional_data?.choices"
-          :key="v[0]"
-          :value="v[0]"
+        <div
+          v-else-if="setting.field.widget.class === 'CheckboxInput'"
         >
-          {{ v[1] }}
-        </option>
-      </select>
-      <select
-        v-else-if="setting.field.class === 'ChoiceField'"
-        :id="setting.identifier"
-        v-model="values[setting.identifier]"
-        class="ui search selection dropdown"
-      >
-        <option
-          v-for="v in setting.additional_data?.choices"
-          :key="v[0]"
-          :value="v[0]"
-        >
-          {{ v[1] }}
-        </option>
-      </select>
-      <div v-else-if="setting.field.widget.class === 'ImageWidget'">
-        <input
-          :id="setting.identifier"
-          :ref="setFileRef(setting.identifier)"
-          type="file"
-        >
-        <div v-if="values[setting.identifier]">
-          <div class="ui hidden divider" />
-          <h3 class="ui header">
-            {{ $t('components.admin.SettingsGroup.header.image') }}
-          </h3>
-          <img
-            v-if="values[setting.identifier]"
-            class="ui image"
-            alt=""
-            :src="$store.getters['instance/absoluteUrl'](values[setting.identifier])"
-          >
+          <Toggle
+            v-model="values[setting.identifier] as boolean"
+            big
+            :label="setting.verbose_name"
+          />
+          <Spacer :size="8" />
+          <p v-if="setting.help_text">
+            {{ setting.help_text }}
+          </p>
         </div>
+        <select
+          v-else-if="setting.field.class === 'MultipleChoiceField'"
+          :id="setting.identifier"
+          v-model="values[setting.identifier]"
+          multiple
+          class="ui search selection dropdown"
+          style="height: 150px;"
+        >
+          <option
+            v-for="v in setting.additional_data?.choices"
+            :key="v[0]"
+            :value="v[0]"
+          >
+            {{ v[1] }}
+          </option>
+        </select>
+        <select
+          v-else-if="setting.field.class === 'ChoiceField'"
+          :id="setting.identifier"
+          v-model="values[setting.identifier]"
+          class="ui search selection dropdown"
+        >
+          <option
+            v-for="v in setting.additional_data?.choices"
+            :key="v[0]"
+            :value="v[0]"
+          >
+            {{ v[1] }}
+          </option>
+        </select>
+        <div v-else-if="setting.field.widget.class === 'ImageWidget'">
+          <!-- TODO: Implement image input -->
+
+          <!-- @vue-ignore -->
+          <Input
+            :id="setting.identifier"
+            :ref="setFileRef(setting.identifier)"
+            type="file"
+          />
+
+          <div v-if="values[setting.identifier]">
+            <h3 class="ui header">
+              {{ t('components.admin.SettingsGroup.header.image') }}
+            </h3>
+            <img
+              v-if="values[setting.identifier]"
+              class="ui image"
+              alt=""
+              :src="store.getters['instance/absoluteUrl'](values[setting.identifier])"
+            >
+          </div>
+        </div>
+        <Spacer />
       </div>
-    </div>
-    <button
-      type="submit"
-      :class="['ui', {'loading': isLoading}, 'right', 'floated', 'success', 'button']"
-    >
-      {{ $t('components.admin.SettingsGroup.button.save') }}
-    </button>
-  </form>
+      <Layout flex>
+        <Spacer grow />
+        <Button
+          type="submit"
+          :class="[{'loading': isLoading}]"
+          primary
+        >
+          {{ t('components.admin.SettingsGroup.button.save') }}
+        </Button>
+      </Layout>
+      <Spacer />
+      <Alert
+        v-if="errors.length > 0"
+        red
+      >
+        <h4 class="header">
+          {{ t('components.admin.SettingsGroup.header.error', {label: group.label}) }}
+        </h4>
+        <ul class="list">
+          <li
+            v-for="(error, key) in errors"
+            :key="key"
+          >
+            {{ error }}
+          </li>
+        </ul>
+      </Alert>
+      <Alert
+        v-if="result"
+        green
+      >
+        {{ t('components.admin.SettingsGroup.message.success') }}
+      </Alert>
+    </form>
+  </Section>
+  <hr :class="$style.separator">
+  <Spacer size-64 />
+  <!-- eslint-enable vue/valid-v-model -->
 </template>
+
+<style module>
+  .field > div {
+    display: flex;
+    flex-direction: column;
+  }
+  .separator:last-of-type {
+    display: none;
+  }
+</style>

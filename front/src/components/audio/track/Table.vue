@@ -8,8 +8,12 @@ import { ref, computed } from 'vue'
 import axios from 'axios'
 
 import TrackMobileRow from '~/components/audio/track/MobileRow.vue'
-import Pagination from '~/components/vui/Pagination.vue'
+import Pagination from '~/components/ui/Pagination.vue'
 import TrackRow from '~/components/audio/track/Row.vue'
+import Input from '~/components/ui/Input.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Loader from '~/components/ui/Loader.vue'
+import Table from '~/components/ui/Table.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 
@@ -62,7 +66,7 @@ const props = withDefaults(defineProps<Props>(), {
   filters: () => ({}),
   nextUrl: null,
 
-  paginateResults: true,
+  paginateResults: false,
   total: 0,
   page: 1,
   paginateBy: 25,
@@ -83,11 +87,15 @@ const allTracks = computed(() => {
     : tracks
 })
 
+const paginateResults = computed(() => props.paginateResults && allTracks.value.length < props.paginateBy)
+
 const { t } = useI18n()
+
 const labels = computed(() => ({
   title: t('components.audio.track.Table.table.header.title'),
   album: t('components.audio.track.Table.table.header.album'),
-  artist: t('components.audio.track.Table.table.header.artist')
+  artist: t('components.audio.track.Table.table.header.artist'),
+  searchPlaceholder: t('views.Search.header.search')
 }))
 
 const isLoading = ref(false)
@@ -140,11 +148,16 @@ const updatePage = (page: number) => {
 <template>
   <div>
     <!-- Show the search bar if search is true -->
-    <inline-search-bar
+
+    <Input
       v-if="search"
       v-model="query"
+      search
+      autofocus
+      :placeholder="labels.searchPlaceholder"
       @search="performSearch"
     />
+    <Spacer v-if="search" />
 
     <!-- Add a header if needed -->
 
@@ -161,66 +174,41 @@ const updatePage = (page: number) => {
         @refresh="fetchData()"
       />
     </slot>
-    <div v-else>
-      <div
-        :class="['track-table', 'ui', 'unstackable', 'grid', 'tablet-and-up']"
-      >
-        <div
-          v-if="isLoading"
-          class="ui inverted active dimmer"
-        >
-          <div class="ui loader" />
-        </div>
-        <div class="track-table row">
-          <div
-            v-if="showPosition"
-            class="actions left floated column"
-          >
-            <i class="hashtag icon" />
-          </div>
-          <div
-            v-else
-            class="actions left floated column"
-          />
-          <div
-            v-if="showArt"
-            class="image left floated column"
-          />
-          <div class="content ellipsis left floated column">
-            <b>{{ labels.title }}</b>
-          </div>
-          <div
-            v-if="showAlbum"
-            class="content ellipsisleft floated column"
-          >
-            <b>{{ labels.album }}</b>
-          </div>
-          <div
-            v-if="showArtist"
-            class="content ellipsis left floated column"
-          >
-            <b>{{ labels.artist }}</b>
-          </div>
-          <div
-            v-if="$store.state.auth.authenticated"
-            class="meta right floated column"
-          />
-          <div
-            v-if="showDuration"
-            class="meta right floated column"
-          >
-            <i
-              class="clock outline icon"
-              style="padding: 0.5rem"
-            />
-          </div>
-          <div
-            v-if="displayActions"
-            class="meta right floated column"
-          />
-        </div>
 
-        <!-- For each item, build a row -->
+    <!-- Table on screens > 768px wide -->
+    <!-- TODO: Make responsive to parent container instead of screen -->
+
+    <div
+      v-else
+      :class="['track-table', 'ui', 'unstackable', 'grid', 'tablet-and-up']"
+    >
+      <Loader v-if="isLoading" />
+
+      <Table
+        :grid-template-columns="['48px', '56px', 'auto', 'auto', 'auto', '56px', '64px', '48px']"
+        :header-props="{ 'table-header': true }"
+      >
+        <template #header>
+          <label />
+          <label />
+          <label>
+            <span>{{ labels.title }}</span>
+          </label>
+          <label>
+            <span v-if="showAlbum">{{ labels.album }}</span>
+          </label>
+          <label>
+            <span v-if="showArtist">{{ labels.artist }}</span>
+          </label>
+          <label />
+          <label>
+            <i
+              v-if="showDuration"
+              class="bi bi-clock"
+            />
+          </label>
+          <label />
+        </template>
 
         <track-row
           v-for="(track, index) in allTracks"
@@ -236,29 +224,25 @@ const updatePage = (page: number) => {
           :show-duration="showDuration"
           :is-podcast="isPodcast"
         />
-      </div>
-      <div
-        v-if="tracks && paginateResults"
-        class="ui center aligned basic segment desktop-and-up"
-      >
-        <pagination
-          :total="totalTracks"
-          :current="tracks !== undefined ? page : currentPage"
-          :paginate-by="paginateBy"
-          @update:current="updatePage"
-        />
-      </div>
+      </Table>
+
+      <!-- Pagination -->
+
+      <Pagination
+        v-if="paginateResults"
+        :pages="paginateBy"
+        :page="page"
+        @update:current="updatePage"
+      />
     </div>
+
+    <!-- Under 768px screen width -->
+    <!-- TODO: Make responsive to parent container instead of screen -->
 
     <div
       :class="['track-table', 'ui', 'unstackable', 'grid', 'tablet-and-below']"
     >
-      <div
-        v-if="isLoading"
-        class="ui inverted active dimmer"
-      >
-        <div class="ui loader" />
-      </div>
+      <Loader v-if="isLoading" />
 
       <!-- For each item, build a row -->
 
@@ -275,19 +259,19 @@ const updatePage = (page: number) => {
         :is-album="isAlbum"
         :is-podcast="isPodcast"
       />
-      <div
-        v-if="tracks && paginateResults && totalTracks > paginateBy"
-        class="ui center aligned basic segment tablet-and-below"
-      >
-        <pagination
-          v-if="paginateResults && totalTracks > paginateBy"
-          :paginate-by="paginateBy"
-          :total="totalTracks"
-          :current="tracks !== undefined ? page : currentPage"
-          :compact="true"
-          @update:current="updatePage"
-        />
-      </div>
+      <Pagination
+        v-if="paginateResults"
+        :pages="paginateBy"
+        :page="page"
+        @update:current="updatePage"
+      />
     </div>
   </div>
 </template>
+
+<style scoped>
+  [table-header] > label {
+    padding-left: 4px;
+    align-self: center !important;
+  }
+</style>

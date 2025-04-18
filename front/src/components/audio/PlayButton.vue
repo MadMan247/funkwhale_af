@@ -1,15 +1,22 @@
 <script setup lang="ts">
 import type { Track, Artist, Album, Playlist, Library, Channel, Actor } from '~/types'
+import type { components } from '~/generated/types'
 import type { PlayOptionsProps } from '~/composables/audio/usePlayOptions'
 
-import { ref, computed, onMounted } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import usePlayOptions from '~/composables/audio/usePlayOptions'
 import useReport from '~/composables/moderation/useReport'
-import { useCurrentElement } from '@vueuse/core'
-import { setupDropdown } from '~/utils/fomantic'
+import { useStore } from '~/store'
+import { useRouter, useRoute } from 'vue-router'
+
+import Button from '~/components/ui/Button.vue'
+import OptionsButton from '~/components/ui/button/Options.vue'
+import Popover from '~/components/ui/Popover.vue'
+import PopoverItem from '~/components/ui/popover/PopoverItem.vue'
 
 interface Props extends PlayOptionsProps {
+  split?: boolean
   dropdownIconClasses?: string[]
   playIconClass?: string
   buttonClasses?: string[]
@@ -18,20 +25,22 @@ interface Props extends PlayOptionsProps {
   iconOnly?: boolean
   playing?: boolean
   paused?: boolean
+  lowHeight?: boolean
 
   // TODO(wvffle): Remove after https://github.com/vuejs/core/pull/4512 is merged
   isPlayable?: boolean
   tracks?: Track[]
   track?: Track | null
-  artist?: Artist | null
+  artist?: Artist | components["schemas"]["SimpleChannelArtist"] | components['schemas']['ArtistWithAlbums'] | null
   album?: Album | null
   playlist?: Playlist | null
   library?: Library | null
   channel?: Channel | null
-  account?: Actor | null
+  account?: Actor | components['schemas']['APIActor'] | null
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  split: false,
   tracks: () => [],
   track: null,
   artist: null,
@@ -40,16 +49,21 @@ const props = withDefaults(defineProps<Props>(), {
   library: null,
   channel: null,
   account: null,
-  dropdownIconClasses: () => ['dropdown'],
-  playIconClass: () => 'play icon',
+  dropdownIconClasses: () => ['bi-caret-down-fill'],
+  playIconClass: () => 'bi-play-fill',
   buttonClasses: () => ['button'],
   discrete: () => false,
   dropdownOnly: () => false,
   iconOnly: () => false,
   isPlayable: () => false,
   playing: () => false,
-  paused: () => false
+  paused: () => false,
+  lowHeight: () => false
 })
+
+// (1) Create a PlayButton
+//     Some of the props are meant for `usePlayOptions`!
+//     UsePlayOptions accepts the props from this component and returns the following things:
 
 const {
   playable,
@@ -64,6 +78,10 @@ const {
 const { report, getReportableObjects } = useReport()
 
 const { t } = useI18n()
+const store = useStore()
+const router = useRouter()
+const route = useRoute()
+
 const labels = computed(() => ({
   playNow: t('components.audio.PlayButton.button.playNow'),
   addToQueue: t('components.audio.PlayButton.button.addToQueue'),
@@ -83,149 +101,163 @@ const labels = computed(() => ({
           : t('components.audio.PlayButton.button.playTracks')
 }))
 
-const title = computed(() => {
-  if (playable.value) {
-    return t('components.audio.PlayButton.title.more')
-  }
-
-  if (props.track) {
-    return t('components.audio.PlayButton.title.unavailable')
-  }
-
-  return ''
-})
-
-const el = useCurrentElement()
-const dropdown = ref()
-onMounted(() => {
-  dropdown.value = setupDropdown('.ui.dropdown', el.value)
-})
-
-const openMenu = () => {
-  // little magic to ensure the menu is always visible in the viewport
-  // By default, try to display it on the right if there is enough room
-  const menu = dropdown.value.find('.menu')
-  if (menu.hasClass('visible')) return
-  const viewportOffset = menu.get(0)?.getBoundingClientRect() ?? { right: 0, left: 0 }
-  const viewportWidth = document.documentElement.clientWidth
-  const rightOverflow = viewportOffset.right - viewportWidth
-  const leftOverflow = -viewportOffset.left
-
-  menu.css({
-    cssText: rightOverflow > 0
-      ? `left: ${-rightOverflow - 5}px !important;`
-      : `right: ${-leftOverflow + 5}px !important;`
-  })
-}
+const isOpen = ref(false)
 </script>
 
 <template>
-  <span
-    :title="title"
-    :class="['ui', {'tiny': discrete, 'icon': !discrete, 'buttons': !dropdownOnly && !iconOnly}, 'play-button component-play-button']"
+  <Popover
+    v-if="split || (!iconOnly && dropdownOnly)"
+    v-model="isOpen"
   >
-    <button
-      v-if="!dropdownOnly"
-      :disabled="!playable"
+    <OptionsButton
+      v-if="dropdownOnly"
+      v-bind="$attrs"
+      :is-ghost="discrete"
+      @click="isOpen = !isOpen"
+    />
+    <Button
+      v-else
+      v-bind="{
+        disabled: !playable && !filterableArtist,
+        primary: playable,
+        split: true,
+        splitIcon: 'bi-caret-down-fill'
+      }"
       :aria-label="labels.replacePlay"
-      :class="[...buttonClasses, 'ui', {loading: isLoading, 'mini': discrete, disabled: !playable}]"
+      :class="[...buttonClasses, 'play-button']"
+      :isloading="isLoading"
+      :dropdown-only="dropdownOnly"
+      :low-height="lowHeight || undefined"
+      style="align-self: start;"
       @click.stop.prevent="replacePlay()"
+      @split-click="isOpen = !isOpen"
     >
-      <i
-        v-if="playing"
-        class="pause icon"
-      />
-      <i
-        v-else
-        :class="[playIconClass, 'icon']"
-      />
-      <template v-if="!discrete && !iconOnly">&nbsp;<slot>{{ $t('components.audio.PlayButton.button.discretePlay') }}</slot></template>
-    </button>
-    <button
-      v-if="!discrete && !iconOnly"
-      :class="['ui', {disabled: !playable && !filterableArtist}, 'floating', 'dropdown', {'icon': !dropdownOnly}, {'button': !dropdownOnly}]"
-      @click.stop.prevent="openMenu"
-    >
-      <i
-        :class="dropdownIconClasses.concat(['icon'])"
-        :title="title"
-      />
-      <div class="menu">
-        <button
-          class="item basic"
-          :disabled="!playable"
-          :title="labels.addToQueue"
-          @click.stop.prevent="enqueue"
-        >
-          <i class="plus icon" />{{ labels.addToQueue }}
-        </button>
-        <button
-          class="item basic"
-          :disabled="!playable"
-          :title="labels.playNext"
-          @click.stop.prevent="enqueueNext()"
-        >
-          <i class="step forward icon" />{{ labels.playNext }}
-        </button>
-        <button
-          class="item basic"
-          :disabled="!playable"
-          :title="labels.playNow"
-          @click.stop.prevent="enqueueNext(true)"
-        >
-          <i class="play icon" />{{ labels.playNow }}
-        </button>
-        <button
-          v-if="track"
-          class="item basic"
-          :disabled="!playable"
-          :title="labels.startRadio"
-          @click.stop.prevent="$store.dispatch('radios/start', {type: 'similar', objectId: track?.id})"
-        >
-          <i class="feed icon" />{{ labels.startRadio }}
-        </button>
-        <button
-          v-if="track"
-          class="item basic"
-          :disabled="!playable"
-          @click.stop="$store.commit('playlists/chooseTrack', track)"
-        >
-          <i class="list icon" />
-          {{ labels.addToPlaylist }}
-        </button>
-        <button
-          v-if="track && $route.name !== 'library.tracks.detail'"
-          class="item basic"
-          @click.stop.prevent="$router.push(`/library/tracks/${track?.id}/`)"
-        >
-          <i class="info icon" />
-          <span v-if="track.artist_credit?.some(ac => ac.artist.content_category === 'podcast')">
-            {{ $t('components.audio.PlayButton.button.episodeDetails') }}
-          </span>
-          <span v-else>
-            {{ $t('components.audio.PlayButton.button.trackDetails') }}
-          </span>
-        </button>
-        <div class="divider" />
-        <button
-          v-if="filterableArtist"
-          class="item basic"
-          :disabled="!filterableArtist"
-          :title="labels.hideArtist"
-          @click.stop.prevent="filterArtist"
-        >
-          <i class="eye slash outline icon" />
-          {{ labels.hideArtist }}
-        </button>
-        <button
-          v-for="obj in getReportableObjects({track, album, artist, playlist, account, channel})"
-          :key="obj.target.type + obj.target.id"
-          class="item basic"
-          @click.stop.prevent="report(obj)"
-        >
-          <i class="share icon" /> {{ obj.label }}
-        </button>
-      </div>
-    </button>
-  </span>
+      <template #main>
+        <i
+          v-if="playing"
+          class="bi bi-pause-fill"
+        />
+        <i
+          v-else
+          :class="['bi', playIconClass]"
+        />
+        <template v-if="!discrete && !iconOnly">
+          &nbsp;<slot>{{ t('components.audio.PlayButton.button.discretePlay') }}</slot>
+        </template>
+      </template>
+    </Button>
+
+    <template #items>
+      <PopoverItem
+        :disabled="!playable"
+        :title="labels.addToQueue"
+        icon="bi-plus"
+        @click.stop.prevent="enqueue"
+      >
+        {{ labels.addToQueue }}
+      </PopoverItem>
+
+      <PopoverItem
+        :disabled="!playable"
+        :title="labels.playNext"
+        icon="bi-skip-forward-fill"
+        @click.stop.prevent="enqueueNext()"
+      >
+        {{ labels.playNext }}
+      </PopoverItem>
+
+      <PopoverItem
+        :disabled="!playable"
+        :title="labels.playNow"
+        icon="bi-play-fill"
+        @click.stop.prevent="enqueueNext(true)"
+      >
+        {{ labels.playNow }}
+      </PopoverItem>
+
+      <PopoverItem
+        v-if="track"
+        :disabled="!playable"
+        :title="labels.startRadio"
+        icon="bi-broadcast"
+        @click.stop.prevent="store.dispatch('radios/start', {type: 'similar', objectId: track?.id})"
+      >
+        {{ labels.startRadio }}
+      </PopoverItem>
+
+      <PopoverItem
+        v-if="track"
+        :disabled="!playable"
+        icon="bi-list"
+        @click.stop="store.commit('playlists/chooseTrack', track)"
+      >
+        {{ labels.addToPlaylist }}
+      </PopoverItem>
+      <PopoverItem
+        v-if="track && route.name !== 'library.tracks.detail'"
+        icon="bi-info-circle"
+        @click.stop.prevent="router.push(`/library/tracks/${track?.id}/`)"
+      >
+        <span v-if="track.artist_credit?.some(ac => ac.artist.content_category === 'podcast')">
+          {{ t('components.audio.PlayButton.button.episodeDetails') }}
+        </span>
+        <span v-else>
+          {{ t('components.audio.PlayButton.button.trackDetails') }}
+        </span>
+      </PopoverItem>
+
+      <hr v-if="filterableArtist || Object.keys(getReportableObjects({ track, album, artist, playlist, account, channel })).length > 0">
+
+      <PopoverItem
+        v-if="filterableArtist"
+        :disabled="!filterableArtist"
+        :title="labels.hideArtist"
+        icon="bi-eye-slash"
+        @click.stop.prevent="filterArtist"
+      >
+        {{ labels.hideArtist }}
+      </PopoverItem>
+
+      <PopoverItem
+        v-for="obj in getReportableObjects({ track, album, artist, playlist, account, channel })"
+        :key="obj.target.type + obj.target.id"
+        icon="bi-exclamation-triangle-fill"
+        @click.stop.prevent="report(obj)"
+      >
+        {{ obj.label }}
+      </PopoverItem>
+    </template>
+  </Popover>
+  <Button
+    v-else
+    v-bind="{
+      disabled: !playable,
+      primary: playable,
+    }"
+    :aria-label="labels.replacePlay"
+    :class="[...buttonClasses, 'play-button']"
+    :isloading="isLoading"
+    :square="iconOnly"
+    :icon="!playing ? playIconClass : 'bi-pause-fill'"
+    :round="iconOnly"
+    :primary="iconOnly && !discrete"
+    :ghost="discrete"
+    :low-height="lowHeight || undefined"
+    @click.stop.prevent="replacePlay()"
+  >
+    <template v-if="!discrete && !iconOnly">
+      <span>
+        {{ t('components.audio.PlayButton.button.discretePlay') }}
+      </span>
+    </template>
+  </Button>
 </template>
+
+<style lang="scss" scoped>
+.funkwhale.split-button {
+  &.button {
+    gap: 0px;
+    padding: 0px;
+  }
+}
+</style>

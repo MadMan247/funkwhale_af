@@ -12,7 +12,6 @@ import { uniq } from 'lodash-es'
 
 import axios from 'axios'
 
-import Pagination from '~/components/vui/Pagination.vue'
 import EditCard from '~/components/library/EditCard.vue'
 
 import useEditConfigs from '~/composables/moderation/useEditConfigs'
@@ -21,6 +20,13 @@ import useSharedLabels from '~/composables/locale/useSharedLabels'
 import useOrdering from '~/composables/navigation/useOrdering'
 import useErrorHandler from '~/composables/useErrorHandler'
 import usePage from '~/composables/navigation/usePage'
+
+import Layout from '~/components/ui/Layout.vue'
+import Section from '~/components/ui/Section.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Input from '~/components/ui/Input.vue'
+import Loader from '~/components/ui/Loader.vue'
+import Pagination from '~/components/ui/Pagination.vue'
 
 interface Props extends SmartSearchProps, OrderingProps {
   filters?: object
@@ -159,47 +165,55 @@ const getCurrentState = (target?: StateTarget): ReviewState => {
 </script>
 
 <template>
-  <div class="ui text container">
-    <slot />
-    <div class="ui inline form">
-      <div class="fields">
-        <div class="ui field">
-          <label for="search-edits">{{ $t('components.manage.library.EditsCardList.label.search') }}</label>
-          <form @submit.prevent="query = search.value">
-            <input
-              id="search-edits"
-              ref="search"
-              name="search"
-              type="text"
-              :value="query"
-              :placeholder="labels.searchPlaceholder"
-            >
-          </form>
-        </div>
-        <div class="field">
-          <label for="edit-status">{{ $t('components.manage.library.EditsCardList.label.status') }}</label>
+  <slot />
+  <div class="ui inline form">
+    <div class="fields">
+      <div class="ui field">
+        <form @submit.prevent="query = search.value">
+          <Input
+            id="search-edits"
+            ref="search"
+            v-model="query"
+            search
+            name="search"
+            :label="t('components.manage.library.EditsCardList.label.search')"
+            autofocus
+            :placeholder="labels.searchPlaceholder"
+          />
+        </form>
+      </div>
+      <Spacer :size="16" />
+      <Layout flex>
+        <Spacer grow />
+        <Layout
+          stack
+          no-gap
+          label
+          for="edit-status"
+        >
+          <span class="label">{{ t('components.manage.library.EditsCardList.label.status') }}</span>
           <select
             id="edit-status"
-            class="ui dropdown"
+            class="dropdown"
             :value="getTokenValue('is_approved', '')"
             @change="addSearchToken('is_approved', ($event.target as HTMLSelectElement).value)"
           >
             <option value="">
-              {{ $t('components.manage.library.EditsCardList.option.all') }}
+              {{ t('components.manage.library.EditsCardList.option.all') }}
             </option>
             <option value="null">
-              {{ $t('components.manage.library.EditsCardList.option.pending') }}
+              {{ t('components.manage.library.EditsCardList.option.pending') }}
             </option>
             <option value="yes">
-              {{ $t('components.manage.library.EditsCardList.option.approved') }}
+              {{ t('components.manage.library.EditsCardList.option.approved') }}
             </option>
             <option value="no">
-              {{ $t('components.manage.library.EditsCardList.option.rejected') }}
+              {{ t('components.manage.library.EditsCardList.option.rejected') }}
             </option>
           </select>
-        </div>
+        </Layout>
         <div class="field">
-          <label for="edit-ordering">{{ $t('components.manage.library.EditsCardList.ordering.label') }}</label>
+          <label for="edit-ordering">{{ t('components.manage.library.EditsCardList.ordering.label') }}</label>
           <select
             id="edit-ordering"
             v-model="ordering"
@@ -215,58 +229,49 @@ const getCurrentState = (target?: StateTarget): ReviewState => {
           </select>
         </div>
         <div class="field">
-          <label for="edit-ordering-direction">{{ $t('components.manage.library.EditsCardList.ordering.direction.label') }}</label>
+          <label for="edit-ordering-direction">{{ t('components.manage.library.EditsCardList.ordering.direction.label') }}</label>
           <select
             id="edit-ordering-direction"
             v-model="orderingDirection"
             class="ui dropdown"
           >
             <option value="+">
-              {{ $t('components.manage.library.EditsCardList.ordering.direction.ascending') }}
+              {{ t('components.manage.library.EditsCardList.ordering.direction.ascending') }}
             </option>
             <option value="-">
-              {{ $t('components.manage.library.EditsCardList.ordering.direction.descending') }}
+              {{ t('components.manage.library.EditsCardList.ordering.direction.descending') }}
             </option>
           </select>
         </div>
-      </div>
-    </div>
-    <div class="dimmable">
-      <div
-        v-if="isLoading"
-        class="ui active inverted dimmer"
-      >
-        <div class="ui loader" />
-      </div>
-      <div v-else-if="(result?.count ?? 0) > 0">
-        <edit-card
-          v-for="obj in result?.results ?? []"
-          :key="obj.uuid"
-          :obj="obj"
-          :current-state="getCurrentState(obj.target)"
-          @deleted="handle('delete', obj.uuid, false)"
-          @approved="handle('approved', obj.uuid, $event)"
-        />
-      </div>
-      <empty-state
-        v-else
-        :refresh="true"
-        @refresh="fetchData()"
-      />
-    </div>
-    <div class="ui hidden divider" />
-    <div>
-      <pagination
-        v-if="result && result.count > paginateBy"
-        v-model:current="page"
-        :compact="true"
-        :paginate-by="paginateBy"
-        :total="result.count"
-      />
-
-      <span v-if="result && result.results.length > 0">
-        {{ $t('components.manage.library.EditsCardList.pagination.results', {start: ((page-1) * paginateBy) + 1, end: ((page-1) * paginateBy) + result.results.length, total: result.count}) }}
-      </span>
+      </Layout>
     </div>
   </div>
+  <Loader v-if="isLoading" />
+  <Section
+    v-else-if="(result?.count ?? 0) > 0"
+    :columns-per-item="3"
+  >
+    <edit-card
+      v-for="obj in result?.results ?? []"
+      :key="obj.uuid"
+      :obj="obj"
+      :current-state="getCurrentState(obj.target)"
+      @deleted="handle('delete', obj.uuid, false)"
+      @approved="handle('approved', obj.uuid, $event)"
+    />
+  </Section>
+  <empty-state
+    v-else
+    :refresh="true"
+    @refresh="fetchData()"
+  />
+  <Pagination
+    v-if="page && result && result.count > paginateBy"
+    v-model:page="page"
+    :pages="Math.ceil(result.count / paginateBy)"
+  />
+
+  <span v-if="page && result && result.results.length > 0">
+    {{ t('components.manage.library.EditsCardList.pagination.results', { start: ((page-1) * paginateBy) + 1, end: ((page-1) * paginateBy) + result.results.length, total: result.count }) }}
+  </span>
 </template>

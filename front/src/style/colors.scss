@@ -1,0 +1,663 @@
+// (1) Palette
+
+:root {
+  // Blue
+  --fw-blue-010: #fdfdff;
+  --fw-blue-100: #65a2bb;
+  --fw-blue-400: #0a85ae;
+  // was --fw-blue-400: #067cae;
+  --fw-blue-500: #05769d;
+  // was --fw-blue-500: #05719e;
+  --fw-blue-600: #00658c;
+  // was --fw-blue-600: #00638c;
+  --fw-blue-700: #004f70;
+  --fw-blue-800: #003f5a;
+  --fw-blue-900: #1f1f2d;
+
+  // Red
+  --fw-red-010: #fffcfc;
+  --fw-red-100: #c4766e;
+  --fw-red-400: #cd2e1f;
+  --fw-red-500: #bb2a1c;
+  --fw-red-600: #af271a;
+  --fw-red-700: #9c1a0e;
+  --fw-red-800: #7d150b;
+  --fw-red-900: #520600;
+
+  // gray
+  --fw-gray-100: #f2efef;
+  --fw-gray-200: #eee9e9;
+  --fw-gray-300: #ddd9d9;
+  --fw-gray-400: #cfcaca;
+  --fw-gray-500: #b3afaf;
+  --fw-gray-600: #908888;
+  --fw-gray-700: #605656;
+  --fw-gray-800: #4d4547;
+  --fw-gray-900: #292525;
+
+  --fw-gray-850: #403a3b;
+  --fw-gray-950: #322f2f;
+  --fw-gray-960: #292525;
+  --fw-gray-970: #211e1e;
+
+  // Beige
+  --fw-beige-100: #fafaf6;
+  --fw-beige-200: #f5f5f1;
+  --fw-beige-300: #e8e8e4;
+  --fw-beige-400: #dadad6;
+
+  // Pastels
+  --fw-pastel-blue-1: #afdde9;
+  --fw-pastel-blue-2: #87cdde;
+  --fw-pastel-blue-3: #5fbcd3;
+  --fw-pastel-blue-4: #37abc8;
+
+  --fw-pastel-red-1: #f4d7d7;
+  --fw-pastel-red-2: #e9afaf;
+  --fw-pastel-red-3: #de8787;
+  --fw-pastel-red-4: #d35f5f;
+
+  --fw-pastel-purple-1: #b37db1;
+  --fw-pastel-purple-2: #a0619b;
+  --fw-pastel-purple-3: #806b7e;
+  --fw-pastel-purple-4: #67535f;
+
+  --fw-pastel-green-1: #afcd7d;
+  --fw-pastel-green-2: #84a846;
+  --fw-pastel-green-3: #5aa546;
+  --fw-pastel-green-4: #5d944e;
+
+  --fw-pastel-yellow-1: #fdeb63;
+  --fw-pastel-yellow-2: #ffe32f;
+  --fw-pastel-yellow-3: #fed100;
+  --fw-pastel-yellow-4: #efa300;
+
+  // Same in light and dark theme
+  --fw-secondary: #ff6600;
+  --fw-primary: var(--fw-blue-400);
+}
+
+// (2) Choosing the semantic colors from the palette
+
+* {
+  --autofocus-outline-color: color-mix(in oklab, var(--background-color) 80%, transparent);
+}
+
+// Light theme
+
+:is(body.theme-light, html:not(.dark)>body:not(.theme-dark)), .force-light-theme.force-light-theme.force-light-theme {
+  --focus-ring-color: var(--fw-primary);
+
+  .default, .funkwhale, .VPDoc {
+    --link-color:var(--fw-blue-400);
+    --link-hover-color:var(--fw-blue-500);
+
+    --color: var(--fw-gray-900);
+    --background-color: var(--fw-beige-100);
+    --border-color:var(--fw-gray-300);
+
+    --hover-color:var(--fw-gray-800);
+    --hover-background-color:var(--fw-beige-400);
+    --hover-border-color:var(--fw-gray-500);
+
+    --active-color:var(--fw-gray-900);
+    --active-background-color:var(--fw-beige-600);
+    --active-border-color:var(--fw-gray-600);
+
+    --pressed-color:var(--fw-red-010);
+    --pressed-background-color:var(--fw-gray-900);
+
+    --disabled-color:var(--fw-gray-500);
+    --disabled-background-color:var(--fw-beige-100);
+    --disabled-border-color:var(--fw-beige-100);
+
+    --player-color: var(--fw-gray-700);
+    --player-background: var(--fw-blue-010);
+
+    &.raised {
+      --background-color:var(--fw-beige-300);
+      --border-color:color-mix(in oklab, var(--fw-beige-400) 90%, currentcolor);
+    }
+
+    --link-active-border-color:var(--fw-beige-400);
+    --link-exact-active-background-color:var(--fw-beige-400);
+    --link-exact-active-border-color:transparent;
+
+    --void-off-background-color: var(--fw-gray-500);
+    --void-off-pin-color: var(--fw-beige-100);
+    --void-on-background-color: var(--fw-blue-100);
+    --void-on-pin-color: var(--fw-beige-100);
+
+    --void-off-hover-background-color: var(--fw-gray-600);
+    --void-off-hover-pin-color: var(--fw-beige-200);
+    --void-on-hover-background-color: var(--fw-blue-400);
+    --void-on-hover-pin-color: var(--fw-blue-010);
+  }
+
+  .secondary {
+    --color: var(--fw-gray-700);
+    --background-color: var(--fw-gray-200);
+    --border-color:var(--fw-gray-300);
+
+    --hover-color:var(--fw-gray-800);
+    --hover-background-color:var(--fw-gray-300);
+    --hover-border-color:var(--fw-gray-800);
+
+    --active-color:var(--fw-gray-970);
+    --active-background-color:var(--fw-gray-400);
+    --active-border-color:var(--fw-gray-400);
+
+    --pressed-color:var(--fw-beige-200);
+    --pressed-background-color:var(--fw-gray-900);
+
+    --disabled-color:var(--fw-gray-500);
+    --disabled-background-color:var(--fw-gray-100);
+    --disabled-border-color:var(--fw-gray-100);
+
+    &.raised {
+      --background-color:var(--fw-gray-300);
+      --border-color:var(--fw-gray-300);
+      --hover-background-color:var(--fw-gray-400);
+      --active-background-color:var(--fw-gray-500);
+    }
+
+    --link-color:var(--fw-blue-600);
+    --link-hover-color:var(--fw-blue-700);
+  }
+
+  .primary {
+    --color: var(--fw-blue-010);
+    --color-over-transparent: var(--background-color);
+    --background-color:var(--fw-blue-400);
+    --border-color:var(--fw-blue-010);
+    &> .primary {
+      --border-color:var(--fw-blue-010);
+    }
+
+    --hover-color: var(--fw-blue-010);
+    --hover-background-color:var(--fw-blue-500);
+
+    --active-color: var(--fw-blue-010);
+    --active-background-color:var(--fw-blue-600);
+
+    --pressed-color:var(--fw-blue-010);
+    --pressed-background-color:var(--fw-blue-900);
+
+    --disabled-color:var(--fw-blue-900);
+    --disabled-background-color:color-mix(in oklab, var(--fw-blue-100) 20%, var(--fw-blue-400));
+    --disabled-border-color:transparent;
+
+    &.raised {
+      --background-color:var(--fw-blue-500);
+      --hover-background-color:var(--fw-blue-600);
+      --active-background-color:var(--fw-blue-700);
+    }
+
+    &:not(:is(.ghost, .outline)) {
+      --link-color:var(--fw-blue-010);
+      --link-hover-color:white;
+    }
+  }
+
+  .destructive {
+    --color: var(--fw-red-010);
+    --color-over-transparent: var(--background-color);
+    --background-color: var(--fw-red-500);
+    --border-color:var(--fw-red-010);
+
+    --hover-color:var(--fw-gray-100);
+    --hover-background-color:var(--fw-red-600);
+    --hover-border-color:var(--fw-red-600);
+
+    --active-color:var(--fw-gray-100);
+    --active-background-color:var(--fw-red-700);
+    --active-border-color:var(--fw-red-700);
+
+    --disabled-color:var(--fw-gray-500);
+    --disabled-background-color:var(--fw-gray-100);
+    --disabled-border-color:var(--fw-gray-100);
+
+    &:not(:is(.ghost, .outline)) {
+      --link-color:var(--fw-blue-010);
+      --link-hover-color:white;
+    }
+  }
+
+  .blue {
+    --color: var(--fw-blue-900);
+    --color-over-transparent: var(--background-color);
+    --background-color: var(--fw-pastel-blue-1);
+    &.raised, .action>button {
+      --background-color: var(--fw-pastel-blue-2);
+      --hover-background-color: var(--fw-pastel-blue-3);
+      --active-background-color: var(--fw-pastel-blue-4);
+      --disabled-color: var(--fw-gray-700);
+      --disabled-border-color: var(--fw-gray-400);
+      --disabled-background-color: transparent;
+    }
+
+    --link-color:var(--fw-blue-010);
+    --link-hover-color:white;
+  }
+
+  .red {
+    --color: var(--fw-red-900);
+    --color-over-transparent: var(--background-color);
+    --background-color: var(--fw-pastel-red-2);
+    &.raised, .action>button {
+      --background-color: var(--fw-pastel-red-2);
+      --hover-background-color: var(--fw-pastel-red-3);
+      --active-background-color: var(--fw-pastel-red-4);
+      --disabled-color: var(--fw-gray-700);
+      --disabled-border-color: var(--fw-gray-400);
+      --disabled-background-color: transparent;
+    }
+
+    --link-color:var(--fw-blue-010);
+    --link-hover-color:white;
+  }
+
+  .purple {
+    --color: var(--fw-gray-970);
+    --color-over-transparent: var(--background-color);
+    --background-color: var(--fw-pastel-purple-1);
+    &.raised, .action>button {
+      --background-color: var(--fw-pastel-purple-2);
+      --hover-background-color: var(--fw-pastel-purple-3);
+      --active-background-color: var(--fw-pastel-purple-4);
+      --disabled-color: var(--fw-gray-700);
+      --disabled-border-color: var(--fw-gray-400);
+      --disabled-background-color: transparent;
+    }
+
+    --link-color:var(--fw-blue-010);
+    --link-hover-color:white;
+  }
+
+  .green {
+    --color: var(--fw-gray-900);
+    --color-over-transparent: var(--background-color);
+    --background-color: var(--fw-pastel-green-1);
+    &.raised, .action>button {
+      --background-color: var(--fw-pastel-green-2);
+      --hover-background-color: var(--fw-pastel-green-3);
+      --active-background-color: var(--fw-pastel-green-4);
+      --disabled-color: var(--fw-gray-700);
+      --disabled-border-color: var(--fw-gray-400);
+      --disabled-background-color: transparent;
+    }
+
+    --link-color:var(--fw-blue-010);
+    --link-hover-color:white;
+  }
+
+  .yellow {
+    --color: var(--fw-gray-900);
+    --color-over-transparent: var(--background-color);
+    --background-color: var(--fw-pastel-yellow-1);
+    &.raised, .action>button {
+      --background-color: var(--fw-pastel-yellow-2);
+      --hover-background-color: var(--fw-pastel-yellow-3);
+      --active-background-color: var(--fw-pastel-yellow-4);
+      --disabled-color: var(--fw-gray-700);
+      --disabled-border-color: var(--fw-gray-400);
+      --disabled-background-color: transparent;
+    }
+
+    --link-color:var(--fw-blue-010);
+    --link-hover-color:white;
+  }
+}
+
+
+
+
+// Dark theme
+
+:is(body.theme-dark, html.dark>body:not(.theme-light)), .force-dark-theme.force-dark-theme.force-dark-theme {
+  --focus-ring-color: var(--fw-gray-600);
+
+  .default, .funkwhale, .VPDoc {
+    --link-color:var(--fw-gray-300);
+    --link-hover-color:var(--fw-gray-200);
+
+    --color: var(--fw-beige-100);
+    --background-color: var(--fw-gray-960);
+    --border-color:var(--fw-gray-700);
+
+    --hover-color:var(--fw-beige-400);
+    --hover-background-color:var(--fw-gray-850);
+    --hover-border-color:var(--fw-beige-400);
+
+    --active-color:var(--fw-gray-200);
+    --active-background-color:var(--fw-gray-700);
+    --active-border-color:var(--fw-gray-700);
+
+    --pressed-color:var(--fw-red-010);
+    --pressed-background-color:var(--fw-gray-970);
+
+    --disabled-color:var(--fw-gray-500);
+    --disabled-background-color:var(--fw-gray-950);
+    --disabled-border-color:var(--fw-gray-950);
+
+    --player-color: var(--fw-gray-300);
+    --player-background: var(--fw-gray-950);
+
+    &.raised{
+      --background-color:var(--fw-gray-950);
+      --border-color:var(--fw-gray-600);
+      --link-color:var(--fw-gray-400);
+      --link-hover-color:var(--fw-gray-200);
+      --link-exact-active-background-color:var(--fw-gray-800);
+    }
+
+    --link-active-border-color:var(--fw-gray-800);
+    --link-exact-active-background-color:var(--fw-gray-700);
+    --link-exact-active-border-color:transparent;
+
+    --void-off-background-color: var(--fw-gray-800);
+    --void-off-pin-color: var(--fw-beige-100);
+    --void-on-background-color: var(--fw-blue-400);
+    --void-on-pin-color: var(--fw-beige-100);
+
+    --void-off-hover-background-color: var(--fw-gray-700);
+    --void-off-hover-pin-color: var(--fw-beige-200);
+    --void-on-hover-background-color: var(--fw-blue-400);
+    --void-on-hover-pin-color: var(--fw-blue-010);
+  }
+
+  .secondary {
+    --color: var(--fw-gray-300);
+    --background-color: var(--fw-gray-850);
+    --border-color:var(--fw-gray-600);
+
+    --hover-color:var(--fw-gray-200);
+    --hover-background-color:var(--fw-gray-800);
+    --hover-border-color:var(--fw-gray-300);
+
+    --active-color:color-mix(in oklab, var(--fw-gray-200) 50%, var(--fw-gray-300));
+    --active-background-color:color-mix(in oklab, var(--fw-gray-950), var(--fw-gray-970));
+    --active-border-color:var(--fw-gray-400);
+
+    --pressed-color:var(--fw-beige-200);
+    --pressed-background-color:var(--fw-gray-900);
+
+    --disabled-color:var(--fw-gray-500);
+    --disabled-background-color:color-mix(in oklab, var(--fw-gray-900) 20%, var(--fw-gray-950));
+    --disabled-border-color:transparent;
+
+    &.raised {
+      --color: var(--fw-gray-200);
+      --background-color:var(--fw-gray-700);
+      --disabled-background-color:color-mix(in oklab, var(--fw-gray-800) 80%, var(--fw-gray-700));
+      --border-color:var(--fw-gray-500);
+      --hover-background-color:color-mix(in oklab, var(--fw-gray-600) 20%, var(--fw-gray-700));
+      --active-color:var(--fw-gray-400);
+      --active-background-color:var(--fw-gray-900);
+    }
+
+    --link-color:var(--fw-gray-500);
+    --link-hover-color:var(--fw-gray-600);
+  }
+
+  .primary {
+    --color: var(--fw-blue-010);
+    --color-over-transparent: var(--background-color);
+    --background-color:var(--fw-blue-600);
+    --border-color:var(--fw-blue-100);
+
+    --hover-color: var(--fw-blue-010);
+    --hover-background-color:var(--fw-blue-500);
+
+    --active-color: var(--fw-blue-010);
+    --active-background-color:var(--fw-blue-800);
+
+    --pressed-color:var(--fw-blue-010);
+    --pressed-background-color:var(--fw-blue-700);
+
+    --disabled-color:color-mix(in oklab, var(--fw-blue-010) 10%, var(--fw-blue-100));
+    --disabled-background-color:color-mix(in oklab, var(--fw-blue-700) 50%, var(--fw-blue-600));
+    --disabled-border-color:transparent;
+
+
+    &.raised {
+      --background-color:var(--fw-blue-500);
+      --hover-background-color:var(--fw-blue-400);
+      --active-background-color:var(--fw-blue-900);
+      --disabled-background-color:color-mix(in oklab, var(--fw-blue-500) 20%, var(--fw-blue-600));
+    }
+  }
+
+  .destructive {
+    --color: var(--fw-red-010);
+    --color-over-transparent: var(--background-color);
+    --background-color: var(--fw-red-500);
+    --border-color:var(--fw-red-100);
+
+    --hover-color:var(--fw-gray-100);
+    --hover-background-color:var(--fw-red-600);
+    --hover-border-color:var(--fw-red-600);
+
+    --active-color:var(--fw-gray-100);
+    --active-background-color:var(--fw-red-700);
+    --active-border-color:var(--fw-red-700);
+
+    --disabled-color:var(--fw-gray-500);
+    --disabled-background-color:var(--fw-gray-100);
+    --disabled-border-color:var(--fw-gray-100);
+  }
+
+  .blue {
+    --color: var(--fw-pastel-blue-1);
+    --color-over-transparent: var(--background-color);
+    --background-color: color-mix(in oklab, black 60%, var(--fw-pastel-blue-1));
+    &.raised, .action>button {
+      --background-color: color-mix(in oklab, black 65%, var(--fw-pastel-blue-2));
+      --hover-background-color: color-mix(in oklab, black 65%, var(--fw-pastel-blue-3));
+      --active-background-color: color-mix(in oklab, black 65%, var(--fw-pastel-blue-4));
+      --disabled-color: var(--fw-gray-700);
+      --disabled-border-color: var(--fw-gray-400);
+      --disabled-background-color: transparent;
+    }
+  }
+
+  .red {
+    --color: var(--fw-pastel-red-1);
+    --color-over-transparent: var(--background-color);
+    --background-color: color-mix(in oklab, black 60%, var(--fw-pastel-red-2));
+    &.raised, .action>button {
+      --background-color: color-mix(in oklab, black 65%, var(--fw-pastel-red-2));
+      --hover-background-color: color-mix(in oklab, black 65%, var(--fw-pastel-red-3));
+      --active-background-color: color-mix(in oklab, black 65%, var(--fw-pastel-red-4));
+      --disabled-color: var(--fw-gray-700);
+      --disabled-border-color: var(--fw-gray-400);
+      --disabled-background-color: transparent;
+    }
+  }
+
+  .purple {
+    --color: var(--fw-gray-100);
+    --color-over-transparent: var(--background-color);
+    --background-color: color-mix(in oklab, black 50%, var(--fw-pastel-purple-1));
+    &.raised, .action>button {
+      --background-color: color-mix(in oklab, black 61%, var(--fw-pastel-purple-2));
+      --hover-background-color: color-mix(in oklab, black 66%, var(--fw-pastel-purple-3));
+      --active-background-color: color-mix(in oklab, black 71%, var(--fw-pastel-purple-4));
+      --disabled-color: var(--fw-gray-700);
+      --disabled-border-color: var(--fw-gray-400);
+      --disabled-background-color: transparent;
+    }
+  }
+
+  .green {
+    --color: var(--fw-pastel-green-1);
+    --color-over-transparent: var(--background-color);
+    --background-color: color-mix(in oklab, black 55%, var(--fw-pastel-green-1));
+    &.raised, .action>button {
+      --background-color: color-mix(in oklab, black 60%, var(--fw-pastel-green-2));
+      --hover-background-color: color-mix(in oklab, black 60%, var(--fw-pastel-green-3));
+      --active-background-color: color-mix(in oklab, black 60%, var(--fw-pastel-green-4));
+      --disabled-color: var(--fw-gray-700);
+      --disabled-border-color: var(--fw-gray-400);
+      --disabled-background-color: transparent;
+    }
+  }
+
+  .yellow {
+    --color: var(--fw-pastel-yellow-1);
+    --color-over-transparent: var(--background-color);
+    --background-color: color-mix(in oklab, black 53%, var(--fw-pastel-yellow-3));
+    &.raised, .action>button {
+      --background-color: color-mix(in oklab, black 45%, var(--fw-pastel-yellow-3));
+      --hover-background-color: color-mix(in oklab, black 45%, var(--fw-pastel-yellow-2));
+      --active-background-color: color-mix(in oklab, black 45%, var(--fw-pastel-yellow-1));
+      --disabled-color: var(--fw-gray-700);
+      --disabled-border-color: var(--fw-gray-400);
+      --disabled-background-color: transparent;
+    }
+  }
+}
+
+// (3) Applying colors
+
+:is(.VPDoc .vp-doc, .funkwhale){
+
+  // (3a) Applying colors to everything that has no explicit color props
+
+  color: var(--color);
+
+  // Fallback for Links without explicit color props
+
+  a {
+    color:var(--link-color);
+    &:hover {
+      color:var(--link-hover-color);
+    }
+    &[disabled] {
+      cursor: default;
+    }
+  }
+
+  // Fallback for `active` indicators (pressed)
+
+  [aria-pressed=true] {
+    color: var(--pressed-color, var(--active-color));
+    background-color: var(--pressed-background-color, var(--active-background-color));
+  }
+
+  // Indicate autofocus when using a mouse
+
+  [autofocus]:focus:not(:focus-visible) {
+    outline: 4px solid var(--autofocus-outline-color);
+    outline-offset: 2px;
+  }
+
+  // Fallback for decorative elements without explicit color props
+
+  hr {
+    border-color: var(--border-color);
+  }
+
+  // Fallback for focused elements without explicit focus-outline
+
+  :is(button, input, a):focus-visible {
+    outline: 4px solid var(--focus-ring-color);
+    outline-offset: -4px;
+  }
+
+  // (3b) Applying colors to things with explicit Variant props
+
+  .solid, .alert>.actions>button, button:not(:is(.ghost,.outline,.tabs-item)) {
+    color: var(--color);
+    background-color:var(--background-color);
+    border: 1px solid var(--background-color);
+
+    &.interactive {
+      &:hover:not(:has(.interactive:hover)):not([disabled]) {
+        color: var(--hover-color, var(--color));
+        background-color: var(--hover-background-color);
+        border-color: var(--hover-background-color);
+      }
+      &[aria-pressed=true] {
+        color: var(--pressed-color, var(--active-color));
+        background-color: var(--pressed-background-color, var(--active-background-color));
+        border-color: var(--pressed-background-color, var(--active-background-color));
+      }
+      &:is(:active, .active:not(.router-link-no-matching-query-flags)) {
+        color:var(--active-color);
+        background-color:var(--active-background-color);
+        border-color: var(--active-background-color);
+      }
+      &[disabled] {
+        color: var(--disabled-color);
+        border-color: var(--disabled-border-color);
+        background-color:var(--disabled-background-color);
+      }
+    }
+  }
+
+  .ghost {
+    color: var(--color-over-transparent, var(--color));
+    background-color: transparent;
+    border: 1px solid transparent;
+
+    &.interactive {
+      &:hover:not(:has(.interactive:hover)):not([disabled]) {
+        color: var(--hover-color, var(--color));
+        background-color: var(--hover-background-color);
+        border-color: var(--hover-background-color);
+      }
+      &[aria-pressed=true] {
+        color: var(--pressed-color, var(--active-color));
+        background-color: var(--pressed-background-color, var(--active-background-color));
+        border-color: var(--pressed-background-color, var(--active-background-color));
+      }
+      &:active {
+        color: var(--active-color);
+        background-color: var(--active-background-color);
+      }
+      &[disabled] {
+        color: var(--disabled-color);
+        border-color: var(--disabled-border-color);
+        background-color:var(--disabled-background-color);
+      }
+      // Link
+      /* &.active {
+        border-color: var(--link-active-border-color);
+      } */
+      &.router-link-exact-active:not(.router-link-no-matching-query-flags) {
+        background-color: var(--exact-active-background-color, var(--active-background-color));
+      }
+    }
+  }
+
+  .outline {
+    color: var(--color-over-transparent, var(--color));
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+
+    &.interactive, button {
+      &:hover:not([disabled]) {
+        color:var(--hover-color, var(--color));
+        border-color: var(--hover-border-color);
+      }
+      &[aria-pressed=true] {
+        color: var(--pressed-color, var(--active-color));
+        background-color: var(--pressed-background-color, var(--active-background-color));
+        border-color: var(--pressed-background-color, var(--active-background-color));
+      }
+      &:is(:active, .active:not(.router-link-no-matching-query-flags)) {
+        border-color: var(--active-background-color);
+        &.router-link-exact-active {
+          border-color: var(--exact-active-border-color);
+          background-color: var(--exact-active-background-color);
+        }
+      }
+      &[disabled] {
+        color: var(--disabled-color);
+        border-color: var(--disabled-border-color);
+        background-color:var(--disabled-background-color);
+      }
+    }
+  }
+}

@@ -2,13 +2,18 @@
 import { useI18n } from 'vue-i18n'
 import { ref, computed } from 'vue'
 import { useStore } from '~/store'
+import { useRoute } from 'vue-router'
 
 import axios from 'axios'
 
 import ChannelsWidget from '~/components/audio/ChannelsWidget.vue'
 import PlaylistWidget from '~/components/playlists/Widget.vue'
 import TrackWidget from '~/components/audio/track/Widget.vue'
-import AlbumWidget from '~/components/audio/album/Widget.vue'
+import AlbumWidget from '~/components/album/Widget.vue'
+import ArtistWidget from '~/components/artist/Widget.vue'
+import Header from '~/components/ui/Header.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Spacer from '~/components/ui/Spacer.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 import useLogger from '~/composables/useLogger'
@@ -22,6 +27,7 @@ withDefaults(defineProps<Props>(), {
 })
 
 const store = useStore()
+const route = useRoute()
 const qualityFilters = computed(() => store.getters['instance/qualityFilters'])
 
 const artists = ref([])
@@ -58,64 +64,53 @@ fetchData()
 </script>
 
 <template>
-  <main
-    :key="$route?.name ?? undefined"
+  <Layout
+    :key="route?.name ?? undefined"
     v-title="labels.title"
+    main
+    stack
   >
-    <section class="ui vertical stripe segment">
-      <div class="ui stackable three column grid">
-        <div class="column">
-          <track-widget
-            :url="'history/listenings/'"
-            :filters="{ scope, ordering: '-creation_date', ...qualityFilters}"
-            :websocket-handlers="['Listen']"
-          >
-            <template #title>
-              {{ $t('components.library.Home.header.recentlyListened') }}
-            </template>
-          </track-widget>
-        </div>
-        <div class="column">
-          <track-widget
-            :url="'favorites/tracks/'"
-            :filters="{scope: scope, ordering: '-creation_date'}"
-          >
-            <template #title>
-              {{ $t('components.library.Home.header.recentlyFavorited') }}
-            </template>
-          </track-widget>
-        </div>
-        <div class="column">
-          <playlist-widget
-            :url="'playlists/'"
-            :filters="{scope: scope, playable: true, ordering: '-modification_date'}"
-          >
-            <template #title>
-              {{ $t('components.library.Home.header.playlists') }}
-            </template>
-          </playlist-widget>
-        </div>
-      </div>
-      <div class="ui section hidden divider" />
-      <div class="ui stackable one column grid">
-        <div class="column">
-          <album-widget :filters="{scope: scope, playable: true, ordering: '-creation_date', ...qualityFilters}">
-            <template #title>
-              {{ $t('components.library.Home.header.recentlyAdded') }}
-            </template>
-          </album-widget>
-        </div>
-      </div>
-      <template v-if="scope === 'all'">
-        <h3 class="ui header">
-          {{ $t('components.library.Home.header.newChannels') }}
-        </h3>
-        <channels-widget
-          :show-modification-date="true"
-          :limit="12"
-          :filters="{ordering: '-creation_date', external: 'false'}"
-        />
-      </template>
-    </section>
-  </main>
+    <Header
+      page-heading
+      :h1="t('components.Sidebar.header.explore')"
+    />
+    <album-widget
+      :filters="{scope: scope, playable: true, ordering: '-creation_date', ...qualityFilters}"
+      :limit="4"
+      :title="t('components.library.Home.header.recentlyAdded')"
+    />
+    <Spacer />
+    <track-widget
+      :title="t('components.library.Home.header.recentlyListened')"
+      :url="'history/listenings/'"
+      :filters="{ scope, ordering: '-creation_date', ...qualityFilters }"
+      :websocket-handlers="['Listen']"
+    />
+    <Spacer />
+    <playlist-widget
+      :url="'playlists/'"
+      :filters="{scope: scope, playable: true, ordering: '-modification_date'}"
+      :title="t('components.library.Home.header.playlists')"
+      :limit="4"
+    />
+    <Spacer />
+    <track-widget
+      :title="t('components.library.Home.header.recentlyFavorited')"
+      :url="'favorites/tracks/'"
+      :filters="{scope: scope, ordering: '-creation_date'}"
+    />
+    <Spacer />
+    <channels-widget
+      :limit="4"
+      :filters="{ordering: '-creation_date', external: 'false'}"
+      :title="t('components.library.Home.header.newChannels')"
+      :show-modification-date="true"
+    />
+    <Spacer />
+    <artist-widget
+      :limit="4"
+      :filters="{playable: true, ordering: '-creation_date', include_channels: true, content_category: 'podcast'}"
+      title="Podcasts hosted on Funkwhale"
+    />
+  </Layout>
 </template>

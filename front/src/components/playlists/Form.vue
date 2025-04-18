@@ -1,16 +1,22 @@
 <script setup lang="ts">
-import type { Playlist, PrivacyLevel, BackendError } from '~/types'
+import type { Playlist, BackendError } from '~/types'
+import type { components } from '~/generated/types'
 
-import { useVModels, useCurrentElement } from '@vueuse/core'
-import { ref, computed, onMounted, nextTick } from 'vue'
+import { useVModels } from '@vueuse/core'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useStore } from '~/store'
 
 import axios from 'axios'
-import $ from 'jquery'
 
 import useSharedLabels from '~/composables/locale/useSharedLabels'
 import useLogger from '~/composables/useLogger'
+
+import Layout from '~/components/ui/Layout.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Button from '~/components/ui/Button.vue'
+import Input from '~/components/ui/Input.vue'
+import Slider from '~/components/ui/Slider.vue'
 
 interface Events {
   (e: 'update:playlist', value: Playlist): void
@@ -39,6 +45,7 @@ const success = ref(false)
 const store = useStore()
 const name = ref(playlist.value?.name ?? '')
 const privacyLevel = ref(playlist.value?.privacy_level ?? store.state.auth.profile?.privacy_level ?? 'me')
+const description = ref(playlist.value?.description ?? '')
 
 const { t } = useI18n()
 const labels = computed(() => ({
@@ -46,26 +53,12 @@ const labels = computed(() => ({
 }))
 
 const sharedLabels = useSharedLabels()
-const privacyLevelChoices = computed(() => [
-  {
-    value: 'me',
-    label: sharedLabels.fields.privacy_level.choices.me
-  },
-  {
-    value: 'instance',
-    label: sharedLabels.fields.privacy_level.choices.instance
-  },
-  {
-    value: 'everyone',
-    label: sharedLabels.fields.privacy_level.choices.everyone
-  }
-] as { value: PrivacyLevel, label: string }[])
-
-const el = useCurrentElement()
-onMounted(async () => {
-  await nextTick()
-  $(el.value).find('.dropdown').dropdown()
-})
+const privacyLevelChoices = {
+  me: sharedLabels.fields.privacy_level.choices.me,
+  instance: sharedLabels.fields.privacy_level.choices.instance,
+  followers: sharedLabels.fields.privacy_level.choices.followers,
+  everyone: sharedLabels.fields.privacy_level.choices.everyone
+} as const satisfies Record<components['schemas']['PrivacyLevelEnum'], string>
 
 const isLoading = ref(false)
 const submit = async () => {
@@ -79,7 +72,8 @@ const submit = async () => {
 
     const data = {
       name: name.value,
-      privacy_level: privacyLevel.value
+      privacy_level: privacyLevel.value,
+      description: description.value
     }
 
     const response = await axios.request({ method, url, data })
@@ -103,36 +97,35 @@ const submit = async () => {
 </script>
 
 <template>
-  <form
-    class="ui form"
+  <Layout
+    form
     @submit.prevent="submit()"
   >
-    <h4
+    <h3
       v-if="title"
-      class="ui header"
     >
-      {{ $t('components.playlists.Form.header.createPlaylist') }}
-    </h4>
-    <div
+      {{ t('components.playlists.Form.header.createPlaylist') }}
+    </h3>
+    <Alert
       v-if="success"
-      class="ui positive message"
+      green
     >
       <h4 class="header">
         <template v-if="playlist">
-          {{ $t('components.playlists.Form.header.updateSuccess') }}
+          {{ t('components.playlists.Form.header.updateSuccess') }}
         </template>
         <template v-else>
-          {{ $t('components.playlists.Form.header.createSuccess') }}
+          {{ t('components.playlists.Form.header.createSuccess') }}
         </template>
       </h4>
-    </div>
-    <div
+    </Alert>
+    <Alert
       v-if="errors.length > 0"
+      red
       role="alert"
-      class="ui negative message"
     >
       <h4 class="header">
-        {{ $t('components.playlists.Form.header.createFailure') }}
+        {{ t('components.playlists.Form.header.createFailure') }}
       </h4>
       <ul class="list">
         <li
@@ -142,49 +135,48 @@ const submit = async () => {
           {{ error }}
         </li>
       </ul>
+    </Alert>
+    <div class="field">
+      <label for="playlist-name">{{ t('components.playlists.Form.label.name') }}</label>
+      <Input
+        id="playlist-name"
+        v-model="name"
+        name="name"
+        required
+        type="text"
+        :placeholder="labels.placeholder"
+      />
     </div>
-    <div class="three fields">
-      <div class="field">
-        <label for="playlist-name">{{ $t('components.playlists.Form.label.name') }}</label>
-        <input
-          id="playlist-name"
-          v-model="name"
-          name="name"
-          required
-          type="text"
-          :placeholder="labels.placeholder"
-        >
-      </div>
-      <div class="field">
-        <label for="playlist-visibility">{{ $t('components.playlists.Form.label.visibility') }}</label>
-        <select
-          id="playlist-visibility"
-          v-model="privacyLevel"
-          class="ui dropdown"
-        >
-          <option
-            v-for="(c, key) in privacyLevelChoices"
-            :key="key"
-            :value="c.value"
-          >
-            {{ c.label }}
-          </option>
-        </select>
-      </div>
-      <div class="field">
-        <span id="updatePlaylistLabel" />
-        <button
-          :class="['ui', 'fluid', {'loading': isLoading}, 'button']"
-          type="submit"
-        >
-          <template v-if="playlist">
-            {{ $t('components.playlists.Form.button.update') }}
-          </template>
-          <template v-else>
-            {{ $t('components.playlists.Form.button.create') }}
-          </template>
-        </button>
-      </div>
+    <div class="field">
+      <Slider
+        v-model="privacyLevel"
+        :options="privacyLevelChoices"
+        :label="t('components.playlists.Form.label.visibility')"
+      />
     </div>
-  </form>
+    <!-- TODO: Add description to model and types -->
+    <div class="field">
+      <ContentForm
+        v-model="description"
+        :placeholder="t('components.playlists.Form.placeholder.description')"
+        :rows="3"
+        :max-length="500"
+      />
+    </div>
+    <div class="field">
+      <span id="updatePlaylistLabel" />
+      <Button
+        primary
+        :class="['ui', 'fluid', {'loading': isLoading}, 'button']"
+        type="submit"
+      >
+        <template v-if="playlist">
+          {{ t('components.playlists.Form.button.update') }}
+        </template>
+        <template v-else>
+          {{ t('components.playlists.Form.button.create') }}
+        </template>
+      </Button>
+    </div>
+  </Layout>
 </template>

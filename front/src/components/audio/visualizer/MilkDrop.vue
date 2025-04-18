@@ -26,6 +26,19 @@ onScopeDispose(() => {
 defineExpose({
   loadRandomPreset
 })
+
+let autoPresetInterval: ReturnType<typeof setInterval> | null = null
+
+function toggleAutoPreset() {
+  if (autoPresetInterval) {
+    clearInterval(autoPresetInterval)
+    autoPresetInterval = null
+  } else {
+    autoPresetInterval = setInterval(() => {
+      loadRandomPreset()
+    }, 23000)
+  }
+}
 </script>
 
 <template>
@@ -36,6 +49,7 @@ defineExpose({
     <canvas
       ref="canvas"
       @click="loadRandomPreset()"
+      @dblclick="toggleAutoPreset()"
     />
   </div>
 </template>

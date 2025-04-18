@@ -32,15 +32,11 @@ whenever(() => store.state.auth.authenticated, () => {
 <template>
   <main
     v-title="labels.title"
-    class="main pusher"
+    class="main"
   >
-    <section class="ui vertical stripe segment">
-      <div class="ui small text container">
-        <h2>
-          {{ $t('views.auth.Login.header.login') }}
-        </h2>
-        <login-form :next="next" />
-      </div>
-    </section>
+    <h2>
+      {{ t('views.auth.Login.header.login') }}
+    </h2>
+    <login-form :next="next" />
   </main>
 </template>

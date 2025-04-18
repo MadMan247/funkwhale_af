@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { Track, Library } from '~/types'
 
-import { humanSize, momentFormat, truncate } from '~/utils/filters'
+import { humanSize, momentFormat } from '~/utils/filters'
 import { computed, ref, watchEffect } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import time from '~/utils/time'
 import axios from 'axios'
@@ -10,6 +11,10 @@ import axios from 'axios'
 import LibraryWidget from '~/components/federation/LibraryWidget.vue'
 import PlaylistWidget from '~/components/playlists/Widget.vue'
 import TagsList from '~/components/tags/List.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Section from '~/components/ui/Section.vue'
+import Link from '~/components/ui/Link.vue'
+import Spacer from '~/components/ui/Spacer.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 
@@ -20,6 +25,8 @@ interface Events {
 interface Props {
   track: Track
 }
+
+const { t } = useI18n()
 
 const emit = defineEmits<Events>()
 const props = defineProps<Props>()
@@ -45,247 +52,231 @@ const fetchLicense = async (licenseId: string) => {
 
 watchEffect(() => {
   if (props.track.license) {
-    // @ts-expect-error For some reason, track.license is id instead of License here
     fetchLicense(props.track.license)
   }
 })
+
+const releaseDetails: {
+  label: string;
+  releaseValue: string;
+  link?: { name: string; params: { id: number } };
+}[] = [
+  {
+    label: t('components.library.TrackDetail.table.release.artist'),
+    releaseValue: props.track.artist_credit.map(ac => ac.credit).join(', '),
+    link: props.track.artist_credit.length > 0
+      ? {
+          name: 'library.artists.detail',
+          params: { id: props.track.artist_credit[0].artist.id }
+        }
+      : undefined
+  },
+  {
+    label:
+      props.track.album?.artist_credit?.[0].artist.content_category === 'music'
+        ? t('components.library.TrackDetail.table.release.album')
+        : t('components.library.TrackDetail.table.release.series'),
+    releaseValue: props.track.album?.title || t('components.library.TrackDetail.notApplicable'),
+    link: props.track.album
+      ? {
+          name: 'library.albums.detail',
+          params: { id: props.track.album.id }
+        }
+      : undefined
+  },
+  {
+    label: t('components.library.TrackDetail.table.release.year'),
+    releaseValue: props.track.album?.release_date
+      ? momentFormat(new Date(props.track.album.release_date), 'Y')
+      : t('components.library.TrackDetail.notApplicable')
+  },
+  {
+    label: t('components.library.TrackDetail.table.release.copyright'),
+    releaseValue: props.track.copyright || t('components.library.TrackDetail.notApplicable')
+  },
+  {
+    label: t('components.library.TrackDetail.table.release.license'),
+    releaseValue: license.value?.name || t('components.library.TrackDetail.notApplicable')
+  }
+]
+
+const trackDetails: {
+  label: string;
+  trackValue: string | number;
+  link?: { name: string; params: { id: number } };
+}[] = [
+  {
+    label: t('components.library.TrackDetail.table.track.duration'),
+    trackValue: upload?.value?.duration ? time.parse(upload.value.duration) : t('components.library.TrackDetail.notApplicable')
+  },
+  {
+    label:
+    t('components.library.TrackDetail.table.track.size'),
+    trackValue: upload?.value.size ? humanSize(upload.value.size) : t('components.library.TrackDetail.notApplicable')
+  },
+  {
+    label: t('components.library.TrackDetail.table.track.codec'),
+    trackValue: upload?.value.extension || t('components.library.TrackDetail.notApplicable')
+  },
+  {
+    label:
+    t('components.library.TrackDetail.table.track.bitrate.label'),
+    trackValue: upload?.value.bitrate
+      ? t('components.library.TrackDetail.table.track.bitrate.value', { bitrate: humanSize(upload.value.bitrate) })
+      : t('components.library.TrackDetail.notApplicable')
+  },
+  {
+    label: t('components.library.TrackDetail.table.track.downloads'),
+    trackValue: props.track.downloads_count
+  }
+]
 </script>
 
 <template>
-  <div v-if="track">
-    <section class="ui vertical stripe segment">
-      <div class="ui stackable grid row container">
-        <div class="six wide column">
-          <template v-if="upload">
-            <img
-              v-if="track.cover && track.cover.urls.large_square_crop"
-              v-lazy="$store.getters['instance/absoluteUrl'](track.cover.urls.large_square_crop)"
-              alt="Cover Image"
-              class="ui fluid image track-cover-image"
-            >
-            <img
-              v-else-if="track.album && track.album.cover && track.album.cover.urls.large_square_crop"
-              v-lazy="$store.getters['instance/absoluteUrl'](track.album.cover.urls.large_square_crop)"
-              alt="Cover Image"
-              class="ui fluid image track-cover-image"
-            >
-            <img
-              v-else
-              src="../../assets/audio/default-cover.png"
-              alt="Cover Image"
-              class="ui fluid image track-cover-image"
-            >
-            <h3 class="ui header">
-              <span v-if="track.artist_credit?.[0].artist?.content_category === 'music'">
-                {{ $t('components.library.TrackDetail.header.track') }}
-              </span>
-              <span v-else>
-                {{ $t('components.library.TrackDetail.header.episode') }}
-              </span>
-            </h3>
-            <table class="ui basic table">
-              <tbody>
-                <tr>
-                  <td>
-                    {{ $t('components.library.TrackDetail.table.track.duration') }}
-                  </td>
-                  <td class="right aligned">
-                    <template v-if="upload.duration">
-                      {{ time.parse(upload.duration) }}
-                    </template>
-                    <span v-else>
-                      {{ $t('components.library.TrackDetail.notApplicable') }}
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    {{ $t('components.library.TrackDetail.table.track.size') }}
-                  </td>
-                  <td class="right aligned">
-                    <template v-if="upload.size">
-                      {{ humanSize(upload.size) }}
-                    </template>
-                    <span v-else>
-                      {{ $t('components.library.TrackDetail.notApplicable') }}
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    {{ $t('components.library.TrackDetail.table.track.codec') }}
-                  </td>
-                  <td class="right aligned">
-                    <template v-if="upload.extension">
-                      {{ upload.extension }}
-                    </template>
-                    <span v-else>
-                      {{ $t('components.library.TrackDetail.notApplicable') }}
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    {{ $t('components.library.TrackDetail.table.track.bitrate.label') }}
-                  </td>
-                  <td class="right aligned">
-                    <template v-if="upload.bitrate">
-                      {{ $t('components.library.TrackDetail.table.track.bitrate.value', {bitrate: humanSize(upload.bitrate)}) }}
-                    </template>
-                    <span v-else>
-                      {{ $t('components.library.TrackDetail.notApplicable') }}
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    {{ $t('components.library.TrackDetail.table.track.downloads') }}
-                  </td>
-                  <td class="right aligned">
-                    {{ track.downloads_count }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </template>
-        </div>
-        <div class="ten wide column">
-          <template v-if="track.tags && track.tags.length > 0">
-            <tags-list :tags="track.tags" />
-            <div class="ui hidden divider" />
-          </template>
+  <Layout
+    v-if="track"
+    stack
+  >
+    <TagsList
+      v-if="track.tags && track.tags.length > 0"
+      style="margin-top: -16px;"
+      :tags="track.tags"
+    />
 
-          <rendered-description
-            :content="track.description"
-            :can-update="false"
+    <Layout
+      flex
+      gap-64
+    >
+      <Layout
+        stack
+        style="flex: 1; gap: 0;"
+      >
+        <!-- TODO: Find out why lint:tsc doesn't like `to` while language server does -->
+        <!-- @vue-ignore -->
+        <Section
+          align-left
+          h2="Release Details"
+          :action="musicbrainzUrl ? {
+            text: 'View on MusicBrainz',
+            to: musicbrainzUrl
+          } : undefined"
+          icon="bi-box-arrow-up-right"
+        />
+        <Layout
+          v-for="item in releaseDetails"
+          :key="item.label"
+          flex
+          class="details"
+        >
+          <span class="label">{{ item.label }}</span>
+          <Spacer
+            h
+            grow
           />
-          <h2 class="ui header">
-            {{ $t('components.library.TrackDetail.header.release') }}
-          </h2>
-          <table class="ui basic table ellipsis-rows">
-            <tbody>
-              <tr>
-                <td>
-                  {{ $t('components.library.TrackDetail.table.release.artist') }}
-                </td>
-                <td class="right aligned">
-                  <template
-                    v-for="ac in track.artist_credit"
-                    :key="ac.artist.id"
-                  >
-                    <router-link
-                      class="discrete link"
-                      :to="{ name: 'library.artists.detail', params: { id: ac.artist.id }}"
-                      style="display: inline;"
-                    >
-                      {{ ac.credit }}
-                    </router-link>
-                    <span style="display: inline;">{{ ac.joinphrase }}</span>
-                  </template>
-                </td>
-              </tr>
-              <tr v-if="track.album">
-                <td>
-                  <span v-if="track.album.artist_credit?.[0].artist.content_category === 'music'">
-                    {{ $t('components.library.TrackDetail.table.release.album') }}
-                  </span>
-                  <span v-else>
-                    {{ $t('components.library.TrackDetail.table.release.series') }}
-                  </span>
-                </td>
-                <td class="right aligned">
-                  <router-link :to="{name: 'library.albums.detail', params: {id: track.album.id}}">
-                    {{ track.album.title }}
-                  </router-link>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  {{ $t('components.library.TrackDetail.table.release.year') }}
-                </td>
-                <td class="right aligned">
-                  <template v-if="track.album && track.album.release_date">
-                    {{ momentFormat(new Date(track.album.release_date), 'Y') }}
-                  </template>
-                  <template v-else>
-                    {{ $t('components.library.TrackDetail.notApplicable') }}
-                  </template>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  {{ $t('components.library.TrackDetail.table.release.copyright') }}
-                </td>
-                <td class="right aligned">
-                  <span
-                    v-if="track.copyright"
-                    :title="track.copyright"
-                  >{{ truncate(track.copyright, 50) }}</span>
-                  <template v-else>
-                    {{ $t('components.library.TrackDetail.notApplicable') }}
-                  </template>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  {{ $t('components.library.TrackDetail.table.release.license') }}
-                </td>
-                <td class="right aligned">
-                  <a
-                    v-if="license"
-                    :href="license.url"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >{{ license.name }}</a>
-                  <span v-else>
-                    {{ $t('components.library.TrackDetail.notApplicable') }}
-                  </span>
-                </td>
-              </tr>
-              <tr v-if="!track.is_local">
-                <td>
-                  {{ $t('components.library.TrackDetail.table.release.url') }}
-                </td>
-                <td :title="track.fid">
-                  <a
-                    :href="track.fid"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {{ truncate(track.fid, 65) }}
-                  </a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <a
-            v-if="musicbrainzUrl"
-            :href="musicbrainzUrl"
-            target="_blank"
-            rel="noreferrer noopener"
+          <Link
+            v-if="item.link"
+            class="value"
+            :to="item.link"
           >
-            <i class="external icon" />
-            {{ $t('components.library.TrackDetail.link.musicbrainz') }}
-          </a>
-          <h2 class="ui header">
-            {{ $t('components.library.TrackDetail.header.playlists') }}
-          </h2>
-          <playlist-widget
-            :url="'playlists/'"
-            :filters="{track: track.id, playable: true, ordering: '-modification_date'}"
-          />
+            {{ item.releaseValue }}
+          </Link>
+          <span
+            v-else
+            class="value"
+          >{{ item.releaseValue }}</span>
+        </Layout>
+      </Layout>
 
-          <h2 class="ui header">
-            {{ $t('components.library.TrackDetail.header.library') }}
-          </h2>
-          <library-widget
-            :url="`tracks/${track.id}/libraries/`"
-            @loaded="emit('libraries-loaded', $event)"
+      <Layout
+        stack
+        style="flex: 1; gap: 0;"
+      >
+        <Section
+          align-left
+          h2="Track Details"
+        />
+        <Layout
+          v-for="item in trackDetails"
+          :key="item.label"
+          flex
+          class="details"
+        >
+          <span class="label">{{ item.label }}</span>
+          <Spacer
+            h
+            grow
+          />
+          <Link
+            v-if="item.link"
+            class="value"
+            :to="item.link"
           >
-            {{ $t('components.library.TrackDetail.description.library') }}
-          </library-widget>
-        </div>
-      </div>
-    </section>
-  </div>
+            {{ item.trackValue }}
+          </Link>
+          <span
+            v-else
+            class="value"
+          >{{ item.trackValue }}</span>
+        </Layout>
+      </Layout>
+    </Layout>
+
+    <h2>{{ t('components.library.TrackDetail.header.playlists') }}</h2>
+    <playlist-widget
+      :url="'playlists/'"
+      :filters="{track: track.id, playable: true, ordering: '-modification_date'}"
+    />
+
+    <h2>{{ t('components.library.TrackDetail.header.library') }}</h2>
+    <library-widget
+      :url="`tracks/${track.id}/libraries/`"
+      @loaded="emit('libraries-loaded', $event)"
+    >
+      {{ t('components.library.TrackDetail.description.library') }}
+    </library-widget>
+  </Layout>
 </template>
+
+<style scoped lang="scss">
+.channel-image {
+  width: 200px;
+  height: 200px;
+  border: none;
+}
+
+.details {
+  padding: 0 16px;
+  height: 72px;
+  align-items: center;
+  border-top: 1px solid;
+  min-width: 280px;
+
+  @include light-theme {
+    border-color: var(--fw-gray-300);
+  }
+  @include dark-theme {
+    border-color: var(--fw-gray-800);
+  }
+
+  .label {
+    font-weight: 800;
+
+    @include light-theme {
+      color: var(--fw-gray-600);
+    }
+
+    @include dark-theme {
+      color: var(--fw-gray-500);
+    }
+  }
+
+  a.value {
+    text-decoration: underline;
+  }
+
+  &:last-child {
+    border-bottom: 1px solid;
+  }
+}
+
+</style>

@@ -4,7 +4,7 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-  fill: '#222222'
+  fill: 'var(--color)'
 })
 </script>
 

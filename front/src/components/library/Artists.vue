@@ -4,19 +4,27 @@ import type { Artist, BackendResponse } from '~/types'
 import type { RouteRecordName } from 'vue-router'
 import type { OrderingField } from '~/store/ui'
 
-import { computed, ref, watch, onMounted } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRouteQuery } from '@vueuse/router'
 import { useI18n } from 'vue-i18n'
 import { syncRef } from '@vueuse/core'
 import { sortedUniq } from 'lodash-es'
 import { useStore } from '~/store'
+import { useModal } from '~/ui/composables/useModal.ts'
 
 import axios from 'axios'
-import $ from 'jquery'
 
-import TagsSelector from '~/components/library/TagsSelector.vue'
-import ArtistCard from '~/components/audio/artist/Card.vue'
-import Pagination from '~/components/vui/Pagination.vue'
+import ArtistCard from '~/components/artist/Card.vue'
+import Pagination from '~/components/ui/Pagination.vue'
+import Card from '~/components/ui/Card.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Header from '~/components/ui/Header.vue'
+import Input from '~/components/ui/Input.vue'
+import Toggle from '~/components/ui/Toggle.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Pills from '~/components/ui/Pills.vue'
+import Loader from '~/components/ui/Loader.vue'
 
 import useSharedLabels from '~/composables/locale/useSharedLabels'
 import useOrdering from '~/composables/navigation/useOrdering'
@@ -94,7 +102,7 @@ const fetchData = async () => {
 
 const store = useStore()
 watch([() => store.state.moderation.lastUpdate, excludeCompilation], fetchData)
-watch([page, tags, q, () => props.scope], fetchData)
+watch([page, tags, q, ordering, orderingDirection, () => props.scope], fetchData)
 fetchData()
 
 const search = () => {
@@ -107,8 +115,6 @@ onOrderingUpdate(() => {
   fetchData()
 })
 
-onMounted(() => $('.ui.dropdown').dropdown())
-
 const { t } = useI18n()
 const labels = computed(() => ({
   searchPlaceholder: t('components.library.Artists.placeholder.search'),
@@ -119,152 +125,171 @@ const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value]
 </script>
 
 <template>
-  <main v-title="labels.title">
-    <section class="ui vertical stripe segment">
-      <h2 class="ui header">
-        {{ $t('components.library.Artists.header.browse') }}
-      </h2>
-      <form
-        :class="['ui', {'loading': isLoading}, 'form']"
-        @submit.prevent="search"
+  <Layout
+    v-title="labels.title"
+    stack
+    main
+  >
+    <Header
+      :h1="t('components.library.Artists.header.browse')"
+      page-heading
+    />
+    <Layout
+      form
+      flex
+      :class="['ui', {'loading': isLoading}, 'form']"
+      @submit.prevent="search"
+    >
+      <Input
+        id="artist-search"
+        v-model="query"
+        search
+        name="search"
+        :label="t('components.library.Artists.label.search')"
+        autofocus
+        :placeholder="labels.searchPlaceholder"
+      />
+      <Pills
+        :get="model => { tags = model.currents.map(({ label }) => label) }"
+        :set="model => ({
+          ...model,
+          currents: tags.map(tag => ({ type: 'custom' as const, label: tag })),
+        })"
+        :label="t('components.library.Artists.label.tags')"
+        style="max-width: 150px;"
+      />
+      <Layout
+        stack
+        no-gap
+        label
+        for="artist-ordering"
       >
-        <div class="fields">
-          <div class="field">
-            <label for="artist-search">
-              {{ $t('components.library.Artists.label.search') }}
-            </label>
-            <div class="ui action input">
-              <input
-                id="artist-search"
-                v-model="query"
-                type="text"
-                name="search"
-                :placeholder="labels.searchPlaceholder"
-              >
-              <button
-                class="ui icon button"
-                type="submit"
-                :aria-label="t('components.library.Artists.button.search')"
-              >
-                <i class="search icon" />
-              </button>
-            </div>
-          </div>
-          <div class="field">
-            <label for="tags-search">{{ $t('components.library.Artists.label.tags') }}</label>
-            <tags-selector v-model="tags" />
-          </div>
-          <div class="field">
-            <label for="artist-ordering">{{ $t('components.library.Artists.ordering.label') }}</label>
-            <select
-              id="artist-ordering"
-              v-model="ordering"
-              class="ui dropdown"
-            >
-              <option
-                v-for="(option, key) in orderingOptions"
-                :key="key"
-                :value="option[0]"
-              >
-                {{ sharedLabels.filters[option[1]] }}
-              </option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="artist-ordering-direction">{{ $t('components.library.Artists.ordering.direction.label') }}</label>
-            <select
-              id="artist-ordering-direction"
-              v-model="orderingDirection"
-              class="ui dropdown"
-            >
-              <option value="+">
-                {{ $t('components.library.Artists.ordering.direction.ascending') }}
-              </option>
-              <option value="-">
-                {{ $t('components.library.Artists.ordering.direction.descending') }}
-              </option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="artist-results">{{ $t('components.library.Artists.pagination.results') }}</label>
-            <select
-              id="artist-results"
-              v-model="paginateBy"
-              class="ui dropdown"
-            >
-              <option
-                v-for="opt in paginateOptions"
-                :key="opt"
-                :value="opt"
-              >
-                {{ opt }}
-              </option>
-            </select>
-          </div>
-          <div class="field">
-            <span id="excludeHeader">{{ $t('components.library.Artists.label.excludeCompilation') }}</span>
-            <div
-              id="excludeCompilation"
-              class="ui toggle checkbox"
-            >
-              <input
-                id="exclude-compilation"
-                v-model="excludeCompilation"
-                true-value="true"
-                false-value="null"
-                type="checkbox"
-              >
-              <label
-                for="exclude-compilation"
-                class="visually-hidden"
-              >{{ $t('components.library.Artists.label.excludeCompilation') }}</label>
-            </div>
-          </div>
-        </div>
-      </form>
-      <div class="ui hidden divider" />
-      <div
-        v-if="result && result.results.length > 0"
-        class="ui five app-cards cards"
-      >
-        <div
-          v-if="isLoading"
-          class="ui inverted active dimmer"
+        <span class="label">
+          {{ t('components.library.Artists.ordering.label') }}
+        </span>
+        <select
+          id="artist-ordering"
+          v-model="ordering"
+          class="dropdown"
         >
-          <div class="ui loader" />
-        </div>
-        <artist-card
-          v-for="artist in result.results"
-          :key="artist.id"
-          :artist="artist"
-        />
-      </div>
-      <div
-        v-else-if="!isLoading"
-        class="ui placeholder segment sixteen wide column"
-        style="text-align: center; display: flex; align-items: center"
+          <option
+            v-for="(option, key) in orderingOptions"
+            :key="key"
+            :value="option[0]"
+          >
+            {{ sharedLabels.filters[option[1]] }}
+          </option>
+        </select>
+      </Layout>
+      <Layout
+        stack
+        no-gap
+        label
+        for="artist-ordering-direction"
       >
-        <div class="ui icon header">
-          <i class="compact disc icon" />
-          {{ $t('components.library.Artists.empty.noResults') }}
-        </div>
-        <router-link
-          v-if="$store.state.auth.authenticated"
-          :to="{name: 'content.index'}"
-          class="ui success button labeled icon"
+        <span class="label">
+          {{ t('components.library.Artists.ordering.direction.label') }}
+        </span>
+        <select
+          id="artist-ordering-direction"
+          v-model="orderingDirection"
+          class="dropdown"
         >
-          <i class="upload icon" />
-          {{ $t('components.library.Artists.button.upload') }}
-        </router-link>
-      </div>
-      <div class="ui center aligned basic segment">
-        <pagination
-          v-if="result && result.count > paginateBy"
-          v-model:current="page"
-          :paginate-by="paginateBy"
-          :total="result.count"
-        />
-      </div>
-    </section>
-  </main>
+          <option value="+">
+            {{ t('components.library.Artists.ordering.direction.ascending') }}
+          </option>
+          <option value="-">
+            {{ t('components.library.Artists.ordering.direction.descending') }}
+          </option>
+        </select>
+      </Layout>
+      <Layout
+        stack
+        no-gap
+        label
+        for="artist-results"
+      >
+        <span class="label">
+          {{ t('components.library.Artists.pagination.results') }}
+        </span>
+        <select
+          id="artist-results"
+          v-model="paginateBy"
+          class="dropdown"
+        >
+          <option
+            v-for="opt in paginateOptions"
+            :key="opt"
+            :value="opt"
+          >
+            {{ opt }}
+          </option>
+        </select>
+      </Layout>
+      <Toggle
+        id="exclude-compilation"
+        v-model="excludeCompilation"
+        :label="t('components.library.Artists.label.excludeCompilation')"
+        true-value="true"
+        false-value="null"
+        type="checkbox"
+      />
+    </Layout>
+    <Loader v-if="isLoading" />
+    <Pagination
+      v-if="page && result && result.count > paginateBy"
+      v-model:page="page"
+      :pages="Math.ceil(result.count / paginateBy)"
+    />
+    <Layout
+      v-if="result && result.results.length > 0"
+      grid
+      style="display:flex; flex-wrap:wrap; gap: 32px; margin-top:32px;"
+    >
+      <ArtistCard
+        v-for="artist in result.results"
+        :key="artist.id"
+        :artist="artist"
+      />
+    </Layout>
+    <Layout
+      v-else-if="result && result.results.length === 0"
+      stack
+    >
+      <Alert yellow>
+        <i class="compact disc icon" />
+        {{ t('components.library.Artists.empty.noResults') }}
+      </Alert>
+      <Card
+        v-if="store.state.auth.authenticated"
+        :title="t('components.library.Artists.button.upload')"
+        solid
+        small
+        primary
+        style="text-align: center;"
+        :to="useModal('upload').to"
+      >
+        <template #image>
+          <i
+            class="bi bi-upload"
+            style="font-size: 100px; position: relative; top: 50px;"
+          />
+        </template>
+      </Card>
+    </Layout>
+    <Spacer grow />
+    <Pagination
+      v-if="page && result && result.count > paginateBy"
+      v-model:page="page"
+      :pages="Math.ceil(result.count / paginateBy)"
+    />
+  </Layout>
 </template>
+
+<style lang="scss" scoped>
+  .label {
+    margin-top: -18px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+</style>

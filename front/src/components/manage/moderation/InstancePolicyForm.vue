@@ -7,6 +7,8 @@ import { useI18n } from 'vue-i18n'
 
 import axios from 'axios'
 
+import DangerousButton from '~/components/common/DangerousButton.vue'
+
 interface Events {
   (e: 'save', data: InstancePolicy): void
   (e: 'delete'): void
@@ -125,12 +127,12 @@ const remove = async () => {
       <span
         v-if="object"
       >
-        {{ $t('components.manage.moderation.InstancePolicyForm.header.editRule') }}
+        {{ t('components.manage.moderation.InstancePolicyForm.header.editRule') }}
       </span>
       <span
         v-else
       >
-        {{ $t('components.manage.moderation.InstancePolicyForm.header.addRule') }}
+        {{ t('components.manage.moderation.InstancePolicyForm.header.addRule') }}
       </span>
     </h3>
     <div
@@ -139,7 +141,7 @@ const remove = async () => {
       class="ui negative message"
     >
       <h4 class="header">
-        {{ $t('components.manage.moderation.InstancePolicyForm.header.failure') }}
+        {{ t('components.manage.moderation.InstancePolicyForm.header.failure') }}
       </h4>
       <ul class="list">
         <li
@@ -163,10 +165,10 @@ const remove = async () => {
         >
         <label for="policy-is-active">
           <span v-if="current.isActive">
-            {{ $t('components.manage.moderation.InstancePolicyForm.label.policyEnabled') }}
+            {{ t('components.manage.moderation.InstancePolicyForm.label.policyEnabled') }}
           </span>
           <span v-else>
-            {{ $t('components.manage.moderation.InstancePolicyForm.label.policyDisabled') }}
+            {{ t('components.manage.moderation.InstancePolicyForm.label.policyDisabled') }}
           </span>
           <tooltip :content="labels.isActiveHelp" />
         </label>
@@ -174,7 +176,7 @@ const remove = async () => {
     </div>
     <div class="field">
       <label for="policy-summary">
-        {{ $t('components.manage.moderation.InstancePolicyForm.label.policyReason') }}
+        {{ t('components.manage.moderation.InstancePolicyForm.label.policyReason') }}
         <tooltip :content="labels.summaryHelp" />
       </label>
       <textarea
@@ -192,13 +194,13 @@ const remove = async () => {
           type="checkbox"
         >
         <label for="policy-is-active">
-          {{ $t('components.manage.moderation.InstancePolicyForm.label.blockAll') }}
+          {{ t('components.manage.moderation.InstancePolicyForm.label.blockAll') }}
           <tooltip :content="labels.blockAllHelp" />
         </label>
       </div>
     </div>
     <div class="ui horizontal divider">
-      {{ $t('components.manage.moderation.InstancePolicyForm.label.customizeRule') }}
+      {{ t('components.manage.moderation.InstancePolicyForm.label.customizeRule') }}
     </div>
     <div
       v-for="(config, key) in fieldConfig"
@@ -223,39 +225,31 @@ const remove = async () => {
       class="ui basic left floated button"
       @click.prevent="emit('cancel')"
     >
-      {{ $t('components.manage.moderation.InstancePolicyForm.button.cancel') }}
+      {{ t('components.manage.moderation.InstancePolicyForm.button.cancel') }}
     </button>
     <button
       :class="['ui', 'right', 'floated', 'success', {'disabled loading': isLoading}, 'button']"
       :disabled="isLoading"
     >
       <span v-if="object">
-        {{ $t('components.manage.moderation.InstancePolicyForm.button.update') }}
+        {{ t('components.manage.moderation.InstancePolicyForm.button.update') }}
       </span>
       <span v-else>
-        {{ $t('components.manage.moderation.InstancePolicyForm.button.create') }}
+        {{ t('components.manage.moderation.InstancePolicyForm.button.create') }}
       </span>
     </button>
     <dangerous-button
       v-if="object"
-      class="ui right floated basic danger button"
+      style="float: right;"
+      :title="t('components.manage.moderation.InstancePolicyForm.modal.delete.header')"
       @confirm="remove"
     >
-      {{ $t('components.manage.moderation.InstancePolicyForm.button.delete') }}
-      <template #modal-header>
-        <p>
-          {{ $t('components.manage.moderation.InstancePolicyForm.modal.delete.header') }}
-        </p>
-      </template>
+      {{ t('components.manage.moderation.InstancePolicyForm.button.delete') }}
       <template #modal-content>
-        <p>
-          {{ $t('components.manage.moderation.InstancePolicyForm.modal.delete.content.warning') }}
-        </p>
+        {{ t('components.manage.moderation.InstancePolicyForm.modal.delete.content.warning') }}
       </template>
       <template #modal-confirm>
-        <div>
-          {{ $t('components.manage.moderation.InstancePolicyForm.button.confirm') }}
-        </div>
+        {{ t('components.manage.moderation.InstancePolicyForm.button.confirm') }}
       </template>
     </dangerous-button>
   </form>

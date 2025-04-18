@@ -1,25 +1,36 @@
 <script setup lang="ts">
-import type { Track, Album, Artist, Library } from '~/types'
+import type { Track, Album, Artist, Library, Cover } from '~/types'
 
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+import { sum } from 'lodash-es'
 import { getDomain } from '~/utils'
 import { useStore } from '~/store'
 
 import axios from 'axios'
-
-import EmbedWizard from '~/components/audio/EmbedWizard.vue'
-import SemanticModal from '~/components/semantic/Modal.vue'
-import PlayButton from '~/components/audio/PlayButton.vue'
-import RadioButton from '~/components/radios/Button.vue'
-import TagsList from '~/components/tags/List.vue'
-
 import useReport from '~/composables/moderation/useReport'
 import useLogger from '~/composables/useLogger'
+import { useModal } from '~/ui/composables/useModal.ts'
+
+import HumanDuration from '~/components/common/HumanDuration.vue'
+import EmbedWizard from '~/components/audio/EmbedWizard.vue'
+import Loader from '~/components/ui/Loader.vue'
+import Header from '~/components/ui/Header.vue'
+import Button from '~/components/ui/Button.vue'
+import Link from '~/components/ui/Link.vue'
+import OptionsButton from '~/components/ui/button/Options.vue'
+import PlayButton from '~/components/audio/PlayButton.vue'
+import RadioButton from '~/components/radios/Button.vue'
+import Popover from '~/components/ui/Popover.vue'
+import PopoverItem from '~/components/ui/popover/PopoverItem.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Modal from '~/components/ui/Modal.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import RenderedDescription from '../common/RenderedDescription.vue'
 
 interface Props {
-  id: number
+  id: number | string
 }
 
 const props = defineProps<Props>()
@@ -36,26 +47,50 @@ const nextTracksUrl = ref(null)
 const totalAlbums = ref(0)
 const totalTracks = ref(0)
 
-const dropdown = ref()
-
 const logger = useLogger()
 const store = useStore()
 const router = useRouter()
+const route = useRoute()
 
 const domain = computed(() => getDomain(object.value?.fid ?? ''))
-const isPlayable = computed(() => !!object.value?.albums.some(album => album.is_playable))
+
+// TODO: Re-implement `!!object.value?.albums.some(album => album.is_playable)` instead of `true`
+const isPlayable = computed(() => true)
 const wikipediaUrl = computed(() => `https://en.wikipedia.org/w/index.php?search=${encodeURI(object.value?.name ?? '')}`)
 const musicbrainzUrl = computed(() => object.value?.mbid ? `https://musicbrainz.org/artist/${object.value.mbid}` : null)
 const discogsUrl = computed(() => `https://discogs.com/search/?type=artist&title=${encodeURI(object.value?.name ?? '')}`)
 const publicLibraries = computed(() => libraries.value?.filter(library => library.privacy_level === 'everyone') ?? [])
-const cover = computed(() => object.value?.cover?.urls.original
-  ? object.value.cover
-  : object.value?.albums.find(album => album.cover?.urls.original)?.cover
-)
-const headerStyle = computed(() => cover.value?.urls.original
-  ? { backgroundImage: `url(${store.getters['instance/absoluteUrl'](cover.value.urls.original)})` }
-  : ''
-)
+
+// TODO: This is cover logic. We use it a lot. Should all go into a single, smart, parametrised function.
+// Something like `useCover.ts`!
+const cover = computed(() => {
+  const artistCover = object.value?.cover
+
+  // const albumCover: Cover | null = object.value?.albums
+  //   .find(album => album.cover?.urls.large_square_crop)?.cover
+
+  const trackCover = tracks.value?.find(
+    (track: Track) => track.cover
+  )?.cover
+
+  const fallback : Cover = {
+    uuid: '',
+    mimetype: 'jpeg',
+    creation_date: '',
+    size: 0,
+    urls: {
+      original: `${import.meta.env.BASE_URL}embed-default-cover.jpeg`,
+      small_square_crop: `${import.meta.env.BASE_URL}embed-default-cover.jpeg`,
+      medium_square_crop: `${import.meta.env.BASE_URL}embed-default-cover.jpeg`,
+      large_square_crop: `${import.meta.env.BASE_URL}embed-default-cover.jpeg`
+    }
+  }
+
+  return artistCover
+  // || albumCover
+  || trackCover
+  || fallback
+})
 
 const { t } = useI18n()
 const labels = computed(() => ({
@@ -91,196 +126,249 @@ const fetchData = async () => {
   isLoading.value = false
 }
 
+const totalDuration = computed(() => sum((tracks.value ?? []).map(track => track.uploads[0]?.duration ?? 0)))
+
 watch(() => props.id, fetchData, { immediate: true })
+
+const isOpen = useModal('artist-description').isOpen
 </script>
 
 <template>
-  <main v-title="labels.title">
-    <div
-      v-if="isLoading"
-      class="ui vertical segment"
-    >
-      <div :class="['ui', 'centered', 'active', 'inline', 'loader']" />
-    </div>
-    <template v-if="object && !isLoading">
-      <section
-        v-title="object.name"
-        :class="['ui', 'head', {'with-background': cover}, 'vertical', 'center', 'aligned', 'stripe', 'segment']"
-        :style="headerStyle"
+  <Loader v-if="isLoading" />
+  <Header
+    v-if="object && !isLoading"
+    v-title="labels.title"
+    :h1="object.name"
+    page-heading
+  >
+    <template #image>
+      <img
+        v-lazy="cover.urls.large_square_crop"
+        :alt="object.name"
+        class="channel-image"
       >
-        <div class="segment-content">
-          <h2 class="ui center aligned icon header">
-            <i class="circular inverted users violet icon" />
-            <div class="content">
-              {{ object.name }}
-              <div
-                v-if="albums"
-                class="sub header"
-              >
-                {{ $t('components.library.ArtistBase.meta.tracks', totalTracks) }}
-                {{ $t('components.library.ArtistBase.meta.albums', totalAlbums) }}
-              </div>
-            </div>
-          </h2>
-          <tags-list
-            v-if="object.tags && object.tags.length > 0"
-            :tags="object.tags"
-          />
-          <div class="ui hidden divider" />
-          <div class="header-buttons">
-            <div class="ui buttons">
-              <radio-button
-                type="artist"
-                :object-id="object.id"
-              />
-            </div>
-            <div class="ui buttons">
-              <play-button
-                :is-playable="isPlayable"
-                class="vibrant"
-                :artist="object"
-              >
-                {{ $t('components.library.ArtistBase.button.play') }}
-              </play-button>
-            </div>
-
-            <semantic-modal
-              v-if="publicLibraries.length > 0"
-              v-model:show="showEmbedModal"
-            >
-              <h4 class="header">
-                {{ $t('components.library.ArtistBase.modal.embed.header') }}
-              </h4>
-              <div class="scrolling content">
-                <div class="description">
-                  <embed-wizard
-                    :id="object.id"
-                    type="artist"
-                  />
-                </div>
-              </div>
-              <div class="actions">
-                <button class="ui deny button">
-                  {{ $t('components.library.ArtistBase.button.cancel') }}
-                </button>
-              </div>
-            </semantic-modal>
-            <div class="ui buttons">
-              <button
-                class="ui button"
-                @click="dropdown.click()"
-              >
-                {{ $t('components.library.ArtistBase.button.more') }}
-              </button>
-              <button
-                ref="dropdown"
-                v-dropdown
-                class="ui floating dropdown icon button"
-              >
-                <i class="dropdown icon" />
-                <div class="menu">
-                  <a
-                    v-if="domain != $store.getters['instance/domain']"
-                    :href="object.fid"
-                    target="_blank"
-                    class="basic item"
-                  >
-                    <i class="external icon" />
-                    {{ $t('components.library.ArtistBase.link.domain', {domain: domain}) }}
-                  </a>
-
-                  <button
-                    v-if="publicLibraries.length > 0"
-                    role="button"
-                    class="basic item"
-                    @click.prevent="showEmbedModal = !showEmbedModal"
-                  >
-                    <i class="code icon" />
-                    {{ $t('components.library.ArtistBase.button.embed') }}
-                  </button>
-                  <a
-                    :href="wikipediaUrl"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    class="basic item"
-                  >
-                    <i class="wikipedia w icon" />
-                    {{ $t('components.library.ArtistBase.link.wikipedia') }}
-                  </a>
-                  <a
-                    v-if="musicbrainzUrl"
-                    :href="musicbrainzUrl"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    class="basic item"
-                  >
-                    <i class="external icon" />
-                    {{ $t('components.library.ArtistBase.link.musicbrainz') }}
-                  </a>
-                  <a
-                    :href="discogsUrl"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    class="basic item"
-                  >
-                    <i class="external icon" />
-                    {{ $t('components.library.ArtistBase.link.discogs') }}
-                  </a>
-                  <router-link
-                    v-if="object.is_local"
-                    :to="{name: 'library.artists.edit', params: {id: object.id }}"
-                    class="basic item"
-                  >
-                    <i class="edit icon" />
-                    {{ $t('components.library.ArtistBase.button.edit') }}
-                  </router-link>
-                  <div class="divider" />
-                  <div
-                    v-for="obj in getReportableObjects({artist: object})"
-                    :key="obj.target.type + obj.target.id"
-                    role="button"
-                    class="basic item"
-                    @click.stop.prevent="report(obj)"
-                  >
-                    <i class="share icon" /> {{ obj.label }}
-                  </div>
-
-                  <div class="divider" />
-                  <router-link
-                    v-if="$store.state.auth.availablePermissions['library']"
-                    class="basic item"
-                    :to="{name: 'manage.library.artists.detail', params: {id: object.id}}"
-                  >
-                    <i class="wrench icon" />
-                    {{ $t('components.library.ArtistBase.link.moderation') }}
-                  </router-link>
-                  <a
-                    v-if="$store.state.auth.profile && $store.state.auth.profile.is_superuser"
-                    class="basic item"
-                    :href="$store.getters['instance/absoluteUrl'](`/api/admin/music/artist/${object.id}`)"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <i class="wrench icon" />
-                    {{ $t('components.library.ArtistBase.link.django') }}
-                  </a>
-                </div>
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-      <router-view
-        :key="$route.fullPath"
-        :tracks="tracks"
-        :next-tracks-url="nextTracksUrl"
-        :next-albums-url="nextAlbumsUrl"
-        :albums="albums"
-        :is-loading-albums="isLoading"
-        :object="object"
-        object-type="artist"
-        @libraries-loaded="libraries = $event"
-      />
     </template>
-  </main>
+    <Layout
+      flex
+      class="meta"
+      no-gap
+    >
+      <div
+        v-if="albums"
+      >
+        {{ t('components.library.ArtistBase.meta.tracks', totalTracks) }}
+        {{ t('components.library.ArtistBase.meta.albums', totalAlbums) }}
+      </div>
+      <div v-if="totalDuration > 0">
+        <i class="bi bi-dot" />
+        <human-duration
+          v-if="totalDuration > 0"
+          :duration="totalDuration"
+        />
+      </div>
+    </Layout>
+    <Layout
+      flex
+      gap-4
+    >
+      <RenderedDescription
+        v-if="object.description"
+        class="description"
+        :content="{ ...object.description, text: object.description.text ?? undefined }"
+        :truncate-length="100"
+        :more-link="false"
+      />
+      <Spacer grow />
+      <Link
+        v-if="object.description"
+        :to="useModal('artist-description').to"
+        style="color: var(--fw-primary); text-decoration: underline;"
+        thin-font
+        force-underline
+      >
+        {{ t('components.common.RenderedDescription.button.more') }}
+      </Link>
+    </Layout>
+    <Modal
+      v-if="object.description"
+      v-model="isOpen"
+      :title="object.name"
+    >
+      <img
+        v-if="object.cover"
+        v-lazy="object.cover.urls.original"
+        :alt="object.name"
+        style="object-fit: cover; width: 100%; height: 100%;"
+      >
+      <sanitized-html
+        v-if="object.description"
+        :html="object.description.html"
+      />
+    </Modal>
+
+    <Layout flex>
+      <PlayButton
+        :is-playable="isPlayable"
+        split
+        :artist="object"
+        low-height
+      >
+        {{ t('components.library.ArtistBase.button.play') }}
+      </PlayButton>
+      <radio-button
+        type="artist"
+        :object-id="object.id"
+        low-height
+      />
+      <Spacer grow />
+      <Popover>
+        <template #default="{ toggleOpen }">
+          <OptionsButton
+            is-square-small
+            @click="toggleOpen"
+          />
+        </template>
+
+        <template #items>
+          <PopoverItem
+            v-if="object.fid && domain != store.getters['instance/domain']"
+            :to="object.fid"
+            target="_blank"
+            icon="bi-box-arrow-up-right"
+          >
+            {{ t('components.library.ArtistBase.link.domain', {domain: domain}) }}
+          </PopoverItem>
+
+          <PopoverItem
+            v-if="publicLibraries.length > 0"
+            icon="bi-code-square"
+            @click="showEmbedModal = true"
+          >
+            {{ t('components.library.ArtistBase.button.embed') }}
+          </PopoverItem>
+
+          <PopoverItem
+            :to="wikipediaUrl"
+            target="_blank"
+            rel="noreferrer noopener"
+            icon="bi-wikipedia"
+          >
+            {{ t('components.library.ArtistBase.link.wikipedia') }}
+          </PopoverItem>
+
+          <PopoverItem
+            v-if="musicbrainzUrl"
+            :to="musicbrainzUrl"
+            target="_blank"
+            rel="noreferrer noopener"
+            icon="bi-box-arrow-up-right"
+          >
+            {{ t('components.library.ArtistBase.link.musicbrainz') }}
+          </PopoverItem>
+
+          <PopoverItem
+            :to="discogsUrl"
+            target="_blank"
+            rel="noreferrer noopener"
+            icon="bi-box-arrow-up-right"
+          >
+            {{ t('components.library.ArtistBase.link.discogs') }}
+          </PopoverItem>
+
+          <PopoverItem
+            v-if="object.is_local"
+            :to="{name: 'library.artists.edit', params: {id: object.id }}"
+            icon="bi-pencil-fill"
+          >
+            {{ t('components.library.ArtistBase.button.edit') }}
+          </PopoverItem>
+
+          <hr v-if="getReportableObjects({artist: object}).length>0">
+
+          <PopoverItem
+            v-for="obj in getReportableObjects({artist: object})"
+            :key="obj.target.type + obj.target.id"
+            icon="bi-share-fill"
+            @click="report(obj)"
+          >
+            {{ obj.label }}
+          </PopoverItem>
+
+          <hr v-if="getReportableObjects({artist: object}).length>0">
+
+          <PopoverItem
+            v-if="store.state.auth.availablePermissions['library']"
+            :to="{name: 'manage.library.artists.detail', params: {id: object.id}}"
+            icon="bi-wrench"
+          >
+            {{ t('components.library.ArtistBase.link.moderation') }}
+          </PopoverItem>
+
+          <PopoverItem
+            v-if="store.state.auth.profile && store.state.auth.profile.is_superuser"
+            :to="store.getters['instance/absoluteUrl'](`/api/admin/music/artist/${object.id}`)"
+            target="_blank"
+            rel="noopener noreferrer"
+            icon="bi-wrench"
+          >
+            {{ t('components.library.ArtistBase.link.django') }}
+          </PopoverItem>
+        </template>
+      </Popover>
+    </Layout>
+
+    <Modal
+      v-if="publicLibraries.length > 0"
+      v-model="showEmbedModal"
+      :title="t('components.library.ArtistBase.modal.embed.header')"
+    >
+      <embed-wizard
+        :id="object.id"
+        type="artist"
+      />
+      <template #actions>
+        <Button secondary>
+          {{ t('components.library.ArtistBase.button.cancel') }}
+        </Button>
+      </template>
+    </Modal>
+  </Header>
+  <hr>
+  <router-view
+    :key="route.fullPath"
+    :tracks="tracks"
+    :next-tracks-url="nextTracksUrl"
+    :next-albums-url="nextAlbumsUrl"
+    :albums="albums"
+    :is-loading-albums="isLoading"
+    :object="object"
+    object-type="artist"
+    @libraries-loaded="libraries = $event"
+  />
 </template>
+
+<style scoped lang="scss">
+  .channel-image {
+    border-radius: 50%;
+  }
+
+  .meta {
+    font-size: 15px;
+    @include light-theme {
+      color: var(--fw-gray-700);
+    }
+    @include dark-theme {
+      color: var(--fw-gray-500);
+    }
+  }
+
+  .description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+    -webkit-line-clamp: 1; /* Number of lines to show */
+    line-clamp: 1;
+  }
+</style>

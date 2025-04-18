@@ -59,7 +59,7 @@ const allCategories = computed(() => {
 
 <template>
   <div>
-    <label v-if="label">{{ $t('components.moderation.ReportCategoryDropdown.label.category') }}</label>
+    <label v-if="label">{{ t('components.moderation.ReportCategoryDropdown.label.category') }}</label>
     <select
       v-model="value"
       class="ui dropdown"

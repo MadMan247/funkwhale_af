@@ -1,43 +1,79 @@
 <script setup lang="ts">
 import { toRefs, useClipboard } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
+
+import Button from '~/components/ui/Button.vue'
+import Input from '~/components/ui/Input.vue'
 
 interface Props {
   value: string
   buttonClasses?: string
   id?: string
+  label: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   buttonClasses: 'accent',
-  id: 'copy-input'
+  id: 'copy-input',
+  label: 'label'
 })
+
+const { t } = useI18n()
 
 const { value } = toRefs(props)
 const { copy, isSupported: canCopy, copied } = useClipboard({ source: value, copiedDuring: 5000 })
 </script>
 
 <template>
-  <div class="ui fluid action input component-copy-input">
-    <p
-      v-if="copied"
-      class="message"
-    >
-      {{ $t('components.common.CopyInput.message.success') }}
-    </p>
-    <input
-      :id="id"
-      :value="value"
-      :name="id"
-      type="text"
-      readonly
-    >
-    <button
-      :class="['ui', buttonClasses, 'right', 'labeled', 'icon', 'button']"
-      :disabled="!canCopy || undefined"
-      @click="copy()"
-    >
-      <i class="copy icon" />
-      {{ $t('components.common.CopyInput.button.copy') }}
-    </button>
-  </div>
+  <p
+    v-if="copied"
+    class="message"
+  >
+    {{ t('components.common.CopyInput.message.success') }}
+  </p>
+  <Input
+    :id="id"
+    v-model="value"
+    readonly
+    :name="id"
+    type="text"
+    :label="label"
+  >
+    <template #input-right>
+      <Button
+        :class="['ui', buttonClasses, 'input-right']"
+        min-content
+        secondary
+        :disabled="!canCopy || undefined"
+        @click="copy()"
+      >
+        <i class="bi bi-copy" />
+        {{ t('components.common.CopyInput.button.copy') }}
+      </Button>
+    </template>
+  </Input>
 </template>
+
+<style scoped>
+.input-right {
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+  height: 48px;
+  min-width: 48px;
+  display: flex;
+
+  .button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    margin-right: 0px !important;
+  }
+}
+p.message {
+  background-color: var(--hover-background-color);
+  padding: 8px;
+  position: absolute;
+  bottom: -32px;
+  right: 0px;
+}
+</style>

@@ -1,16 +1,22 @@
 <script setup lang="ts">
-import { computed, ref, reactive, watch, onMounted } from 'vue'
+import { computed, ref, reactive, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
 import axios from 'axios'
-import $ from 'jquery'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 
 import TrackTable from '~/components/audio/track/Table.vue'
 import RadioButton from '~/components/radios/Button.vue'
 import BuilderFilter from './Filter.vue'
+import Button from '~/components/ui/Button.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Input from '~/components/ui/Input.vue'
+import Toggle from '~/components/ui/Toggle.vue'
+import Textarea from '~/components/ui/Textarea.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Spacer from '~/components/ui/Spacer.vue'
 
 export interface BuilderFilter {
   type: string
@@ -185,161 +191,149 @@ const save = async () => {
 
   isLoading.value = false
 }
-
-onMounted(() => {
-  $('.ui.dropdown').dropdown()
-})
 </script>
 
 <template>
-  <div
+  <Layout
     v-title="labels.title"
-    class="ui vertical stripe segment"
+    stack
+    main
   >
-    <div>
-      <section>
-        <h2 class="ui header">
-          {{ $t('components.library.radios.Builder.header.builder') }}
-        </h2>
-        <p>
-          {{ $t('components.library.radios.Builder.description.builder') }}
-        </p>
-        <div class="ui form">
-          <div
-            v-if="success"
-            class="ui positive message"
+    <section>
+      <h1>
+        {{ t('components.library.radios.Builder.header.builder') }}
+      </h1>
+      <p>
+        {{ t('components.library.radios.Builder.description.builder') }}
+      </p>
+      <Spacer />
+      <Layout form>
+        <Alert
+          v-if="success"
+          green
+        >
+          <h4 class="header">
+            <template v-if="radioName">
+              {{ t('components.library.radios.Builder.header.updated') }}
+            </template>
+            <template v-else>
+              {{ t('components.library.radios.Builder.header.created') }}
+            </template>
+          </h4>
+        </Alert>
+        <Input
+          id="name"
+          v-model="radioName"
+          :label="t('components.library.radios.Builder.label.name')"
+          name="name"
+          type="text"
+          :placeholder="labels.placeholder.name"
+        />
+        <Textarea
+          id="description"
+          v-model="radioDesc"
+          :label="t('components.library.radios.Builder.label.description')"
+          rows="2"
+          type="text"
+          :placeholder="labels.placeholder.description"
+        />
+        <Toggle
+          id="public"
+          v-model="isPublic"
+          type="checkbox"
+          :label="t('components.library.radios.Builder.label.public')"
+        />
+        <Button
+          :disabled="!canSave"
+          :class="['ui', 'success', {loading: isLoading}, 'button']"
+          primary
+          @click="save"
+        >
+          {{ t('components.library.radios.Builder.button.save') }}
+        </Button>
+        <radio-button
+          v-if="id"
+          type="custom"
+          :custom-radio-id="id"
+        />
+      </Layout>
+      <div class="ui form">
+        <div class="inline field">
+          <label
+            id="radioFilterLabel"
+            for="radio-filters"
+          >{{ t('components.library.radios.Builder.label.filter') }}</label>
+          <select
+            id="radio-filters"
+            v-model="currentFilterType"
+            class="ui dropdown"
           >
-            <h4 class="header">
-              <template v-if="radioName">
-                {{ $t('components.library.radios.Builder.header.updated') }}
-              </template>
-              <template v-else>
-                {{ $t('components.library.radios.Builder.header.created') }}
-              </template>
-            </h4>
-          </div>
-          <div class="">
-            <div class="field">
-              <label for="name">{{ $t('components.library.radios.Builder.label.name') }}</label>
-              <input
-                id="name"
-                v-model="radioName"
-                name="name"
-                type="text"
-                :placeholder="labels.placeholder.name"
-              >
-            </div>
-            <div class="field">
-              <label for="description">{{ $t('components.library.radios.Builder.label.description') }}</label>
-              <textarea
-                id="description"
-                v-model="radioDesc"
-                rows="2"
-                type="text"
-                :placeholder="labels.placeholder.description"
-              />
-            </div>
-            <div class="ui toggle checkbox">
-              <input
-                id="public"
-                v-model="isPublic"
-                type="checkbox"
-              >
-              <label for="public">{{ $t('components.library.radios.Builder.label.public') }}</label>
-            </div>
-            <div class="ui hidden divider" />
-            <button
-              :disabled="!canSave"
-              :class="['ui', 'success', {loading: isLoading}, 'button']"
-              @click="save"
+            <option value="">
+              {{ t('components.library.radios.Builder.option.filter') }}
+            </option>
+            <option
+              v-for="f in availableFilters"
+              :key="f.label"
+              :value="f.type"
             >
-              {{ $t('components.library.radios.Builder.button.save') }}
-            </button>
-            <radio-button
-              v-if="id"
-              type="custom"
-              :custom-radio-id="id"
-            />
-          </div>
+              {{ f.label }}
+            </option>
+          </select>
+          <Button
+            id="addFilter"
+            primary
+            :disabled="!currentFilterType"
+            @click="add"
+          >
+            {{ t('components.library.radios.Builder.button.filter') }}
+          </Button>
         </div>
-        <div class="ui form">
-          <div class="inline field">
-            <label
-              id="radioFilterLabel"
-              for="radio-filters"
-            >{{ $t('components.library.radios.Builder.label.filter') }}</label>
-            <select
-              id="radio-filters"
-              v-model="currentFilterType"
-              class="ui dropdown"
-            >
-              <option value="">
-                {{ $t('components.library.radios.Builder.option.filter') }}
-              </option>
-              <option
-                v-for="f in availableFilters"
-                :key="f.label"
-                :value="f.type"
-              >
-                {{ f.label }}
-              </option>
-            </select>
-            <button
-              id="addFilter"
-              :disabled="!currentFilterType"
-              class="ui button"
-              @click="add"
-            >
-              {{ $t('components.library.radios.Builder.button.filter') }}
-            </button>
-          </div>
-          <p v-if="currentFilter">
-            {{ currentFilter.help_text }}
-          </p>
-        </div>
-        <table class="ui table">
-          <thead>
-            <tr>
-              <th class="two wide">
-                {{ $t('components.library.radios.Builder.table.filter.header.name') }}
-              </th>
-              <th class="one wide">
-                {{ $t('components.library.radios.Builder.table.filter.header.exclude') }}
-              </th>
-              <th class="six wide">
-                {{ $t('components.library.radios.Builder.table.filter.header.config') }}
-              </th>
-              <th class="five wide">
-                {{ $t('components.library.radios.Builder.table.filter.header.candidates') }}
-              </th>
-              <th class="two wide">
-                {{ $t('components.library.radios.Builder.table.filter.header.actions') }}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <builder-filter
-              v-for="(f, index) in filters"
-              :key="f.hash"
-              v-model:data="filters[index]"
-              @delete="deleteFilter(index)"
-            />
-          </tbody>
-        </table>
-        <template v-if="checkResult && checkResult.candidates && checkResult.candidates.count">
-          <h3 class="ui header">
-            {{ $t('components.library.radios.Builder.header.matches', checkResult.candidates.count) }}
-          </h3>
-          <track-table
-            v-if="checkResult.candidates.sample"
-            :tracks="checkResult.candidates.sample"
-            :playable="true"
-            :show-position="false"
-            :show-duration="false"
-            :display-actions="false"
+        <p v-if="currentFilter">
+          {{ currentFilter.help_text }}
+        </p>
+      </div>
+      <table class="ui table">
+        <thead>
+          <tr>
+            <th class="two wide">
+              {{ t('components.library.radios.Builder.table.filter.header.name') }}
+            </th>
+            <th class="one wide">
+              {{ t('components.library.radios.Builder.table.filter.header.exclude') }}
+            </th>
+            <th class="six wide">
+              {{ t('components.library.radios.Builder.table.filter.header.config') }}
+            </th>
+            <th class="five wide">
+              {{ t('components.library.radios.Builder.table.filter.header.candidates') }}
+            </th>
+            <th class="two wide">
+              {{ t('components.library.radios.Builder.table.filter.header.actions') }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <builder-filter
+            v-for="(f, index) in filters"
+            :key="f.hash"
+            v-model:data="filters[index]"
+            @delete="deleteFilter(index)"
           />
-        </template>
-      </section>
-    </div>
-  </div>
+        </tbody>
+      </table>
+      <template v-if="checkResult && checkResult.candidates && checkResult.candidates.count">
+        <h3 class="ui header">
+          {{ t('components.library.radios.Builder.header.matches', checkResult.candidates.count) }}
+        </h3>
+        <track-table
+          v-if="checkResult.candidates.sample"
+          :tracks="checkResult.candidates.sample"
+          :playable="true"
+          :show-position="false"
+          :show-duration="false"
+          :display-actions="false"
+        />
+      </template>
+    </section>
+  </Layout>
 </template>

@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import SemanticModal from '~/components/semantic/Modal.vue'
+import Modal from '~/components/ui/Modal.vue'
 import ChannelUploadForm from '~/components/channels/UploadForm.vue'
+import Popover from '~/components/ui/Popover.vue'
+import PopoverItem from '~/components/ui/popover/PopoverItem.vue'
+import Button from '~/components/ui/Button.vue'
 import { humanSize } from '~/utils/filters'
 import { useRouter } from 'vue-router'
 import { useStore } from '~/store'
@@ -14,6 +17,8 @@ router.beforeEach(() => store.commit('channels/showUploadModal', { show: false }
 const update = (value: boolean) => store.commit('channels/showUploadModal', { show: value })
 
 const { t } = useI18n()
+
+const { filter } = defineProps<{ filter: 'podcast' | 'music' }>()
 
 const uploadForm = ref()
 
@@ -45,31 +50,30 @@ const statusInfo = computed(() => {
 
 const step = ref(1)
 const isLoading = ref(false)
+
+const open = ref(false)
+
+const title = computed(() =>
+  [t('components.channels.UploadModal.header'),
+    t('components.channels.UploadModal.header.publish'),
+    t('components.channels.UploadModal.header.uploadFiles'),
+    t('components.channels.UploadModal.header.uploadDetails'),
+    t('components.channels.UploadModal.header.processing')
+  ][step.value]
+)
 </script>
 
 <template>
-  <semantic-modal
-    v-model:show="$store.state.channels.showUploadModal"
+  <Modal
+    v-model="store.state.channels.showUploadModal"
+    :title="title"
     class="small"
   >
-    <h4 class="header">
-      <span v-if="step === 1">
-        {{ $t('components.channels.UploadModal.header.publish') }}
-      </span>
-      <span v-else-if="step === 2">
-        {{ $t('components.channels.UploadModal.header.uploadFiles') }}
-      </span>
-      <span v-else-if="step === 3">
-        {{ $t('components.channels.UploadModal.header.uploadDetails') }}
-      </span>
-      <span v-else-if="step === 4">
-        {{ $t('components.channels.UploadModal.header.processing') }}
-      </span>
-    </h4>
     <div class="scrolling content">
       <channel-upload-form
         ref="uploadForm"
-        :channel="$store.state.channels.uploadModalConfig.channel ?? null"
+        :filter="filter"
+        :channel="store.state.channels.uploadModalConfig.channel ?? null"
         @step="step = $event"
         @loading="isLoading = $event"
         @status="statusData = $event"
@@ -82,74 +86,74 @@ const isLoading = ref(false)
         </template>
         <div class="ui very small hidden divider" />
         <template v-if="statusData && statusData.quotaStatus">
-          {{ $t('components.channels.UploadModal.meta.quota', humanSize((statusData.quotaStatus.remaining - statusData.uploadedSize) * 1000 * 1000)) }}
+          {{ t('components.channels.UploadModal.meta.quota', humanSize((statusData.quotaStatus.remaining - statusData.uploadedSize) * 1000 * 1000)) }}
         </template>
       </div>
       <div class="ui hidden clearing divider mobile-only" />
-      <button
+      <Button
         v-if="step === 1"
-        class="ui basic cancel button"
-      >
-        {{ $t('components.channels.UploadModal.button.cancel') }}
-      </button>
-      <button
-        v-else-if="step < 3"
-        class="ui basic button"
-        @click.stop.prevent="uploadForm.step -= 1"
-      >
-        {{ $t('components.channels.UploadModal.button.previous') }}
-      </button>
-      <button
-        v-else-if="step === 3"
-        class="ui basic button"
-        @click.stop.prevent="uploadForm.step -= 1"
-      >
-        {{ $t('components.channels.UploadModal.button.update') }}
-      </button>
-      <button
-        v-if="step === 1"
-        class="ui primary button"
-        @click.stop.prevent="uploadForm.step += 1"
-      >
-        {{ $t('components.channels.UploadModal.button.next') }}
-      </button>
-      <div
-        v-if="step === 2"
-        class="ui primary buttons"
-      >
-        <button
-          :class="['ui', 'primary button', {loading: isLoading}]"
-          type="submit"
-          :disabled="!statusData?.canSubmit || undefined"
-          @click.prevent.stop="uploadForm.publish"
-        >
-          {{ $t('components.channels.UploadModal.button.publish') }}
-        </button>
-        <button
-          ref="dropdown"
-          v-dropdown
-          class="ui floating dropdown icon button"
-          :disabled="!statusData?.canSubmit || undefined"
-        >
-          <i class="dropdown icon" />
-          <div class="menu">
-            <div
-              role="button"
-              class="basic item"
-              @click="update(false)"
-            >
-              {{ $t('components.channels.UploadModal.button.finishLater') }}
-            </div>
-          </div>
-        </button>
-      </div>
-      <button
-        v-if="step === 4"
-        class="ui basic cancel button"
+        color="secondary"
+        variant="outline"
         @click="update(false)"
       >
-        {{ $t('components.channels.UploadModal.button.close') }}
-      </button>
+        {{ t('components.channels.UploadModal.button.cancel') }}
+      </Button>
+      <Button
+        v-else-if="step < 3"
+        color="secondary"
+        variant="outline"
+        @click.stop.prevent="uploadForm.step -= 1"
+      >
+        {{ t('components.channels.UploadModal.button.previous') }}
+      </Button>
+      <Button
+        v-else-if="step === 3"
+        color="secondary"
+        @click.stop.prevent="uploadForm.step -= 1"
+      >
+        {{ t('components.channels.UploadModal.button.update') }}
+      </Button>
+      <Button
+        v-if="step === 1"
+        color="secondary"
+        @click.stop.prevent="uploadForm.step += 1"
+      >
+        {{ t('components.channels.UploadModal.button.next') }}
+      </Button>
+      <div class="ui primary buttons">
+        <Button
+          :is-loading="isLoading"
+          type="submit"
+          :disabled="!statusData?.canSubmit"
+          @click.prevent.stop="uploadForm.publish"
+        >
+          {{ t('components.channels.UploadModal.button.publish') }}
+        </Button>
+
+        <Popover v-model="open">
+          <template #default="{ toggleOpen }">
+            <Button
+              color="primary"
+              icon="bi-chevron-down"
+              :disabled="!statusData?.canSubmit"
+              @click.stop="toggleOpen()"
+            />
+          </template>
+          <template #items>
+            <PopoverItem @click="update(false)">
+              {{ t('components.channels.UploadModal.button.finishLater') }}
+            </PopoverItem>
+          </template>
+        </Popover>
+      </div>
+
+      <Button
+        v-if="step === 4"
+        color="secondary"
+        @click="update(false)"
+      >
+        {{ t('components.channels.UploadModal.button.close') }}
+      </Button>
     </div>
-  </semantic-modal>
+  </Modal>
 </template>

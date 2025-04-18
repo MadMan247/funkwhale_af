@@ -2,17 +2,18 @@
 // TODO (wvffle): SORT IMPORTS LIKE SO EVERYWHERE
 import type { BuilderFilter, FilterConfig } from './Builder.vue'
 import type { Track } from '~/types'
+import { useI18n } from 'vue-i18n'
 
 import axios from 'axios'
-import $ from 'jquery'
 
-import { useCurrentElement, useVModel } from '@vueuse/core'
+import { useVModel } from '@vueuse/core'
 import { ref, onMounted, watch, computed } from 'vue'
 import { useStore } from '~/store'
 import { clone } from 'lodash-es'
 
-import SemanticModal from '~/components/semantic/Modal.vue'
+import Modal from '~/components/ui/Modal.vue'
 import TrackTable from '~/components/audio/track/Table.vue'
+import Button from '~/components/ui/Button.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 
@@ -31,6 +32,8 @@ interface Props {
   }
 }
 
+const { t } = useI18n()
+
 const emit = defineEmits<Events>()
 const props = defineProps<Props>()
 const data = useVModel(props, 'data', emit)
@@ -44,18 +47,25 @@ const exclude = computed({
   set: (value: boolean) => (data.value.config.not = value)
 })
 
-const el = useCurrentElement()
+// const el = useCurrentElement()
+
+// This component appears on "create new radio" and offers filters. "New filter" => Dropdown search field
+// TODO: Re-implement with <Input>, <select>
+
 onMounted(() => {
   for (const field of data.value.filter.fields) {
+    // @ts-expect-error We threw out Semantic UI types
     const settings: SemanticUI.DropdownSettings = {
+      // @ts-expect-error value? any!
       onChange (value) {
-        value = $(this).dropdown('get value').split(',')
+        // TODO: Find out if the following removal causes any regression #2440
+        // value = $(this).dropdown('get value').split(',')
 
-        if (field.type === 'list' && field.subtype === 'number') {
-          value = value.map((number: string) => parseInt(number))
-        }
+        // if (field.type === 'list' && field.subtype === 'number') {
+        //   value = value.map((number: string) => parseInt(number))
+        // }
 
-        data.value.config[field.name] = value
+        // data.value.config[field.name] = value
         fetchCandidates()
       }
     }
@@ -67,11 +77,11 @@ onMounted(() => {
     if (field.autocomplete) {
       selector += '.autocomplete'
 
-      // @ts-expect-error Semantic UI types are incomplete
       settings.fields = field.autocomplete_fields
       settings.minCharacters = 1
       settings.apiSettings = {
         url: store.getters['instance/absoluteUrl'](`${field.autocomplete}?${field.autocomplete_qs}`),
+        // @ts-expect-error xhr? any!
         beforeXHR (xhrObject) {
           if (store.state.auth.oauth.accessToken) {
             xhrObject.setRequestHeader('Authorization', store.getters['auth/header'])
@@ -79,6 +89,7 @@ onMounted(() => {
 
           return xhrObject
         },
+        // @ts-expect-error initialResponse? any!
         onResponse (initialResponse) {
           return !settings.fields?.remoteValues
             ? { results: initialResponse.results }
@@ -87,7 +98,8 @@ onMounted(() => {
       }
     }
 
-    $(el.value).find(selector).dropdown(settings)
+    // TODO: Find out if the following removal causes any regression #2440
+    // $(el.value).find(selector).dropdown(settings)
   }
 })
 
@@ -126,7 +138,7 @@ fetchCandidates()
           for="exclude-filter"
           class="visually-hidden"
         >
-          {{ $t('components.library.radios.Filter.excludeLabel') }}
+          {{ t('components.library.radios.Filter.excludeLabel') }}
         </label>
       </div>
     </td>
@@ -176,15 +188,13 @@ fetchCandidates()
         :class="['ui', { success: checkResult.candidates.count > 10 }, 'label']"
         @click.prevent="showCandidadesModal = !showCandidadesModal"
       >
-        {{ $t('components.library.radios.Filter.matchingTracks', checkResult.candidates.count) }}
+        {{ t('components.library.radios.Filter.matchingTracks', checkResult.candidates.count) }}
       </a>
-      <semantic-modal
+      <Modal
         v-if="checkResult"
         v-model:show="showCandidadesModal"
+        :title="t('components.library.radios.Filter.matchingTracksModalHeader')"
       >
-        <h4 class="header">
-          {{ $t('components.library.radios.Filter.matchingTracksModalHeader') }}
-        </h4>
         <div class="content">
           <div class="description">
             <track-table
@@ -194,19 +204,19 @@ fetchCandidates()
           </div>
         </div>
         <div class="actions">
-          <button class="ui deny button">
-            {{ $t('components.library.radios.Filter.cancelButton') }}
-          </button>
+          <Button color="secondary">
+            {{ t('components.library.radios.Filter.cancelButton') }}
+          </Button>
         </div>
-      </semantic-modal>
+      </Modal>
     </td>
     <td>
-      <button
-        class="ui danger button"
+      <Button
+        destructive
         @click="emit('delete')"
       >
-        {{ $t('components.library.radios.Filter.removeButton') }}
-      </button>
+        {{ t('components.library.radios.Filter.removeButton') }}
+      </Button>
     </td>
   </tr>
 </template>

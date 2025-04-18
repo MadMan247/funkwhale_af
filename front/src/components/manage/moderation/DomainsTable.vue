@@ -10,7 +10,12 @@ import { useI18n } from 'vue-i18n'
 import axios from 'axios'
 
 import ActionTable from '~/components/common/ActionTable.vue'
-import Pagination from '~/components/vui/Pagination.vue'
+
+import Layout from '~/components/ui/Layout.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Loader from '~/components/ui/Loader.vue'
+import Input from '~/components/ui/Input.vue'
+import Pagination from '~/components/ui/Pagination.vue'
 
 import useSharedLabels from '~/composables/locale/useSharedLabels'
 import useOrdering from '~/composables/navigation/useOrdering'
@@ -120,42 +125,44 @@ const labels = computed(() => ({
 </script>
 
 <template>
-  <div>
-    <div class="ui inline form">
-      <div class="fields">
-        <div class="ui field">
-          <label for="domains-search">{{ $t('components.manage.moderation.DomainsTable.label.search') }}</label>
-          <input
-            id="domains-search"
-            v-model="query"
-            name="search"
-            type="text"
-            :placeholder="labels.searchPlaceholder"
-          >
-        </div>
+  <div class="ui inline form">
+    <div class="fields">
+      <div class="ui field">
+        <Input
+          id="domains-search"
+          v-model="query"
+          name="search"
+          search
+          :label="t('components.manage.moderation.DomainsTable.label.search')"
+          :placeholder="labels.searchPlaceholder"
+        />
+      </div>
+      <Spacer :size="16" />
+      <Layout flex>
+        <Spacer grow />
         <div
           v-if="allowListEnabled"
           class="field"
         >
-          <label for="domains-allow-list">{{ $t('components.manage.moderation.DomainsTable.label.inList') }}</label>
+          <label for="domains-allow-list">{{ t('components.manage.moderation.DomainsTable.label.inList') }}</label>
           <select
             id="domains-allow-list"
             v-model="allowed"
             class="ui dropdown"
           >
             <option :value="null">
-              {{ $t('components.manage.moderation.DomainsTable.option.all') }}
+              {{ t('components.manage.moderation.DomainsTable.option.all') }}
             </option>
             <option :value="true">
-              {{ $t('components.manage.moderation.DomainsTable.option.yes') }}
+              {{ t('components.manage.moderation.DomainsTable.option.yes') }}
             </option>
             <option :value="false">
-              {{ $t('components.manage.moderation.DomainsTable.option.no') }}
+              {{ t('components.manage.moderation.DomainsTable.option.no') }}
             </option>
           </select>
         </div>
         <div class="field">
-          <label for="domains-ordering">{{ $t('components.manage.moderation.DomainsTable.ordering.label') }}</label>
+          <label for="domains-ordering">{{ t('components.manage.moderation.DomainsTable.ordering.label') }}</label>
           <select
             id="domains-ordering"
             v-model="ordering"
@@ -171,104 +178,100 @@ const labels = computed(() => ({
           </select>
         </div>
         <div class="field">
-          <label for="domains-ordering-direction">{{ $t('components.manage.moderation.DomainsTable.ordering.direction.label') }}</label>
+          <label for="domains-ordering-direction">{{ t('components.manage.moderation.DomainsTable.ordering.direction.label') }}</label>
           <select
             id="domains-ordering-direction"
             v-model="orderingDirection"
             class="ui dropdown"
           >
             <option value="+">
-              {{ $t('components.manage.moderation.DomainsTable.ordering.direction.ascending') }}
+              {{ t('components.manage.moderation.DomainsTable.ordering.direction.ascending') }}
             </option>
             <option value="-">
-              {{ $t('components.manage.moderation.DomainsTable.ordering.direction.descending') }}
+              {{ t('components.manage.moderation.DomainsTable.ordering.direction.descending') }}
             </option>
           </select>
         </div>
+      </Layout>
+    </div>
+  </div>
+  <div class="dimmable">
+    <Loader v-if="isLoading" />
+    <action-table
+      v-if="result && result.results.length > 0"
+      :objects-data="result"
+      :actions="actions"
+      action-url="manage/federation/domains/action/"
+      id-field="name"
+      :filters="actionFilters"
+      @action-launched="fetchData"
+    >
+      <template #header-cells>
+        <th>
+          {{ t('components.manage.moderation.DomainsTable.table.domain.header.name') }}
+        </th>
+        <th>
+          {{ t('components.manage.moderation.DomainsTable.table.domain.header.users') }}
+        </th>
+        <th>
+          {{ t('components.manage.moderation.DomainsTable.table.domain.header.receivedMessages') }}
+        </th>
+        <th>
+          {{ t('components.manage.moderation.DomainsTable.table.domain.header.firstSeen') }}
+        </th>
+        <th>
+          {{ t('components.manage.moderation.DomainsTable.table.domain.header.moderationRule') }}
+        </th>
+      </template>
+      <template
+        #row-cells="scope"
+      >
+        <td>
+          <router-link :to="{name: 'manage.moderation.domains.detail', params: {id: scope.obj.name }}">
+            {{ scope.obj.name }}
+            <i
+              v-if="allowListEnabled && scope.obj.allowed"
+              class="success check icon"
+              :title="labels.allowListTitle"
+            />
+          </router-link>
+        </td>
+        <td>
+          {{ scope.obj.actors_count }}
+        </td>
+        <td>
+          {{ scope.obj.outbox_activities_count }}
+        </td>
+        <td>
+          <human-date :date="scope.obj.creation_date" />
+        </td>
+        <td>
+          <span v-if="scope.obj.instance_policy"><i class="shield icon" />{{ t('components.manage.moderation.DomainsTable.table.domain.moderationRule') }}</span>
+        </td>
+      </template>
+    </action-table>
+    <div
+      v-else
+      class="ui placeholder segment"
+    >
+      <div class="ui icon header">
+        <i class="server icon" />
+        {{ t('components.manage.moderation.DomainsTable.empty.noPods') }}
       </div>
     </div>
-    <div class="dimmable">
-      <div
-        v-if="isLoading"
-        class="ui active inverted dimmer"
-      >
-        <div class="ui loader" />
-      </div>
-      <action-table
-        v-if="result && result.results.length > 0"
-        :objects-data="result"
-        :actions="actions"
-        action-url="manage/federation/domains/action/"
-        id-field="name"
-        :filters="actionFilters"
-        @action-launched="fetchData"
-      >
-        <template #header-cells>
-          <th>
-            {{ $t('components.manage.moderation.DomainsTable.table.domain.header.name') }}
-          </th>
-          <th>
-            {{ $t('components.manage.moderation.DomainsTable.table.domain.header.users') }}
-          </th>
-          <th>
-            {{ $t('components.manage.moderation.DomainsTable.table.domain.header.receivedMessages') }}
-          </th>
-          <th>
-            {{ $t('components.manage.moderation.DomainsTable.table.domain.header.firstSeen') }}
-          </th>
-          <th>
-            {{ $t('components.manage.moderation.DomainsTable.table.domain.header.moderationRule') }}
-          </th>
-        </template>
-        <template
-          #row-cells="scope"
-        >
-          <td>
-            <router-link :to="{name: 'manage.moderation.domains.detail', params: {id: scope.obj.name }}">
-              {{ scope.obj.name }}
-              <i
-                v-if="allowListEnabled && scope.obj.allowed"
-                class="success check icon"
-                :title="labels.allowListTitle"
-              />
-            </router-link>
-          </td>
-          <td>
-            {{ scope.obj.actors_count }}
-          </td>
-          <td>
-            {{ scope.obj.outbox_activities_count }}
-          </td>
-          <td>
-            <human-date :date="scope.obj.creation_date" />
-          </td>
-          <td>
-            <span v-if="scope.obj.instance_policy"><i class="shield icon" />{{ $t('components.manage.moderation.DomainsTable.table.domain.moderationRule') }}</span>
-          </td>
-        </template>
-      </action-table>
-      <div
-        v-else
-        class="ui placeholder segment"
-      >
-        <div class="ui icon header">
-          <i class="server icon" />
-          {{ $t('components.manage.moderation.DomainsTable.empty.noPods') }}
-        </div>
-      </div>
-    </div>
-    <div>
-      <pagination
-        v-if="result && result.count > paginateBy"
-        v-model:current="page"
-        :compact="true"
-        :paginate-by="paginateBy"
-        :total="result.count"
-      />
+  </div>
+  <div>
+    <pagination
+      v-if="page && result && result.count > paginateBy"
+      v-model:page="page"
+      :pages="result.count"
+      :compact="true"
+      :paginate-by="paginateBy"
+      :total="result.count"
+    />
 
-      <span v-if="result && result.results.length > 0">
-        {{ $t('components.manage.moderation.DomainsTable.pagination.results', {start: ((page-1) * paginateBy) + 1, end: ((page-1) * paginateBy) + result.results.length, total: result.count}) }}
-      </span>
-    </div>
+    <span v-if="page && result && result.results.length > 0">
+      {{ t('components.manage.moderation.DomainsTable.pagination.results', { start: ((page-1) * paginateBy) + 1, end: ((page-1) * paginateBy) + result.results.length, total: result.count }) }}
+    </span>
   </div>
 </template>

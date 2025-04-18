@@ -7,8 +7,10 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useStore } from '~/store'
 
-import SemanticModal from '~/components/semantic/Modal.vue'
 import useLogger from '~/composables/useLogger'
+
+import Modal from '~/components/ui/Modal.vue'
+import Alert from '~/components/ui/Alert.vue'
 
 const logger = useLogger()
 const { t } = useI18n()
@@ -58,23 +60,17 @@ const hide = async () => {
 </script>
 
 <template>
-  <semantic-modal v-model:show="show">
-    <h4
-      v-if="type === 'artist'"
-      class="header"
-    >
-      {{ $t('components.moderation.FilterModal.header.modal', {name: target?.name}) }}
-    </h4>
+  <Modal
+    v-model="show"
+    :title="type==='artist' ? t('components.moderation.FilterModal.header.modal', {name: target?.name}) : errors.length > 0 ? t('components.moderation.FilterModal.header.failure') : ''"
+    :cancel="t('components.moderation.FilterModal.button.cancel')"
+  >
     <div class="scrolling content">
       <div class="description">
-        <div
+        <Alert
           v-if="errors.length > 0"
-          role="alert"
-          class="ui negative message"
+          red
         >
-          <h4 class="header">
-            {{ $t('components.moderation.FilterModal.header.failure') }}
-          </h4>
           <ul class="list">
             <li
               v-for="(error, key) in errors"
@@ -83,41 +79,38 @@ const hide = async () => {
               {{ error }}
             </li>
           </ul>
-        </div>
+        </Alert>
         <template v-if="type === 'artist'">
           <p>
-            {{ $t('components.moderation.FilterModal.warning.createFilter.listIntro') }}
+            {{ t('components.moderation.FilterModal.warning.createFilter.listIntro') }}
           </p>
           <ul>
             <li>
-              {{ $t('components.moderation.FilterModal.warning.createFilter.listItem1') }}
+              {{ t('components.moderation.FilterModal.warning.createFilter.listItem1') }}
             </li>
             <li>
-              {{ $t('components.moderation.FilterModal.warning.createFilter.listItem2') }}
+              {{ t('components.moderation.FilterModal.warning.createFilter.listItem2') }}
             </li>
             <li>
-              {{ $t('components.moderation.FilterModal.warning.createFilter.listItem3') }}
+              {{ t('components.moderation.FilterModal.warning.createFilter.listItem3') }}
             </li>
             <li>
-              {{ $t('components.moderation.FilterModal.warning.createFilter.listItem4') }}
+              {{ t('components.moderation.FilterModal.warning.createFilter.listItem4') }}
             </li>
           </ul>
           <p>
-            {{ $t('components.moderation.FilterModal.help.createFilter') }}
+            {{ t('components.moderation.FilterModal.help.createFilter') }}
           </p>
         </template>
       </div>
     </div>
     <div class="actions">
-      <button class="ui basic cancel button">
-        {{ $t('components.moderation.FilterModal.button.cancel') }}
-      </button>
       <button
         :class="['ui', 'success', {loading: isLoading}, 'button']"
         @click="hide"
       >
-        {{ $t('components.moderation.FilterModal.button.hide') }}
+        {{ t('components.moderation.FilterModal.button.hide') }}
       </button>
     </div>
-  </semantic-modal>
+  </Modal>
 </template>

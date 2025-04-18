@@ -9,6 +9,8 @@ import { ref, computed } from 'vue'
 import useSharedLabels from '~/composables/locale/useSharedLabels'
 import useScopes from '~/composables/auth/useScopes'
 import useFormData from '~/composables/useFormData'
+import Button from '~/components/ui/Button.vue'
+import Layout from '~/components/ui/Layout.vue'
 
 interface Props {
   clientId: string
@@ -112,31 +114,30 @@ whenever(() => props.clientId, fetchApplication, { immediate: true })
 </script>
 
 <template>
-  <main
+  <layout
     v-title="labels.title"
-    class="main pusher"
+    main
+    class="main"
   >
     <section class="ui vertical stripe segment">
       <div class="ui small text container">
         <h2>
-          <i class="lock open icon" />{{ $t('components.auth.Authorize.header.authorize') }}
+          <i class="bi bi-unlock-fill" />{{ t('components.auth.Authorize.header.authorize') }}
         </h2>
-        <div
+        <Alert
           v-if="errors.length > 0"
+          red
           role="alert"
-          class="ui negative message"
         >
           <h4
             v-if="application"
-            class="header"
           >
-            {{ $t('components.auth.Authorize.header.authorizeFailure') }}
+            {{ t('components.auth.Authorize.header.authorizeFailure') }}
           </h4>
           <h4
             v-else
-            class="header"
           >
-            {{ $t('components.auth.Authorize.header.fetchFailure') }}
+            {{ t('components.auth.Authorize.header.fetchFailure') }}
           </h4>
           <ul class="list">
             <li
@@ -146,20 +147,18 @@ whenever(() => props.clientId, fetchApplication, { immediate: true })
               {{ error }}
             </li>
           </ul>
-        </div>
-        <div
+        </Alert>
+        <Loader
           v-if="isLoading"
           class="ui inverted active dimmer"
-        >
-          <div class="ui loader" />
-        </div>
+        />
         <form
           v-else-if="application && !code"
           :class="['ui', {loading: isLoading}, 'form']"
           @submit.prevent="submit"
         >
           <h3>
-            {{ $t('components.auth.Authorize.header.access', {app_name: application.name}) }}
+            {{ t('components.auth.Authorize.header.access', {app_name: application.name}) }}
           </h3>
 
           <h4
@@ -171,23 +170,23 @@ whenever(() => props.clientId, fetchApplication, { immediate: true })
               v-if="topic.write && !topic.read"
               :class="['ui', 'basic', 'right floated', 'tiny', 'vertically-spaced component-label label']"
             >
-              <i class="pencil icon" />
-              {{ $t('components.auth.Authorize.header.writeOnly') }}
+              <i class="bi bi-pencil" />
+              {{ t('components.auth.Authorize.header.writeOnly') }}
             </span>
             <span
               v-else-if="!topic.write && topic.read"
               :class="['ui', 'basic', 'right floated', 'tiny', 'vertically-spaced component-label label']"
             >
-              {{ $t('components.auth.Authorize.header.readOnly') }}
+              {{ t('components.auth.Authorize.header.readOnly') }}
             </span>
             <span
               v-else-if="topic.write && topic.read"
               :class="['ui', 'basic', 'right floated', 'tiny', 'vertically-spaced component-label label']"
             >
-              <i class="pencil icon" />
-              {{ $t('components.auth.Authorize.header.allScopes') }}
+              <i class="bi bi-pencil" />
+              {{ t('components.auth.Authorize.header.allScopes') }}
             </span>
-            <i :class="[topic.icon, 'icon']" />
+            <i :class="[topic.icon, 'bi']" />
             <div class="content">
               {{ topic.label }}
               <div class="sub header">
@@ -196,7 +195,7 @@ whenever(() => props.clientId, fetchApplication, { immediate: true })
             </div>
           </h4>
           <div v-if="unknownRequestedScopes.length > 0">
-            <p><strong>{{ $t('components.auth.Authorize.message.unknownPermissions') }}</strong></p>
+            <p><strong>{{ t('components.auth.Authorize.message.unknownPermissions') }}</strong></p>
             <ul
               v-for="(unknownscope, key) in unknownRequestedScopes"
               :key="key"
@@ -204,17 +203,16 @@ whenever(() => props.clientId, fetchApplication, { immediate: true })
               <li>{{ unknownscope }}</li>
             </ul>
           </div>
-          <button
-            class="ui success labeled icon button"
+          <Button
+            icon="bi-unlock"
             type="submit"
           >
-            <i class="lock open icon" />
-            {{ $t('components.auth.Authorize.button.authorize', { app: application.name }) }}
-          </button>
+            {{ t('components.auth.Authorize.button.authorize', { app: application.name }) }}
+          </Button>
           <p
             v-if="redirectUri === 'urn:ietf:wg:oauth:2.0:oob'"
           >
-            {{ $t('components.auth.Authorize.help.copyCode') }}
+            {{ t('components.auth.Authorize.help.copyCode') }}
           </p>
           <p
             v-else
@@ -225,10 +223,10 @@ whenever(() => props.clientId, fetchApplication, { immediate: true })
           </p>
         </form>
         <div v-else-if="code">
-          <p><strong>{{ $t('components.auth.Authorize.help.pasteCode') }}</strong></p>
+          <p><strong>{{ t('components.auth.Authorize.help.pasteCode') }}</strong></p>
           <copy-input :value="code" />
         </div>
       </div>
     </section>
-  </main>
+  </layout>
 </template>

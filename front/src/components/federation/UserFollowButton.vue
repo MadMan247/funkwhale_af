@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import type { Actor } from '~/types'
+import type { components } from '~/generated/types'
 import { computed } from 'vue'
 
+import { useI18n } from 'vue-i18n'
 import { useStore } from '~/store'
+
+import Button from '~/components/ui/Button.vue'
+
+const { t } = useI18n()
 
 interface Events {
   (e: 'unfollowed'): void
@@ -10,7 +15,7 @@ interface Events {
 }
 
 interface Props {
-  actor: Actor
+  actor: components['schemas']['FullActor']
 }
 
 const emit = defineEmits<Events>()
@@ -33,19 +38,20 @@ const toggle = () => {
 </script>
 
 <template>
-  <button
+  <Button
+    secondary
     :class="['ui', 'pink', {'inverted': isApproved || isPending}, {'favorited': isApproved}, 'icon', 'labeled', 'button']"
+    :icon="isPending ? 'bi-heart' : 'bi-heart-fill'"
     @click.stop="toggle"
   >
-    <i class="heart icon" />
     <span v-if="isApproved">
-      {{ $t('components.audio.LibraryFollowButton.button.unfollow') }}
+      {{ t('components.audio.LibraryFollowButton.button.unfollow') }}
     </span>
     <span v-else-if="isPending">
-      {{ $t('components.audio.LibraryFollowButton.button.cancel') }}
+      {{ t('components.audio.LibraryFollowButton.button.cancel') }}
     </span>
     <span v-else>
-      {{ $t('components.audio.LibraryFollowButton.button.follow') }}
+      {{ t('components.audio.LibraryFollowButton.button.follow') }}
     </span>
   </button>
 </template>

@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import type { Library } from '~/types'
 
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted, watch } from 'vue'
+import { useStore } from '~/store'
+import { useI18n } from 'vue-i18n'
 
 import axios from 'axios'
 
 import LibraryCard from '~/views/content/remote/Card.vue'
+import Button from '~/components/ui/Button.vue'
+import Section from '~/components/ui/Section.vue'
+import Loader from '~/components/ui/Loader.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Spacer from '~/components/ui/Spacer.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 
@@ -15,7 +22,11 @@ interface Events {
 
 interface Props {
   url: string
+  title?: string
 }
+
+const { t } = useI18n()
+const store = useStore()
 
 const emit = defineEmits<Events>()
 const props = defineProps<Props>()
@@ -29,12 +40,12 @@ const fetchData = async (url = props.url) => {
   try {
     const response = await axios.get(url, {
       params: {
-        page_size: 6
+        page_size: 3
       }
     })
 
     nextPage.value = response.data.next
-    libraries.push(...response.data.results)
+    libraries.splice(0, libraries.length, ...response.data.results)
     emit('loaded', libraries)
   } catch (error) {
     useErrorHandler(error as Error)
@@ -43,55 +54,49 @@ const fetchData = async (url = props.url) => {
   isLoading.value = false
 }
 
-fetchData()
+onMounted(() => {
+  setTimeout(fetchData, 1000)
+})
+
+watch(() => props.url, () => {
+  fetchData()
+})
 </script>
 
 <template>
-  <div class="wrapper">
-    <h3
-      v-if="!!$slots.title"
-      class="ui header"
-    >
-      <slot name="title" />
-    </h3>
-    <p
-      v-if="!isLoading && libraries.length > 0"
-      class="ui subtitle"
-    >
-      <slot />
-    </p>
-    <p
+  <Section
+    align-left
+    :h2="title"
+    :columns-per-item="3"
+  >
+    <Loader
+      v-if="isLoading"
+      style="grid-column: 1 / -1;"
+    />
+    <Alert
       v-if="!isLoading && libraries.length === 0"
-      class="ui subtitle"
+      blue
+      style="grid-column: 1 / -1;"
     >
-      {{ $t('components.federation.LibraryWidget.empty.noMatch') }}
-    </p>
-    <div class="ui hidden divider" />
-    <div class="ui cards">
-      <div
-        v-if="isLoading"
-        class="ui inverted active dimmer"
-      >
-        <div class="ui loader" />
-      </div>
-      <library-card
-        v-for="library in libraries"
-        :key="library.uuid"
-        :display-scan="false"
-        :display-follow="$store.state.auth.authenticated && library.actor.full_username != $store.state.auth.fullUsername"
-        :initial-library="library"
-        :display-copy-fid="true"
-      />
-    </div>
+      {{ t('components.federation.LibraryWidget.empty.noMatch') }}
+    </Alert>
+    <library-card
+      v-for="library in libraries"
+      :key="library.uuid"
+      :display-scan="false"
+      :display-follow="store.state.auth.authenticated && library.actor.full_username != store.state.auth.fullUsername"
+      :initial-library="library"
+      :display-copy-fid="true"
+    />
     <template v-if="nextPage">
-      <div class="ui hidden divider" />
-      <button
+      <Spacer />
+      <Button
         v-if="nextPage"
-        :class="['ui', 'basic', 'button']"
+        primary
         @click="fetchData(nextPage)"
       >
-        {{ $t('components.federation.LibraryWidget.button.showMore') }}
-      </button>
+        {{ t('components.federation.LibraryWidget.button.showMore') }}
+      </Button>
     </template>
-  </div>
+  </Section>
 </template>

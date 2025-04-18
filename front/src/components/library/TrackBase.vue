@@ -1,20 +1,33 @@
 <script setup lang="ts">
-import type { Track, Artist, Library } from '~/types'
+import type { Track, Library } from '~/types'
+import type { operations, components } from '~/generated/types'
 
 import { momentFormat } from '~/utils/filters'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { getDomain } from '~/utils'
 import { useStore } from '~/store'
 
 import axios from 'axios'
 
+import ActorLink from '~/components/common/ActorLink.vue'
+import ArtistCreditLabel from '~/components/audio/ArtistCreditLabel.vue'
 import TrackFavoriteIcon from '~/components/favorites/TrackFavoriteIcon.vue'
 import TrackPlaylistIcon from '~/components/playlists/TrackPlaylistIcon.vue'
 import EmbedWizard from '~/components/audio/EmbedWizard.vue'
-import SemanticModal from '~/components/semantic/Modal.vue'
+import HumanDuration from '~/components/common/HumanDuration.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Header from '~/components/ui/Header.vue'
+import Loader from '~/components/ui/Loader.vue'
+import Modal from '~/components/ui/Modal.vue'
 import PlayButton from '~/components/audio/PlayButton.vue'
+import Button from '~/components/ui/Button.vue'
+import OptionsButton from '~/components/ui/button/Options.vue'
+import Popover from '~/components/ui/Popover.vue'
+import PopoverItem from '~/components/ui/popover/PopoverItem.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Spacer from '~/components/ui/Spacer.vue'
 
 import updateQueryString from '~/composables/updateQueryString'
 import useErrorHandler from '~/composables/useErrorHandler'
@@ -35,17 +48,26 @@ const props = defineProps<Props>()
 const { report, getReportableObjects } = useReport()
 
 const track = ref<Track | null>(null)
-const artist = ref<Artist | null>(null)
+const artist = ref<components['schemas']['ArtistWithAlbums'] | null>(null)
 const showEmbedModal = ref(false)
+const showDeleteModal = ref(false)
 const libraries = ref([] as Library[])
 
 const logger = useLogger()
 const router = useRouter()
+const route = useRoute()
 const store = useStore()
 
 const domain = computed(() => getDomain(track.value?.fid ?? ''))
-const publicLibraries = computed(() => libraries.value?.filter(library => library.privacy_level === 'everyone') ?? [])
-const isEmbedable = computed(() => artist.value?.channel?.actor || publicLibraries.value.length)
+
+// TODO: Why is nobody using the public libraries?
+// const publicLibraries = computed(() => libraries.value?.filter(library => library.privacy_level === 'everyone') ?? [])
+
+// TODO: Make it make sense:
+// const isEmbedable = computed(() => artist.value?.channel?.actor || publicLibraries.value.length)
+
+const isEmbedable = computed(() => false)
+
 const upload = computed(() => track.value?.uploads?.[0] ?? null)
 const wikipediaUrl = computed(() => `https://en.wikipedia.org/w/index.php?search=${encodeURI(`${track.value?.title ?? ''} ${track.value?.artist_credit?.[0].artist?.name ?? ''}`)}`)
 const discogsUrl = computed(() => `https://discogs.com/search/?type=release&title=${encodeURI(track.value?.album?.title ?? '')}&artist=${encodeURI(track.value?.artist_credit?.[0].artist?.name ?? '')}&title=${encodeURI(track.value?.title ?? '')}`)
@@ -56,13 +78,19 @@ const downloadUrl = computed(() => {
     : url
 })
 
-const attributedToUrl = computed(() => router.resolve({
-  name: 'profile.full.overview',
-  params: {
-    username: track.value?.attributed_to.preferred_username,
-    domain: track.value?.attributed_to.domain
-  }
-})?.href)
+// TODO: Still needed?:
+
+// const attributedToUrl = computed(() => router.resolve({
+//   name: 'profile.full.overview',
+//   params: {
+//     username: track.value?.attributed_to?.preferred_username,
+//     domain: track.value?.attributed_to?.domain
+//   }
+// })?.href)
+
+// const artistCredit = track.value?.artist_credit
+
+const totalDuration = computed(() => track.value?.uploads?.[0]?.duration ?? 0)
 
 const { t } = useI18n()
 const labels = computed(() => ({
@@ -71,14 +99,28 @@ const labels = computed(() => ({
   more: t('components.library.TrackBase.button.more')
 }))
 
+// Note: Mind the singular!
+
+type TrackResponse = operations['get_track_2']['responses']['200']['content']['application/json']
+type ArtistResponse = operations['get_artist_2']['responses']['200']['content']['application/json']
+
+/* Too bad the following is just wrong now:
+const params: TrackParams = {
+  refresh: 'true'
+  // TypeScript will now show all available parameters with their types
+}
+  */
+
 const isLoading = ref(false)
 const fetchData = async () => {
   isLoading.value = true
   logger.debug(`Fetching track "${props.id}"`)
   try {
-    const trackResponse = await axios.get(`tracks/${props.id}/`, { params: { refresh: 'true' } })
+    const trackResponse = await axios.get<TrackResponse>(`tracks/${props.id}/`, { params: { refresh: 'true' } })
     track.value = trackResponse.data
-    const artistResponse = await axios.get(`artists/${trackResponse.data.artist.id}/`)
+    const artistResponse = await axios.get<ArtistResponse>(
+      `artists/${trackResponse.data.artist_credit[0].artist.id}/`
+    )
     artist.value = artistResponse.data
   } catch (error) {
     useErrorHandler(error as Error)
@@ -100,233 +142,292 @@ const remove = async () => {
 
   isLoading.value = false
 }
+
+const open = ref(false)
+
+watch(showDeleteModal, (newValue) => {
+  if (newValue) {
+    // NOTE: Explicitly close the popover when delete modal opens
+    open.value = false
+  }
+})
 </script>
 
 <template>
-  <main>
-    <div
-      v-if="isLoading"
-      v-title="labels.title"
-      class="ui vertical segment"
-    >
-      <div :class="['ui', 'centered', 'active', 'inline', 'loader']" />
-    </div>
-    <template v-if="track">
-      <section
-        v-title="track.title"
-        :class="['ui', 'head', 'vertical', 'center', 'aligned', 'stripe', 'segment']"
+  <Loader
+    v-if="isLoading"
+    v-title="labels.title"
+  />
+  <Header
+    v-if="track"
+    :h1="track.title"
+    :action="{
+      text: labels.download,
+      // @ts-ignore
+      to: downloadUrl,
+      // @ts-ignore
+      solid: true,
+      // @ts-ignore
+      primary: true,
+      // @ts-ignore
+      icon: 'bi-download',
+      // @ts-ignore
+      lowHeight: true
+    }"
+    page-heading
+  >
+    <template #image>
+      <img
+        v-if="track.cover"
+        v-lazy="store.getters['instance/absoluteUrl'](track.cover.urls.large_square_crop)"
+        alt=""
+        class="channel-image"
       >
-        <div class="ui basic padded segment">
-          <div class="ui stackable grid row container">
-            <div class="eight wide left aligned column">
-              <h1 class="ui header">
-                {{ track.title }}
-              </h1>
-              <span class="ui header">
-                <i18n-t
-                  v-if="track.attributed_to"
-                  keypath="components.library.TrackBase.subtitle.with-uploader"
-                >
-                  <a
-                    class="internal"
-                    :href="attributedToUrl"
-                  >
-                    <span class="symbol at" />{{ track.attributed_to.full_username }}
-                  </a>
-                  <time
-                    :title="track.creation_date"
-                    :datetime="track.creation_date"
-                  >
-                    {{ momentFormat(new Date(track.creation_date), 'LL') }}
-                  </time>
-                </i18n-t>
-                <i18n-t
-                  v-else
-                  keypath="components.library.TrackBase.subtitle.without-uploader"
-                >
-                  <time
-                    :title="track.creation_date"
-                    :datetime="track.creation_date"
-                  >
-                    {{ momentFormat(new Date(track.creation_date), 'LL') }}
-                  </time>
-                </i18n-t>
-              </span>
-            </div>
-            <div class="eight wide right aligned column button-group">
-              <play-button
-                class="vibrant"
-                :track="track"
-              >
-                {{ $t('components.library.TrackBase.button.play') }}
-              </play-button>
-              &nbsp;
-              <track-favorite-icon
-                v-if="$store.state.auth.authenticated"
-                :border="true"
-                :track="track"
-              />
-              <track-playlist-icon
-                v-if="$store.state.auth.authenticated"
-                class="circular"
-                :border="true"
-                :track="track"
-              />
-              <a
-                v-if="upload"
-                role="button"
-                :aria-label="labels.download"
-                :href="downloadUrl"
-                target="_blank"
-                class="ui basic circular icon button"
-                :title="labels.download"
-              >
-                <i class="download icon" />
-              </a>
-              <semantic-modal
-                v-if="isEmbedable"
-                v-model:show="showEmbedModal"
-              >
-                <h4 class="header">
-                  {{ $t('components.library.TrackBase.modal.embed.header') }}
-                </h4>
-                <div class="scrolling content">
-                  <div class="description">
-                    <embed-wizard
-                      :id="track.id"
-                      type="track"
-                    />
-                  </div>
-                </div>
-                <div class="actions">
-                  <button class="ui basic deny button">
-                    {{ $t('components.library.TrackBase.button.cancel') }}
-                  </button>
-                </div>
-              </semantic-modal>
-              <button
-                v-dropdown="{direction: 'downward'}"
-                class="ui floating dropdown circular icon basic button"
-                :title="labels.more"
-              >
-                <i class="ellipsis vertical icon" />
-                <div
-                  class="menu"
-                  style="right: 0; left: auto"
-                >
-                  <a
-                    v-if="domain != $store.getters['instance/domain']"
-                    :href="track.fid"
-                    target="_blank"
-                    class="basic item"
-                  >
-                    <i class="external icon" />
-                    {{ $t('components.library.TrackBase.link.domain', {domain: domain}) }}
-                  </a>
-                  <div
-                    v-if="isEmbedable"
-                    role="button"
-                    class="basic item"
-                    @click="showEmbedModal = !showEmbedModal"
-                  >
-                    <i class="code icon" />
-                    {{ $t('components.library.TrackBase.button.embed') }}
-                  </div>
-                  <a
-                    :href="wikipediaUrl"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    class="basic item"
-                  >
-                    <i class="wikipedia w icon" />
-                    {{ $t('components.library.TrackBase.link.wikipedia') }}
-                  </a>
-                  <a
-                    v-if="discogsUrl"
-                    :href="discogsUrl"
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    class="basic item"
-                  >
-                    <i class="external icon" />
-                    {{ $t('components.library.TrackBase.link.discogs') }}
-                  </a>
-                  <router-link
-                    v-if="track.is_local"
-                    :to="{name: 'library.tracks.edit', params: {id: track.id }}"
-                    class="basic item"
-                  >
-                    <i class="edit icon" />
-                    {{ $t('components.library.TrackBase.button.edit') }}
-                  </router-link>
-                  <dangerous-button
-                    v-if="artist && $store.state.auth.authenticated && artist.channel && artist.attributed_to.full_username === $store.state.auth.fullUsername"
-                    :class="['ui', {loading: isLoading}, 'item']"
-                    @confirm="remove()"
-                  >
-                    <i class="ui trash icon" />
-                    {{ $t('components.library.TrackBase.button.delete') }}
-                    <template #modal-header>
-                      <p>
-                        {{ $t('components.library.TrackBase.modal.delete.header') }}
-                      </p>
-                    </template>
-                    <template #modal-content>
-                      <div>
-                        <p>
-                          {{ $t('components.library.TrackBase.modal.delete.content.warning') }}
-                        </p>
-                      </div>
-                    </template>
-                    <template #modal-confirm>
-                      <p>
-                        {{ $t('components.library.TrackBase.button.delete') }}
-                      </p>
-                    </template>
-                  </dangerous-button>
-                  <div class="divider" />
-                  <div
-                    v-for="obj in getReportableObjects({track})"
-                    :key="obj.target.type + obj.target.id"
-                    role="button"
-                    class="basic item"
-                    @click.stop.prevent="report(obj)"
-                  >
-                    <i class="share icon" /> {{ obj.label }}
-                  </div>
-                  <div class="divider" />
-                  <router-link
-                    v-if="$store.state.auth.availablePermissions['library']"
-                    class="basic item"
-                    :to="{name: 'manage.library.tracks.detail', params: {id: track.id}}"
-                  >
-                    <i class="wrench icon" />
-                    {{ $t('components.library.TrackBase.link.moderation') }}
-                  </router-link>
-                  <a
-                    v-if="$store.state.auth.profile && $store.state.auth.profile.is_superuser"
-                    class="basic item"
-                    :href="$store.getters['instance/absoluteUrl'](`/api/admin/music/track/${track.id}`)"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <i class="wrench icon" />
-                    {{ $t('components.library.TrackBase.link.django') }}
-                  </a>
-                </div>
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-      <router-view
-        v-if="track"
-        :key="$route.fullPath"
-        :track="track"
-        :object="track"
-        object-type="track"
-        @libraries-loaded="libraries = $event"
-      />
+      <img
+        v-if="track.album && track.album.cover"
+        v-lazy="store.getters['instance/absoluteUrl'](track.album.cover.urls.large_square_crop)"
+        alt=""
+        class="channel-image"
+      >
+      <img
+        v-else
+        alt=""
+        class="channel-image"
+        src="../../assets/audio/default-cover.png"
+      >
     </template>
-  </main>
+    <artist-credit-label
+      :artist-credit="track.artist_credit"
+    />
+    <div class="meta">
+      <span>{{ t('components.library.TrackBase.title') }}</span>
+      <i class="bi bi-dot" />
+      <span>{{ track.album?.title }}</span>
+      <i
+        v-if="totalDuration > 0"
+        class="bi bi-dot"
+      />
+      <human-duration
+        v-if="totalDuration > 0"
+        :duration="totalDuration"
+      />
+    </div>
+
+    <Layout flex>
+      <PlayButton
+        :is-playable="track.is_playable"
+        class="vibrant"
+        split
+        :track="track"
+        low-height
+      />
+
+      <Spacer
+        h
+        grow
+      />
+
+      <TrackFavoriteIcon
+        v-if="store.state.auth.authenticated"
+        :track="track"
+        square-small
+      />
+      <TrackPlaylistIcon
+        v-if="store.state.auth.authenticated"
+        :track="track"
+        square-small
+      />
+      <Popover v-model="open">
+        <template #default="{ toggleOpen }">
+          <OptionsButton
+            is-square-small
+            @click="toggleOpen"
+          />
+        </template>
+        <template #items>
+          <PopoverItem
+            v-if="domain != store.getters['instance/domain']"
+            :to="track.fid"
+            target="_blank"
+            icon="bi-box-arrow-up-right"
+          >
+            {{ t('components.library.TrackBase.link.domain', { domain }) }}
+          </PopoverItem>
+
+          <PopoverItem
+            v-if="isEmbedable"
+            icon="bi-code-slash"
+            @click="showEmbedModal = !showEmbedModal"
+          >
+            {{ t('components.library.TrackBase.button.embed') }}
+          </PopoverItem>
+
+          <PopoverItem
+            :to="wikipediaUrl"
+            target="_blank"
+            rel="noreferrer noopener"
+            icon="bi-wikipedia"
+          >
+            {{ t('components.library.TrackBase.link.wikipedia') }}
+          </PopoverItem>
+
+          <PopoverItem
+            v-if="discogsUrl"
+            :to="discogsUrl"
+            target="_blank"
+            rel="noreferrer noopener"
+            icon="bi-box-arrow-up-right"
+          >
+            {{ t('components.library.TrackBase.link.discogs') }}
+          </PopoverItem>
+
+          <PopoverItem
+            v-if="track.is_local"
+            icon="bi-pencil-fill"
+            :to="{ name: 'library.tracks.edit', params: { id: track.id } }"
+          >
+            {{ t('components.library.TrackBase.button.edit') }}
+          </PopoverItem>
+
+          <PopoverItem
+            v-if="artist &&
+              store.state.auth.authenticated &&
+              artist.channel &&
+              artist.attributed_to?.full_username === store.state.auth.fullUsername"
+            icon="bi-trash"
+            @click="showDeleteModal = true"
+          >
+            {{ t('components.library.TrackBase.button.delete') }}
+          </PopoverItem>
+
+          <hr>
+
+          <PopoverItem
+            v-for="obj in getReportableObjects({ track })"
+            :key="obj.target.type + obj.target.id"
+            icon="bi-flag"
+            @click="report(obj)"
+          >
+            {{ obj.label }}
+          </PopoverItem>
+
+          <hr>
+
+          <PopoverItem
+            v-if="store.state.auth.availablePermissions['library']"
+            :to="{
+              name: 'manage.library.tracks.detail',
+              params: { id: track.id }
+            }"
+            icon="bi-wrench"
+          >
+            {{ t('components.library.TrackBase.link.moderation') }}
+          </PopoverItem>
+
+          <PopoverItem
+            v-if="store.state.auth.profile?.is_superuser"
+            :to="store.getters['instance/absoluteUrl'](`/api/admin/music/track/${track.id}`)"
+            target="_blank"
+            rel="noopener noreferrer"
+            icon="bi-wrench"
+          >
+            {{ t('components.library.TrackBase.link.django') }}
+          </PopoverItem>
+        </template>
+      </Popover>
+    </Layout>
+  </Header>
+  <hr>
+  <Layout
+    flex
+    gap-8
+  >
+    <span v-if="track?.attributed_to">
+      {{ t('components.library.TrackBase.subtitle.with-uploader') }}
+    </span>
+    <span v-else>
+      {{ t('components.library.TrackBase.subtitle.without-uploader') }}
+    </span>
+    <ActorLink
+      v-if="track?.attributed_to"
+      :actor="track?.attributed_to"
+      :avatar="false"
+    />
+
+    <time
+      :title="track?.creation_date"
+      :datetime="track?.creation_date"
+    >
+      {{ track?.creation_date ? momentFormat(new Date(track.creation_date), 'LL') : '' }}
+    </time>
+  </Layout>
+  <Spacer :size="64" />
+
+  <Modal
+    v-if="isEmbedable"
+    v-model="showEmbedModal"
+    :title="t('components.library.TrackBase.modal.embed.header')"
+  >
+    <embed-wizard
+      :id="track?.id ?? 0"
+      type="track"
+    />
+
+    <template #actions>
+      <Button
+        secondary
+        @click="showEmbedModal = false"
+      >
+        {{ t('components.library.TrackBase.button.cancel') }}
+      </Button>
+    </template>
+  </Modal>
+  <Modal
+    v-model="showDeleteModal"
+    :title="t('components.library.TrackBase.modal.delete.header')"
+    destructive
+  >
+    <template #alert>
+      <Alert red>
+        {{ t('components.library.TrackBase.modal.delete.content.warning') }}
+      </Alert>
+    </template>
+
+    <template #actions>
+      <Button
+        secondary
+        @click="showDeleteModal = false"
+      >
+        {{ t('components.library.TrackBase.button.cancel') }}
+      </Button>
+      <Button
+        destructive
+        :is-loading="isLoading"
+        @click="remove()"
+      >
+        {{ t('components.library.TrackBase.button.delete') }}
+      </Button>
+    </template>
+  </Modal>
+  <router-view
+    v-if="track"
+    :key="route.fullPath"
+    :track="track"
+    :object="track"
+    object-type="track"
+    @libraries-loaded="libraries = $event"
+  />
 </template>
+
+<style lang="scss" scoped>
+  .meta {
+    font-size: 15px;
+    line-height: 32px;
+    @include light-theme {
+      color: var(--fw-gray-700);
+    }
+    @include dark-theme {
+      color: var(--fw-gray-500);
+    }
+  }
+</style>

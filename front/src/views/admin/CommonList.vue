@@ -11,6 +11,8 @@ import TracksTable from '~/components/manage/library/TracksTable.vue'
 import UploadsTable from '~/components/manage/library/UploadsTable.vue'
 import UsersTable from '~/components/manage/users/UsersTable.vue'
 
+import Header from '~/components/ui/Header.vue'
+
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -43,55 +45,51 @@ const title = computed(() => labels.value[props.type])
 </script>
 
 <template>
-  <main v-title="title">
-    <section class="ui vertical stripe segment">
-      <h2 class="ui header">
-        {{ title }}
-      </h2>
-      <invitation-form v-if="type === 'invitations'" />
-      <div class="ui hidden divider" />
-      <accounts-table
-        v-if="type === 'accounts'"
-        :update-url="true"
-        :default-query="defaultQuery"
-      />
-      <albums-table
-        v-else-if="type === 'albums'"
-        :update-url="true"
-        :default-query="defaultQuery"
-      />
-      <artists-table
-        v-else-if="type === 'artists'"
-        :update-url="true"
-        :default-query="defaultQuery"
-      />
-      <channels-table
-        v-else-if="type === 'channels'"
-        :update-url="true"
-        :default-query="defaultQuery"
-      />
-      <invitations-table v-else-if="type === 'invitations'" />
-      <libraries-table
-        v-else-if="type === 'libraries'"
-        :update-url="true"
-        :default-query="defaultQuery"
-      />
-      <tags-table
-        v-else-if="type === 'tags'"
-        :update-url="true"
-        :default-query="defaultQuery"
-      />
-      <tracks-table
-        v-else-if="type === 'tracks'"
-        :update-url="true"
-        :default-query="defaultQuery"
-      />
-      <uploads-table
-        v-else-if="type === 'uploads'"
-        :update-url="true"
-        :default-query="defaultQuery"
-      />
-      <users-table v-else-if="type === 'users'" />
-    </section>
-  </main>
+  <Header
+    page-heading
+    :h1="title"
+  />
+  <invitation-form v-if="type === 'invitations'" />
+  <accounts-table
+    v-if="type === 'accounts'"
+    :update-url="true"
+    :default-query="defaultQuery"
+  />
+  <albums-table
+    v-else-if="type === 'albums'"
+    :update-url="true"
+    :default-query="defaultQuery"
+  />
+  <artists-table
+    v-else-if="type === 'artists'"
+    :update-url="true"
+    :default-query="defaultQuery"
+  />
+  <channels-table
+    v-else-if="type === 'channels'"
+    :update-url="true"
+    :default-query="defaultQuery"
+  />
+  <invitations-table v-else-if="type === 'invitations'" />
+  <libraries-table
+    v-else-if="type === 'libraries'"
+    :update-url="true"
+    :default-query="defaultQuery"
+  />
+  <tags-table
+    v-else-if="type === 'tags'"
+    :update-url="true"
+    :default-query="defaultQuery"
+  />
+  <tracks-table
+    v-else-if="type === 'tracks'"
+    :update-url="true"
+    :default-query="defaultQuery"
+  />
+  <uploads-table
+    v-else-if="type === 'uploads'"
+    :update-url="true"
+    :default-query="defaultQuery"
+  />
+  <users-table v-else-if="type === 'users'" />
 </template>

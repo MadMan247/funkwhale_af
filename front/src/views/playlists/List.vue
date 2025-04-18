@@ -4,17 +4,25 @@ import type { Playlist, BackendResponse } from '~/types'
 import type { RouteRecordName } from 'vue-router'
 import type { OrderingField } from '~/store/ui'
 
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRouteQuery } from '@vueuse/router'
 import { useI18n } from 'vue-i18n'
 import { syncRef } from '@vueuse/core'
 import { sortedUniq } from 'lodash-es'
+import { useStore } from '~/store'
 
 import axios from 'axios'
-import $ from 'jquery'
 
-import PlaylistCardList from '~/components/playlists/CardList.vue'
-import Pagination from '~/components/vui/Pagination.vue'
+import PlaylistsCard from '~/components/playlists/Card.vue'
+import Pagination from '~/components/ui/Pagination.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Button from '~/components/ui/Button.vue'
+import Input from '~/components/ui/Input.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Header from '~/components/ui/Header.vue'
+import Section from '~/components/ui/Section.vue'
+import Loader from '~/components/ui/Loader.vue'
 
 import useSharedLabels from '~/composables/locale/useSharedLabels'
 import useOrdering from '~/composables/navigation/useOrdering'
@@ -28,6 +36,8 @@ interface Props extends OrderingProps {
   // TODO(wvffle): Remove after https://github.com/vuejs/core/pull/4512 is merged
   orderingConfigName?: RouteRecordName
 }
+
+const store = useStore()
 
 const props = withDefaults(defineProps<Props>(), {
   scope: 'all',
@@ -80,7 +90,7 @@ const fetchData = async () => {
     isLoading.value = false
   }
 }
-watch([page, q, () => props.scope], fetchData)
+watch([page, q, ordering, orderingDirection, () => props.scope], fetchData)
 fetchData()
 
 const search = () => {
@@ -93,136 +103,167 @@ onOrderingUpdate(() => {
   fetchData()
 })
 
-onMounted(() => $('.ui.dropdown').dropdown())
-
 const { t } = useI18n()
 const labels = computed(() => ({
   playlists: t('views.playlists.List.header.playlists'),
   searchPlaceholder: t('views.playlists.List.placeholder.search')
 }))
 
-const paginateOptions = computed(() => sortedUniq([12, 25, 50, paginateBy.value].sort((a, b) => a - b)))
+const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value].sort((a, b) => a - b)))
 </script>
 
 <template>
-  <main v-title="labels.playlists">
-    <section class="ui vertical stripe segment">
-      <h2 class="ui header">
-        {{ $t('views.playlists.List.header.browse') }}
-      </h2>
-      <template v-if="$store.state.auth.authenticated">
-        <button
-          class="ui success button"
-          @click="$store.commit('playlists/showModal', true)"
-        >
-          {{ $t('views.playlists.List.button.manage') }}
-        </button>
-        <div class="ui hidden divider" />
-      </template>
-      <form
-        :class="['ui', {'loading': isLoading}, 'form']"
-        @submit.prevent="search"
-      >
-        <div class="fields">
-          <div class="field">
-            <label for="playlists-search">{{ $t('views.playlists.List.label.search') }}</label>
-            <div class="ui action input">
-              <input
-                id="playlists-search"
-                v-model="query"
-                type="text"
-                name="search"
-                :placeholder="labels.searchPlaceholder"
-              >
-              <button
-                class="ui icon button"
-                type="submit"
-                :aria-label="t('views.playlists.List.button.search')"
-              >
-                <i class="search icon" />
-              </button>
-            </div>
-          </div>
-          <div class="field">
-            <label for="playlists-ordering">{{ $t('views.playlists.List.ordering.label') }}</label>
-            <select
-              id="playlists-ordering"
-              v-model="ordering"
-              class="ui dropdown"
-            >
-              <option
-                v-for="option in orderingOptions"
-                :key="option[0]"
-                :value="option[0]"
-              >
-                {{ sharedLabels.filters[option[1]] }}
-              </option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="playlists-ordering-direction">{{ $t('views.playlists.List.ordering.direction.label') }}</label>
-            <select
-              id="playlists-ordering-direction"
-              v-model="orderingDirection"
-              class="ui dropdown"
-            >
-              <option value="+">
-                {{ $t('views.playlists.List.ordering.direction.ascending') }}
-              </option>
-              <option value="-">
-                {{ $t('views.playlists.List.ordering.direction.descending') }}
-              </option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="playlists-results">{{ $t('views.playlists.List.pagination.results') }}</label>
-            <select
-              id="playlists-results"
-              v-model="paginateBy"
-              class="ui dropdown"
-            >
-              <option
-                v-for="opt in paginateOptions"
-                :key="opt"
-                :value="opt"
-              >
-                {{ opt }}
-              </option>
-            </select>
-          </div>
-        </div>
-      </form>
-      <div class="ui hidden divider" />
-      <playlist-card-list
-        v-if="result && result.results.length > 0"
-        :playlists="result.results"
+  <Layout
+    stack
+    main
+  >
+    <!-- TODO: `yarn lint:tsc` doesn't understand the `Prop` type for `Header` while the language server does. It may be a question of typescript version... Investigate and fix! https://dev.funkwhale.audio/funkwhale/funkwhale/-/issues/2437 -->
+    <!-- @vue-ignore -->
+    <Header
+      v-if="store.state.auth.authenticated"
+      :h1="t('views.playlists.List.header.browse')"
+      page-heading
+      :action="{
+        text: t('views.playlists.List.button.create'),
+        // @ts-ignore
+        icon: 'bi-plus',
+        // @ts-ignore
+        primary: true,
+        // @ts-ignore
+        onClick: () => { store.commit('playlists/showModal', true) }
+      }"
+    />
+    <Header
+      v-else
+      page-heading
+      :h1="t('views.playlists.List.header.browse')"
+    />
+
+    <!-- Search-bar -->
+    <Layout
+      form
+      flex
+      :class="['ui', {'loading': isLoading}, 'form']"
+      @submit.prevent="search"
+    >
+      <Input
+        id="playlists-search"
+        v-model="query"
+        search
+        name="search"
+        :label="t('views.playlists.List.label.search')"
+        autofocus
+        :placeholder="labels.searchPlaceholder"
       />
-      <div
-        v-else-if="result && result.results.length === 0"
-        class="ui placeholder segment sixteen wide column"
-        style="text-align: center; display: flex; align-items: center"
+      <Layout
+        stack
+        no-gap
+        label
+        for="playlists-ordering"
       >
-        <div class="ui icon header">
-          <i class="list icon" />
-          {{ $t('views.playlists.List.empty.noResults') }}
-        </div>
-        <button
-          v-if="$store.state.auth.authenticated"
-          class="ui success button labeled icon"
-          @click="$store.commit('playlists/showModal', true)"
+        <span class="label">
+          {{ t('views.playlists.List.ordering.label') }}
+        </span>
+        <select
+          id="playlists-ordering"
+          v-model="ordering"
+          class="dropdown"
         >
-          <i class="list icon" />
-          {{ $t('views.playlists.List.button.create') }}
-        </button>
-      </div>
-      <div class="ui center aligned basic segment">
-        <pagination
-          v-if="result && result.results.length > 0"
-          v-model:current="page"
-          :paginate-by="paginateBy"
-          :total="result.count"
-        />
-      </div>
-    </section>
-  </main>
+          <option
+            v-for="(option, key) in orderingOptions"
+            :key="key"
+            :value="option[0]"
+          >
+            {{ sharedLabels.filters[option[1]] }}
+          </option>
+        </select>
+      </Layout>
+      <Layout
+        stack
+        no-gap
+        label
+        for="playlists-ordering-direction"
+      >
+        <span class="label">
+          {{ t('views.playlists.List.ordering.direction.label') }}
+        </span>
+        <select
+          id="playlists-ordering-direction"
+          v-model="orderingDirection"
+          class="dropdown"
+        >
+          <option value="+">
+            {{ t('views.playlists.List.ordering.direction.ascending') }}
+          </option>
+          <option value="-">
+            {{ t('views.playlists.List.ordering.direction.descending') }}
+          </option>
+        </select>
+      </Layout>
+      <Layout
+        stack
+        no-gap
+        label
+        for="playlist-results"
+      >
+        <span class="label">
+          {{ t('views.playlists.List.pagination.results') }}
+        </span>
+        <select
+          id="playlist-results"
+          v-model="paginateBy"
+          class="dropdown"
+        >
+          <option
+            v-for="opt in paginateOptions"
+            :key="opt"
+            :value="opt"
+          >
+            {{ opt }}
+          </option>
+        </select>
+      </Layout>
+    </Layout>
+
+    <Spacer v-if="result && result.results.length > 0" />
+
+    <!-- Search results -->
+    <Section :columns-per-item="3">
+      <Loader v-if="isLoading" />
+      <Alert
+        v-if="result && result.results.length === 0"
+        blue
+        style="grid-column: 1 / -1;"
+      >
+        {{ t('views.playlists.List.empty.noResults') }}
+        <Spacer />
+        <Button
+          v-if="store.state.auth.authenticated"
+          icon="bi-list"
+          primary
+          @click="store.commit('playlists/showModal', true)"
+        >
+          {{ t('views.playlists.List.button.create') }}
+        </Button>
+      </Alert>
+      <Pagination
+        v-if="page && result && result.count > paginateBy"
+        v-model:page="page"
+        style="grid-column: 1 / -1;"
+        :pages="Math.ceil(result.count/paginateBy)"
+      />
+      <PlaylistsCard
+        v-for="playlist in (result && result.results.length > 0 ? result.results : [])"
+        :key="playlist.id"
+        :playlist="playlist"
+      />
+      <Spacer grow />
+      <Pagination
+        v-if="page && result && result.count > paginateBy"
+        v-model:page="page"
+        :pages="Math.ceil(result.count/paginateBy)"
+        style="grid-column: 1 / -1;"
+      />
+    </Section>
+  </Layout>
 </template>

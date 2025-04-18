@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { truncate } from '~/utils/filters'
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import Layout from '~/components/ui/Layout.vue'
+import Pill from '~/components/ui/Pill.vue'
 
 interface Props {
   tags: string[]
@@ -19,6 +23,7 @@ const props = withDefaults(defineProps<Props>(), {
   detailRoute: 'library.tags.detail'
 })
 
+const { t } = useI18n()
 const honorLimit = ref(true)
 
 const tags = computed(() => {
@@ -31,23 +36,27 @@ const tags = computed(() => {
 </script>
 
 <template>
-  <div class="component-tags-list">
+  <Layout
+    flex
+    gap-16
+    class="component-tags-list"
+  >
     <router-link
       v-for="tag in tags"
       :key="tag"
       :to="{name: props.detailRoute, params: { id: tag } }"
-      :class="['ui', 'circular', 'hashtag', 'label', props.labelClasses]"
+      :class="props.labelClasses"
+      style="text-decoration: none;"
     >
-      <span class="hashtag symbol" />
-      {{ truncate(tag, props.truncateSize) }}
+      <Pill raised>
+        {{ `#${truncate(tag, props.truncateSize)}` }}
+      </Pill>
     </router-link>
-    <div
+    <Pill
       v-if="props.showMore && tags.length < props.tags.length"
-      role="button"
-      class="ui circular inverted accent label"
       @click.prevent="honorLimit = false"
     >
-      {{ $t('components.tags.List.button.more', props.tags.length - tags.length) }}
-    </div>
-  </div>
+      {{ t('components.tags.List.button.more', props.tags.length - tags.length) }}
+    </Pill>
+  </Layout>
 </template>

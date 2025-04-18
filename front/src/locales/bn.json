@@ -2,6 +2,27 @@
   "App": {
     "loading": "প্রকরিয়ারত…"
   },
+  "vui": {
+    "tracks": "{n}টি গান | {n}টি গান",
+    "by-user": "{'@'}{username} থেকে",
+    "aria": {
+      "pagination": {
+        "gotoPage": "{n} পৃষ্ঠায় যাও",
+        "gotoNext": "পরের পৃষ্ঠায় যাও",
+        "currentPage": "বর্তমান পৃষ্ঠা, পৃষ্ঠা {n}",
+        "gotoPrevious": "পূর্ববর্তী পৃষ্ঠায় যাও",
+        "nav": "পৃষ্ঠাকার দিকসংকেত"
+      }
+    },
+    "radio": "বেতার",
+    "go-to": "এখানে যাও",
+    "albums": "{n}টি অ্যালবাম | {n}টি অ্যালবাম",
+    "episodes": "{n}টি পর্ব | {n}টি পর্ব",
+    "pagination": {
+      "previous": "পূর্ববর্তী",
+      "next": "পরবর্তী"
+    }
+  },
   "components": {
     "About": {
       "description": {

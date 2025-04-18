@@ -6,9 +6,8 @@
 
   .ui.top.attached.progress {
     top: 0;
-    height: 1rem;
+    height: 3px;
     z-index: 1;
-    padding-bottom: 0.8rem;
     border-radius: 0;
 
     .bar {
@@ -18,7 +17,7 @@
 
 }
 .ui.bottom-player > .segment.fixed-controls {
-  color: var(--player-color);
+  color: var(--color);
   background: var(--player-background);
   width: 100%;
   border-radius: 0;
@@ -29,6 +28,7 @@
   margin: 0;
   z-index: 1001;
   height: $bottom-player-height;
+  cursor: pointer;
   .controls-row {
     height: $bottom-player-height;
     margin: 0 auto;
@@ -40,7 +40,6 @@
       justify-content: space-around;
     }
   }
-  cursor: pointer;
   .indicating.progress {
     overflow: hidden;
   }
@@ -106,18 +105,55 @@
     justify-content: flex-start;
     flex-grow: 1;
     .image {
-      padding: 0.5em;
+      margin: 0.5em;
       width: auto;
-      margin-right: 0.5em;
+      margin-right: 1em;
       > img {
-        max-height: 3.7em;
-        max-width: 4.7em;
+        max-height: 40px;
+        max-width: 40px;
       }
     }
   }
   .controls {
     min-width: 8em;
-    font-size: 1.1em;
+
+    a {
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    .meta {
+      line-height: 1.5em;
+    }
+
+    .button {
+      border: none;
+      cursor: pointer;
+
+      &:hover {
+        background-color: transparent !important;
+        > i {
+          color: var(--color);
+          transform: scale(1.2);
+        }
+      }
+
+      &:disabled i {
+        color: var(--fw-gray-700);
+      }
+    }
+
+    #volume-slider {
+      accent-color: var(--vibrant-color);
+    }
+
+    .looping, .shuffling,
+    .looping:hover, .shuffling:hover {
+      > i {
+        color: var(--vibrant-color);
+      }
+    }
+
     @include media(">desktop") {
       &:not(.fluid) {
         width: 20%;
@@ -129,7 +165,11 @@
         width: 10%;
       }
       &.player-controls {
-        width: 15%;
+        gap: 8px;
+
+        & i {
+          font-size: 1.8em;
+        }
       }
     }
     &.small, .small {
@@ -137,11 +177,12 @@
         font-size: 0.9em;
       }
     }
-    .icon {
-      font-size: 1.1em;
+    i {
+      font-size: 1.3em;
+      color: var(--player-color);
     }
-    .icon.large {
-      font-size: 1.4em;
+    .large i {
+      font-size: 3.2em;
     }
     &:not(.track-controls) {
       @include media(">desktop") {
@@ -158,87 +199,23 @@
       > * {
         padding: 0.5em;
       }
-    }
-    &.player-controls {
-      .icon {
-        margin: 0;
+      .close-control {
+        background-color: transparent;
+
+        & i {
+          color: var(--vibrant-color);
+        }
       }
     }
-
   }
 }
 
 .component-player {
   .controls {
     display: flex;
-    justify-content: space-between;
-  }
-
-  .controls .icon.big {
-    cursor: pointer;
-    font-size: 2em !important;
-  }
-
-  .controls .icon {
-    cursor: pointer;
-    vertical-align: middle;
-  }
-  .timer {
-    font-size: 1.2em;
-  }
-  .looping {
-    i {
-      position: relative;
-    }
-    .ui.circular.label {
-      font-family: sans-serif;
-      position: absolute;
-      font-size: 0.5em !important;
-      bottom: -0.7rem;
-      right: -0.7rem;
-      padding: 2px 0 !important;
-      width: 15px !important;
-      height: 15px !important;
-      min-width: 15px !important;
-      min-height: 15px !important;
-      @include media(">desktop") {
-        font-size: 0.6em !important;
-      }
-    }
-  }
-  .shuffling {
-    color: var(--vibrant-color);
-  }
-  .control.circular.button {
-    padding: 0;
-    border: none;
-    background-color: transparent;
-    color: inherit;
-
   }
   .fake-dropdown {
-    border: 1px solid gray;
-    border-radius: 3px;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-width: 8em;
     z-index: 2;
-    > .control.button {
-      padding: 0.5em;
-
-    }
-    .position.control {
-      flex-grow: 1;
-
-      i.stream.icon {
-        position: relative;
-        top: -2px;
-        left: -2px;
-      }
-    }
-    .angle.icon {
-      margin-right: 0;
-    }
   }
 }

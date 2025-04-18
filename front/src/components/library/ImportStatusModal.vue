@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { Upload } from '~/types'
-
-import SemanticModal from '~/components/semantic/Modal.vue'
 import { useVModel } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
+
+import Modal from '~/components/ui/Modal.vue'
 
 interface ErrorEntry {
   key: string
@@ -75,10 +75,11 @@ const getErrorData = (upload: Upload) => {
 </script>
 
 <template>
-  <semantic-modal v-model:show="show">
-    <h4 class="header">
-      {{ $t('components.library.ImportStatusModal.header.importDetail') }}
-    </h4>
+  <Modal
+    v-model="show"
+    :title="t('components.library.ImportStatusModal.header.importDetail')"
+    :cancel="t('components.library.ImportStatusModal.button.close')"
+  >
     <div
       v-if="Object.keys(upload).length > 0"
       class="content"
@@ -88,33 +89,33 @@ const getErrorData = (upload: Upload) => {
           v-if="upload.import_status === 'pending'"
           class="ui message"
         >
-          {{ $t('components.library.ImportStatusModal.message.importDetail') }}
+          {{ t('components.library.ImportStatusModal.message.importDetail') }}
         </div>
         <div
           v-if="upload.import_status === 'finished'"
           class="ui success message"
         >
-          {{ $t('components.library.ImportStatusModal.message.importSuccess') }}
+          {{ t('components.library.ImportStatusModal.message.importSuccess') }}
         </div>
         <div
           v-if="upload.import_status === 'skipped'"
           role="alert"
           class="ui warning message"
         >
-          {{ $t('components.library.ImportStatusModal.warning.importSkipped') }}
+          {{ t('components.library.ImportStatusModal.warning.importSkipped') }}
         </div>
         <div
           v-if="upload.import_status === 'errored'"
           class="ui error message"
         >
-          {{ $t('components.library.ImportStatusModal.error.importFailure') }}
+          {{ t('components.library.ImportStatusModal.error.importFailure') }}
         </div>
         <template v-if="upload.import_status === 'errored'">
           <table class="ui very basic collapsing celled table">
             <tbody>
               <tr>
                 <td>
-                  {{ $t('components.library.ImportStatusModal.table.error.errorType') }}
+                  {{ t('components.library.ImportStatusModal.table.error.errorType') }}
                 </td>
                 <td>
                   {{ getErrorData(upload).label }}
@@ -122,7 +123,7 @@ const getErrorData = (upload: Upload) => {
               </tr>
               <tr>
                 <td>
-                  {{ $t('components.library.ImportStatusModal.table.error.errorDetail') }}
+                  {{ t('components.library.ImportStatusModal.table.error.errorDetail') }}
                 </td>
                 <td>
                   {{ getErrorData(upload).detail }}
@@ -140,7 +141,7 @@ const getErrorData = (upload: Upload) => {
               </tr>
               <tr>
                 <td>
-                  {{ $t('components.library.ImportStatusModal.table.error.help') }}
+                  {{ t('components.library.ImportStatusModal.table.error.help') }}
                 </td>
                 <td>
                   <ul>
@@ -149,7 +150,7 @@ const getErrorData = (upload: Upload) => {
                         :href="getErrorData(upload).documentationUrl"
                         target="_blank"
                       >
-                        {{ $t('components.library.ImportStatusModal.link.documentation') }}
+                        {{ t('components.library.ImportStatusModal.link.documentation') }}
                       </a>
                     </li>
                     <li>
@@ -157,7 +158,7 @@ const getErrorData = (upload: Upload) => {
                         :href="getErrorData(upload).supportUrl"
                         target="_blank"
                       >
-                        {{ $t('components.library.ImportStatusModal.link.support') }}
+                        {{ t('components.library.ImportStatusModal.link.support') }}
                       </a>
                     </li>
                   </ul>
@@ -165,7 +166,7 @@ const getErrorData = (upload: Upload) => {
               </tr>
               <tr>
                 <td>
-                  {{ $t('components.library.ImportStatusModal.table.error.debug') }}
+                  {{ t('components.library.ImportStatusModal.table.error.debug') }}
                 </td>
                 <td>
                   <div class="ui form">
@@ -182,10 +183,5 @@ const getErrorData = (upload: Upload) => {
         </template>
       </div>
     </div>
-    <div class="actions">
-      <button class="ui deny button">
-        {{ $t('components.library.ImportStatusModal.button.close') }}
-      </button>
-    </div>
-  </semantic-modal>
+  </Modal>
 </template>

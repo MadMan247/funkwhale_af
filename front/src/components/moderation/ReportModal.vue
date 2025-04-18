@@ -3,10 +3,15 @@ import type { BackendError } from '~/types'
 
 import axios from 'axios'
 import ReportCategoryDropdown from '~/components/moderation/ReportCategoryDropdown.vue'
-import SemanticModal from '~/components/semantic/Modal.vue'
 import { computed, ref, watchEffect } from 'vue'
 import { useStore } from '~/store'
 import { useI18n } from 'vue-i18n'
+
+import ContentForm from '../common/ContentForm.vue'
+
+import Modal from '~/components/ui/Modal.vue'
+import Button from '~/components/ui/Button.vue'
+import Alert from '~/components/ui/Alert.vue'
 
 interface ReportType {
   anonymous: boolean
@@ -120,12 +125,15 @@ watchEffect(async () => {
 </script>
 
 <template>
-  <semantic-modal v-model:show="show">
+  <Modal
+    v-model="show"
+    :title="target ? t('components.moderation.ReportModal.header.modal') : errors.length > 0 ? t('components.moderation.ReportModal.header.submissionFailure') : ''"
+    :cancel="t('components.moderation.ReportModal.button.cancel')"
+  >
     <h2
       v-if="target"
       class="ui header"
     >
-      {{ $t('components.moderation.ReportModal.header.modal') }}
       <div class="ui sub header">
         {{ target.typeLabel }}
         <span class="middle hyphen symbol" />
@@ -134,14 +142,10 @@ watchEffect(async () => {
     </h2>
     <div class="scrolling content">
       <div class="description">
-        <div
+        <Alert
           v-if="errors.length > 0"
-          role="alert"
-          class="ui negative message"
+          red
         >
-          <h4 class="header">
-            {{ $t('components.moderation.ReportModal.header.submissionFailure') }}
-          </h4>
           <ul class="list">
             <li
               v-for="(error, key) in errors"
@@ -150,10 +154,10 @@ watchEffect(async () => {
               {{ error }}
             </li>
           </ul>
-        </div>
+        </Alert>
       </div>
       <p>
-        {{ $t('components.moderation.ReportModal.description.modal') }}
+        {{ t('components.moderation.ReportModal.description.modal') }}
       </p>
       <form
         v-if="canSubmit"
@@ -171,11 +175,11 @@ watchEffect(async () => {
             :label="true"
           />
           <div
-            v-if="!$store.state.auth.authenticated"
+            v-if="!store.state.auth.authenticated"
             class="ui eight wide required field"
           >
             <label for="report-submitter-email">
-              {{ $t('components.moderation.ReportModal.label.email') }}
+              {{ t('components.moderation.ReportModal.label.email') }}
             </label>
             <input
               id="report-submitter-email"
@@ -185,16 +189,16 @@ watchEffect(async () => {
               required
             >
             <p>
-              {{ $t('components.moderation.ReportModal.description.email') }}
+              {{ t('components.moderation.ReportModal.description.email') }}
             </p>
           </div>
         </div>
         <div class="ui field">
           <label for="report-summary">
-            {{ $t('components.moderation.ReportModal.label.message') }}
+            {{ t('components.moderation.ReportModal.label.message') }}
           </label>
           <p>
-            {{ $t('components.moderation.ReportModal.description.message') }}
+            {{ t('components.moderation.ReportModal.description.message') }}
           </p>
           <content-form
             v-model="summary"
@@ -214,10 +218,10 @@ watchEffect(async () => {
             >
             <label for="report-forward">
               <strong>
-                {{ $t('components.moderation.ReportModal.label.forwardToDomain', {domain: targetDomain}) }}
+                {{ t('components.moderation.ReportModal.label.forwardToDomain', {domain: targetDomain}) }}
               </strong>
               <p>
-                {{ $t('components.moderation.ReportModal.description.forwardToDomain') }}
+                {{ t('components.moderation.ReportModal.description.forwardToDomain') }}
               </p>
             </label>
           </div>
@@ -234,22 +238,20 @@ watchEffect(async () => {
         class="ui warning message"
       >
         <h4 class="header">
-          {{ $t('components.moderation.ReportModal.header.disabled') }}
+          {{ t('components.moderation.ReportModal.header.disabled') }}
         </h4>
       </div>
     </div>
-    <div class="actions">
-      <button class="ui basic cancel button">
-        {{ $t('components.moderation.ReportModal.button.cancel') }}
-      </button>
-      <button
+    <template #actions>
+      <Button
         v-if="canSubmit"
-        :class="['ui', 'success', {loading: isLoading}, 'button']"
+        destructive
+        :is-loading="isLoading"
         type="submit"
         form="report-form"
       >
-        {{ $t('components.moderation.ReportModal.button.submit') }}
-      </button>
-    </div>
-  </semantic-modal>
+        {{ t('components.moderation.ReportModal.button.submit') }}
+      </Button>
+    </template>
+  </Modal>
 </template>

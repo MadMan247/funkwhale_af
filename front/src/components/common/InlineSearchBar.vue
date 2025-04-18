@@ -3,6 +3,9 @@ import { useVModel } from '@vueuse/core'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import Input from '~/components/ui/Input.vue'
+import Layout from '~/components/ui/Layout.vue'
+
 interface Events {
   (e: 'update:modelValue', value: string): void
   (e: 'search', query: string): void
@@ -25,16 +28,11 @@ const labels = computed(() => ({
   searchPlaceholder: t('components.common.InlineSearchBar.placeholder.search'),
   clear: t('components.common.InlineSearchBar.button.clear')
 }))
-
-const search = () => {
-  value.value = ''
-  emit('search', value.value)
-}
 </script>
 
 <template>
-  <form
-    class="ui inline form"
+  <Layout
+    form
     @submit.stop.prevent="emit('search', value)"
   >
     <div :class="['ui', 'action', {icon: value}, 'input']">
@@ -42,27 +40,16 @@ const search = () => {
         for="search-query"
         class="hidden"
       >
-        {{ $t('components.common.InlineSearchBar.label.search') }}
+        {{ t('components.common.InlineSearchBar.label.search') }}
       </label>
-      <input
+      <Input
         id="search-query"
         v-model="value"
+        search
         name="search-query"
         type="text"
         :placeholder="placeholder || labels.searchPlaceholder"
-      >
-      <i
-        v-if="value"
-        class="x link icon"
-        :title="labels.clear"
-        @click.stop.prevent="search"
       />
-      <button
-        type="submit"
-        class="ui icon basic button"
-      >
-        <i class="search icon" />
-      </button>
     </div>
-  </form>
+  </Layout>
 </template>

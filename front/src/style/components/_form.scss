@@ -1,3 +1,36 @@
+.ui.form {
+  select.dropdown {
+    display: block;
+    height: 48px;
+    margin-top: 7px;
+    border-radius: var(--fw-border-radius);
+    font-size: 14px;
+    font-family: $font-main;
+    line-height: 28px;
+    border: 12px solid transparent;
+    padding: 0px 12px;
+    color: var(--input-color);
+    -webkit-transition: color .1s ease, border-color .1s ease;
+    transition: color .1s ease, border-color .1s ease;
+
+    @include light-theme {
+      color: var(--fw-gray-800);
+      background-color: var(--fw-gray-200);
+      border-color: transparent;
+    }
+
+    @include dark-theme {
+      color: var(--fw-gray-300);
+      background-color: var(--fw-gray-850);
+      border-color: var(--fw-gray-850);
+    }
+  }
+  label {
+    font-size: 14px;
+    font-weight: 600;
+    align-self: baseline;
+  }
+}
 
 .ui.checkbox label {
   cursor: pointer;
@@ -26,6 +59,7 @@ input + .help {
     }
   }
 }
+
 .ui.icon.input > .icon {
   color: var(--input-color);
 }

@@ -1,72 +1,74 @@
 <script setup lang="ts">
-import type { Album } from '~/types'
+import { computed } from 'vue'
+import { useStore } from '~/store'
+import { useI18n } from 'vue-i18n'
+import { momentFormat } from '~/utils/filters'
+import defaultCover from '~/assets/audio/default-cover.png'
 
 import PlayButton from '~/components/audio/PlayButton.vue'
-import { computed } from 'vue'
+import Card from '~/components/ui/Card.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+
+import { type Album } from '~/types'
 
 interface Props {
   serie: Album
 }
 
+const { t } = useI18n()
+
 const props = defineProps<Props>()
 
-const cover = computed(() => props.serie?.cover ?? null)
+const { serie } = props
+
+const store = useStore()
+const imageUrl = computed(() => serie?.cover?.urls.original
+  ? store.getters['instance/absoluteUrl'](serie.cover?.urls.medium_square_crop)
+  : defaultCover
+)
 </script>
 
 <template>
-  <div class="channel-serie-card">
-    <div class="two-images">
-      <img
-        v-if="cover && cover.urls.original"
-        v-lazy="$store.getters['instance/absoluteUrl'](cover.urls.medium_square_crop)"
-        alt=""
-        class="channel-image"
-        @click="$router.push({name: 'library.albums.detail', params: {id: serie.id}})"
-      >
-      <img
-        v-else
-        alt=""
-        class="channel-image"
-        src="../../assets/audio/default-cover.png"
-        @click="$router.push({name: 'library.albums.detail', params: {id: serie.id}})"
-      >
-      <img
-        v-if="cover && cover.urls.original"
-        v-lazy="$store.getters['instance/absoluteUrl'](cover.urls.medium_square_crop)"
-        alt=""
-        class="channel-image"
-        @click="$router.push({name: 'library.albums.detail', params: {id: serie.id}})"
-      >
-      <img
-        v-else
-        alt=""
-        class="channel-image"
-        src="../../assets/audio/default-cover.png"
-        @click="$router.push({name: 'library.albums.detail', params: {id: serie.id}})"
-      >
-    </div>
-    <div class="content ellipsis">
-      <strong>
-        <router-link
-          class="discrete link"
-          :to="{name: 'library.albums.detail', params: {id: serie.id}}"
-        >
-          {{ serie.title }}
-        </router-link>
-      </strong>
-      <div class="description">
-        <span>
-          {{ $t('components.audio.ChannelSerieCard.meta.episodes', serie.tracks_count) }}
-        </span>
-      </div>
-    </div>
-    <div class="controls">
-      <play-button
-        :icon-only="true"
-        :is-playable="true"
-        :button-classes="['ui', 'circular', 'vibrant', 'icon', 'button']"
+  <Card
+    :title="serie?.title"
+    :image="imageUrl"
+    :tags="serie?.tags"
+    :to="{name: 'library.albums.detail', params: {id: serie?.id}}"
+    small
+  >
+    <template #topright>
+      <PlayButton
+        icon-only
+        :is-playable="serie?.is_playable"
         :album="serie"
       />
-    </div>
-  </div>
+    </template>
+
+    <template #footer>
+      <span v-if="serie?.release_date">
+        {{ momentFormat(new Date(serie?.release_date), 'Y') }}
+      </span>
+      <i class="bi bi-dot" />
+      <span>
+        {{ t('components.audio.album.Card.meta.tracks', serie?.tracks_count) }}
+      </span>
+      <Spacer
+        h
+        grow
+      />
+      <PlayButton
+        :dropdown-only="true"
+        discrete
+        :is-playable="serie?.is_playable"
+        :album="serie"
+      />
+    </template>
+  </Card>
 </template>
+
+<style lang="scss" scoped>
+.play-button {
+  top: 16px;
+  right: 16px;
+}
+</style>

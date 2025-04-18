@@ -55,21 +55,33 @@ const privacyTooltips = (level: PrivacyLevel) => `Visibility: ${sharedLabels.fie
           <human-date :date="library.creation_date" />
         </span>
       </div>
+
+      <!-- TODO: Add `description` field to `Library` -->
+      <!-- @vue-ignore -->
       <div class="description">
-        {{ library.description }}
+        {{
+          // @ts-expect-error Property 'description' does not exist on type 'Library'
+          library.description
+        }}
         <div class="ui hidden divider" />
       </div>
+
       <div class="content">
+        <!-- TODO: Add `size` field to `Library` (or find out how else to load size) -->
+        <!-- @vue-ignore -->
         <span
           v-if="library.size"
           class="right floated"
           :data-tooltip="sizeLabel"
         >
           <i class="database icon" />
-          {{ humanSize(library.size) }}
+          {{
+            // @ts-expect-error Property 'size' does not exist on type 'Library'
+            humanSize(library.size)
+          }}
         </span>
         <i class="music icon" />
-        {{ $t('views.content.libraries.Card.meta.tracks', library.uploads_count) }}
+        {{ t('views.content.libraries.Card.meta.tracks', library.uploads_count) }}
       </div>
     </div>
     <div class="ui bottom basic attached buttons">
@@ -77,13 +89,13 @@ const privacyTooltips = (level: PrivacyLevel) => `Visibility: ${sharedLabels.fie
         :to="{name: 'library.detail.upload', params: {id: library.uuid}}"
         class="ui button"
       >
-        {{ $t('views.content.libraries.Card.button.upload') }}
+        {{ t('views.content.libraries.Card.button.upload') }}
       </router-link>
       <router-link
         :to="{name: 'library.detail', params: {id: library.uuid}}"
         class="ui button"
       >
-        {{ $t('views.content.libraries.Card.link.details') }}
+        {{ t('views.content.libraries.Card.link.details') }}
       </router-link>
     </div>
   </div>

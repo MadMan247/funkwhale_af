@@ -56,7 +56,7 @@ const submit = async () => {
       class="ui negative message"
     >
       <h4 class="header">
-        {{ $t('components.manage.moderation.NoteForm.header.failure') }}
+        {{ t('components.manage.moderation.NoteForm.header.failure') }}
       </h4>
       <ul class="list">
         <li
@@ -81,7 +81,7 @@ const submit = async () => {
       type="submit"
       :disabled="isLoading"
     >
-      {{ $t('components.manage.moderation.NoteForm.button.add') }}
+      {{ t('components.manage.moderation.NoteForm.button.add') }}
     </button>
   </form>
 </template>

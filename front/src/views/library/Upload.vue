@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { Library } from '~/types'
 
 import { onBeforeRouteLeave } from 'vue-router'
@@ -15,8 +16,10 @@ interface Props {
   defaultImportReference?: string
 }
 
+const privacyLevel= computed(() => props.object.privacy_level)
+
 const emit = defineEmits<Events>()
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   defaultImportReference: ''
 })
 
@@ -39,6 +42,7 @@ onBeforeRouteLeave((to, from, next) => {
   <section>
     <file-upload
       ref="fileupload"
+      v-model="privacyLevel"
       :default-import-reference="defaultImportReference"
       :library="object"
       @uploads-finished="emit('uploads-finished', $event)"

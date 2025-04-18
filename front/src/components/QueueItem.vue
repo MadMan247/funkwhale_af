@@ -3,6 +3,11 @@ import type { QueueItemSource } from '~/types'
 
 import time from '~/utils/time'
 import { generateTrackCreditStringFromQueue } from '~/utils/utils'
+import { useStore } from '~/store'
+
+import Button from '~/components/ui/Button.vue'
+
+const store = useStore()
 
 interface Events {
   (e: 'play', index: number): void
@@ -24,7 +29,7 @@ defineProps<Props>()
     tabindex="0"
   >
     <div class="handle">
-      <i class="grip lines icon" />
+      <i class="bi bi-list" />
     </div>
     <div
       class="image-cell"
@@ -37,7 +42,7 @@ defineProps<Props>()
       >
     </div>
     <div @click="$emit('play', index)">
-      <button
+      <div
         class="title reset ellipsis"
         :title="source.title"
         :aria-label="source.labels.selectTrack"
@@ -46,7 +51,7 @@ defineProps<Props>()
         <span>
           {{ generateTrackCreditStringFromQueue(source) }}
         </span>
-      </button>
+      </div>
     </div>
     <div class="duration-cell">
       <template v-if="source.sources.length > 0">
@@ -54,26 +59,28 @@ defineProps<Props>()
       </template>
     </div>
     <div class="controls">
-      <button
-        v-if="$store.state.auth.authenticated"
+      <Button
+        v-if="store.state.auth.authenticated"
         :aria-label="source.labels.favorite"
         :title="source.labels.favorite"
-        class="ui really basic circular icon button"
-        @click.stop="$store.dispatch('favorites/toggle', source.id)"
-      >
-        <i
-          :class="$store.getters['favorites/isFavorite'](source.id) ? 'pink' : ''"
-          class="heart icon"
-        />
-      </button>
-      <button
+        :icon="store.getters['favorites/isFavorite'](source.id) ? 'bi-heart-fill' : 'bi-heart'"
+        round
+        ghost
+        square-small
+        style="align-self: center;"
+        :class="store.getters['favorites/isFavorite'](source.id) ? 'pink' : ''"
+        @click.stop="store.dispatch('favorites/toggle', source.id)"
+      />
+      <Button
         :aria-label="source.labels.remove"
         :title="source.labels.remove"
-        class="ui really tiny basic circular icon button"
+        icon="bi-x"
+        round
+        ghost
+        square-small
+        style="align-self: center;"
         @click.stop="$emit('remove', index)"
-      >
-        <i class="x icon" />
-      </button>
+      />
     </div>
   </div>
 </template>

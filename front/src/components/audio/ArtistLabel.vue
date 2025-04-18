@@ -2,6 +2,9 @@
 import type { Artist } from '~/types'
 
 import { computed } from 'vue'
+import { useStore } from '~/store'
+
+const store = useStore()
 
 interface Props {
   artist: Artist
@@ -10,7 +13,7 @@ interface Props {
 const props = defineProps<Props>()
 
 const route = computed(() => props.artist.channel
-  ? { name: 'channels.detail', params: { id: props.artist.channel.uuid } }
+  ? { name: 'channels.detail', params: { id: props.artist.channel } }
   : { name: 'library.artists.detail', params: { id: props.artist.id } }
 )
 </script>
@@ -22,7 +25,7 @@ const route = computed(() => props.artist.channel
   >
     <img
       v-if="artist.cover && artist.cover.urls.original"
-      v-lazy="$store.getters['instance/absoluteUrl'](artist.cover.urls.medium_square_crop)"
+      v-lazy="store.getters['instance/absoluteUrl'](artist.cover.urls.small_square_crop)"
       alt=""
       :class="[{circular: artist.content_category != 'podcast'}]"
     >

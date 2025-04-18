@@ -3,6 +3,7 @@ import type { UserRequest, UserRequestStatus } from '~/types'
 
 import { useStore } from '~/store'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import axios from 'axios'
 
@@ -18,6 +19,8 @@ interface Events {
 interface Props {
   initObj: UserRequest
 }
+
+const { t } = useI18n()
 
 const emit = defineEmits<Events>()
 const props = defineProps<Props>()
@@ -67,7 +70,7 @@ const handleRemovedNote = (uuid: string) => {
     <div class="content">
       <h4 class="header">
         <router-link :to="{name: 'manage.moderation.requests.detail', params: {id: obj.uuid}}">
-          {{ $t('components.manage.moderation.UserRequestCard.link.request', {id: obj.uuid.substring(0, 8)}) }}
+          {{ t('components.manage.moderation.UserRequestCard.link.request', {id: obj.uuid.substring(0, 8)}) }}
         </router-link>
         <collapse-link
           v-model="isCollapsed"
@@ -82,7 +85,7 @@ const handleRemovedNote = (uuid: string) => {
               <tbody>
                 <tr>
                   <td>
-                    {{ $t('components.manage.moderation.UserRequestCard.table.request.submittedBy') }}
+                    {{ t('components.manage.moderation.UserRequestCard.table.request.submittedBy') }}
                   </td>
                   <td>
                     <actor-link
@@ -93,7 +96,7 @@ const handleRemovedNote = (uuid: string) => {
                 </tr>
                 <tr>
                   <td>
-                    {{ $t('components.manage.moderation.UserRequestCard.table.request.creationDate') }}
+                    {{ t('components.manage.moderation.UserRequestCard.table.request.creationDate') }}
                   </td>
                   <td>
                     <human-date
@@ -110,26 +113,26 @@ const handleRemovedNote = (uuid: string) => {
               <tbody>
                 <tr>
                   <td>
-                    {{ $t('components.manage.moderation.UserRequestCard.table.status.status') }}
+                    {{ t('components.manage.moderation.UserRequestCard.table.status.status') }}
                   </td>
                   <td>
                     <template v-if="obj.status === 'pending'">
                       <i class="warning hourglass icon" />
-                      {{ $t('components.manage.moderation.UserRequestCard.table.status.pending') }}
+                      {{ t('components.manage.moderation.UserRequestCard.table.status.pending') }}
                     </template>
                     <template v-else-if="obj.status === 'refused'">
                       <i class="danger x icon" />
-                      {{ $t('components.manage.moderation.UserRequestCard.table.status.refused') }}
+                      {{ t('components.manage.moderation.UserRequestCard.table.status.refused') }}
                     </template>
                     <template v-else-if="obj.status === 'approved'">
                       <i class="success check icon" />
-                      {{ $t('components.manage.moderation.UserRequestCard.table.status.approved') }}
+                      {{ t('components.manage.moderation.UserRequestCard.table.status.approved') }}
                     </template>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    {{ $t('components.manage.moderation.UserRequestCard.table.status.assignedTo') }}
+                    {{ t('components.manage.moderation.UserRequestCard.table.status.assignedTo') }}
                   </td>
                   <td>
                     <div v-if="obj.assigned_to">
@@ -141,13 +144,13 @@ const handleRemovedNote = (uuid: string) => {
                     <span
                       v-else
                     >
-                      {{ $t('components.manage.moderation.UserRequestCard.notApplicable') }}
+                      {{ t('components.manage.moderation.UserRequestCard.notApplicable') }}
                     </span>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    {{ $t('components.manage.moderation.UserRequestCard.table.status.resolutionDate') }}
+                    {{ t('components.manage.moderation.UserRequestCard.table.status.resolutionDate') }}
                   </td>
                   <td>
                     <human-date
@@ -156,13 +159,13 @@ const handleRemovedNote = (uuid: string) => {
                       :icon="true"
                     />
                     <span v-else>
-                      {{ $t('components.manage.moderation.UserRequestCard.notApplicable') }}
+                      {{ t('components.manage.moderation.UserRequestCard.notApplicable') }}
                     </span>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    {{ $t('components.manage.moderation.UserRequestCard.table.status.internalNotes') }}
+                    {{ t('components.manage.moderation.UserRequestCard.table.status.internalNotes') }}
                   </td>
                   <td>
                     <i class="comment icon" />
@@ -182,10 +185,10 @@ const handleRemovedNote = (uuid: string) => {
       <div class="ui stackable two column grid">
         <div class="column">
           <h3>
-            {{ $t('components.manage.moderation.UserRequestCard.header.signup') }}
+            {{ t('components.manage.moderation.UserRequestCard.header.signup') }}
           </h3>
           <p>
-            {{ $t('components.manage.moderation.UserRequestCard.message.signup') }}
+            {{ t('components.manage.moderation.UserRequestCard.message.signup') }}
           </p>
           <template v-if="obj.metadata">
             <div class="ui hidden divider" />
@@ -198,7 +201,7 @@ const handleRemovedNote = (uuid: string) => {
                 {{ value }}
               </p>
               <span v-else>
-                {{ $t('components.manage.moderation.UserRequestCard.notApplicable') }}
+                {{ t('components.manage.moderation.UserRequestCard.notApplicable') }}
               </span>
               <div class="ui hidden divider" />
             </div>
@@ -207,7 +210,7 @@ const handleRemovedNote = (uuid: string) => {
         <aside class="column">
           <div v-if="obj.status != 'approved'">
             <h3>
-              {{ $t('components.manage.moderation.UserRequestCard.header.actions') }}
+              {{ t('components.manage.moderation.UserRequestCard.header.actions') }}
             </h3>
             <div class="ui labelled icon basic buttons">
               <button
@@ -216,7 +219,7 @@ const handleRemovedNote = (uuid: string) => {
                 @click="approve(true)"
               >
                 <i class="success check icon" />&nbsp;
-                {{ $t('components.manage.moderation.UserRequestCard.button.approve') }}
+                {{ t('components.manage.moderation.UserRequestCard.button.approve') }}
               </button>
               <button
                 v-if="obj.status === 'pending'"
@@ -224,12 +227,12 @@ const handleRemovedNote = (uuid: string) => {
                 @click="approve(false)"
               >
                 <i class="danger x icon" />&nbsp;
-                {{ $t('components.manage.moderation.UserRequestCard.button.reject') }}
+                {{ t('components.manage.moderation.UserRequestCard.button.reject') }}
               </button>
             </div>
           </div>
           <h3>
-            {{ $t('components.manage.moderation.UserRequestCard.header.notes') }}
+            {{ t('components.manage.moderation.UserRequestCard.header.notes') }}
           </h3>
           <notes-thread
             :notes="obj.notes"

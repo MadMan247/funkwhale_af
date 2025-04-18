@@ -10,7 +10,8 @@
   }
   &.expandable {
     .popup {
-      background-color: #1B1C1D;
+      background-color: var(--player-background);
+      border-radius: var(--fw-border-radius);
       position: absolute;
       left: -4em;
       top: calc(-7em + 5px);

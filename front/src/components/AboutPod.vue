@@ -5,7 +5,6 @@ import { get } from 'lodash-es'
 import { computed } from 'vue'
 
 import useMarkdown from '~/composables/useMarkdown'
-import type { NodeInfo } from '~/store/instance'
 import { useI18n } from 'vue-i18n'
 
 const store = useStore()
@@ -39,24 +38,14 @@ const federationEnabled = computed(() => {
 
 const onDesktop = computed(() => window.innerWidth > 800)
 
-const stats = computed(() => {
-  const info = nodeinfo.value ?? {} as NodeInfo
-
-  const data = {
-    users: get(info, 'usage.users.activeMonth', null),
-    hours: get(info, 'metadata.content.local.hoursOfContent', null),
-    artists: get(info, 'metadata.content.local.artists.total', null),
-    albums: get(info, 'metadata.content.local.albums.total', null),
-    tracks: get(info, 'metadata.content.local.tracks.total', null),
-    listenings: get(info, 'metadata.usage.listenings.total', null)
-  }
-
-  if (data.users === null || data.artists === null) {
-    return data
-  }
-
-  return data
-})
+const stats = computed(() => ({
+  users: nodeinfo.value?.usage.users.activeMonth,
+  hours: nodeinfo.value?.metadata.content.local.hoursOfContent,
+  artists: nodeinfo.value?.metadata.content.local.artists,
+  albums: nodeinfo.value?.metadata.content.local.releases, // TODO: Check where to get 'metadata.content.local.albums.total'
+  tracks: nodeinfo.value?.metadata.content.local.recordings, // TODO: 'metadata.content.local.tracks.total'
+  listenings: nodeinfo.value?.metadata.usage?.listenings.total
+}))
 
 const headerStyle = computed(() => {
   if (!banner.value) {
@@ -72,7 +61,7 @@ const headerStyle = computed(() => {
 <template>
   <main
     v-title="labels.title"
-    class="main pusher page-about"
+    class="main page-about"
   >
     <div
       class="ui"
@@ -99,32 +88,32 @@ const headerStyle = computed(() => {
                   to="/about/pod"
                   class="item"
                 >
-                  {{ $t('components.AboutPod.link.about') }}
+                  {{ t('components.AboutPod.link.about') }}
                 </router-link>
                 <router-link
                   to="/about/pod#rules"
                   class="item"
                 >
-                  {{ $t('components.AboutPod.link.rules') }}
+                  {{ t('components.AboutPod.link.rules') }}
                 </router-link>
                 <router-link
                   to="/about/pod#terms"
                   class="item"
                 >
-                  {{ $t('components.AboutPod.link.terms') }}
+                  {{ t('components.AboutPod.link.terms') }}
                 </router-link>
                 <router-link
                   to="/about/pod#features"
                   class="item"
                 >
-                  {{ $t('components.AboutPod.link.features') }}
+                  {{ t('components.AboutPod.link.features') }}
                 </router-link>
                 <router-link
                   v-if="stats"
                   to="/about/pod#statistics"
                   class="item"
                 >
-                  {{ $t('components.AboutPod.link.statistics') }}
+                  {{ t('components.AboutPod.link.statistics') }}
                 </router-link>
               </div>
             </div>
@@ -134,49 +123,49 @@ const headerStyle = computed(() => {
                 id="description about-this-pod"
                 class="ui header"
               >
-                {{ $t('components.AboutPod.header.about') }}
+                {{ t('components.AboutPod.header.about') }}
               </h2>
               <sanitized-html
                 v-if="longDescription"
                 :html="longDescription"
               />
               <p v-else>
-                {{ $t('components.AboutPod.placeholder.noDescription') }}
+                {{ t('components.AboutPod.placeholder.noDescription') }}
               </p>
 
               <h3
                 id="rules"
                 class="ui header"
               >
-                {{ $t('components.AboutPod.header.rules') }}
+                {{ t('components.AboutPod.header.rules') }}
               </h3>
               <sanitized-html
                 v-if="rules"
                 :html="rules"
               />
               <p v-else>
-                {{ $t('components.AboutPod.placeholder.noRules') }}
+                {{ t('components.AboutPod.placeholder.noRules') }}
               </p>
 
               <h3
                 id="terms"
                 class="ui header"
               >
-                {{ $t('components.AboutPod.header.terms') }}
+                {{ t('components.AboutPod.header.terms') }}
               </h3>
               <sanitized-html
                 v-if="terms"
                 :html="terms"
               />
               <p v-else>
-                {{ $t('components.AboutPod.placeholder.noTerms') }}
+                {{ t('components.AboutPod.placeholder.noTerms') }}
               </p>
 
               <h3
                 id="features"
                 class="header"
               >
-                {{ $t('components.AboutPod.header.features') }}
+                {{ t('components.AboutPod.header.features') }}
               </h3>
               <div class="features-container ui two column stackable grid">
                 <div class="column">
@@ -184,7 +173,7 @@ const headerStyle = computed(() => {
                     <tbody>
                       <tr>
                         <td>
-                          {{ $t('components.AboutPod.feature.version') }}
+                          {{ t('components.AboutPod.feature.version') }}
                         </td>
                         <td
                           v-if="version"
@@ -199,13 +188,13 @@ const headerStyle = computed(() => {
                           class="right aligned"
                         >
                           <span class="features-status ui text">
-                            {{ $t('components.AboutPod.notApplicable') }}
+                            {{ t('components.AboutPod.notApplicable') }}
                           </span>
                         </td>
                       </tr>
                       <tr>
                         <td>
-                          {{ $t('components.AboutPod.feature.federation') }}
+                          {{ t('components.AboutPod.feature.federation') }}
                         </td>
                         <td
                           v-if="federationEnabled"
@@ -213,7 +202,7 @@ const headerStyle = computed(() => {
                         >
                           <span class="features-status ui text">
                             <i class="check icon" />
-                            {{ $t('components.AboutPod.feature.status.enabled') }}
+                            {{ t('components.AboutPod.feature.status.enabled') }}
                           </span>
                         </td>
                         <td
@@ -222,13 +211,13 @@ const headerStyle = computed(() => {
                         >
                           <span class="features-status ui text">
                             <i class="x icon" />
-                            {{ $t('components.AboutPod.feature.status.disabled') }}
+                            {{ t('components.AboutPod.feature.status.disabled') }}
                           </span>
                         </td>
                       </tr>
                       <tr>
                         <td>
-                          {{ $t('components.AboutPod.feature.allowList') }}
+                          {{ t('components.AboutPod.feature.allowList') }}
                         </td>
                         <td
                           v-if="allowListEnabled"
@@ -236,7 +225,7 @@ const headerStyle = computed(() => {
                         >
                           <span class="features-status ui text">
                             <i class="check icon" />
-                            {{ $t('components.AboutPod.feature.status.enabled') }}
+                            {{ t('components.AboutPod.feature.status.enabled') }}
                           </span>
                         </td>
                         <td
@@ -245,7 +234,7 @@ const headerStyle = computed(() => {
                         >
                           <span class="features-status ui text">
                             <i class="x icon" />
-                            {{ $t('components.AboutPod.feature.status.disabled') }}
+                            {{ t('components.AboutPod.feature.status.disabled') }}
                           </span>
                         </td>
                       </tr>
@@ -257,7 +246,7 @@ const headerStyle = computed(() => {
                     <tbody>
                       <tr>
                         <td>
-                          {{ $t('components.AboutPod.feature.anonymousAccess') }}
+                          {{ t('components.AboutPod.feature.anonymousAccess') }}
                         </td>
                         <td
                           v-if="anonymousCanListen"
@@ -265,7 +254,7 @@ const headerStyle = computed(() => {
                         >
                           <span class="features-status ui text">
                             <i class="check icon" />
-                            {{ $t('components.AboutPod.feature.status.enabled') }}
+                            {{ t('components.AboutPod.feature.status.enabled') }}
                           </span>
                         </td>
                         <td
@@ -274,13 +263,13 @@ const headerStyle = computed(() => {
                         >
                           <span class="features-status ui text">
                             <i class="x icon" />
-                            {{ $t('components.AboutPod.feature.status.disabled') }}
+                            {{ t('components.AboutPod.feature.status.disabled') }}
                           </span>
                         </td>
                       </tr>
                       <tr>
                         <td>
-                          {{ $t('components.AboutPod.feature.registrations') }}
+                          {{ t('components.AboutPod.feature.registrations') }}
                         </td>
                         <td
                           v-if="openRegistrations"
@@ -288,7 +277,7 @@ const headerStyle = computed(() => {
                         >
                           <span class="features-status ui text">
                             <i class="check icon" />
-                            {{ $t('components.AboutPod.feature.status.open') }}
+                            {{ t('components.AboutPod.feature.status.open') }}
                           </span>
                         </td>
                         <td
@@ -297,13 +286,13 @@ const headerStyle = computed(() => {
                         >
                           <span class="features-status ui text">
                             <i class="x icon" />
-                            {{ $t('components.AboutPod.feature.status.closed') }}
+                            {{ t('components.AboutPod.feature.status.closed') }}
                           </span>
                         </td>
                       </tr>
                       <tr>
                         <td>
-                          {{ $t('components.AboutPod.feature.quota') }}
+                          {{ t('components.AboutPod.feature.quota') }}
                         </td>
                         <td
                           v-if="defaultUploadQuota"
@@ -318,7 +307,7 @@ const headerStyle = computed(() => {
                           class="right aligned"
                         >
                           <span class="features-status ui text">
-                            {{ $t('components.AboutPod.notApplicable') }}
+                            {{ t('components.AboutPod.notApplicable') }}
                           </span>
                         </td>
                       </tr>
@@ -332,7 +321,7 @@ const headerStyle = computed(() => {
                   id="statistics"
                   class="header"
                 >
-                  {{ $t('components.AboutPod.header.statistics') }}
+                  {{ t('components.AboutPod.header.statistics') }}
                 </h3>
                 <div class="statistics-container">
                   <div
@@ -340,9 +329,9 @@ const headerStyle = computed(() => {
                     class="statistics-statistic"
                   >
                     <span class="statistics-figure ui text">
-                      <span class="ui big text"><strong>{{ stats.hours.toLocaleString($store.state.ui.momentLocale) }}</strong></span>
+                      <span class="ui big text"><strong>{{ stats.hours?.toLocaleString(store.state.ui.momentLocale) }}</strong></span>
                       <br>
-                      {{ $t('components.AboutPod.stat.hoursOfMusic', stats.hours) }}
+                      {{ t('components.AboutPod.stat.hoursOfMusic', stats.hours) }}
                     </span>
                   </div>
                   <div
@@ -350,9 +339,9 @@ const headerStyle = computed(() => {
                     class="statistics-statistic"
                   >
                     <span class="statistics-figure ui text">
-                      <span class="ui big text"><strong>{{ stats.artists.toLocaleString($store.state.ui.momentLocale) }}</strong></span>
+                      <span class="ui big text"><strong>{{ stats.artists?.toLocaleString(store.state.ui.momentLocale) }}</strong></span>
                       <br>
-                      {{ $t('components.AboutPod.stat.artistsCount', stats.artists) }}
+                      {{ t('components.AboutPod.stat.artistsCount', stats.artists) }}
                     </span>
                   </div>
                   <div
@@ -360,9 +349,9 @@ const headerStyle = computed(() => {
                     class="statistics-statistic"
                   >
                     <span class="statistics-figure ui text">
-                      <span class="ui big text"><strong>{{ stats.albums.toLocaleString($store.state.ui.momentLocale) }}</strong></span>
+                      <span class="ui big text"><strong>{{ stats.albums?.toLocaleString(store.state.ui.momentLocale) }}</strong></span>
                       <br>
-                      {{ $t('components.AboutPod.stat.albumsCount', stats.albums) }}
+                      {{ t('components.AboutPod.stat.albumsCount', stats.albums) }}
                     </span>
                   </div>
                   <div
@@ -370,9 +359,9 @@ const headerStyle = computed(() => {
                     class="statistics-statistic"
                   >
                     <span class="statistics-figure ui text">
-                      <span class="ui big text"><strong>{{ stats.tracks.toLocaleString($store.state.ui.momentLocale) }}</strong></span>
+                      <span class="ui big text"><strong>{{ stats.tracks?.toLocaleString(store.state.ui.momentLocale) }}</strong></span>
                       <br>
-                      {{ $t('components.AboutPod.stat.tracksCount', stats.tracks) }}
+                      {{ t('components.AboutPod.stat.tracksCount', stats.tracks) }}
                     </span>
                   </div>
                   <div
@@ -380,9 +369,9 @@ const headerStyle = computed(() => {
                     class="statistics-statistic"
                   >
                     <span class="statistics-figure ui text">
-                      <span class="ui big text"><strong>{{ stats.users.toLocaleString($store.state.ui.momentLocale) }}</strong></span>
+                      <span class="ui big text"><strong>{{ stats.users.toLocaleString(store.state.ui.momentLocale) }}</strong></span>
                       <br>
-                      {{ $t('components.AboutPod.stat.activeUsers', stats.users) }}
+                      {{ t('components.AboutPod.stat.activeUsers', stats.users) }}
                     </span>
                   </div>
                   <div
@@ -390,9 +379,9 @@ const headerStyle = computed(() => {
                     class="statistics-statistic"
                   >
                     <span class="statistics-figure ui text">
-                      <span class="ui big text"><strong>{{ stats.listenings.toLocaleString($store.state.ui.momentLocale) }}</strong></span>
+                      <span class="ui big text"><strong>{{ stats.listenings.toLocaleString(store.state.ui.momentLocale) }}</strong></span>
                       <br>
-                      {{ $t('components.AboutPod.stat.listeningsCount', stats.listenings) }}
+                      {{ t('components.AboutPod.stat.listeningsCount', stats.listenings) }}
                     </span>
                   </div>
                 </div>
@@ -403,13 +392,13 @@ const headerStyle = computed(() => {
                   id="contact"
                   class="ui header"
                 >
-                  {{ $t('components.AboutPod.header.contact') }}
+                  {{ t('components.AboutPod.header.contact') }}
                 </h3>
                 <a
                   v-if="contactEmail"
                   :href="`mailto:${contactEmail}`"
                 >
-                  {{ $t('components.AboutPod.message.contact', { contactEmail }) }}
+                  {{ t('components.AboutPod.message.contact', { contactEmail }) }}
                 </a>
               </template>
 
@@ -420,7 +409,7 @@ const headerStyle = computed(() => {
                   class="ui left floated basic secondary button"
                 >
                   <i class="icon arrow left" />
-                  {{ $t('components.AboutPod.link.introduction') }}
+                  {{ t('components.AboutPod.link.introduction') }}
                 </router-link>
               </div>
             </div>

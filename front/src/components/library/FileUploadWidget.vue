@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import type { VueUploadItem } from 'vue-upload-component'
 
+import type { components } from '~/generated/types'
+
 import { useCookies } from '@vueuse/integrations/useCookies'
 import { computed, ref, watch, getCurrentInstance } from 'vue'
 import { useStore } from '~/store'
 
 import FileUpload from 'vue-upload-component'
+
+const props = defineProps<{
+    channel?: components['schemas']['Channel']['uuid'];
+}>()
 
 const { get } = useCookies()
 const instance = getCurrentInstance()
@@ -36,12 +42,14 @@ const patchFileData = (file: VueUploadItem, data: Record<string, unknown> = {}) 
 
   if (metadata) {
     metadata = { ...metadata }
-    if (data.channel && !metadata.title) {
+    if (!('title' in metadata)) {
       metadata.title = filename.replace(/\.[^/.]+$/, '')
     }
 
     data.import_metadata = JSON.stringify(metadata)
   }
+
+  data.channel = props.channel
 
   return data
 }
@@ -86,15 +94,23 @@ export default { inheritAttrs: false }
   <file-upload
     ref="upload"
     v-bind="$attrs"
-    :post-action="$store.getters['instance/absoluteUrl']('/api/v1/uploads/')"
+    :class="$style.uploader"
+    :post-action="store.getters['instance/absoluteUrl']('/api/v2/uploads/')"
     :multiple="true"
     :thread="1"
     :custom-action="uploadAction"
     :headers="headers"
-    :extensions="$store.state.ui.supportedExtensions"
+    :extensions="store.state.ui.supportedExtensions"
     :drop="true"
     name="audio_file"
   >
     <slot />
   </file-upload>
 </template>
+
+<style module lang="scss">
+  .uploader label {
+    background: transparent;
+    cursor: pointer;
+  }
+</style>

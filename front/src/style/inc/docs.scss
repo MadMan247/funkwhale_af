@@ -1,0 +1,7 @@
+@mixin docs {
+  @if $docs {
+    .vp-doc & {
+      @content;
+    }
+  }
+}

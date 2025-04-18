@@ -5,12 +5,15 @@ import { humanSize, truncate } from '~/utils/filters'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { computed, ref } from 'vue'
+import { useStore } from '~/store'
 
 import axios from 'axios'
 
 import useSharedLabels from '~/composables/locale/useSharedLabels'
 import useErrorHandler from '~/composables/useErrorHandler'
 import useLogger from '~/composables/useLogger'
+
+import DangerousButton from '~/components/common/DangerousButton.vue'
 
 const PRIVACY_LEVELS = ['me', 'instance', 'everyone'] as PrivacyLevel[]
 
@@ -21,9 +24,10 @@ interface Props {
 const props = defineProps<Props>()
 
 const { t } = useI18n()
+const store = useStore()
+const router = useRouter()
 
 const sharedLabels = useSharedLabels()
-const router = useRouter()
 const logger = useLogger()
 
 const labels = computed(() => ({
@@ -117,7 +121,7 @@ const updateObj = async (attr: string) => {
                     <template v-if="object.is_local">
                       <span class="ui tiny accent label">
                         <i class="home icon" />
-                        {{ $t('views.admin.library.LibraryDetail.header.local') }}
+                        {{ t('views.admin.library.LibraryDetail.header.local') }}
                       </span>
                       &nbsp;
                     </template>
@@ -127,14 +131,14 @@ const updateObj = async (attr: string) => {
               <div class="header-buttons">
                 <div class="ui icon buttons">
                   <a
-                    v-if="$store.state.auth.profile && $store.state.auth.profile.is_superuser"
+                    v-if="store.state.auth.profile && store.state.auth.profile.is_superuser"
                     class="ui labeled icon button"
-                    :href="$store.getters['instance/absoluteUrl'](`/api/admin/music/library/${object.id}`)"
+                    :href="store.getters['instance/absoluteUrl'](`/api/admin/music/library/${object.id}`)"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <i class="wrench icon" />
-                    {{ $t('views.admin.library.LibraryDetail.link.django') }}
+                    {{ t('views.admin.library.LibraryDetail.link.django') }}
                   </a>
                   <button
                     v-dropdown
@@ -143,14 +147,14 @@ const updateObj = async (attr: string) => {
                     <i class="dropdown icon" />
                     <div class="menu">
                       <a
-                        v-if="$store.state.auth.profile && $store.state.auth.profile.is_superuser"
+                        v-if="store.state.auth.profile && store.state.auth.profile.is_superuser"
                         class="basic item"
-                        :href="$store.getters['instance/absoluteUrl'](`/api/admin/music/library/${object.id}`)"
+                        :href="store.getters['instance/absoluteUrl'](`/api/admin/music/library/${object.id}`)"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
                         <i class="wrench icon" />
-                        {{ $t('views.admin.library.LibraryDetail.link.django') }}
+                        {{ t('views.admin.library.LibraryDetail.link.django') }}
                       </a>
                       <a
                         class="basic item"
@@ -159,33 +163,23 @@ const updateObj = async (attr: string) => {
                         rel="noopener noreferrer"
                       >
                         <i class="external icon" />
-                        {{ $t('views.admin.library.LibraryDetail.link.remoteProfile') }}
+                        {{ t('views.admin.library.LibraryDetail.link.remoteProfile') }}
                       </a>
                     </div>
                   </button>
                 </div>
                 <div class="ui buttons">
                   <dangerous-button
-                    :class="['ui', {loading: isLoading}, 'basic danger button']"
+                    :is-loading="isLoading"
                     :action="remove"
+                    :title="t('views.admin.library.LibraryDetail.modal.delete.header')"
                   >
-                    {{ $t('views.admin.library.LibraryDetail.button.delete') }}
-                    <template #modal-header>
-                      <p>
-                        {{ $t('views.admin.library.LibraryDetail.modal.delete.header') }}
-                      </p>
-                    </template>
+                    {{ t('views.admin.library.LibraryDetail.button.delete') }}
                     <template #modal-content>
-                      <div>
-                        <p>
-                          {{ $t('views.admin.library.LibraryDetail.modal.delete.content.warning') }}
-                        </p>
-                      </div>
+                      {{ t('views.admin.library.LibraryDetail.modal.delete.content.warning') }}
                     </template>
                     <template #modal-confirm>
-                      <p>
-                        {{ $t('views.admin.library.LibraryDetail.button.delete') }}
-                      </p>
+                      {{ t('views.admin.library.LibraryDetail.button.delete') }}
                     </template>
                   </dangerous-button>
                 </div>
@@ -201,14 +195,14 @@ const updateObj = async (attr: string) => {
               <h3 class="ui header">
                 <i class="info icon" />
                 <div class="content">
-                  {{ $t('views.admin.library.LibraryDetail.header.libraryData') }}
+                  {{ t('views.admin.library.LibraryDetail.header.libraryData') }}
                 </div>
               </h3>
               <table class="ui very basic table">
                 <tbody>
                   <tr>
                     <td>
-                      {{ $t('views.admin.library.LibraryDetail.table.library.name') }}
+                      {{ t('views.admin.library.LibraryDetail.table.library.name') }}
                     </td>
                     <td>
                       {{ object.name }}
@@ -217,7 +211,7 @@ const updateObj = async (attr: string) => {
                   <tr>
                     <td>
                       <router-link :to="{name: 'manage.library.libraries', query: {q: getQuery('privacy_level', object.privacy_level) }}">
-                        {{ $t('views.admin.library.LibraryDetail.link.visibility') }}
+                        {{ t('views.admin.library.LibraryDetail.link.visibility') }}
                       </router-link>
                     </td>
                     <td>
@@ -244,7 +238,7 @@ const updateObj = async (attr: string) => {
                   <tr>
                     <td>
                       <router-link :to="{name: 'manage.moderation.accounts.detail', params: {id: object.actor.full_username }}">
-                        {{ $t('views.admin.library.LibraryDetail.link.account') }}
+                        {{ t('views.admin.library.LibraryDetail.link.account') }}
                       </router-link>
                     </td>
                     <td>
@@ -254,7 +248,7 @@ const updateObj = async (attr: string) => {
                   <tr v-if="!object.is_local">
                     <td>
                       <router-link :to="{name: 'manage.moderation.domains.detail', params: {id: object.domain }}">
-                        {{ $t('views.admin.library.LibraryDetail.link.domain') }}
+                        {{ t('views.admin.library.LibraryDetail.link.domain') }}
                       </router-link>
                     </td>
                     <td>
@@ -263,7 +257,7 @@ const updateObj = async (attr: string) => {
                   </tr>
                   <tr>
                     <td>
-                      {{ $t('views.admin.library.LibraryDetail.table.library.description') }}
+                      {{ t('views.admin.library.LibraryDetail.table.library.description') }}
                     </td>
                     <td>
                       {{ object.description }}
@@ -278,7 +272,7 @@ const updateObj = async (attr: string) => {
               <h3 class="ui header">
                 <i class="feed icon" />
                 <div class="content">
-                  {{ $t('views.admin.library.LibraryDetail.header.activity') }}&nbsp;
+                  {{ t('views.admin.library.LibraryDetail.header.activity') }}&nbsp;
                   <span :data-tooltip="labels.statsWarning"><i class="question circle icon" /></span>
                 </div>
               </h3>
@@ -298,7 +292,7 @@ const updateObj = async (attr: string) => {
                 <tbody>
                   <tr>
                     <td>
-                      {{ $t('views.admin.library.LibraryDetail.table.activity.firstSeen') }}
+                      {{ t('views.admin.library.LibraryDetail.table.activity.firstSeen') }}
                     </td>
                     <td>
                       <human-date :date="object.creation_date" />
@@ -306,7 +300,7 @@ const updateObj = async (attr: string) => {
                   </tr>
                   <tr>
                     <td>
-                      {{ $t('views.admin.library.LibraryDetail.table.activity.followers') }}
+                      {{ t('views.admin.library.LibraryDetail.table.activity.followers') }}
                     </td>
                     <td>
                       {{ stats.followers }}
@@ -315,7 +309,7 @@ const updateObj = async (attr: string) => {
                   <tr>
                     <td>
                       <router-link :to="{name: 'manage.moderation.reports.list', query: {q: getQuery('target', `library:${object.uuid}`) }}">
-                        {{ $t('views.admin.library.LibraryDetail.link.reports') }}
+                        {{ t('views.admin.library.LibraryDetail.link.reports') }}
                       </router-link>
                     </td>
                     <td>
@@ -331,7 +325,7 @@ const updateObj = async (attr: string) => {
               <h3 class="ui header">
                 <i class="music icon" />
                 <div class="content">
-                  {{ $t('views.admin.library.LibraryDetail.header.audioContent') }}&nbsp;
+                  {{ t('views.admin.library.LibraryDetail.header.audioContent') }}&nbsp;
                   <span :data-tooltip="labels.statsWarning"><i class="question circle icon" /></span>
                 </div>
               </h3>
@@ -351,7 +345,7 @@ const updateObj = async (attr: string) => {
                 <tbody>
                   <tr>
                     <td>
-                      {{ $t('views.admin.library.LibraryDetail.table.audioContent.cachedSize') }}
+                      {{ t('views.admin.library.LibraryDetail.table.audioContent.cachedSize') }}
                     </td>
                     <td>
                       {{ humanSize(stats.media_downloaded_size) }}
@@ -359,7 +353,7 @@ const updateObj = async (attr: string) => {
                   </tr>
                   <tr>
                     <td>
-                      {{ $t('views.admin.library.LibraryDetail.table.audioContent.totalSize') }}
+                      {{ t('views.admin.library.LibraryDetail.table.audioContent.totalSize') }}
                     </td>
                     <td>
                       {{ humanSize(stats.media_total_size) }}
@@ -368,7 +362,7 @@ const updateObj = async (attr: string) => {
                   <tr>
                     <td>
                       <router-link :to="{name: 'manage.library.artists', query: {q: getQuery('library_id', object.id) }}">
-                        {{ $t('views.admin.library.LibraryDetail.link.artists') }}
+                        {{ t('views.admin.library.LibraryDetail.link.artists') }}
                       </router-link>
                     </td>
                     <td>
@@ -378,7 +372,7 @@ const updateObj = async (attr: string) => {
                   <tr>
                     <td>
                       <router-link :to="{name: 'manage.library.albums', query: {q: getQuery('library_id', object.id) }}">
-                        {{ $t('views.admin.library.LibraryDetail.link.albums') }}
+                        {{ t('views.admin.library.LibraryDetail.link.albums') }}
                       </router-link>
                     </td>
                     <td>
@@ -388,7 +382,7 @@ const updateObj = async (attr: string) => {
                   <tr>
                     <td>
                       <router-link :to="{name: 'manage.library.tracks', query: {q: getQuery('library_id', object.id) }}">
-                        {{ $t('views.admin.library.LibraryDetail.link.tracks') }}
+                        {{ t('views.admin.library.LibraryDetail.link.tracks') }}
                       </router-link>
                     </td>
                     <td>
@@ -398,7 +392,7 @@ const updateObj = async (attr: string) => {
                   <tr>
                     <td>
                       <router-link :to="{name: 'manage.library.uploads', query: {q: getQuery('library_id', object.id) }}">
-                        {{ $t('views.admin.library.LibraryDetail.link.uploads') }}
+                        {{ t('views.admin.library.LibraryDetail.link.uploads') }}
                       </router-link>
                     </td>
                     <td>

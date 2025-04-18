@@ -2,6 +2,27 @@
   "App": {
     "loading": "Carregant…"
   },
+  "vui": {
+    "radio": "Ràdio",
+    "albums": "{n} àlbum | {n} àlbums",
+    "tracks": "{n} pista | {n} pistes",
+    "episodes": "{n} episodi | {n} episodis",
+    "by-user": "per {'@'}{username}",
+    "go-to": "Anar a",
+    "pagination": {
+      "previous": "Prèvia",
+      "next": "Següent"
+    },
+    "aria": {
+      "pagination": {
+        "nav": "Navegació per Paginació",
+        "gotoPage": "Anar a Pàgina {n}",
+        "gotoPrevious": "Anar a la Pàgina Prèvia",
+        "gotoNext": "Anar a la Pàgina Següent",
+        "currentPage": "Pàgina actual, Pàgina {n}"
+      }
+    }
+  },
   "components": {
     "About": {
       "description": {

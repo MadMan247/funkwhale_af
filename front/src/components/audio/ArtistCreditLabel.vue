@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import type { ArtistCredit } from '~/types'
+import { useStore } from '~/store'
+
+import Layout from '~/components/ui/Layout.vue'
+import Pill from '~/components/ui/Pill.vue'
+
+const store = useStore()
 
 interface Props {
   artistCredit: ArtistCredit[]
@@ -7,6 +13,10 @@ interface Props {
 
 const props = defineProps<Props>()
 
+// TODO: Fix getRoute
+
+// TODO: check if still needed:
+/*
 const getRoute = (ac: ArtistCredit) => {
   return {
     name: ac.artist.channel ? 'channels.detail' : 'library.artists.detail',
@@ -15,30 +25,47 @@ const getRoute = (ac: ArtistCredit) => {
     }
   }
 }
+*/
 </script>
 
 <template>
-  <div class="artist-label ui image label">
+  <Layout
+    flex
+    gap-8
+  >
     <template
       v-for="ac in props.artistCredit"
       :key="ac.artist.id"
     >
       <router-link
-        :to="getRoute(ac)"
+        :to="{name: 'library.artists.detail', params: {id: ac.artist.id }}"
+        class="username"
+        @click.stop.prevent=""
       >
-        <img
-          v-if="ac.index === 0 && ac.artist.cover && ac.artist.cover.urls.original"
-          v-lazy="$store.getters['instance/absoluteUrl'](ac.artist.cover.urls.medium_square_crop)"
-          alt=""
-          :class="[{circular: ac.artist.content_category != 'podcast'}]"
-        >
-        <i
-          v-else-if="ac.index === 0"
-          :class="[ac.artist.content_category != 'podcast' ? 'circular' : 'bordered', 'inverted violet users icon']"
-        />
-        {{ ac.credit }}
+        <Pill>
+          <template #image>
+            <img
+              v-if="ac.artist.cover && ac.artist.cover.urls.original"
+              v-lazy="store.getters['instance/absoluteUrl'](ac.artist.cover.urls.small_square_crop)"
+              :alt="ac.artist.name"
+            >
+            <i
+              v-else
+              class="bi bi-person-circle"
+              style="font-size: 24px;"
+            />
+          </template>
+          {{ ac.credit }}
+        </Pill>
       </router-link>
       <span>{{ ac.joinphrase }}</span>
     </template>
-  </div>
+  </Layout>
 </template>
+
+<style lang="scss" scoped>
+a.username {
+  text-decoration: none;
+  height: 25px;
+}
+</style>

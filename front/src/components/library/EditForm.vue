@@ -2,17 +2,25 @@
 import type { EditObject, EditObjectType } from '~/composables/moderation/useEditConfigs'
 import type { BackendError, License, ReviewState } from '~/types'
 
-import { computed, onMounted, reactive, ref, watchEffect } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { isEqual, clone } from 'lodash-es'
 import { useI18n } from 'vue-i18n'
 import { useStore } from '~/store'
+import { useRoute } from 'vue-router'
 
 import axios from 'axios'
-import $ from 'jquery'
+
+import Layout from '~/components/ui/Layout.vue'
+import Button from '~/components/ui/Button.vue'
+import Link from '~/components/ui/Link.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Input from '~/components/ui/Input.vue'
+import Textarea from '~/components/ui/Textarea.vue'
+import Pills from '~/components/ui/Pills.vue'
+import Alert from '~/components/ui/Alert.vue'
 
 import AttachmentInput from '~/components/common/AttachmentInput.vue'
 import useEditConfigs from '~/composables/moderation/useEditConfigs'
-import TagsSelector from '~/components/library/TagsSelector.vue'
 import EditList from '~/components/library/EditList.vue'
 import EditCard from '~/components/library/EditCard.vue'
 
@@ -29,6 +37,7 @@ const props = withDefaults(defineProps<Props>(), {
 const { t } = useI18n()
 const configs = useEditConfigs()
 const store = useStore()
+const route = useRoute()
 
 const config = computed(() => configs[props.objectType])
 const currentState = computed(() => config.value.fields.reduce((state: ReviewState, field) => {
@@ -88,24 +97,10 @@ const editListFilters = computed(() => showPendingReview.value
 
 const values = reactive({} as Record<string, any>)
 const initialValues = reactive({} as Record<string, any>)
-for (const { id, getValue } of config.value.fields) {
+for (const { id, getValue } of config.value?.fields) {
   values[id] = clone(getValue(props.object))
   initialValues[id] = clone(values[id])
 }
-
-const license = ref()
-watchEffect(() => {
-  if (values.license === null) {
-    $(license.value).dropdown('clear')
-    return
-  }
-
-  $(license.value).dropdown('set selected', values.license)
-})
-
-onMounted(() => {
-  $('.ui.dropdown').dropdown({ fullTextSearch: true })
-})
 
 const submittedMutation = ref()
 const summary = ref('')
@@ -145,68 +140,93 @@ const resetField = (fieldId: string) => {
 </script>
 
 <template>
-  <div v-if="submittedMutation">
-    <div class="ui positive message">
-      <h4 class="header">
-        {{ $t('components.library.EditForm.header.success') }}
-      </h4>
-    </div>
+  <Alert
+    v-if="submittedMutation"
+    green
+  >
+    <h4 class="header">
+      {{ t('components.library.EditForm.header.success') }}
+    </h4>
     <edit-card
       :obj="submittedMutation"
       :current-state="currentState"
     />
-    <button
-      class="ui button"
+    <Button
+      solid
+      primary
       @click.prevent="submittedMutation = null"
     >
-      {{ $t('components.library.EditForm.button.new') }}
-    </button>
-  </div>
-  <div v-else>
+      {{ t('components.library.EditForm.button.new') }}
+    </Button>
+
+    <!-- TODO: Implement link back to all types of object -->
+    <Link
+      v-if="route.path.includes('album')"
+      solid
+      secondary
+      raised
+      :to="{ name: 'library.albums.detail', params: { id: object.id } }"
+    >
+      {{ t('components.library.EditForm.button.backToAlbum') }}
+    </Link>
+  </Alert>
+  <Layout
+    v-else
+    gap-32
+  >
+    <!-- Previous edits -->
+
     <edit-list
       :filters="editListFilters"
       :url="mutationsUrl"
-      :obj="object"
       :current-state="currentState"
     >
       <div>
+        <!--TODO: Use Section component with conditional headlines and action buttons-->
         <template v-if="showPendingReview">
-          {{ $t('components.library.EditForm.header.unreviewed') }}
-          <button
-            class="ui tiny basic right floated button"
+          {{ t('components.library.EditForm.header.unreviewed') }}
+          <Button
+            class="right floated"
+            secondary
+            thin-font
             @click.prevent="showPendingReview = false"
           >
-            {{ $t('components.library.EditForm.button.showAll') }}
-          </button>
+            {{ t('components.library.EditForm.button.showAll') }}
+          </Button>
         </template>
         <template v-else>
-          {{ $t('components.library.EditForm.header.recentEdits') }}
-          <button
-            class="ui tiny basic right floated button"
+          {{ t('components.library.EditForm.header.recentEdits') }}
+          <Button
+            class="right floated"
+            secondary
+            thin-font
             @click.prevent="showPendingReview = true"
           >
-            {{ $t('components.library.EditForm.button.showUnreviewed') }}
-          </button>
+            {{ t('components.library.EditForm.button.showUnreviewed') }}
+          </Button>
         </template>
       </div>
       <template #empty-state>
         <empty-state>
-          {{ $t('components.library.EditForm.empty.suggestEdit') }}
+          {{ t('components.library.EditForm.empty.suggestEdit') }}
         </empty-state>
       </template>
     </edit-list>
+
+    <!-- Add new edits -->
+
     <form
       class="ui form"
+      style="display: contents;"
       @submit.prevent="submit()"
     >
-      <div class="ui hidden divider" />
-      <div
+      <Alert
         v-if="errors.length > 0"
+        red
         role="alert"
-        class="ui negative message"
       >
         <h4 class="header">
-          {{ $t('components.library.EditForm.header.failure') }}
+          {{ t('components.library.EditForm.header.failure') }}
         </h4>
         <ul class="list">
           <li
@@ -216,137 +236,136 @@ const resetField = (fieldId: string) => {
             {{ error }}
           </li>
         </ul>
-      </div>
-      <div
+      </Alert>
+      <Alert
         v-if="!canEdit"
-        class="ui message"
+        red
       >
-        {{ $t('components.library.EditForm.message.noPermission') }}
-      </div>
-      <template v-if="values">
-        <div
-          v-for="fieldConfig in config.fields"
-          :key="fieldConfig.id"
-          class="ui field"
-        >
-          <template v-if="fieldConfig.type === 'text'">
-            <label :for="fieldConfig.id">{{ fieldConfig.label }}</label>
-            <input
-              :id="fieldConfig.id"
-              v-model="values[fieldConfig.id]"
-              :type="fieldConfig.inputType || 'text'"
-              :required="fieldConfig.required"
-              :name="fieldConfig.id"
+        {{ t('components.library.EditForm.message.noPermission') }}
+      </Alert>
+      <Layout
+        v-for="fieldConfig in (values ? config.fields : [])"
+        :key="fieldConfig.id"
+        stack
+        gap-8
+        class="ui field"
+      >
+        <template v-if="fieldConfig.type === 'text'">
+          <Input
+            :id="fieldConfig.id"
+            v-model="values[fieldConfig.id]"
+            :type="fieldConfig.inputType || 'text'"
+            :required="fieldConfig.required"
+            :name="fieldConfig.id"
+            :label="fieldConfig.label"
+          />
+        </template>
+        <template v-else-if="fieldConfig.type === 'license'">
+          <label :for="fieldConfig.id">{{ fieldConfig.label }}</label>
+          <select
+            :id="fieldConfig.id"
+            ref="license"
+            v-model="values[fieldConfig.id]"
+            :required="fieldConfig.required"
+            class="ui fluid search dropdown"
+          >
+            <option :value="null">
+              {{ t('components.library.EditForm.notApplicable') }}
+            </option>
+            <option
+              v-for="{ code, name } in licenses"
+              :key="code"
+              :value="code"
             >
-          </template>
-          <template v-else-if="fieldConfig.type === 'license'">
-            <label :for="fieldConfig.id">{{ fieldConfig.label }}</label>
-
-            <select
-              :id="fieldConfig.id"
-              ref="license"
-              v-model="values[fieldConfig.id]"
-              :required="fieldConfig.required"
-              class="ui fluid search dropdown"
-            >
-              <option :value="null">
-                {{ $t('components.library.EditForm.notApplicable') }}
-              </option>
-              <option
-                v-for="{ code, name } in licenses"
-                :key="code"
-                :value="code"
-              >
-                {{ name }}
-              </option>
-            </select>
-            <button
-              class="ui tiny basic left floated button"
-              form="noop"
-              @click.prevent="values[fieldConfig.id] = null"
-            >
-              <i class="x icon" />
-              {{ $t('components.library.EditForm.button.clear') }}
-            </button>
-          </template>
-          <template v-else-if="fieldConfig.type === 'content'">
-            <label :for="fieldConfig.id">{{ fieldConfig.label }}</label>
-            <content-form
-              v-model="values[fieldConfig.id].text"
-              :field-id="fieldConfig.id"
-              :rows="3"
-            />
-          </template>
-          <template v-else-if="fieldConfig.type === 'attachment'">
-            <attachment-input
-              :id="fieldConfig.id"
-              v-model="values[fieldConfig.id]"
-              :initial-value="initialValues[fieldConfig.id]"
-              :required="fieldConfig.required"
-              :name="fieldConfig.id"
-              @delete="values[fieldConfig.id] = initialValues[fieldConfig.id]"
-            >
-              <span>{{ fieldConfig.label }}</span>
-            </attachment-input>
-          </template>
-          <template v-else-if="fieldConfig.type === 'tags'">
-            <label :for="fieldConfig.id">{{ fieldConfig.label }}</label>
-            <tags-selector
-              :id="fieldConfig.id"
-              ref="tags"
-              v-model="values[fieldConfig.id]"
-              required="fieldConfig.required"
-            />
-            <button
-              class="ui tiny basic left floated button"
+              {{ name }}
+            </option>
+          </select>
+        </template>
+        <template v-else-if="fieldConfig.type === 'content'">
+          <Textarea
+            :id="fieldConfig.id"
+            v-model="values[fieldConfig.id].text"
+            :label="fieldConfig.label"
+            initial-lines="3"
+          />
+        </template>
+        <!-- TODO: Style Attachment Input -->
+        <template v-else-if="fieldConfig.type === 'attachment'">
+          <attachment-input
+            :id="fieldConfig.id"
+            v-model="values[fieldConfig.id]"
+            :initial-value="initialValues[fieldConfig.id]"
+            :required="fieldConfig.required"
+            :name="fieldConfig.id"
+            @delete="values[fieldConfig.id] = initialValues[fieldConfig.id]"
+          >
+            <span>{{ fieldConfig.label }}</span>
+          </attachment-input>
+        </template>
+        <template v-else-if="fieldConfig.type === 'tags'">
+          <!-- TODO: Make Tags work -->
+          <Pills
+            :id="fieldConfig.id"
+            ref="tags"
+            :get="model => { values[fieldConfig.id] = model.currents.map(({ label }) => label) }"
+            :set="model => ({
+              ...model,
+              currents: (values[fieldConfig.id] as string[]).map(tag => ({ type: 'custom' as const, label: tag })),
+            })"
+            :label="fieldConfig.label"
+            required="fieldConfig.required"
+          >
+            <Button
+              icon="bi-x"
               form="noop"
               @click.prevent="values[fieldConfig.id] = []"
             >
-              <i class="x icon" />
-              {{ $t('components.library.EditForm.button.clear') }}
-            </button>
-          </template>
-          <div v-if="fieldValuesChanged(fieldConfig.id)">
-            <button
-              class="ui tiny basic right floated reset button"
-              form="noop"
-              @click.prevent="resetField(fieldConfig.id)"
-            >
-              <i class="undo icon" />
-              {{ $t('components.library.EditForm.button.reset') }}
-            </button>
-          </div>
-        </div>
-      </template>
-      <div class="field">
-        <label for="summary">{{ $t('components.library.EditForm.label.summary') }}</label>
-        <textarea
-          id="change-summary"
-          v-model="summary"
-          name="change-summary"
-          rows="3"
-          :placeholder="labels.summaryPlaceholder"
-        />
-      </div>
-      <router-link
-        v-if="objectType === 'track'"
-        class="ui left floated button"
-        :to="{name: 'library.tracks.detail', params: {id: object.id }}"
+              {{ t('components.library.EditForm.button.clear') }}
+            </Button>
+          </Pills>
+        </template>
+        <Button
+          low-height
+          secondary
+          align-self="end"
+          icon="bi-arrow-counterclockwise"
+          form="noop"
+          :disabled="fieldValuesChanged(fieldConfig.id) ? undefined : true"
+          @click.prevent="resetField(fieldConfig.id)"
+        >
+          {{ t('components.library.EditForm.button.reset') }}
+        </Button>
+      </Layout>
+      <Spacer />
+      <Textarea
+        id="change-summary"
+        v-model="summary"
+        name="change-summary"
+        initial-lines="3"
+        :label="t('components.library.EditForm.label.summary')"
+        :placeholder="labels.summaryPlaceholder"
       >
-        {{ $t('components.library.EditForm.button.cancel') }}
-      </router-link>
-      <button
-        :class="['ui', {'loading': isLoading}, 'right', 'floated', 'success', 'button']"
-        type="submit"
+        <Link
+          v-if="objectType === 'track'"
+          low-height
+          secondary
+          :to="{ name: 'library.tracks.detail', params: { id: object.id } }"
+        >
+          {{ t('components.library.EditForm.button.cancel') }}
+        </Link>
+      </Textarea>
+      <Button
+        :is-loading="isLoading"
+        primary
         :disabled="isLoading || !mutationPayload"
       >
         <span v-if="canEdit">
-          {{ $t('components.library.EditForm.button.submit') }}
+          {{ t('components.library.EditForm.button.submit') }}
         </span>
         <span v-else>
-          {{ $t('components.library.EditForm.button.suggest') }}
+          {{ t('components.library.EditForm.button.suggest') }}
         </span>
-      </button>
+      </Button>
     </form>
-  </div>
+  </Layout>
 </template>

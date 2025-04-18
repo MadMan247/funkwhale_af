@@ -1,22 +1,34 @@
 <script setup lang="ts">
-import type { PlaylistTrack, Playlist } from '~/types'
+import type { PlaylistTrack, Playlist, Track } from '~/types'
 
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
 import { ref, computed } from 'vue'
 import { useStore } from '~/store'
 
 import axios from 'axios'
 
+import defaultCover from '~/assets/audio/default-cover.png'
 import PlaylistEditor from '~/components/playlists/Editor.vue'
 import EmbedWizard from '~/components/audio/EmbedWizard.vue'
-import SemanticModal from '~/components/semantic/Modal.vue'
+import HumanDate from '~/components/common/HumanDate.vue'
 import TrackTable from '~/components/audio/track/Table.vue'
 import PlayButton from '~/components/audio/PlayButton.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Header from '~/components/ui/Header.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Loader from '~/components/ui/Loader.vue'
+import Button from '~/components/ui/Button.vue'
+import Modal from '~/components/ui/Modal.vue'
+import Alert from '~/components/ui/Alert.vue'
 
 import PlaylistDropdown from '~/components/playlists/PlaylistDropdown.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
+
+// TODO: Is this event ever caught somewhere?
+// interface Events {
+//   (e: 'libraries-loaded', libraries: Library[]): void
+// }
 
 interface Props {
   id: number
@@ -28,7 +40,6 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const store = useStore()
-const router = useRouter()
 
 const edit = ref(props.defaultEdit)
 const playlist = ref<Playlist | null>(null)
@@ -36,7 +47,13 @@ const playlistTracks = ref<PlaylistTrack[]>([])
 
 const showEmbedModal = ref(false)
 
-const tracks = computed(() => playlistTracks.value.map(({ track }, index) => ({ ...track, position: index + 1 })))
+// TODO: Compute `tracks` with `track`. In the new types, `track` is just a string.
+// We probably have to load each track before loading it into `tracks`.
+// Original line: const tracks = computed(() => playlistTracks.value.map(({ track }, index) => ({ ...track, position: index + 1 })))
+const tracks = computed(() => playlistTracks.value.map(({ track }, index) => (
+  // @i-would-expect-ts-to-error because this typecasting is evil
+  { position: index + 1 } as Track
+)))
 
 const { t } = useI18n()
 const labels = computed(() => ({
@@ -64,164 +81,247 @@ const fetchData = async () => {
 
 fetchData()
 
-const deletePlaylist = async () => {
-  try {
-    await axios.delete(`playlists/${props.id}/`)
-    store.dispatch('playlists/fetchOwn')
-    return router.push({ path: '/library' })
-  } catch (error) {
-    useErrorHandler(error as Error)
+const images = computed(() => {
+  const urls = playlist.value?.album_covers.slice(0, 4).map(url => store.getters['instance/absoluteUrl'](url)) || []
+
+  while (urls.length < 4) {
+    urls.push(defaultCover)
   }
+
+  return urls
+})
+
+const bgcolors = ref([
+  '#f2efef',
+  '#eee9e9',
+  '#ddd9d9',
+  '#cfcaca',
+  '#b3afaf',
+  '#908888',
+  '#605656',
+  '#4d4547',
+  '#292525',
+  '#403a3b',
+  '#322f2f'
+])
+
+function shuffleArray (array: string[]): string[] {
+  return [...array].sort(() => Math.random() - 0.5)
 }
+
+const randomizedColors = computed(() => shuffleArray(bgcolors.value))
+
+// TODO: Check if this ref is still needed
+// const updatedTitle = computed(() => {
+//   const date = momentFormat(new Date(playlist.value?.modification_date ?? '1970-01-01'))
+//   return t('components.audio.ChannelCard.title', { date })
+// })
+
+// TODO: Check if this function is still needed
+// const deletePlaylist = async () => {
+//   try {
+//     await axios.delete(`playlists/${props.id}/`)
+//     store.dispatch('playlists/fetchOwn')
+//     return router.push({ path: '/library' })
+//   } catch (error) {
+//     useErrorHandler(error as Error)
+//   }
+// }
+
+// TODO: Implement shuffle
+const shuffle = () => {}
 </script>
 
 <template>
-  <main>
-    <div
-      v-if="isLoading"
-      v-title="labels.playlist"
-      class="ui vertical segment"
-    >
-      <div :class="['ui', 'centered', 'active', 'inline', 'loader']" />
-    </div>
-    <section
-      v-if="!isLoading && playlist"
-      v-title="playlist.name"
-      class="ui head vertical center aligned stripe segment"
-    >
-      <div class="segment-content">
-        <h2 class="ui center aligned icon header">
-          <i class="circular inverted list warning icon" />
-          <div class="content">
-            {{ playlist.name }}
-            <div class="sub header">
-              {{ $t('views.playlists.Detail.meta.tracks', { username: playlist.actor.name }, playlist.tracks_count) }}
-              <br>
-              <duration :seconds="playlist.duration" />
-            </div>
-          </div>
-        </h2>
-        <div class="ui hidden divider" />
-        <div class="header-buttons">
-          <div class="ui buttons">
-            <play-button
-              class="vibrant"
-              :is-playable="playlist.is_playable"
-              :tracks="tracks"
-            >
-              {{ $t('views.playlists.Detail.button.playAll') }}
-            </play-button>
-          </div>
-          <div class="ui buttons">
-            <button
-              v-if="$store.state.auth.profile && playlist.actor.full_username === store.state.auth.fullUsername"
-              class="ui icon labeled button"
-              @click="edit = !edit"
-            >
-              <i class="pencil icon" />
-              <template v-if="edit">
-                {{ $t('views.playlists.Detail.button.stopEdit') }}
-              </template>
-              <template v-else>
-                {{ $t('views.playlists.Detail.button.edit') }}
-              </template>
-            </button>
-          </div>
-          <div class="ui buttons">
-            <button
-              v-if="playlist.privacy_level === 'everyone' && playlist.is_playable"
-              class="ui icon labeled button"
-              @click="showEmbedModal = !showEmbedModal"
-            >
-              <i class="code icon" />
-              {{ $t('views.playlists.Detail.button.embed') }}
-            </button>
-            <dangerous-button
-              v-if="$store.state.auth.profile && playlist.actor.full_username === store.state.auth.fullUsername"
-              class="ui labeled danger icon button"
-              :action="deletePlaylist"
-            >
-              <i class="trash icon" />
-              {{ $t('views.playlists.Detail.button.delete') }}
-              <template #modal-header>
-                <p>
-                  {{ $t('views.playlists.Detail.modal.delete.header', {playlist: playlist.name}) }}
-                </p>
-              </template>
-              <template #modal-content>
-                <p>
-                  {{ $t('views.playlists.Detail.modal.delete.content.warning') }}
-                </p>
-              </template>
-              <template #modal-confirm>
-                <div>
-                  {{ $t('views.playlists.Detail.button.confirm') }}
-                </div>
-              </template>
-            </dangerous-button>
-            <div class="ui hidden horizontal divider" />
-            <playlist-dropdown
-              :playlist="playlist"
-              @import="fetchData"
-            />
-          </div>
-        </div>
-        <semantic-modal
-          v-if="playlist.privacy_level === 'everyone' && playlist.is_playable"
-          v-model:show="showEmbedModal"
+  <Loader
+    v-if="isLoading"
+    v-title="labels.playlist"
+  />
+  <Header
+    v-if="!isLoading && playlist"
+    :h1="playlist.name"
+    page-heading
+  >
+    <template #image>
+      <div class="playlist-grid">
+        <img
+          v-for="(url, idx) in images"
+          :key="idx"
+          v-lazy="url"
+          :alt="playlist.name"
+          :style="{ backgroundColor: randomizedColors[idx % randomizedColors.length] }"
         >
-          <h4 class="header">
-            {{ $t('views.playlists.Detail.modal.embed.header') }}
-          </h4>
-          <div class="scrolling content">
-            <div class="description">
-              <embed-wizard
-                :id="playlist.id"
-                type="playlist"
-              />
-            </div>
-          </div>
-          <div class="actions">
-            <button class="ui basic deny button">
-              {{ $t('views.playlists.Detail.button.cancel') }}
-            </button>
-          </div>
-        </semantic-modal>
       </div>
-    </section>
-    <section class="ui vertical stripe segment">
-      <template v-if="edit">
-        <playlist-editor
-          v-model:playlist="playlist"
-          v-model:playlist-tracks="playlistTracks"
-        />
-      </template>
-      <template v-else-if="tracks.length > 0">
-        <h2>
-          {{ $t('views.playlists.Detail.header.tracks') }}
-        </h2>
-        <track-table
-          :display-position="true"
-          :tracks="tracks"
-          :unique="false"
-        />
-      </template>
-      <div
-        v-else
-        class="ui placeholder segment"
+    </template>
+    <Layout
+      gap-4
+      class="meta"
+    >
+      <Layout
+        flex
+        gap-4
       >
-        <div class="ui icon header">
-          <i class="list icon" />
-          {{ $t('views.playlists.Detail.empty.noTracks') }}
-        </div>
-        <button
-          class="ui success icon labeled button"
-          @click="edit = !edit"
-        >
-          <i class="pencil icon" />
-          {{ $t('views.playlists.Detail.button.edit') }}
-        </button>
+        {{ playlist.tracks_count }}
+        {{ t('views.playlists.Detail.header.tracks') }}
+        <i class="bi bi-dot" />
+        <Duration :seconds="playlist.duration" />
+      </Layout>
+      <Layout
+        flex
+        gap-4
+      >
+        {{ t('views.playlists.Detail.meta.attribution') }}
+        {{ playlist.actor.full_username }}
+        <i class="bi bi-dot" />
+        {{ t('views.playlists.Detail.meta.updated') }}
+        <HumanDate
+          :date="playlist.modification_date"
+        />
+      </Layout>
+    </Layout>
+    <RenderedDescription
+      :content="{ html: playlist.description }"
+      :truncate-length="100"
+      :show-more="true"
+    />
+    <Layout
+      flex
+      class="header-buttons"
+    >
+      <PlayButton
+        split
+        low-height
+        :is-playable="true"
+        :tracks="tracks"
+      >
+        {{ t('views.playlists.Detail.button.playAll') }}
+      </PlayButton>
+      <Button
+        v-if="playlist.tracks_count > 1"
+        primary
+        icon="bi-shuffle"
+        low-height
+        :aria-label="t('components.audio.Player.label.shuffleQueue')"
+        @click.prevent.stop="shuffle()"
+      >
+        {{ t('components.audio.Player.label.shuffleQueue') }}
+      </Button>
+      <Button
+        v-if="store.state.auth.profile && playlist.actor.full_username === store.state.auth.fullUsername"
+        secondary
+        low-height
+        icon="bi-pencil"
+        @click="edit = !edit"
+      >
+        <template v-if="edit">
+          {{ t('views.playlists.Detail.button.stopEdit') }}
+        </template>
+        <template v-else>
+          {{ t('views.playlists.Detail.button.edit') }}
+        </template>
+      </Button>
+      <Spacer
+        h
+        grow
+      />
+      <playlist-dropdown
+        :playlist="playlist"
+        @import="fetchData"
+      />
+    </Layout>
+  </Header>
+
+  <Layout stack>
+    <template v-if="edit">
+      <playlist-editor
+        v-model:playlist="playlist"
+        v-model:playlist-tracks="playlistTracks"
+      />
+    </template>
+    <template v-else-if="tracks.length > 0">
+      <track-table
+        :show-position="true"
+        :tracks="tracks"
+        :unique="false"
+      />
+    </template>
+    <Alert
+      v-else-if="!isLoading"
+      blue
+      align-items="center"
+    >
+      <Layout
+        flex
+        :gap="8"
+      >
+        <i class="bi bi-music-note-list" />
+        {{ t('views.playlists.Detail.empty.noTracks') }}
+      </Layout>
+      <Spacer size-16 />
+      <Button
+        primary
+        icon="bi-pencil"
+        align-self="center"
+        @click="edit = !edit"
+      >
+        {{ t('views.playlists.Detail.button.edit') }}
+      </Button>
+    </Alert>
+  </Layout>
+
+  <Modal
+    v-if="playlist?.privacy_level === 'everyone' && playlist?.is_playable"
+    v-model="showEmbedModal"
+    title="t('views.playlists.Detail.modal.embed.header')"
+  >
+    <div class="scrolling content">
+      <div class="description">
+        <embed-wizard
+          :id="playlist.id"
+          type="playlist"
+        />
       </div>
-    </section>
-  </main>
+    </div>
+    <template #actions>
+      <Button variant="outline">
+        {{ t('views.playlists.Detail.button.cancel') }}
+      </Button>
+    </template>
+  </Modal>
 </template>
+
+<style lang="scss" scoped>
+
+.playlist-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 2px;
+  width: 200px;
+  height: 200px;
+}
+
+.playlist-grid img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.meta {
+  font-size: 15px;
+  @include light-theme {
+    color: var(--fw-gray-700);
+  }
+  @include dark-theme {
+    color: var(--fw-gray-500);
+  }
+}
+
+.playlist-action {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 8px;
+}
+</style>

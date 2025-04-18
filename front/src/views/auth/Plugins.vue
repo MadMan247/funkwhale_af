@@ -6,6 +6,8 @@ import axios from 'axios'
 
 import PluginForm from '~/components/auth/Plugin.vue'
 
+import Layout from '~/components/ui/Layout.vue'
+
 import useErrorHandler from '~/composables/useErrorHandler'
 
 const { t } = useI18n()
@@ -39,30 +41,27 @@ fetchData()
 </script>
 
 <template>
-  <main
+  <Layout
     v-title="labels.title"
-    class="main pusher"
+    main
+    stack
   >
-    <section class="ui vertical stripe segment">
-      <div class="ui small text container">
-        <h2>{{ labels.title }}</h2>
-        <div
-          v-if="isLoading"
-          class="ui inverted active dimmer"
-        >
-          <div class="ui loader" />
-        </div>
+    <h2>{{ labels.title }}</h2>
+    <div
+      v-if="isLoading"
+      class="ui inverted active dimmer"
+    >
+      <div class="ui loader" />
+    </div>
 
-        <template v-if="plugins && plugins.length > 0">
-          <plugin-form
-            v-for="plugin in plugins"
-            :key="plugin.name"
-            :plugin="plugin"
-            :libraries="libraries"
-          />
-        </template>
-        <empty-state v-else />
-      </div>
-    </section>
-  </main>
+    <template v-if="plugins && plugins.length > 0">
+      <plugin-form
+        v-for="plugin in plugins"
+        :key="plugin.name"
+        :plugin="plugin"
+        :libraries="libraries"
+      />
+    </template>
+    <empty-state v-else />
+  </Layout>
 </template>

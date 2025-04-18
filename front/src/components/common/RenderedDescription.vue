@@ -3,9 +3,14 @@ import type { BackendError } from '~/types'
 
 import { ref, computed } from 'vue'
 import { whenever } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
 
 import axios from 'axios'
 import clip from 'text-clipper'
+
+import Layout from '~/components/ui/Layout.vue'
+import Button from '~/components/ui/Button.vue'
+import Alert from '~/components/ui/Alert.vue'
 
 interface Events {
   (e: 'updated', data: unknown): void
@@ -19,7 +24,10 @@ interface Props {
   fetchHtml?: boolean
   permissive?: boolean
   truncateLength?: number
+  moreLink?: boolean
 }
+
+const { t } = useI18n()
 
 const emit = defineEmits<Events>()
 const props = withDefaults(defineProps<Props>(), {
@@ -29,7 +37,8 @@ const props = withDefaults(defineProps<Props>(), {
   canUpdate: true,
   fetchHtml: false,
   permissive: false,
-  truncateLength: 500
+  truncateLength: 200,
+  moreLink: true
 })
 
 const preview = ref('')
@@ -46,6 +55,8 @@ const truncatedHtml = computed(() => clip(props.content?.html ?? '', props.trunc
 }))
 
 const showMore = ref(false)
+
+// Truncated or full Html or an empty string
 const html = computed(() => props.fetchHtml
   ? preview.value
   : props.truncateLength > 0 && !showMore.value
@@ -81,80 +92,102 @@ const submit = async () => {
 </script>
 
 <template>
-  <div>
-    <template v-if="content && !isUpdating">
-      <sanitized-html :html="html" />
-      <template v-if="isTruncated">
-        <div class="ui small hidden divider" />
-        <a
-          v-if="showMore === false"
-          href=""
-          @click.stop.prevent="showMore = true"
-        >
-          {{ $t('components.common.RenderedDescription.button.more') }}
-        </a>
-        <a
-          v-else
-          href=""
-          @click.stop.prevent="showMore = false"
-        >
-          {{ $t('components.common.RenderedDescription.button.less') }}
-        </a>
-      </template>
-    </template>
-    <p v-else-if="!isUpdating">
-      {{ $t('components.common.RenderedDescription.empty.noDescription') }}
-    </p>
-    <template v-if="!isUpdating && canUpdate && updateUrl">
-      <div class="ui hidden divider" />
-      <span
-        role="button"
-        @click="isUpdating = true"
-      >
-        <i class="pencil icon" />
-        {{ $t('components.common.RenderedDescription.button.edit') }}
-      </span>
-    </template>
-    <form
-      v-if="isUpdating"
-      class="ui form"
-      @submit.prevent="submit()"
-    >
-      <div
-        v-if="errors.length > 0"
-        role="alert"
-        class="ui negative message"
-      >
-        <h4 class="header">
-          {{ $t('components.common.RenderedDescription.header.failure') }}
-        </h4>
-        <ul class="list">
-          <li
-            v-for="(error, key) in errors"
-            :key="key"
-          >
-            {{ error }}
-          </li>
-        </ul>
-      </div>
-      <content-form
-        v-model="text"
-        :autofocus="true"
-      />
+  <Layout
+    v-if="content && !isUpdating"
+    flex
+    gap-4
+  >
+    <!-- Render the truncated or full description -->
+    <sanitized-html
+      :html="html"
+      :class="['description', isTruncated ? 'truncated' : '']"
+    />
+
+    <!-- Display the `show more` / `show less` button -->
+
+    <template v-if="isTruncated">
       <a
-        class="left floated"
-        @click.prevent="isUpdating = false"
+        v-if="showMore === false && props.moreLink !== false"
+        class="more"
+        style="align-self: flex-end; color: var(--fw-primary);"
+        href=""
+        @click.stop.prevent="showMore = true"
       >
-        {{ $t('components.common.RenderedDescription.button.cancel') }}
+        {{ t('components.common.RenderedDescription.button.more') }}
       </a>
-      <button
-        :class="['ui', {'loading': isLoading}, 'right', 'floated', 'button']"
-        type="submit"
-        :disabled="isLoading"
+      <a
+        v-else-if="props.moreLink !== false"
+        class="more"
+        style="align-self: center; color: var(--fw-primary);"
+        href=""
+        @click.stop.prevent="showMore = false"
       >
-        {{ $t('components.common.RenderedDescription.button.update') }}
-      </button>
-      <div class="ui clearing hidden divider" />
-    </form>
-  </div>
+        {{ t('components.common.RenderedDescription.button.less') }}
+      </a>
+    </template>
+  </Layout>
+  <span v-else-if="!isUpdating">
+    {{ t('components.common.RenderedDescription.empty.noDescription') }}
+  </span>
+
+  <!-- [DISABLED] Display an edit form -->
+  <!-- TODO: Check if we want to revive in-situ editing here -->
+
+  <form
+    v-if="isUpdating"
+    @submit.prevent="submit()"
+  >
+    <Alert
+      v-if="errors.length > 0"
+      red
+      title="{{ t('components.common.RenderedDescription.header.failure') }}"
+      role="alert"
+    >
+      <ul class="list">
+        <li
+          v-for="(error, key) in errors"
+          :key="key"
+        >
+          {{ error }}
+        </li>
+      </ul>
+    </Alert>
+    <content-form
+      v-model="text"
+      :autofocus="true"
+    />
+    <Button
+      class="left floated"
+      solid
+      secondary
+      @click.prevent="isUpdating = false"
+    >
+      {{ t('components.common.RenderedDescription.button.cancel') }}
+    </Button>
+    <Button
+      :class="['ui', {'loading': isLoading}, 'right', 'floated', 'button']"
+      type="submit"
+      :disabled="isLoading"
+      solid
+      primary
+    >
+      {{ t('components.common.RenderedDescription.button.update') }}
+    </Button>
+  </form>
 </template>
+
+<style lang="scss" scoped>
+  .description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+    &.truncated {
+      -webkit-line-clamp: 1; /* Number of lines to show */
+      line-clamp: 1;
+      max-height: 72px;
+      flex-shrink: 1;
+    }
+  }
+</style>

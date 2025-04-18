@@ -3,16 +3,22 @@ import type { BackendError, Album } from '~/types'
 
 import { clone } from 'lodash-es'
 import { ref, reactive } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import axios from 'axios'
 import ChannelSerieCard from '~/components/audio/ChannelSerieCard.vue'
 import AlbumCard from '~/components/audio/album/Card.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Loader from '~/components/ui/Loader.vue'
+import Button from '~/components/ui/Button.vue'
 
 interface Props {
   filters: object
   isPodcast?: boolean
   limit?: number
 }
+
+const { t } = useI18n()
 
 const props = withDefaults(defineProps<Props>(), {
   isPodcast: true,
@@ -51,15 +57,9 @@ fetchData()
 </script>
 
 <template>
-  <div>
-    <slot />
-    <div class="ui hidden divider" />
-    <div
-      v-if="isLoading"
-      class="ui inverted active dimmer"
-    >
-      <div class="ui loader" />
-    </div>
+  <slot />
+  <Layout flex>
+    <Loader v-if="isLoading" />
     <template v-if="isPodcast">
       <channel-serie-card
         v-for="serie in albums"
@@ -67,35 +67,31 @@ fetchData()
         :serie="serie"
       />
     </template>
-    <div
-      v-else
-      class="ui app-cards cards"
-    >
+    <template v-else>
       <album-card
         v-for="album in albums"
         :key="album.id"
         :album="album"
       />
-    </div>
+    </template>
     <template v-if="nextPage">
-      <div class="ui hidden divider" />
-      <button
+      <Button
         v-if="nextPage"
-        :class="['ui', 'basic', 'button']"
+        secondary
         @click="fetchData(nextPage)"
       >
-        {{ $t('components.audio.ChannelSeries.button.showMore') }}
-      </button>
+        {{ t('components.audio.ChannelSeries.button.showMore') }}
+      </Button>
     </template>
-    <template v-if="!isLoading && albums.length === 0">
-      <empty-state
-        :refresh="true"
-        @refresh="fetchData()"
-      >
-        <p>
-          {{ $t('components.audio.ChannelSeries.help.subscribe') }}
-        </p>
-      </empty-state>
-    </template>
-  </div>
+  </Layout>
+  <template v-if="!isLoading && albums.length === 0">
+    <empty-state
+      :refresh="true"
+      @refresh="fetchData()"
+    >
+      <p>
+        {{ t('components.audio.ChannelSeries.help.subscribe') }}
+      </p>
+    </empty-state>
+  </template>
 </template>

@@ -4,8 +4,12 @@ import type { Channel } from '~/types'
 import { useI18n } from 'vue-i18n'
 import { computed, ref } from 'vue'
 import { useStore } from '~/store'
+import { useRoute } from 'vue-router'
 
 import LoginModal from '~/components/common/LoginModal.vue'
+import Button from '~/components/ui/Button.vue'
+
+const route = useRoute()
 
 interface Events {
   (e: 'unsubscribed'): void
@@ -43,28 +47,29 @@ const loginModal = ref()
 </script>
 
 <template>
-  <button
-    v-if="$store.state.auth.authenticated"
-    :class="['ui', 'pink', {'inverted': isSubscribed}, {'favorited': isSubscribed}, 'icon', 'labeled', 'button']"
+  <Button
+    v-if="store.state.auth.authenticated"
+    :class="['pink', {'favorited': isSubscribed}]"
+    outline
+    :aria-pressed="isSubscribed || undefined"
     @click.stop="toggle"
   >
-    <i class="heart icon" />
     {{ title }}
-  </button>
-  <button
+  </Button>
+  <Button
     v-else
-    :class="['ui', 'pink', 'icon', 'labeled', 'button']"
+    outline
+    icon="bi-heart"
     @click="loginModal.show = true"
   >
-    <i class="heart icon" />
     {{ title }}
     <login-modal
       ref="loginModal"
       class="small"
-      :next-route="$route.fullPath"
+      :next-route="route.fullPath"
       :message="message.authMessage"
       :cover="channel.artist?.cover!"
       @created="loginModal.show = false"
     />
-  </button>
+  </Button>
 </template>

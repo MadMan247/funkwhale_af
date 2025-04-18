@@ -1,26 +1,32 @@
 <script setup lang="ts">
 import type { Artist } from '~/types'
 
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref, watch, onMounted } from 'vue'
 import { useStore } from '~/store'
 
 import axios from 'axios'
 
-import ArtistCard from '~/components/audio/artist/Card.vue'
-
 import useErrorHandler from '~/composables/useErrorHandler'
+import usePage from '~/composables/navigation/usePage'
+
+import ArtistCard from '~/components/artist/Card.vue'
+import Section from '~/components/ui/Section.vue'
+import Pagination from '~/components/ui/Pagination.vue'
+import Loader from '~/components/ui/Loader.vue'
 
 interface Props {
   filters: Record<string, string | boolean>
   search?: boolean
   header?: boolean
   limit?: number
+  title?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   search: false,
   header: true,
-  limit: 12
+  limit: 12,
+  title: undefined
 })
 
 const store = useStore()
@@ -28,6 +34,7 @@ const store = useStore()
 const query = ref('')
 const artists = reactive([] as Artist[])
 const count = ref(0)
+const page = usePage()
 const nextPage = ref()
 
 const isLoading = ref(false)
@@ -38,13 +45,14 @@ const fetchData = async (url = 'artists/') => {
     const params = {
       q: query.value,
       ...props.filters,
+      page: page.value,
       page_size: props.limit
     }
 
     const response = await axios.get(url, { params })
     nextPage.value = response.data.next
     count.value = response.data.count
-    artists.push(...response.data.results)
+    artists.splice(0, artists.length, ...response.data.results)
   } catch (error) {
     useErrorHandler(error as Error)
   }
@@ -52,64 +60,58 @@ const fetchData = async (url = 'artists/') => {
   isLoading.value = false
 }
 
+onMounted(() => {
+  setTimeout(fetchData, 1000)
+})
+
 const performSearch = () => {
   artists.length = 0
   fetchData()
 }
 
 watch(
-  () => store.state.moderation.lastUpdate,
+  [() => store.state.moderation.lastUpdate, page],
   () => fetchData(),
   { immediate: true }
 )
 </script>
 
 <template>
-  <div class="wrapper">
-    <h3
-      v-if="header"
-      class="ui header"
-    >
-      <slot name="title" />
-      <span class="ui tiny circular label">{{ count }}</span>
-    </h3>
-    <inline-search-bar
-      v-if="search"
-      v-model="query"
-      @search="performSearch"
+  <Section
+    align-left
+    :columns-per-item="1"
+    :h2="title"
+  >
+    <Loader
+      v-if="isLoading"
+      style="grid-column: 1 / -1;"
     />
-    <div class="ui hidden divider" />
-    <div class="ui five app-cards cards">
-      <div
-        v-if="isLoading"
-        class="ui inverted active dimmer"
-      >
-        <div class="ui loader" />
-      </div>
-      <artist-card
-        v-for="artist in artists"
-        :key="artist.id"
-        :artist="artist"
-      />
-    </div>
     <slot
       v-if="!isLoading && artists.length === 0"
       name="empty-state"
     >
       <empty-state
+        style="grid-column: 1 / -1;"
         :refresh="true"
         @refresh="fetchData"
       />
     </slot>
-    <template v-if="nextPage">
-      <div class="ui hidden divider" />
-      <button
-        v-if="nextPage"
-        :class="['ui', 'basic', 'button']"
-        @click="fetchData(nextPage)"
-      >
-        {{ $t('components.audio.artist.Widget.button.more') }}
-      </button>
-    </template>
-  </div>
+    <inline-search-bar
+      v-if="!isLoading && search"
+      v-model="query"
+      style="grid-column: 1 / -1;"
+      @search="performSearch"
+    />
+    <artist-card
+      v-for="artist in artists"
+      :key="artist.id"
+      :artist="artist"
+    />
+    <Pagination
+      v-if="page && artists && count > limit"
+      v-model:page="page"
+      style="grid-column: 1 / -1;"
+      :pages="Math.ceil((count || 0) / limit)"
+    />
+  </Section>
 </template>

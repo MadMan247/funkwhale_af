@@ -1,18 +1,32 @@
 <script setup lang="ts">
-import type { Actor } from '~/types'
+import type { components } from '~/generated/types'
 
 import { onBeforeRouteUpdate } from 'vue-router'
 import { computed, ref, watch } from 'vue'
+import { useClipboard } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { useStore } from '~/store'
+import { hashCode, intToRGB } from '~/utils/color'
+
 import UserFollowButton from '~/components/federation/UserFollowButton.vue'
+import { useModal } from '~/ui/composables/useModal.ts'
+
 import axios from 'axios'
 
 import useErrorHandler from '~/composables/useErrorHandler'
-import useReport from '~/composables/moderation/useReport'
+import RenderedDescription from '~/components/common/RenderedDescription.vue'
+
+import Layout from '~/components/ui/Layout.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Header from '~/components/ui/Header.vue'
+import Button from '~/components/ui/Button.vue'
+import Link from '~/components/ui/Link.vue'
+import Nav from '~/components/ui/Nav.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Modal from '~/components/ui/Modal.vue'
 
 interface Events {
-  (e: 'updated', value: Actor): void
+  (e: 'updated', value: components['schemas']['FullActor']): void
 }
 
 interface Props {
@@ -25,12 +39,16 @@ const props = withDefaults(defineProps<Props>(), {
   domain: null
 })
 
-const { report, getReportableObjects } = useReport()
 const store = useStore()
 
-const object = ref<Actor | null>(null)
+const object = ref<components['schemas']['FullActor'] | null>(null)
 
-const displayName = computed(() => object.value?.name ?? object.value?.preferred_username)
+const actorColor = computed(() => intToRGB(hashCode(object.value?.full_username)))
+const defaultAvatarStyle = computed(() => ({ backgroundColor: `#${actorColor.value}` }))
+
+// TODO: Check if still needed
+//const displayName = computed(() => object.value?.name ?? object.value?.preferred_username)
+
 const fullUsername = computed(() => props.domain
   ? `${props.username}@${props.domain}`
   : `${props.username}@${store.getters['instance/domain']}`
@@ -66,133 +84,186 @@ const fetchData = async () => {
 }
 
 watch(props, fetchData, { immediate: true })
+
+const { copy, copied, isSupported } = useClipboard()
+
+const tabs = ref([{
+  title:  t('views.auth.ProfileBase.link.overview') ,
+  to:  { name: 'profile.overview', params: routerParams }
+}, {
+  title:  t('views.auth.ProfileBase.link.activity') ,
+  to:  { name: 'profile.activity', params: routerParams }
+}, ...(
+  store.state.auth.authenticated && fullUsername.value === store.state.auth.fullUsername
+    ? [{
+        title: t('views.auth.ProfileBase.link.manageUploads') ,
+        to: { name: 'profile.manageUploads', params: routerParams }
+      }]
+    : []
+)])
+
+const isOpen = useModal('artist-description').isOpen
 </script>
 
 <template>
-  <main
+  <Layout
     v-title="labels.usernameProfile"
-    class="main pusher page-profile"
+    stack
+    main
+    no-gap
   >
-    <div
-      v-if="isLoading"
-      class="ui vertical segment"
+    <!-- TODO: Translate Edit Link -->
+    <!-- TODO: `yarn lint:tsc` doesn't understand the `Prop` type for `Header` while the language server does. It may be a question of typescript version... Investigate and fix! https://dev.funkwhale.audio/funkwhale/funkwhale/-/issues/2437 -->
+    <!-- @vue-ignore -->
+    <Header
+      :h1="props.username"
+      :action="{
+        text: t('views.auth.ProfileBase.link.edit'),
+        // @ts-ignore
+        to:'/settings',
+        // @ts-ignore
+        primary: true,
+        // @ts-ignore
+        solid: true,
+        // @ts-ignore
+        icon: 'bi-pencil-fill',
+        // @ts-ignore
+        lowHeight: true
+      }"
+      no-gap
+      page-heading
     >
-      <div class="ui centered active inline loader" />
-    </div>
-    <div class="ui head vertical stripe segment container">
-      <div
-        v-if="object"
-        class="ui stackable grid"
-      >
-        <div class="ui five wide column">
-          <button
-            ref="dropdown"
-            v-dropdown="{direction: 'downward'}"
-            class="ui pointing dropdown icon small basic right floated button"
-            style="position: absolute; right: 1em; top: 1em;"
-          >
-            <i class="ellipsis vertical icon" />
-            <div class="menu">
-              <a
-                v-if="object.domain != $store.getters['instance/domain']"
-                :href="object.fid"
-                target="_blank"
-                class="basic item"
-              >
-                <i class="external icon" />
-                {{ $t('views.auth.ProfileBase.link.domainView', {domain: object.domain}) }}
-              </a>
-              <div
-                v-for="obj in getReportableObjects({account: object})"
-                :key="obj.target.type + obj.target.id"
-                role="button"
-                class="basic item"
-                @click.stop.prevent="report(obj)"
-              >
-                <i class="share icon" /> {{ obj.label }}
-              </div>
-
-              <div class="divider" />
-              <router-link
-                v-if="$store.state.auth.availablePermissions['moderation']"
-                class="basic item"
-                :to="{name: 'manage.moderation.accounts.detail', params: {id: object.full_username}}"
-              >
-                <i class="wrench icon" />
-                {{ $t('views.auth.ProfileBase.link.moderation') }}
-              </router-link>
-            </div>
-          </button>
-          <user-follow-button
-            v-if="$store.state.auth.authenticated && object && object.full_username !== $store.state.auth.fullUsername"
-            :actor="object"
+      <template #image>
+        <img
+          v-if="object?.user?.avatar"
+          v-lazy="store.getters['instance/absoluteUrl'](object.user.avatar.urls.large_square_crop)"
+          alt=""
+          class="avatar"
+        >
+        <span
+          v-else
+          :style="defaultAvatarStyle"
+          class="ui avatar circular label"
+        >
+          {{ fullUsername[0] || "" }}
+        </span>
+      </template>
+      <Layout flex>
+        <span style="grid-column: 1 / -1">
+          {{ fullUsername }}
+          <Button
+            icon="bi-copy"
+            style="margin-left: 8px;"
+            :aria-label="t('views.auth.ProfileBase.copyUsername')"
+            :title="t('components.common.CopyInput.button.copy')"
+            ghost
+            secondary
+            low-height
+            @click="copy(fullUsername)"
           />
-          <h1 class="ui center aligned icon header">
-            <i
-              v-if="!object.icon"
-              class="circular inverted user success icon"
-            />
-            <img
-              v-else
-              v-lazy="$store.getters['instance/absoluteUrl'](object.icon.urls.medium_square_crop)"
-              alt=""
-              class="ui big circular image"
-            >
-            <div class="ellispsis content">
-              <div class="ui very small hidden divider" />
-              <span>{{ displayName }}</span>
-              <div class="ui very small hidden divider" />
-              <div
-                class="sub header ellipsis"
-                :title="object.full_username"
-              >
-                {{ object.full_username }}
-              </div>
-            </div>
-            <template v-if="object.full_username === $store.state.auth.fullUsername">
-              <div class="ui very small hidden divider" />
-              <div class="ui basic success label">
-                {{ $t('views.auth.ProfileBase.label.self') }}
-              </div>
-            </template>
-          </h1>
-          <div class="ui small hidden divider" />
-          <div v-if="$store.getters['ui/layoutVersion'] === 'large'">
-            <rendered-description
-              :content="object.summary"
-              :field-name="'summary'"
-              :update-url="`users/${$store.state.auth.username}/`"
-              :can-update="$store.state.auth.authenticated && object.full_username === $store.state.auth.fullUsername"
-              @updated="emit('updated', $event)"
-            />
-          </div>
-        </div>
-        <div class="ui eleven wide column">
-          <div class="ui head vertical stripe segment">
-            <div class="ui container">
-              <div class="ui secondary pointing center aligned menu">
-                <router-link
-                  class="item"
-                  :to="{name: 'profile.overview', params: routerParams}"
-                >
-                  {{ $t('views.auth.ProfileBase.link.overview') }}
-                </router-link>
-                <router-link
-                  class="item"
-                  :to="{name: 'profile.activity', params: routerParams}"
-                >
-                  {{ $t('views.auth.ProfileBase.link.activity') }}
-                </router-link>
-              </div>
-              <div class="ui hidden divider" />
-              <router-view
-                :object="object"
-                @updated="fetchData"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
+        </span>
+        <Alert
+          v-if="isSupported && copied"
+          green
+        >
+          <Layout flex>
+            <i class="bi bi-check" />
+            {{ t('components.common.CopyInput.message.success') }}
+          </Layout>
+        </Alert>
+        <Alert
+          v-else-if="!isSupported && copied"
+          red
+        >
+          <Layout flex>
+            <i class="bi bi-x" />
+            {{ t('components.common.CopyInput.message.fail') }}
+          </Layout>
+        </Alert>
+      </Layout>
+      <Layout
+        flex
+        no-gap
+      >
+        <RenderedDescription
+          v-if="object?.summary"
+          class="description"
+          :content="{ html: object?.summary.html || '' }"
+          :truncate-length="100"
+          :more-link="false"
+        />
+        <Spacer grow />
+        <Link
+          v-if="object?.summary"
+          :to="useModal('artist-description').to"
+          style="color: var(--fw-primary); text-decoration: underline;"
+          thin-font
+          force-underline
+        >
+          {{ t('components.common.RenderedDescription.button.more') }}
+        </Link>
+      </Layout>
+      <Modal
+        v-if="object?.summary"
+        v-model="isOpen"
+        :title="object?.name"
+      >
+        <img
+          v-if="object?.user.avatar"
+          v-lazy="object?.user.avatar.urls.original"
+          :alt="object?.name"
+          style="object-fit: cover; width: 100%; height: 100%;"
+        >
+        <sanitized-html
+          v-if="object?.summary"
+          :html="object?.summary.html"
+        />
+      </Modal>
+      <UserFollowButton
+        v-if="store.state.auth.authenticated && fullUsername !== store.state.auth.fullUsername && object"
+        low-height
+        :actor="object"
+      />
+    </Header>
+    <Nav v-model="tabs" />
+
+    <router-view
+      :object="object"
+      @updated="fetchData"
+    />
+  </Layout>
 </template>
+
+<style scoped lang="scss">
+  img.avatar {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+  }
+
+  span.avatar {
+    display: block;
+    font-size: 150px;
+    font-style: normal;
+    font-weight: 800;
+    text-align: center;
+    align-content: center;
+    background-color: var(--fw-gray-500);
+    border-radius: 50%;
+    width: 200px;
+    height: 200px;
+  }
+
+  h1 {
+    font-size: 48px;
+    margin-bottom: 8px;
+  }
+
+  a.edit span {
+    color: var(--fw-primary);
+
+    &:hover {
+      color: var(--color);
+    }
+  }
+</style>

@@ -5,18 +5,33 @@ import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { computed, ref, reactive, watch, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useStore } from '~/store'
+import { useModal } from '~/ui/composables/useModal.ts'
 
 import axios from 'axios'
 
+import useErrorHandler from '~/composables/useErrorHandler'
+import useReport from '~/composables/moderation/useReport'
+
+import DangerousButton from '~/components/common/DangerousButton.vue'
 import SubscribeButton from '~/components/channels/SubscribeButton.vue'
 import ChannelForm from '~/components/audio/ChannelForm.vue'
 import EmbedWizard from '~/components/audio/EmbedWizard.vue'
-import SemanticModal from '~/components/semantic/Modal.vue'
+import HumanDuration from '~/components/common/HumanDuration.vue'
 import PlayButton from '~/components/audio/PlayButton.vue'
 import TagsList from '~/components/tags/List.vue'
+import RadioButton from '~/components/radios/Button.vue'
 
-import useErrorHandler from '~/composables/useErrorHandler'
-import useReport from '~/composables/moderation/useReport'
+import Loader from '~/components/ui/Loader.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Header from '~/components/ui/Header.vue'
+import Button from '~/components/ui/Button.vue'
+import Link from '~/components/ui/Link.vue'
+import Nav from '~/components/ui/Nav.vue'
+import OptionsButton from '~/components/ui/button/Options.vue'
+import Popover from '~/components/ui/Popover.vue'
+import PopoverItem from '~/components/ui/popover/PopoverItem.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Modal from '~/components/ui/Modal.vue'
 
 interface Events {
   (e: 'deleted'): void
@@ -45,7 +60,6 @@ const showEditModal = ref(false)
 const showSubscribeModal = ref(false)
 
 const isOwner = computed(() => store.state.auth.authenticated && object.value?.attributed_to.full_username === store.state.auth.fullUsername)
-const isPodcast = computed(() => object.value?.artist?.content_category === 'podcast')
 const isPlayable = computed(() => totalTracks.value > 0)
 const externalDomain = computed(() => {
   const parser = document.createElement('a')
@@ -92,7 +106,8 @@ const fetchData = async () => {
 
 watch(() => props.id, fetchData, { immediate: true })
 
-const uuid = computed(() => store.state.channels.latestPublication?.channel.uuid)
+const uuid = computed(() => store.state?.channels.latestPublication?.channel.uuid)
+
 watch([uuid, object], ([uuid, object], [lastUuid, lastObject]) => {
   if (object?.uuid && object.uuid === lastObject?.uuid) return
 
@@ -103,7 +118,13 @@ watch([uuid, object], ([uuid, object], [lastUuid, lastObject]) => {
 
 const route = useRoute()
 watchEffect(() => {
-  if (!object.value) return
+  if (!object.value) {
+    store.state.channels.uploadModalConfig.channel = null
+    return
+  } else {
+    store.state.channels.uploadModalConfig.channel = object.value
+  }
+
   if (!store.state.auth.authenticated && store.getters['instance/domain'] !== object.value.actor.domain) {
     router.push({ name: 'login', query: { next: route.fullPath } })
   }
@@ -122,380 +143,378 @@ const remove = async () => {
 
 const updateSubscriptionCount = (delta: number) => {
   if (object.value) {
-    object.value.subscriptions_count += delta
+    // TODO: Store a modified copy in the cache or on the db instead of mutating the object in-memory.
+    // #2438
+    // @ts-expect-error Property 'subscriptions_count' is readonly on type 'Channel'
+    object.value.subscriptions_count -= delta
   }
 }
+
+const tabs = ref([
+  {
+    title: t('views.channels.DetailBase.link.channelOverview'),
+    to: {name: 'channels.detail', params: { id: props.id }}
+
+  },
+  {
+    title: t('views.channels.DetailBase.link.channelEpisodes'),
+    to: {name: 'channels.detail.episodes', params: { id: props.id }}
+  }
+])
 </script>
 
 <template>
-  <main
+  <Layout
     v-title="labels.title"
-    class="main pusher"
+    stack
+    no-gap
+    main
   >
-    <div
-      v-if="isLoading"
-      class="ui vertical segment"
+    <Loader v-if="isLoading" />
+    <Header
+      v-if="object && !isLoading"
+      v-title="object.artist?.name"
+      :h1="object.artist?.name"
+      page-heading
     >
-      <div :class="['ui', 'centered', 'active', 'inline', 'loader']" />
-    </div>
-    <template v-if="object && !isLoading">
-      <section
-        v-title="object.artist?.name"
-        class="ui head vertical stripe segment container"
+      <template #image>
+        <img
+          v-if="object.artist?.cover"
+          alt=""
+          :class="['huge', object.artist?.content_category === 'podcast' ? 'podcast-image' : 'channel-image']"
+          :src="store.getters['instance/absoluteUrl'](object.artist.cover.urls.large_square_crop)"
+        >
+        <i
+          v-else
+          class="bi bi-person-circle"
+          style="font-size: 300px; margin-top: -32px;"
+        />
+      </template>
+      <Layout
+        stack
+        class="meta"
+        style="gap: 8px;"
       >
-        <div class="ui stackable grid">
-          <div class="seven wide column">
-            <div class="ui two column grid">
-              <div class="column">
-                <img
-                  v-if="object.artist?.cover"
-                  alt=""
-                  class="huge channel-image"
-                  :src="$store.getters['instance/absoluteUrl'](object.artist.cover.urls.medium_square_crop)"
-                >
-                <i
-                  v-else
-                  class="huge circular inverted users violet icon"
-                />
-              </div>
-              <div class="ui column right aligned">
-                <tags-list
-                  v-if="object.artist?.tags && object.artist?.tags.length > 0"
-                  :tags="object.artist.tags"
-                />
-                <actor-link
-                  v-if="object.actor"
-                  :avatar="false"
-                  :actor="object.attributed_to"
-                  :display-name="true"
-                />
-                <template v-if="totalTracks > 0">
-                  <div class="ui hidden very small divider" />
-                  <span
-                    v-if="object.artist?.content_category === 'podcast'"
-                  >
-                    {{ $t('views.channels.DetailBase.meta.episodes', totalTracks) }}
-                  </span>
-                  <span
-                    v-else
-                  >
-                    {{ $t('views.channels.DetailBase.meta.tracks', totalTracks) }}
-                  </span>
-                </template>
-                <template v-if="object.attributed_to.full_username === $store.state.auth.fullUsername || $store.getters['channels/isSubscribed'](object.uuid)">
-                  <br>
-                  {{ $t('views.channels.DetailBase.meta.subscribers', object?.subscriptions_count ?? 0) }}
-                  <br>
-                  {{ $t('views.channels.DetailBase.meta.listenings', object?.downloads_count ?? 0) }}
-                </template>
-                <div class="ui hidden small divider" />
-                <a
-                  class="ui icon small basic button"
-                  @click.stop.prevent="showSubscribeModal = true"
-                >
-                  <i class="feed icon" />
-                </a>
-                <semantic-modal
-                  v-model:show="showSubscribeModal"
-                  class="tiny"
-                >
-                  <h4 class="header">
-                    {{ $t('views.channels.DetailBase.modal.subscribe.header') }}
-                  </h4>
-                  <div class="scrollable content">
-                    <div class="description">
-                      <template v-if="$store.state.auth.authenticated">
-                        <h3>
-                          <i class="user icon" />
-                          {{ $t('views.channels.DetailBase.modal.subscribe.funkwhale.header') }}
-                        </h3>
-                        <subscribe-button
-                          :channel="object"
-                          @subscribed="updateSubscriptionCount(1)"
-                          @unsubscribed="updateSubscriptionCount(-1)"
-                        />
-                      </template>
-                      <template v-if="object.rss_url">
-                        <h3>
-                          <i class="feed icon" />
-                          {{ $t('views.channels.DetailBase.modal.subscribe.rss.header') }}
-                        </h3>
-                        <p>
-                          {{ $t('views.channels.DetailBase.modal.subscribe.rss.content.help') }}
-                        </p>
-                        <copy-input :value="object.rss_url" />
-                      </template>
-                      <template v-if="object.actor">
-                        <h3>
-                          <i class="bell icon" />
-                          {{ $t('views.channels.DetailBase.modal.subscribe.fediverse.header') }}
-                        </h3>
-                        <p>
-                          {{ $t('views.channels.DetailBase.modal.subscribe.fediverse.content.help') }}
-                        </p>
-                        <copy-input
-                          id="copy-tag"
-                          :value="`@${object.actor.full_username}`"
-                        />
-                      </template>
-                    </div>
-                  </div>
-                  <div class="actions">
-                    <button class="ui basic deny button">
-                      {{ $t('views.channels.DetailBase.button.cancel') }}
-                    </button>
-                  </div>
-                </semantic-modal>
-                <button
-                  ref="dropdown"
-                  v-dropdown="{direction: 'downward'}"
-                  class="ui right floated pointing dropdown icon small basic button"
-                >
-                  <i class="ellipsis vertical icon" />
-                  <div class="menu">
-                    <a
-                      v-if="totalTracks > 0"
-                      href=""
-                      class="basic item"
-                      @click.prevent="showEmbedModal = !showEmbedModal"
-                    >
-                      <i class="code icon" />
-                      {{ $t('views.channels.DetailBase.button.embed') }}
-                    </a>
-                    <a
-                      v-if="object.actor && object.actor.domain != $store.getters['instance/domain']"
-                      :href="object.url"
-                      target="_blank"
-                      class="basic item"
-                    >
-                      <i class="external icon" />
-                      {{ $t('views.channels.DetailBase.link.domainView', {domain: object.actor.domain}) }}
-                    </a>
-                    <div class="divider" />
-                    <a
-                      v-for="obj in getReportableObjects({account: object.attributed_to, channel: object})"
-                      :key="obj.target.type + obj.target.id"
-                      href=""
-                      class="basic item"
-                      @click.stop.prevent="report(obj)"
-                    >
-                      <i class="share icon" /> {{ obj.label }}
-                    </a>
+        <Layout
+          flex
+          no-gap
+        >
+          <template v-if="totalTracks > 0">
+            <span
+              v-if="object.artist?.content_category === 'podcast'"
+            >
+              {{ t('views.channels.DetailBase.meta.episodes', totalTracks) }}
+            </span>
+            <span
+              v-else
+            >
+              {{ t('views.channels.DetailBase.meta.tracks', totalTracks) }}
+            </span>
+            <i class="bi bi-dot" />
+          </template>
+          {{ t('views.channels.DetailBase.meta.subscribers', object?.subscriptions_count ?? 0) }}
+          <i class="bi bi-dot" />
+          {{ t('views.channels.DetailBase.meta.listenings', object?.downloads_count ?? 0) }}
 
-                    <template v-if="isOwner">
-                      <div class="divider" />
-                      <a
-                        class="item"
-                        href=""
-                        @click.stop.prevent="showEditModal = true"
-                      >
-                        <i class="edit icon" />
-                        {{ $t('views.channels.DetailBase.button.edit') }}
-                      </a>
-                      <dangerous-button
-                        v-if="object"
-                        :class="['ui', {loading: isLoading}, 'item']"
-                        @confirm="remove()"
-                      >
-                        <i class="ui trash icon" />
-                        {{ $t('views.channels.DetailBase.button.delete') }}
-                        <template #modal-header>
-                          <p>
-                            {{ $t('views.channels.DetailBase.modal.delete.header') }}
-                          </p>
-                        </template>
-                        <template #modal-content>
-                          <div>
-                            <p>
-                              {{ $t('views.channels.DetailBase.modal.delete.content.warning') }}
-                            </p>
-                          </div>
-                        </template>
-                        <template #modal-confirm>
-                          <p>
-                            {{ $t('views.channels.DetailBase.button.confirm') }}
-                          </p>
-                        </template>
-                      </dangerous-button>
-                    </template>
-                    <template v-if="$store.state.auth.availablePermissions['library']">
-                      <div class="divider" />
-                      <router-link
-                        class="basic item"
-                        :to="{name: 'manage.channels.detail', params: {id: object.uuid}}"
-                      >
-                        <i class="wrench icon" />
-                        {{ $t('views.channels.DetailBase.link.moderation') }}
-                      </router-link>
-                    </template>
-                  </div>
-                </button>
-              </div>
-            </div>
-            <h1 class="ui header">
-              <div
-                class="left aligned"
-                :title="object.artist?.name"
+          <div v-if="totalTracks > 0">
+            <i class="bi bi-dot" />
+            <human-duration
+              v-if="totalTracks > 0"
+              :duration="totalTracks"
+            />
+          </div>
+        </Layout>
+        <Layout
+          flex
+          no-gap
+        >
+          <template v-if="object.artist?.content_category === 'podcast'">
+            <span>
+              {{ t('views.channels.DetailBase.header.podcastChannel') }}
+            </span>
+            <span
+              v-if="!object.actor"
+            >
+              <i class="bi bi-dot" />
+              <a
+                :href="object.url || object.rss_url"
+                rel="noopener noreferrer"
+                target="_blank"
               >
-                {{ object.artist?.name }}
-                <div class="ui hidden very small divider" />
-                <div
-                  v-if="object.actor"
-                  class="sub header ellipsis"
-                  :title="object.actor.full_username"
-                >
-                  {{ object.actor.full_username }}
-                </div>
-                <div
-                  v-else
-                  class="sub header ellipsis"
-                >
-                  <a
-                    :href="object.url || object.rss_url"
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    <i class="external link icon" />
-                    {{ $t('views.channels.DetailBase.link.mirrored', {domain: externalDomain}) }}
-                  </a>
-                </div>
-              </div>
-            </h1>
-            <div class="header-buttons">
-              <div
-                v-if="isOwner"
-                class="ui buttons"
-              >
-                <button
-                  class="ui basic labeled icon button"
-                  @click.prevent.stop="$store.commit('channels/showUploadModal', {show: true, config: {channel: object}})"
-                >
-                  <i class="upload icon" />
-                  {{ $t('views.channels.DetailBase.button.upload') }}
-                </button>
-              </div>
-              <div class="ui buttons">
-                <play-button
-                  :is-playable="isPlayable"
-                  class="vibrant"
-                  :artist="object.artist"
-                >
-                  {{ $t('views.channels.DetailBase.button.play') }}
-                </play-button>
-              </div>
-              <div class="ui buttons">
-                <subscribe-button
-                  :channel="object"
-                  @subscribed="updateSubscriptionCount(1)"
-                  @unsubscribed="updateSubscriptionCount(-1)"
-                />
-              </div>
+                <i class="bi bi-box-arrow-up-right" />
+                {{ t('views.channels.DetailBase.link.mirrored', {domain: externalDomain}) }}
+              </a>
+            </span>
+          </template>
+          <template v-else>
+            <span>
+              {{ t('views.channels.DetailBase.header.artistChannel') }}
+            </span>
+          </template>
+          <span v-if="object.actor">
+            <i class="bi bi-dot" />
+            {{ t('views.library.LibraryBase.link.owner') }}
+          </span>
+          <Spacer
+            h
+            :size="8"
+          />
+          <ActorLink
+            v-if="object.actor"
+            discrete
+            :avatar="true"
+            :actor="object.attributed_to"
+            :display-name="true"
+          />
+        </Layout>
+      </Layout>
+      <rendered-description
+        :content="object.artist?.description"
+        :update-url="`channels/${object.uuid}/`"
+        :can-update="false"
+        @updated="object = $event"
+      />
+      <Layout
+        flex
+        class="header-buttons"
+      >
+        <!-- TODO: Deeplink to channel upload with the channel selected -->
+        <Link
+          v-if="isOwner"
+          solid
+          primary
+          low-height
+          icon="bi-upload"
+          channel="object"
+          filter="object.artist?.content_category === 'podcast' ? 'podcast' : 'music'"
+          :to="useModal('upload').to"
+        >
+          {{ t('views.channels.DetailBase.button.upload') }}
+        </Link>
+        <PlayButton
+          :is-playable="isPlayable"
+          split
+          low-height
+          class="vibrant"
+          :artist="object.artist"
+        >
+          {{ t('views.channels.DetailBase.button.play') }}
+        </PlayButton>
+        <RadioButton
+          type="artist"
+          :object-id="object.artist.id"
+          low-height
+        />
 
-              <semantic-modal
-                v-if="totalTracks > 0"
-                v-model:show="showEmbedModal"
+        <Popover>
+          <template #default="{ toggleOpen }">
+            <OptionsButton
+              is-square-small
+              @click="toggleOpen"
+            />
+          </template>
+          <template #items>
+            <PopoverItem
+              v-if="totalTracks > 0"
+              icon="bi-code-slash"
+              @click.prevent="showEmbedModal = !showEmbedModal"
+            >
+              {{ t('views.channels.DetailBase.button.embed') }}
+            </PopoverItem>
+            <PopoverItem
+              v-if="object.actor && object.actor.domain != store.getters['instance/domain']"
+              :href="object.url"
+              target="_blank"
+              icon="bi-box-arrow-up-right"
+            >
+              {{ t('views.channels.DetailBase.link.domainView', {domain: object.actor.domain}) }}
+            </PopoverItem>
+            <hr>
+            <PopoverItem
+              v-for="obj in getReportableObjects({account: object.attributed_to, channel: object})"
+              :key="obj.target.type + obj.target.id"
+              icon="bi-share"
+              @click.stop.prevent="report(obj)"
+            >
+              {{ obj.label }}
+            </PopoverItem>
+
+            <template v-if="isOwner">
+              <hr>
+              <PopoverItem
+                icon="bi-pencil"
+                @click.stop.prevent="showEditModal = true"
               >
-                <h4 class="header">
-                  {{ $t('views.channels.DetailBase.modal.embed.header') }}
-                </h4>
-                <div class="scrolling content">
-                  <div class="description">
-                    <embed-wizard
-                      :id="object.artist!.id"
-                      type="artist"
-                    />
-                  </div>
-                </div>
-                <div class="actions">
-                  <button class="ui basic deny button">
-                    {{ $t('views.channels.DetailBase.button.cancel') }}
-                  </button>
-                </div>
-              </semantic-modal>
-              <semantic-modal
-                v-if="isOwner"
-                v-model:show="showEditModal"
+                {{ t('views.channels.DetailBase.button.edit') }}
+              </PopoverItem>
+              <dangerous-button
+                v-if="object"
+                popover-item
+                :title="t('views.channels.DetailBase.button.confirm')"
+                :is-loading="isLoading"
+                icon="bi-trash"
+                @confirm="remove()"
               >
-                <h4 class="header">
-                  <span
-                    v-if="object.artist?.content_category === 'podcast'"
-                  >
-                    {{ $t('views.channels.DetailBase.header.podcastChannel') }}
-                  </span>
-                  <span
-                    v-else
-                  >
-                    {{ $t('views.channels.DetailBase.header.artistChannel') }}
-                  </span>
-                </h4>
-                <div class="scrolling content">
-                  <channel-form
-                    ref="editForm"
-                    :object="object"
-                    @loading="edit.loading = $event"
-                    @submittable="edit.submittable = $event"
-                    @updated="fetchData"
-                  />
-                  <div class="ui hidden divider" />
-                </div>
-                <div class="actions">
-                  <button class="ui left floated basic deny button">
-                    {{ $t('views.channels.DetailBase.button.cancel') }}
-                  </button>
-                  <button
-                    :class="['ui', 'primary', 'confirm', {loading: edit.loading}, 'button']"
-                    :disabled="!edit.submittable"
-                    @click.stop="editForm?.submit"
-                  >
-                    {{ $t('views.channels.DetailBase.button.updateChannel') }}
-                  </button>
-                </div>
-              </semantic-modal>
-            </div>
-            <div v-if="$store.getters['ui/layoutVersion'] === 'large'">
-              <rendered-description
-                :content="object.artist?.description"
-                :update-url="`channels/${object.uuid}/`"
-                :can-update="false"
-                @updated="object = $event"
+                {{ t('views.channels.DetailBase.button.confirm') }}
+                <template #modal-content>
+                  {{ t('views.channels.DetailBase.modal.delete.content.warning') }}
+                </template>
+                <template #modal-confirm>
+                  <p>
+                    {{ t('views.channels.DetailBase.button.confirm') }}
+                  </p>
+                </template>
+              </dangerous-button>
+            </template>
+            <template v-if="store.state.auth.availablePermissions['library']">
+              <hr>
+              <PopoverItem
+                :to="{ name: 'manage.channels.detail', params: { id: object.uuid } }"
+                icon="bi-wrench"
+              >
+                {{ t('views.channels.DetailBase.link.moderation') }}
+              </PopoverItem>
+            </template>
+          </template>
+        </Popover>
+        <Spacer
+          h
+          grow
+        />
+        <subscribe-button
+          v-if="store.state.auth.authenticated && object?.attributed_to.full_username !== store.state.auth.fullUsername"
+          low-height
+          :channel="object"
+          @subscribed="updateSubscriptionCount(1)"
+          @unsubscribed="updateSubscriptionCount(-1)"
+        />
+
+        <Modal
+          v-if="totalTracks > 0"
+          v-model="showEmbedModal"
+          :title="t('views.channels.DetailBase.modal.embed.header')"
+          :cancel="t('views.channels.DetailBase.button.cancel')"
+        >
+          <div class="scrolling content">
+            <div class="description">
+              <embed-wizard
+                :id="object.artist!.id"
+                type="artist"
               />
             </div>
           </div>
-          <div class="nine wide column">
-            <div class="ui secondary pointing center aligned menu">
-              <router-link
-                class="item"
-
-                :to="{name: 'channels.detail', params: {id: id}}"
-              >
-                {{ $t('views.channels.DetailBase.link.channelOverview') }}
-              </router-link>
-              <router-link
-                class="item"
-
-                :to="{name: 'channels.detail.episodes', params: {id: id}}"
-              >
-                <span
-                  v-if="isPodcast"
-                >
-                  {{ $t('views.channels.DetailBase.link.channelEpisodes') }}
-                </span>
-                <span
-                  v-else
-                >
-                  {{ $t('views.channels.DetailBase.link.channelTracks') }}
-                </span>
-              </router-link>
-            </div>
-            <div class="ui hidden divider" />
-            <router-view
-              v-if="object"
+          <template #actions>
+            <button class="ui basic deny button">
+              {{ t('views.channels.DetailBase.button.cancel') }}
+            </button>
+          </template>
+        </Modal>
+        <Modal
+          v-if="isOwner"
+          v-model="showEditModal"
+          :title="
+            object.artist?.content_category === 'podcast'
+              ? t('views.channels.DetailBase.header.podcastChannel')
+              : t('views.channels.DetailBase.header.artistChannel')
+          "
+        >
+          <div class="scrolling content">
+            <channel-form
+              ref="editForm"
               :object="object"
-              @tracks-loaded="totalTracks = $event"
+              @loading="edit.loading = $event"
+              @submittable="edit.submittable = $event"
+              @updated="fetchData"
             />
+            <div class="ui hidden divider" />
           </div>
-        </div>
-      </section>
-    </template>
-  </main>
+          <template #actions>
+            <Button
+              primary
+              autofocus
+              low-height
+              :is-loading="edit.loading"
+              :disabled="!edit.submittable"
+              @click.stop="editForm?.submit"
+            >
+              {{ t('views.channels.DetailBase.button.updateChannel') }}
+            </Button>
+          </template>
+        </Modal>
+        <Button
+          secondary
+          icon="bi-rss"
+          square-small
+          @click.stop.prevent="showSubscribeModal = true"
+        />
+        <Modal
+          v-model="showSubscribeModal"
+          :title="t('views.channels.DetailBase.modal.subscribe.header')"
+          class="tiny"
+          :cancel="t('views.channels.DetailBase.button.cancel')"
+        >
+          <div class="scrollable content">
+            <div class="description">
+              <template v-if="object.rss_url">
+                <h3>
+                  <i class="feed icon" />
+                  {{ t('views.channels.DetailBase.modal.subscribe.rss.header') }}
+                </h3>
+                <p>
+                  {{ t('views.channels.DetailBase.modal.subscribe.rss.content.help') }}
+                </p>
+                <copy-input :value="object.rss_url" />
+              </template>
+              <template v-if="object.actor">
+                <h3>
+                  <i class="bell icon" />
+                  {{ t('views.channels.DetailBase.modal.subscribe.fediverse.header') }}
+                </h3>
+                <p>
+                  {{ t('views.channels.DetailBase.modal.subscribe.fediverse.content.help') }}
+                </p>
+                <copy-input
+                  id="copy-tag"
+                  :value="`@${object.actor.full_username}`"
+                />
+              </template>
+            </div>
+          </div>
+        </Modal>
+      </Layout>
+    </Header>
+    <hr>
+    <TagsList
+      v-if="object?.artist?.tags && object?.artist?.tags.length > 0"
+      :tags="object?.artist.tags"
+      :limit="5"
+      :show-more="true"
+    />
+    <Nav v-model="tabs" />
+
+    <router-view
+      v-if="object"
+      :object="object"
+      @tracks-loaded="totalTracks = $event"
+    />
+  </Layout>
 </template>
+
+<style scoped lang="scss">
+  .channel-image {
+    border-radius: 50%;
+  }
+  .huge {
+    width: 200px;
+    height: 200px;
+  }
+  .meta {
+    font-size: 15px;
+    @include light-theme {
+      color: var(--fw-gray-700);
+    }
+    @include dark-theme {
+      color: var(--fw-gray-500);
+    }
+  }
+</style>

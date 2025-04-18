@@ -1,13 +1,15 @@
 #audio-bars {
-  height: 1em;
+  height: 48px;
   display: flex;
-  width: 12px;
+  width: 48px;
+  align-items: center;
+  padding: 8px;
 }
 
 .audio-bar {
   background: var(--main-color);
-  width: 3px;
-  height: 1em;
+  width: 8px;
+  height: 100%;
   animation: sound 1s cubic-bezier(.17,.37,.43,.67) infinite alternate;
   will-change: opacity, transform;
   transform-origin: bottom;
@@ -24,7 +26,129 @@
   }
 }
 
-.audio-bar:nth-child(1) { animation-duration: 0.4s; }
-.audio-bar:nth-child(2) { animation-duration: 0.2s; }
-.audio-bar:nth-child(3) { animation-duration: 1.0s; }
-.audio-bar:nth-child(4) { animation-duration: 0.3s; }
+/* Keyframes for individual bars */
+@keyframes sound1 {
+  0% {
+    opacity: .35;
+    transform: scaleY(0.1) translateZ(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(0.7); /* Scale to 70% of the container height */
+  }
+}
+
+@keyframes sound2 {
+  0% {
+    opacity: .35;
+    transform: scaleY(0.1) translateZ(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(0.8); /* Scale to 80% of the container height */
+  }
+}
+
+@keyframes sound3 {
+  0% {
+    opacity: .35;
+    transform: scaleY(0.1) translateZ(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(1); /* Scale to 100% of the container height */
+  }
+}
+
+@keyframes sound4 {
+  0% {
+    opacity: .35;
+    transform: scaleY(0.1) translateZ(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(0.9); /* Scale to 90% of the container height */
+  }
+}
+
+@keyframes sound5 {
+  0% {
+    opacity: .35;
+    transform: scaleY(0.1) translateZ(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(0.9); /* Scale to 90% of the container height */
+  }
+}
+
+@keyframes sound6 {
+  0% {
+    opacity: .35;
+    transform: scaleY(0.1) translateZ(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(0.8); /* Scale to 80% of the container height */
+  }
+}
+
+@keyframes sound7 {
+  0% {
+    opacity: .35;
+    transform: scaleY(0.1) translateZ(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(0.7); /* Scale to 70% of the container height */
+  }
+}
+
+@keyframes sound8 {
+  0% {
+    opacity: .35;
+    transform: scaleY(0.1) translateZ(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(0.6); /* Scale to 60% of the container height */
+  }
+}
+
+/* Bass frequencies - slower attack, higher elevation */
+.audio-bar:nth-child(1) {
+  animation-duration: 0.8s;
+  animation-name: sound1;
+}
+.audio-bar:nth-child(2) {
+  animation-duration: 0.7s;
+  animation-name: sound2;
+}
+
+/* Mid frequencies - moderate attack and elevation */
+.audio-bar:nth-child(3) {
+  animation-duration: 0.6s;
+  animation-name: sound3;
+}
+.audio-bar:nth-child(4) {
+  animation-duration: 0.5s;
+  animation-name: sound4;
+}
+.audio-bar:nth-child(5) {
+  animation-duration: 0.4s;
+  animation-name: sound5;
+}
+
+/* High frequencies - quicker attack, lower elevation */
+.audio-bar:nth-child(6) {
+  animation-duration: 0.4s;
+  animation-name: sound6;
+}
+.audio-bar:nth-child(7) {
+  animation-duration: 0.3s;
+  animation-name: sound7;
+}
+.audio-bar:nth-child(8) {
+  animation-duration: 0.2s;
+  animation-name: sound8;
+}

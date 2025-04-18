@@ -9,6 +9,8 @@ import axios from 'axios'
 
 import useSharedLabels from '~/composables/locale/useSharedLabels'
 
+import DangerousButton from '~/components/common/DangerousButton.vue'
+
 const PRIVACY_LEVELS = ['me', 'instance', 'everyone'] as PrivacyLevel[]
 
 interface Events {
@@ -35,6 +37,9 @@ const labels = computed(() => ({
 }))
 
 const currentVisibilityLevel = ref(props.library?.privacy_level ?? 'me')
+
+// TODO: Add 'description' to the Library type
+// @ts-expect-error Property 'description' does not exist on type 'Library'
 const currentDescription = ref(props.library?.description ?? '')
 const currentName = ref(props.library?.name ?? '')
 
@@ -94,7 +99,7 @@ const remove = async () => {
     @submit.prevent="submit"
   >
     <p v-if="!library">
-      {{ $t('views.content.libraries.Form.description.library') }}
+      {{ t('views.content.libraries.Form.description.library') }}
     </p>
     <div
       v-if="errors.length > 0"
@@ -102,7 +107,7 @@ const remove = async () => {
       class="ui negative message"
     >
       <h4 class="header">
-        {{ $t('views.content.libraries.Form.header.failure') }}
+        {{ t('views.content.libraries.Form.header.failure') }}
       </h4>
       <ul class="list">
         <li
@@ -114,7 +119,7 @@ const remove = async () => {
       </ul>
     </div>
     <div class="required field">
-      <label for="current-name">{{ $t('views.content.libraries.Form.label.name') }}</label>
+      <label for="current-name">{{ t('views.content.libraries.Form.label.name') }}</label>
       <input
         id="current-name"
         v-model="currentName"
@@ -125,7 +130,7 @@ const remove = async () => {
       >
     </div>
     <div class="field">
-      <label for="current-description">{{ $t('views.content.libraries.Form.label.description') }}</label>
+      <label for="current-description">{{ t('views.content.libraries.Form.label.description') }}</label>
       <textarea
         id="current-description"
         v-model="currentDescription"
@@ -134,9 +139,9 @@ const remove = async () => {
       />
     </div>
     <div class="field">
-      <label for="visibility-level">{{ $t('views.content.libraries.Form.label.visibility') }}</label>
+      <label for="visibility-level">{{ t('views.content.libraries.Form.label.visibility') }}</label>
       <p>
-        {{ $t('views.content.libraries.Form.description.visibility') }}
+        {{ t('views.content.libraries.Form.description.visibility') }}
       </p>
       <select
         id="visibility-level"
@@ -159,35 +164,26 @@ const remove = async () => {
       <span
         v-if="library"
       >
-        {{ $t('views.content.libraries.Form.button.update') }}
+        {{ t('views.content.libraries.Form.button.update') }}
       </span>
       <span
         v-else
       >
-        {{ $t('views.content.libraries.Form.button.create') }}
+        {{ t('views.content.libraries.Form.button.create') }}
       </span>
     </button>
     <dangerous-button
       v-if="library"
-      type="button"
-      class="ui right floated basic danger button"
+      style="float: right;"
+      :title="t('views.content.libraries.Form.modal.delete.header')"
       @confirm="remove"
     >
-      {{ $t('views.content.libraries.Form.button.delete') }}
-      <template #modal-header>
-        <p>
-          {{ $t('views.content.libraries.Form.modal.delete.header') }}
-        </p>
-      </template>
+      {{ t('views.content.libraries.Form.button.delete') }}
       <template #modal-content>
-        <p>
-          {{ $t('views.content.libraries.Form.modal.delete.content.warning') }}
-        </p>
+        {{ t('views.content.libraries.Form.modal.delete.content.warning') }}
       </template>
       <template #modal-confirm>
-        <div>
-          {{ $t('views.content.libraries.Form.button.confirm') }}
-        </div>
+        {{ t('views.content.libraries.Form.button.confirm') }}
       </template>
     </dangerous-button>
   </form>

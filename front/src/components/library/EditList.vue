@@ -5,6 +5,9 @@ import { ref, watchEffect } from 'vue'
 import axios from 'axios'
 
 import EditCard from '~/components/library/EditCard.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Button from '~/components/ui/Button.vue'
+import Loader from '~/components/ui/Loader.vue'
 
 interface Props {
   url: string
@@ -45,37 +48,24 @@ watchEffect(() => fetchData())
 </script>
 
 <template>
-  <div class="wrapper">
-    <h3 class="ui header">
-      <slot />
-    </h3>
-    <slot
-      v-if="!isLoading && objects.length === 0"
-      name="empty-state"
-    />
-    <button
+  <h3>
+    <slot />
+  </h3>
+  <slot
+    v-if="!isLoading && objects.length === 0"
+    name="empty-state"
+  />
+  <Layout grid>
+    <Button
       v-if="nextPage || previousPage"
       :disabled="!previousPage"
-      :class="['ui', {disabled: !previousPage}, 'circular', 'icon', 'basic', 'button']"
+      primary
+      round
+      align-self="center"
+      icon="bi-chevron-left"
       @click="fetchData(previousPage)"
-    >
-      <i :class="['ui', 'angle left', 'icon']" />
-    </button>
-    <button
-      v-if="nextPage || previousPage"
-      :disabled="!nextPage"
-      :class="['ui', {disabled: !nextPage}, 'circular', 'icon', 'basic', 'button']"
-      @click="fetchData(nextPage)"
-    >
-      <i :class="['ui', 'angle right', 'icon']" />
-    </button>
-    <div class="ui hidden divider" />
-    <div
-      v-if="isLoading"
-      class="ui inverted active dimmer"
-    >
-      <div class="ui loader" />
-    </div>
+    />
+    <Loader v-if="isLoading" />
     <edit-card
       v-for="obj in objects"
       :key="obj.uuid"
@@ -84,5 +74,14 @@ watchEffect(() => fetchData())
       @updated="fetchData(url)"
       @deleted="fetchData(url)"
     />
-  </div>
+    <Button
+      v-if="nextPage || previousPage"
+      :disabled="!nextPage"
+      align-self="center"
+      primary
+      round
+      icon="bi-chevron-right"
+      @click="fetchData(nextPage)"
+    />
+  </Layout>
 </template>

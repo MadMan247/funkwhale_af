@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ContentCategory, Channel, BackendError } from '~/types'
+import type { paths } from '~/generated/types'
 
 import { slugify } from 'transliteration'
 import { reactive, computed, ref, watchEffect, watch } from 'vue'
@@ -7,23 +8,27 @@ import { useI18n } from 'vue-i18n'
 
 import axios from 'axios'
 import AttachmentInput from '~/components/common/AttachmentInput.vue'
-import TagsSelector from '~/components/library/TagsSelector.vue'
 
-interface Events {
-  (e: 'category', contentCategory: ContentCategory): void
-  (e: 'submittable', value: boolean): void
-  (e: 'loading', value: boolean): void
-  (e: 'errored', errors: string[]): void
-  (e: 'created', channel: Channel): void
-  (e: 'updated', channel: Channel): void
-}
+import Layout from '~/components/ui/Layout.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Input from '~/components/ui/Input.vue'
+import Textarea from '~/components/ui/Textarea.vue'
+import Pills from '~/components/ui/Pills.vue'
+
 
 interface Props {
   object?: Channel | null
-  step: number
+  step?: number
 }
 
-const emit = defineEmits<Events>()
+const emit = defineEmits<{
+  category: [contentCategory: ContentCategory]
+  submittable: [value: boolean]
+  loading: [value: boolean]
+  errored: [errors: string[]]
+  created: [channel: Channel]
+  updated: [channel: Channel]
+}>()
 const props = withDefaults(defineProps<Props>(), {
   object: null,
   step: 1
@@ -38,9 +43,11 @@ const newValues = reactive({
   description: props.object?.artist?.description?.text ?? '',
   cover: props.object?.artist?.cover?.uuid ?? null,
   content_category: props.object?.artist?.content_category ?? 'podcast',
-  metadata: { ...(props.object?.metadata ?? {}) }
+  metadata: { ...(props.object?.metadata ?? {}) } as Channel['metadata']
 })
 
+// If props has an object, then this form edits, else it creates
+// TODO: rename to `process : 'creating' | 'editing'`
 const creating = computed(() => props.object === null)
 const categoryChoices = computed(() => [
   {
@@ -72,6 +79,8 @@ interface MetadataChoices {
 const metadataChoices = ref({ itunes_category: null } as MetadataChoices)
 const itunesSubcategories = computed(() => {
   for (const element of metadataChoices.value.itunes_category ?? []) {
+    // TODO: Backend: Define schema for `metadata` field
+    // @ts-expect-error No types defined by backend schema for `metadata` field
     if (element.value === newValues.metadata.itunes_category) {
       return element.children ?? []
     }
@@ -87,6 +96,7 @@ const labels = computed(() => ({
 
 const submittable = computed(() => !!(
   newValues.content_category === 'podcast'
+    // @ts-expect-error No types defined by backend schema for `metadata` field
     ? newValues.name && newValues.username && newValues.metadata.itunes_category && newValues.metadata.language
     : newValues.name && newValues.username
 ))
@@ -97,13 +107,16 @@ watch(() => newValues.name, (name) => {
   }
 })
 
+// @ts-expect-error No types defined by backend schema for `metadata` field
 watch(() => newValues.metadata.itunes_category, () => {
+  // @ts-expect-error No types defined by backend schema for `metadata` field
   newValues.metadata.itunes_subcategory = null
 })
 
 const isLoading = ref(false)
 const errors = ref([] as string[])
 
+// @ts-expect-error Re-check emits
 watchEffect(() => emit('category', newValues.content_category))
 watchEffect(() => emit('loading', isLoading.value))
 watchEffect(() => emit('submittable', submittable.value))
@@ -111,8 +124,9 @@ watchEffect(() => emit('submittable', submittable.value))
 // TODO (wvffle): Add loader / Use Suspense
 const fetchMetadataChoices = async () => {
   try {
-    const response = await axios.get('channels/metadata-choices')
-    metadataChoices.value = response.data
+    const response = await axios.get<paths['/api/v2/channels/metadata-choices/']['get']['responses']['200']['content']['application/json']>('channels/metadata-choices/')
+    // TODO: Fix schema generation so we don't need to typecast here!
+    metadataChoices.value = response.data as unknown as MetadataChoices
   } catch (error) {
     errors.value = (error as BackendError).backendErrors
   }
@@ -155,17 +169,17 @@ defineExpose({
 </script>
 
 <template>
-  <form
+  <Layout
+    form
     class="ui form"
     @submit.prevent.stop="submit"
   >
-    <div
+    <Alert
       v-if="errors.length > 0"
-      role="alert"
-      class="ui negative message"
+      red
     >
       <h4 class="header">
-        {{ $t('components.audio.ChannelForm.header.error') }}
+        {{ t('components.audio.ChannelForm.header.error') }}
       </h4>
       <ul class="list">
         <li
@@ -175,14 +189,14 @@ defineExpose({
           {{ error }}
         </li>
       </ul>
-    </div>
+    </Alert>
     <template v-if="metadataChoices">
       <fieldset
         v-if="creating && step === 1"
         class="ui grouped channel-type required field"
       >
         <legend>
-          {{ $t('components.audio.ChannelForm.legend.purpose') }}
+          {{ t('components.audio.ChannelForm.legend.purpose') }}
         </legend>
         <div class="ui hidden divider" />
         <div class="field">
@@ -199,7 +213,7 @@ defineExpose({
               :value="choice.value"
             >
             <label :for="`category-${choice.value}`">
-              <span :class="['right floated', 'placeholder', 'image', {circular: choice.value === 'music'}]" />
+              <span :class="['right floated', 'placeholder', 'image', 'shifted', {circular: choice.value === 'music'}]" />
               <strong>{{ choice.label }}</strong>
               <div class="ui small hidden divider" />
               {{ choice.helpText }}
@@ -207,38 +221,30 @@ defineExpose({
           </div>
         </div>
       </fieldset>
+
       <template v-if="!creating || step === 2">
         <div class="ui required field">
-          <label for="channel-name">
-            {{ $t('components.audio.ChannelForm.label.name') }}
-          </label>
-          <input
+          <Input
             v-model="newValues.name"
             type="text"
             required
             :placeholder="labels.namePlaceholder"
-          >
+            :label="t('components.audio.ChannelForm.label.name')"
+          />
         </div>
         <div class="ui required field">
-          <label for="channel-username">
-            {{ $t('components.audio.ChannelForm.label.username') }}
-          </label>
-          <div class="ui left labeled input">
-            <div class="ui basic label">
-              <span class="at symbol" />
-            </div>
-            <input
-              v-model="newValues.username"
-              type="text"
-              :required="creating"
-              :disabled="!creating"
-              :placeholder="labels.usernamePlaceholder"
-            >
-          </div>
+          <Input
+            v-model="newValues.username"
+            type="text"
+            :required="creating"
+            :disabled="!creating"
+            :placeholder="labels.usernamePlaceholder"
+            :label="t('components.audio.ChannelForm.label.username')"
+          />
           <template v-if="creating">
             <div class="ui small hidden divider" />
             <p>
-              {{ $t('components.audio.ChannelForm.help.username') }}
+              {{ t('components.audio.ChannelForm.help.username') }}
             </p>
           </template>
         </div>
@@ -248,64 +254,57 @@ defineExpose({
             :image-class="newValues.content_category === 'podcast' ? '' : 'circular'"
             @delete="newValues.cover = null"
           >
-            {{ $t('components.audio.ChannelForm.label.image') }}
+            {{ t('components.audio.ChannelForm.label.image') }}
           </attachment-input>
         </div>
-        <div class="ui small hidden divider" />
-        <div class="ui stackable grid row">
-          <div class="ten wide column">
-            <div class="ui field">
-              <label for="channel-tags">
-                {{ $t('components.audio.ChannelForm.label.tags') }}
-              </label>
-              <tags-selector
-                id="channel-tags"
-                v-model="newValues.tags"
-                :required="false"
-              />
-            </div>
-          </div>
-          <div
-            v-if="newValues.content_category === 'podcast'"
-            class="six wide column"
-          >
-            <div class="ui required field">
-              <label for="channel-language">
-                {{ $t('components.audio.ChannelForm.label.language') }}
-              </label>
-              <select
-                id="channel-language"
-                v-model="newValues.metadata.language"
-                name="channel-language"
-                required
-                class="ui search selection dropdown"
-              >
-                <option
-                  v-for="(v, key) in metadataChoices.language"
-                  :key="key"
-                  :value="v.value"
-                >
-                  {{ v.label }}
-                </option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="ui small hidden divider" />
-        <div class="ui field">
-          <label for="channel-name">
-            {{ $t('components.audio.ChannelForm.label.description') }}
-          </label>
-          <content-form v-model="newValues.description" />
-        </div>
+        <Pills
+          :get="model => { newValues.tags = model.currents.map(({ label }) => label) }"
+          :set="model => ({
+            currents: newValues.tags.map(tag => ({ type: 'custom' as const, label: tag })),
+            others: [].map(tag => ({ type: 'custom' as const, label: tag }))
+          })"
+          :label="t('components.audio.ChannelForm.label.tags')"
+        />
         <div
           v-if="newValues.content_category === 'podcast'"
-          class="ui two fields"
+        >
+          <label for="channel-language">
+            {{ t('components.audio.ChannelForm.label.language') }}
+          </label>
+
+          <!-- @vue-ignore -->
+          <select
+            id="channel-language"
+            v-model="newValues.metadata.language"
+            name="channel-language"
+            required
+            class="ui search selection dropdown"
+          >
+            <option
+              v-for="(v, key) in metadataChoices.language"
+              :key="key"
+              :value="v.value"
+            >
+              {{ v.label }}
+            </option>
+          </select>
+        </div>
+        <div class="ui field">
+          <Textarea
+            v-model="newValues.description"
+            :label="t('components.audio.ChannelForm.label.description')"
+            initial-lines="3"
+          />
+        </div>
+        <template
+          v-if="newValues.content_category === 'podcast'"
         >
           <div class="ui required field">
             <label for="channel-itunes-category">
-              {{ $t('components.audio.ChannelForm.label.category') }}
+              {{ t('components.audio.ChannelForm.label.category') }}
             </label>
+
+            <!-- @vue-ignore -->
             <select
               id="itunes-category"
               v-model="newValues.metadata.itunes_category"
@@ -324,8 +323,10 @@ defineExpose({
           </div>
           <div class="ui field">
             <label for="channel-itunes-category">
-              {{ $t('components.audio.ChannelForm.label.subcategory') }}
+              {{ t('components.audio.ChannelForm.label.subcategory') }}
             </label>
+
+            <!-- @vue-ignore -->
             <select
               id="itunes-category"
               v-model="newValues.metadata.itunes_subcategory"
@@ -342,37 +343,37 @@ defineExpose({
               </option>
             </select>
           </div>
-        </div>
-        <div
+        </template>
+        <template
           v-if="newValues.content_category === 'podcast'"
-          class="ui two fields"
         >
+          <Alert blue>
+            <span>
+              <i class="bi bi-info-circle-fill" />
+              {{ t('components.audio.ChannelForm.help.podcastFields') }}
+            </span>
+          </Alert>
           <div class="ui field">
-            <label for="channel-itunes-email">
-              {{ $t('components.audio.ChannelForm.label.email') }}
-            </label>
-            <input
+            <!-- @vue-ignore -->
+            <Input
               id="channel-itunes-email"
               v-model="newValues.metadata.owner_email"
               name="channel-itunes-email"
               type="email"
-            >
+              :label="t('components.audio.ChannelForm.label.email')"
+            />
           </div>
           <div class="ui field">
-            <label for="channel-itunes-name">
-              {{ $t('components.audio.ChannelForm.label.owner') }}
-            </label>
-            <input
+            <!-- @vue-ignore -->
+            <Input
               id="channel-itunes-name"
               v-model="newValues.metadata.owner_name"
               name="channel-itunes-name"
               maxlength="255"
-            >
+              :label="t('components.audio.ChannelForm.label.owner')"
+            />
           </div>
-        </div>
-        <p>
-          {{ $t('components.audio.ChannelForm.help.podcastFields') }}
-        </p>
+        </template>
       </template>
     </template>
     <div
@@ -380,8 +381,8 @@ defineExpose({
       class="ui active inverted dimmer"
     >
       <div class="ui text loader">
-        {{ $t('components.audio.ChannelForm.loader.loading') }}
+        {{ t('components.audio.ChannelForm.loader.loading') }}
       </div>
     </div>
-  </form>
+  </Layout>
 </template>

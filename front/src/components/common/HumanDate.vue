@@ -25,8 +25,15 @@ const realDate = useTimeAgo(date)
   >
     <i
       v-if="props.icon"
-      class="outline clock icon"
+      class="bi bi-clock"
     />
     {{ realDate }}
   </time>
 </template>
+
+<style scoped>
+  i {
+    margin-right: 8px;
+    font-size: 14px;
+  }
+</style>

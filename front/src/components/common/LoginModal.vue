@@ -2,9 +2,13 @@
 import type { RouteLocationRaw } from 'vue-router'
 import type { Cover } from '~/types'
 
-import SemanticModal from '~/components/semantic/Modal.vue'
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useStore } from '~/store'
+
+import Modal from '~/components/ui/Modal.vue'
+import Link from '~/components/ui/Link.vue'
+import Spacer from '~/components/ui/Spacer.vue'
 
 interface Props {
   nextRoute: RouteLocationRaw
@@ -13,6 +17,8 @@ interface Props {
 }
 
 defineProps<Props>()
+
+const store = useStore()
 
 const show = ref(false)
 
@@ -26,10 +32,10 @@ const labels = computed(() => ({
 </script>
 
 <template>
-  <semantic-modal v-model:show="show">
-    <h4 class="header">
-      {{ labels.header }}
-    </h4>
+  <Modal
+    v-model="show"
+    :title="labels.header"
+  >
     <div
       v-if="cover"
       class="image content"
@@ -57,22 +63,21 @@ const labels = computed(() => ({
         {{ message }}
       </p>
     </div>
-    <div class="actions">
-      <router-link
+    <template #actions>
+      <Spacer grow />
+      <Link
         :to="{path: '/login', query: { next: nextRoute as string }}"
-        class="ui labeled icon button"
+        icon="bi-key-fill"
       >
-        <i class="key icon" />
         {{ labels.login }}
-      </router-link>
-      <router-link
-        v-if="$store.state.instance.settings.users.registration_enabled.value"
+      </Link>
+      <Link
+        v-if="store.state.instance.settings.users.registration_enabled.value"
         :to="{path: '/signup'}"
-        class="ui labeled icon button"
+        icon="bi-person-fill"
       >
-        <i class="user icon" />
         {{ labels.signup }}
-      </router-link>
-    </div>
-  </semantic-modal>
+      </Link>
+    </template>
+  </Modal>
 </template>

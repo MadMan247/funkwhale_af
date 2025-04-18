@@ -8,6 +8,12 @@ import { useStore } from '~/store'
 
 import axios from 'axios'
 
+import Layout from '~/components/ui/Layout.vue'
+import Button from '~/components/ui/Button.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Input from '~/components/ui/Input.vue'
+
 interface Invitation {
   code: string
 }
@@ -47,17 +53,17 @@ const getUrl = (code: string) => store.getters['instance/absoluteUrl'](router.re
 
 <template>
   <div>
-    <form
+    <Layout
+      form
       class="ui form"
       @submit.prevent="submit"
     >
-      <div
+      <Alert
         v-if="errors.length > 0"
-        role="alert"
-        class="ui negative message"
+        red
       >
         <h4 class="header">
-          {{ $t('components.manage.users.InvitationForm.header.failure') }}
+          {{ t('components.manage.users.InvitationForm.header.failure') }}
         </h4>
         <ul class="list">
           <li
@@ -67,39 +73,39 @@ const getUrl = (code: string) => store.getters['instance/absoluteUrl'](router.re
             {{ error }}
           </li>
         </ul>
-      </div>
+      </Alert>
       <div class="inline fields">
-        <div class="ui field">
-          <label for="invitation-code">{{ $t('components.manage.users.InvitationForm.label.invite') }}</label>
-          <input
-            v-model="code"
-            for="invitation-code"
-            name="code"
-            type="text"
-            :placeholder="labels.placeholder"
-          >
-        </div>
-        <div class="ui field">
-          <button
-            :class="['ui', {loading: isLoading}, 'button']"
-            :disabled="isLoading"
-            type="submit"
-          >
-            {{ $t('components.manage.users.InvitationForm.button.new') }}
-          </button>
-        </div>
+        <Input
+          v-model="code"
+          for="invitation-code"
+          name="code"
+          type="text"
+          :label="t('components.manage.users.InvitationForm.label.invite')"
+          :placeholder="labels.placeholder"
+        >
+          <template #input-right>
+            <Button
+              primary
+              :class="[{loading: isLoading}]"
+              :disabled="isLoading"
+              type="submit"
+            >
+              {{ t('components.manage.users.InvitationForm.button.new') }}
+            </Button>
+          </template>
+        </Input>
       </div>
-    </form>
+    </Layout>
+    <Spacer :size="16" />
     <div v-if="invitations.length > 0">
-      <div class="ui hidden divider" />
       <table class="ui ui basic table">
         <thead>
           <tr>
             <th>
-              {{ $t('components.manage.users.InvitationForm.table.invitation.header.code') }}
+              {{ t('components.manage.users.InvitationForm.table.invitation.header.code') }}
             </th>
             <th>
-              {{ $t('components.manage.users.InvitationForm.table.invitation.header.link') }}
+              {{ t('components.manage.users.InvitationForm.table.invitation.header.link') }}
             </th>
           </tr>
         </thead>
@@ -118,12 +124,14 @@ const getUrl = (code: string) => store.getters['instance/absoluteUrl'](router.re
           </tr>
         </tbody>
       </table>
-      <button
-        class="ui basic button"
+      <Spacer :size="8" />
+      <Button
+        destructive
+        icon="bi-trash"
         @click="invitations.length = 0"
       >
-        {{ $t('components.manage.users.InvitationForm.button.clear') }}
-      </button>
+        {{ t('components.manage.users.InvitationForm.button.clear') }}
+      </Button>
     </div>
   </div>
 </template>

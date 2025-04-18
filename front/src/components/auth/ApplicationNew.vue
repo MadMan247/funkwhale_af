@@ -53,12 +53,12 @@ const created = (application: Application) => {
 <template>
   <main
     v-title="labels.title"
-    class="main pusher"
+    class="main"
   >
     <div class="ui vertical stripe segment">
       <section class="ui text container">
         <router-link :to="{name: 'settings'}">
-          {{ $t('components.auth.ApplicationNew.link.settings') }}
+          {{ t('components.auth.ApplicationNew.link.settings') }}
         </router-link>
         <h2 class="ui header">
           {{ labels.title }}

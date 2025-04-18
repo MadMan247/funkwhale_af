@@ -4,12 +4,21 @@ import type { ContentFilter } from '~/store/moderation'
 
 import { ref, computed, reactive } from 'vue'
 import { useStore } from '~/store'
+import { useI18n } from 'vue-i18n'
 
 import axios from 'axios'
 
 import LibraryWidget from '~/components/federation/LibraryWidget.vue'
 import TrackTable from '~/components/audio/track/Table.vue'
-import AlbumCard from '~/components/audio/album/Card.vue'
+import TagsList from '~/components/tags/List.vue'
+import AlbumCard from '~/components/album/Card.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Heading from '~/components/ui/Heading.vue'
+import Loader from '~/components/ui/Loader.vue'
+import Link from '~/components/ui/Link.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Button from '~/components/ui/Button.vue'
+import Alert from '~/components/ui/Alert.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 
@@ -25,6 +34,8 @@ interface Props {
   nextTracksUrl?: string | null
   nextAlbumsUrl?: string | null
 }
+
+const { t } = useI18n()
 
 const emit = defineEmits<Events>()
 const props = withDefaults(defineProps<Props>(), {
@@ -57,87 +68,82 @@ const loadMoreAlbums = async () => {
 </script>
 
 <template>
-  <div v-if="object">
-    <div
+  <Layout
+    v-if="object"
+    stack
+  >
+    <TagsList
+      v-if="object.tags && object.tags.length > 0"
+      style="margin-top: -16px;"
+      :tags="object.tags"
+    />
+    <Alert
       v-if="contentFilter"
-      class="ui small text container"
+      blue
     >
-      <div class="ui hidden divider" />
-      <div class="ui message">
-        <p>
-          {{ $t('components.library.ArtistDetail.message.filter') }}
-        </p>
-        <router-link
-          class="right floated"
-          :to="{name: 'settings'}"
-        >
-          {{ $t('components.library.ArtistDetail.link.filter') }}
-        </router-link>
-        <button
-          class="ui basic tiny button"
-          @click="$store.dispatch('moderation/deleteContentFilter', contentFilter.uuid)"
-        >
-          {{ $t('components.library.ArtistDetail.button.filter') }}
-        </button>
-      </div>
-    </div>
-    <section
-      v-if="isLoadingAlbums"
-      class="ui vertical stripe segment"
-    >
-      <div :class="['ui', 'centered', 'active', 'inline', 'loader']" />
-    </section>
-    <section
-      v-else-if="albums && albums.length > 0"
-      class="ui vertical stripe segment"
-    >
-      <h2>
-        {{ $t('components.library.ArtistDetail.header.album') }}
-      </h2>
-      <div class="ui cards app-cards">
+      <p>
+        {{ t('components.library.ArtistDetail.message.filter') }}
+      </p>
+      <Link
+        class="right floated"
+        :to="{name: 'settings'}"
+      >
+        {{ t('components.library.ArtistDetail.link.filter') }}
+      </Link>
+      <Button
+        class="tiny"
+        @click="store.dispatch('moderation/deleteContentFilter', contentFilter.uuid)"
+      >
+        {{ t('components.library.ArtistDetail.button.filter') }}
+      </Button>
+    </Alert>
+    <Loader v-if="isLoadingAlbums" />
+    <template v-else-if="albums && albums.length > 0">
+      <Heading
+        :h2="t('components.library.ArtistDetail.header.album')"
+        section-heading
+      />
+      <Layout flex>
         <album-card
           v-for="album in allAlbums"
           :key="album.id"
           :album="album"
         />
-      </div>
-      <div class="ui hidden divider" />
-      <button
-        v-if="loadMoreAlbumsUrl !== null"
-        :class="['ui', {loading: isLoadingMoreAlbums}, 'button']"
-        @click="loadMoreAlbums()"
-      >
-        {{ $t('components.library.ArtistDetail.button.more') }}
-      </button>
-    </section>
-    <section
-      v-if="tracks.length > 0"
-      class="ui vertical stripe segment"
-    >
-      <track-table
+        <Spacer
+          h
+          grow
+        />
+        <Button
+          v-if="loadMoreAlbumsUrl !== null"
+          primary
+          :is-loading="isLoadingMoreAlbums"
+          @click="loadMoreAlbums()"
+        >
+          {{ t('components.library.ArtistDetail.button.more') }}
+        </Button>
+      </Layout>
+    </template>
+    <template v-if="tracks.length > 0">
+      <Heading
+        :h2="t('components.library.ArtistDetail.header.track')"
+        section-heading
+      />
+      <TrackTable
         :is-artist="true"
         :show-position="false"
         :track-only="true"
         :tracks="tracks.slice(0,5)"
-      >
-        <template #header>
-          <h2>
-            {{ $t('components.library.ArtistDetail.header.track') }}
-          </h2>
-          <div class="ui hidden divider" />
-        </template>
-      </track-table>
-    </section>
-    <section class="ui vertical stripe segment">
-      <h2>
-        {{ $t('components.library.ArtistDetail.header.library') }}
-      </h2>
-      <library-widget
-        :url="'artists/' + object.id + '/libraries/'"
-        @loaded="emit('libraries-loaded', $event)"
-      >
-        {{ $t('components.library.ArtistDetail.description.library') }}
-      </library-widget>
-    </section>
-  </div>
+      />
+    </template>
+    <Heading
+      :h2="t('components.library.ArtistDetail.header.library')"
+      section-heading
+    />
+    <LibraryWidget
+      :url="'artists/' + object.id + '/libraries/'"
+      @loaded="emit('libraries-loaded', $event)"
+    >
+      {{ t('components.library.ArtistDetail.description.library') }}
+    </LibraryWidget>
+  </Layout>
 </template>

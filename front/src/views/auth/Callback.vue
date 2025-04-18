@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useStore } from '~/store'
+import { useI18n } from 'vue-i18n'
 import { onMounted } from 'vue'
 
 interface Props {
@@ -12,6 +13,7 @@ const props = defineProps<Props>()
 
 const router = useRouter()
 const store = useStore()
+const { t } = useI18n()
 
 onMounted(async () => {
   await store.dispatch('auth/handleOauthCallback', props.code)
@@ -20,14 +22,14 @@ onMounted(async () => {
 </script>
 
 <template>
-  <main class="main pusher">
+  <main class="main">
     <section class="ui vertical stripe segment">
       <div class="ui small text container">
         <div class="ui hidden divider" />
         <div class="ui active inverted dimmer">
           <div class="ui text loader">
             <h2>
-              {{ $t('views.auth.Callback.header.loggingIn') }}
+              {{ t('views.auth.Callback.header.loggingIn') }}
             </h2>
           </div>
         </div>

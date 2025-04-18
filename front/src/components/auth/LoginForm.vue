@@ -2,12 +2,16 @@
 import type { BackendError } from '~/types'
 import { onBeforeRouteLeave, type RouteLocationRaw, useRouter } from 'vue-router'
 
-import { ref, reactive, computed, onMounted, nextTick } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { useEventListener } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { useStore } from '~/store'
 
-import PasswordInput from '~/components/forms/PasswordInput.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Input from '~/components/ui/Input.vue'
+import Button from '~/components/ui/Button.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Layout from '~/components/ui/Layout.vue'
 
 interface Props {
   next?: RouteLocationRaw
@@ -44,12 +48,6 @@ const labels = computed(() => ({
   usernamePlaceholder: t('components.auth.LoginForm.placeholder.username')
 }))
 
-const username = ref()
-onMounted(async () => {
-  await nextTick()
-  username.value?.focus()
-})
-
 const isLoading = ref(false)
 const errors = ref([] as string[])
 const submit = async () => {
@@ -77,82 +75,97 @@ const submit = async () => {
 </script>
 
 <template>
-  <form
-    class="ui form"
+  <Layout
+    form
+    stack
+    style="max-width: 600px"
     @submit.prevent="submit()"
   >
-    <div
+    <Alert
       v-if="errors.length > 0"
-      role="alert"
-      class="ui negative message"
+      red
     >
       <h4 class="header">
-        {{ $t('components.auth.LoginForm.header.loginFailure') }}
+        {{ t('components.auth.LoginForm.header.loginFailure') }}
       </h4>
-      <ul class="list">
-        <li
-          v-if="errors[0] == 'invalid_credentials' && $store.state.instance.settings.moderation.signup_approval_enabled.value"
+      <component
+        :is="errors.length>1 ? 'ul' : 'div'"
+        class="list"
+      >
+        <component
+          :is="errors.length>1 ? 'li' : 'div'"
+          v-if="errors[0] == 'invalid_credentials' && store.state.instance.settings.moderation.signup_approval_enabled.value"
         >
-          {{ $t('components.auth.LoginForm.help.approvalRequired') }}
-        </li>
-        <li v-else-if="errors[0] == 'invalid_credentials'">
-          {{ $t('components.auth.LoginForm.help.invalidCredentials') }}
-        </li>
-        <li v-else>
+          {{ t('components.auth.LoginForm.help.approvalRequired') }}
+        </component>
+        <component
+          :is="errors.length>1 ? 'li' : 'div'"
+          v-else-if="errors[0] == 'invalid_credentials'"
+        >
+          {{ t('components.auth.LoginForm.help.invalidCredentials') }}
+        </component>
+        <component
+          :is="errors.length>1 ? 'li' : 'div'"
+          v-else
+        >
           {{ errors[0] }}
-        </li>
-      </ul>
-    </div>
-    <template v-if="domain === $store.getters['instance/domain']">
-      <div class="field">
-        <label for="username-field">
-          {{ $t('components.auth.LoginForm.label.username') }}
+        </component>
+      </component>
+    </Alert>
+    <Spacer />
+    <template v-if="domain === store.getters['instance/domain']">
+      <Input
+        id="username-field"
+        ref="username"
+        v-model="credentials.username"
+        autocomplete="username"
+        required
+        name="username"
+        type="text"
+        autofocus
+        :placeholder="labels.usernamePlaceholder"
+      >
+        <template #label>
+          {{ t('components.auth.LoginForm.label.username') }}
           <template v-if="showSignup">
             <span class="middle pipe symbol" />
             <router-link :to="{ path: '/signup' }">
-              {{ $t('components.auth.LoginForm.link.createAccount') }}
+              {{ t('components.auth.LoginForm.link.createAccount') }}
             </router-link>
           </template>
-        </label>
-        <input
-          id="username-field"
-          ref="username"
-          v-model="credentials.username"
-          required
-          name="username"
-          type="text"
-          autofocus
-          :placeholder="labels.usernamePlaceholder"
-        >
-      </div>
-      <div class="field">
-        <label for="password-field">
-          {{ $t('components.auth.LoginForm.label.password') }}
+        </template>
+      </Input>
+      <Input
+        v-model="credentials.password"
+        password
+        name="password-field"
+        autocomplete="current-password"
+        field-id="password-field"
+        required
+      >
+        <template #label>
+          {{ t('components.auth.LoginForm.label.password') }}
           <span class="middle pipe symbol" />
           <router-link
             tabindex="1"
             :to="{ name: 'auth.password-reset', query: { email: credentials.username } }"
           >
-            {{ $t('components.auth.LoginForm.link.resetPassword') }}
+            {{ t('components.auth.LoginForm.link.resetPassword') }}
           </router-link>
-        </label>
-        <password-input
-          v-model="credentials.password"
-          field-id="password-field"
-          required
-        />
-      </div>
+        </template>
+      </Input>
     </template>
     <template v-else>
       <p>
-        {{ $t('components.auth.LoginForm.message.redirect', { domain: $store.getters['instance/domain'] }) }}
+        {{ t('components.auth.LoginForm.message.redirect', { domain: store.getters['instance/domain'] }) }}
       </p>
     </template>
-    <button
-      :class="['ui', { 'loading': isLoading }, 'right', 'floated', buttonClasses, 'button']"
+    <Button
+      solid
+      primary
       type="submit"
     >
-      {{ $t('components.auth.LoginForm.button.login') }}
-    </button>
-  </form>
+      {{ t('components.auth.LoginForm.button.login') }}
+    </Button>
+  </Layout>
 </template>

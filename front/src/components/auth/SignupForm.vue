@@ -9,7 +9,12 @@ import { useStore } from '~/store'
 import axios from 'axios'
 
 import LoginForm from '~/components/auth/LoginForm.vue'
-import PasswordInput from '~/components/forms/PasswordInput.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Input from '~/components/ui/Input.vue'
+import Textarea from '~/components/ui/Textarea.vue'
+import Button from '~/components/ui/Button.vue'
+import Layout from '~/components/ui/Layout.vue'
+
 import useLogger from '~/composables/useLogger'
 
 interface Props {
@@ -86,54 +91,59 @@ fetchInstanceSettings()
 
 <template>
   <div v-if="submitted">
-    <div class="ui success message">
-      <p v-if="signupRequiresApproval">
-        {{ $t('components.auth.SignupForm.message.awaitingReview') }}
-      </p>
-      <p v-else>
-        {{ $t('components.auth.SignupForm.message.accountCreated') }}
-      </p>
-    </div>
+    <Alert
+      v-if="signupRequiresApproval"
+      yellow
+    >
+      {{ t('components.auth.SignupForm.message.awaitingReview') }}
+    </Alert>
+    <Alert
+      v-else
+      green
+    >
+      {{ t('components.auth.SignupForm.message.accountCreated') }}
+    </Alert>
     <h2>
-      {{ $t('components.auth.SignupForm.header.login') }}
+      {{ t('components.auth.SignupForm.header.login') }}
     </h2>
     <login-form
+      style="max-width: 600px"
       button-classes="basic success"
       :show-signup="false"
     />
   </div>
-  <form
+  <Layout
     v-else
-    :class="['ui', {'loading': isLoadingInstanceSetting}, 'form']"
+    form
+    stack
+    style="max-width: 600px"
     @submit.prevent="submit()"
   >
-    <p
-      v-if="!$store.state.instance.settings.users.registration_enabled.value"
-      class="ui message"
+    <Alert
+      v-if="!store.state.instance.settings.users.registration_enabled.value"
+      red
     >
-      {{ $t('components.auth.SignupForm.message.registrationClosed') }}
-    </p>
-    <p
+      {{ t('components.auth.SignupForm.message.registrationClosed') }}
+    </Alert>
+    <Alert
       v-else-if="signupRequiresApproval"
-      class="ui message"
+      yellow
     >
-      {{ $t('components.auth.SignupForm.message.requiresReview') }}
-    </p>
+      {{ t('components.auth.SignupForm.message.requiresReview') }}
+    </Alert>
     <template v-if="formCustomization?.help_text">
       <rendered-description
         :content="formCustomization.help_text"
         :fetch-html="fetchDescriptionHtml"
         :permissive="true"
       />
-      <div class="ui hidden divider" />
     </template>
-    <div
+    <Alert
       v-if="errors.length > 0"
-      role="alert"
-      class="ui negative message"
+      red
     >
       <h4 class="header">
-        {{ $t('components.auth.SignupForm.header.signupFailure') }}
+        {{ t('components.auth.SignupForm.header.signupFailure') }}
       </h4>
       <ul class="list">
         <li
@@ -143,81 +153,79 @@ fetchInstanceSettings()
           {{ error }}
         </li>
       </ul>
-    </div>
-    <div class="required field">
-      <label for="username-field">{{ $t('components.auth.SignupForm.label.username') }}</label>
-      <input
-        id="username-field"
-        ref="username"
-        v-model="payload.username"
-        name="username"
-        required
+    </Alert>
+    <Input
+      id="username-field"
+      ref="username"
+      v-model="payload.username"
+      :label="t('components.auth.SignupForm.label.username')"
+      name="username"
+      required
+      type="text"
+      autofocus
+      :placeholder="labels.usernamePlaceholder"
+    />
+    <Input
+      id="email-field"
+      ref="email"
+      v-model="payload.email"
+      :label="t('components.auth.SignupForm.label.email')"
+      autocomplete="email"
+      name="email"
+      required
+      type="email"
+      :placeholder="labels.emailPlaceholder"
+    />
+    <Input
+      v-model="payload.password1"
+      password
+      autocomplete="new-password"
+      :label="t('components.auth.SignupForm.label.password')"
+      field-id="password-field"
+    />
+    <Input
+      v-if="!store.state.instance.settings.users.registration_enabled.value && payload.invitation"
+      id="invitation-code"
+      v-model="payload.invitation"
+      :label="t('components.auth.SignupForm.label.invitation')"
+      required
+      type="text"
+      name="invitation"
+      :placeholder="labels.placeholder"
+    />
+    <div
+      v-for="(field, idx) in
+      ( signupRequiresApproval && formCustomization && (formCustomization.fields.length ?? 0) > 0
+        ? formCustomization.fields
+        : []
+      )"
+      :key="idx"
+      :class="[{required: field.required}, 'field']"
+    >
+      <!-- TODO: as string is probably leading to issues with editform. -->
+      <Textarea
+        v-if="field.input_type === 'long_text'"
+        :id="`custom-field-${idx}`"
+        v-model="payload.request_fields[field.label] as string"
+        :label="field.label"
+        :required="field.required || undefined"
+        rows="5"
+      />
+      <Input
+        v-else
+        :id="`custom-field-${idx}`"
+        v-model="payload.request_fields[field.label] as string"
+        :label="field.label"
         type="text"
-        autofocus
-        :placeholder="labels.usernamePlaceholder"
-      >
-    </div>
-    <div class="required field">
-      <label for="email-field">{{ $t('components.auth.SignupForm.label.email') }}</label>
-      <input
-        id="email-field"
-        ref="email"
-        v-model="payload.email"
-        name="email"
-        required
-        type="email"
-        :placeholder="labels.emailPlaceholder"
-      >
-    </div>
-    <div class="required field">
-      <label for="password-field">{{ $t('components.auth.SignupForm.label.password') }}</label>
-      <password-input
-        v-model="payload.password1"
-        field-id="password-field"
+        :required="field.required"
       />
     </div>
-    <div
-      v-if="!$store.state.instance.settings.users.registration_enabled.value"
-      class="required field"
-    >
-      <label for="invitation-code">{{ $t('components.auth.SignupForm.label.invitation') }}</label>
-      <input
-        id="invitation-code"
-        v-model="payload.invitation"
-        required
-        type="text"
-        name="invitation"
-        :placeholder="labels.placeholder"
-      >
-    </div>
-    <template v-if="signupRequiresApproval && (formCustomization?.fields.length ?? 0) > 0">
-      <div
-        v-for="(field, idx) in formCustomization?.fields"
-        :key="idx"
-        :class="[{required: field.required}, 'field']"
-      >
-        <label :for="`custom-field-${idx}`">{{ field.label }}</label>
-        <textarea
-          v-if="field.input_type === 'long_text'"
-          :id="`custom-field-${idx}`"
-          v-model="payload.request_fields[field.label]"
-          :required="field.required"
-          rows="5"
-        />
-        <input
-          v-else
-          :id="`custom-field-${idx}`"
-          v-model="payload.request_fields[field.label]"
-          type="text"
-          :required="field.required"
-        >
-      </div>
-    </template>
-    <button
-      :class="['ui', buttonClasses, {'loading': isLoading}, ' right floated button']"
+    <Button
+      primary
+      auto
       type="submit"
     >
-      {{ $t('components.auth.SignupForm.button.create') }}
-    </button>
-  </form>
+      {{ t('components.auth.SignupForm.button.create') }}
+    </Button>
+  </Layout>
 </template>

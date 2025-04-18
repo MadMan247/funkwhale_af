@@ -10,6 +10,10 @@ import LibraryCard from './Card.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 const existingFollows = ref()
 const isLoading = ref(false)
 const fetchData = async () => {
@@ -33,8 +37,9 @@ fetchData()
 
 const getLibraryFromFollow = (follow: LibraryFollow) => {
   const { target } = follow
-  target.follow = follow
-  return target as Library
+  // TODO: Actually load the target from the database or the cache. Use `client` with cache.
+  // @ts-expect-error target is a string, not a library!
+  return ({ ...target, follow: follow } as Library)
 }
 
 const scanResult = ref()
@@ -47,7 +52,7 @@ const scanResult = ref()
       :class="['ui', {'active': isLoading}, 'inverted', 'dimmer']"
     >
       <div class="ui text loader">
-        {{ $t('views.content.remote.Home.loading.remoteLibraries') }}
+        {{ t('views.content.remote.Home.loading.remoteLibraries') }}
       </div>
     </div>
     <div
@@ -55,10 +60,10 @@ const scanResult = ref()
       class="ui text container"
     >
       <h1 class="ui header">
-        {{ $t('views.content.remote.Home.header.remoteLibraries') }}
+        {{ t('views.content.remote.Home.header.remoteLibraries') }}
       </h1>
       <p>
-        {{ $t('views.content.remote.Home.description.remoteLibraries') }}
+        {{ t('views.content.remote.Home.description.remoteLibraries') }}
       </p>
       <scan-form @scanned="scanResult = $event" />
       <div class="ui hidden divider" />
@@ -74,7 +79,7 @@ const scanResult = ref()
       </div>
       <template v-if="existingFollows && existingFollows.count > 0">
         <h2>
-          {{ $t('views.content.remote.Home.header.knownLibraries') }}
+          {{ t('views.content.remote.Home.header.knownLibraries') }}
         </h2>
         <a
           href=""
@@ -82,7 +87,7 @@ const scanResult = ref()
           @click.prevent="fetchData"
         >
           <i :class="['ui', 'circular', 'refresh', 'icon']" />
-          {{ $t('views.content.remote.Home.button.refresh') }}
+          {{ t('views.content.remote.Home.button.refresh') }}
         </a>
         <div class="ui hidden divider" />
         <div class="ui two cards">

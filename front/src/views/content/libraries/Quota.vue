@@ -8,6 +8,16 @@ import { computed, ref } from 'vue'
 import useErrorHandler from '~/composables/useErrorHandler'
 
 import axios from 'axios'
+import { useI18n } from 'vue-i18n'
+
+import DangerousButton from '~/components/common/DangerousButton.vue'
+
+import Alert from '~/components/ui/Alert.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Link from '~/components/ui/Link.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+
+const { t } = useI18n()
 
 const quotaStatus = ref()
 const progress = computed(() => !quotaStatus.value
@@ -51,169 +61,235 @@ const purgeErroredFiles = () => purge('errored')
 </script>
 
 <template>
-  <div class="ui segment">
-    <h3 class="ui header">
-      {{ $t('views.content.libraries.Quota.header.currentUsage') }}
-    </h3>
-    <div
-      v-if="isLoading"
-      :class="['ui', {'active': isLoading}, 'inverted', 'dimmer']"
-    >
-      <div class="ui text loader">
-        {{ $t('views.content.libraries.Quota.loading.currentUsage') }}
-      </div>
-    </div>
-    <div
-      :class="['ui', {'success': progress < 60}, {'warning': progress >= 60 && progress < 96}, {'error': progress >= 95}, 'progress']"
-      data-percent="progress"
-    >
+  <Loader v-if="isLoading" />
+  <Alert
+    data-percent="progress"
+    :green="progress < 60"
+    :yellow="progress >= 60 && progress < 96"
+    :red="progress >= 95"
+    style="width: 100%;"
+  >
+    <h3>{{ t('views.content.libraries.Quota.header.currentUsage') }}</h3>
+    <div :class="['ui', {'success': progress < 60}, {'warning': progress >= 60 && progress < 96}, {'error': progress >= 95}, 'progress']">
       <div
         class="bar"
         :style="{width: `${progress}%`}"
       >
         <div class="progress">
-          {{ $t('views.content.libraries.Quota.label.percentUsed', {progress: progress}) }}
+          {{ t('views.content.libraries.Quota.label.percentUsed', {progress: humanSize(progress)}) }}
         </div>
       </div>
       <div
         v-if="quotaStatus"
         class="label"
       >
-        {{ $t('views.content.libraries.Quota.label.currentUsage', {max: humanSize(quotaStatus.max * 1000 * 1000), current: humanSize(quotaStatus.current * 1000 * 1000)}) }}
+        {{ t('views.content.libraries.Quota.label.currentUsage', {max: humanSize(quotaStatus.max * 1000 * 1000), currentAmount: humanSize(quotaStatus.current * 1000 * 1000)}) }}
       </div>
     </div>
-    <div class="ui hidden divider" />
-    <div
-      v-if="quotaStatus"
-      class="ui stackable three column grid"
+  </Alert>
+  <Layout
+    v-if="quotaStatus"
+    flex
+  >
+    <Alert
+      v-if="quotaStatus.pending > 0"
+      yellow
     >
-      <div
-        v-if="quotaStatus.pending > 0"
-        class="column"
-      >
-        <div class="ui tiny warning statistic">
-          <div class="value">
-            {{ humanSize(quotaStatus.pending * 1000 * 1000) }}
-          </div>
-          <div class="label">
-            {{ $t('views.content.libraries.Quota.label.pending') }}
-          </div>
+      <div class="statistic">
+        <div class="value">
+          {{ humanSize(quotaStatus.pending * 1000 * 1000) }}
         </div>
-        <div>
-          <router-link
-            class="ui basic primary tiny button"
-            :to="{name: 'content.libraries.files', query: {q: compileTokens([{field: 'status', value: 'pending'}])}}"
-          >
-            {{ $t('views.content.libraries.Quota.link.viewFiles') }}
-          </router-link>
+        <div class="label">
+          {{ t('views.content.libraries.Quota.label.pending') }}
+        </div>
+      </div>
+      <Spacer />
+      <Layout flex>
+        <Link
+          primary
+          solid
+          low-height
+          :to="{name: 'content.libraries.files', query: {q: compileTokens([{field: 'status', value: 'pending'}])}}"
+        >
+          {{ t('views.content.libraries.Quota.link.viewFiles') }}
+        </Link>
 
-          <dangerous-button
-            class="ui basic tiny button"
-            :action="purgePendingFiles"
-          >
-            {{ $t('views.content.libraries.Quota.button.purge') }}
-            <template #modal-header>
-              <p>
-                {{ $t('views.content.libraries.Quota.modal.purgePending.header') }}
-              </p>
-            </template>
-            <template #modal-content>
-              <p>
-                {{ $t('views.content.libraries.Quota.modal.purgePending.content.description') }}
-              </p>
-            </template>
-            <template #modal-confirm>
-              <div>
-                {{ $t('views.content.libraries.Quota.button.purge') }}
-              </div>
-            </template>
-          </dangerous-button>
+        <dangerous-button
+          low-height
+          :action="purgePendingFiles"
+          :title="t('views.content.libraries.Quota.modal.purgePending.header')"
+        >
+          {{ t('views.content.libraries.Quota.button.purge') }}
+          <template #modal-content>
+            {{ t('views.content.libraries.Quota.modal.purgePending.content.description') }}
+          </template>
+          <template #modal-confirm>
+            {{ t('views.content.libraries.Quota.button.purge') }}
+          </template>
+        </dangerous-button>
+      </Layout>
+    </Alert>
+    <Alert
+      v-if="quotaStatus.skipped > 0"
+      yellow
+    >
+      <div class="ui tiny statistic">
+        <div class="value">
+          {{ humanSize(quotaStatus.skipped * 1000 * 1000) }}
+        </div>
+        <div class="label">
+          {{ t('views.content.libraries.Quota.label.skipped') }}
         </div>
       </div>
-      <div
-        v-if="quotaStatus.skipped > 0"
-        class="column"
-      >
-        <div class="ui tiny statistic">
-          <div class="value">
-            {{ humanSize(quotaStatus.skipped * 1000 * 1000) }}
-          </div>
-          <div class="label">
-            {{ $t('views.content.libraries.Quota.label.skipped') }}
-          </div>
+      <Spacer />
+      <Layout flex>
+        <Link
+          primary
+          solid
+          low-height
+          :to="{name: 'content.libraries.files', query: {q: compileTokens([{field: 'status', value: 'skipped'}])}}"
+        >
+          {{ t('views.content.libraries.Quota.link.viewFiles') }}
+        </Link>
+        <dangerous-button
+          low-height
+          :action="purgeSkippedFiles"
+          :title="t('views.content.libraries.Quota.modal.purgeSkipped.header')"
+        >
+          {{ t('views.content.libraries.Quota.button.purge') }}
+          <template #modal-content>
+            {{ t('views.content.libraries.Quota.modal.purgeSkipped.content.description') }}
+          </template>
+          <template #modal-confirm>
+            {{ t('views.content.libraries.Quota.button.purge') }}
+          </template>
+        </dangerous-button>
+      </Layout>
+    </Alert>
+    <Alert
+      v-if="quotaStatus.errored > 0"
+      red
+    >
+      <div class="ui tiny danger statistic">
+        <div class="value">
+          {{ humanSize(quotaStatus.errored * 1000 * 1000) }}
         </div>
-        <div>
-          <router-link
-            class="ui basic primary tiny button"
-            :to="{name: 'content.libraries.files', query: {q: compileTokens([{field: 'status', value: 'skipped'}])}}"
-          >
-            {{ $t('views.content.libraries.Quota.link.viewFiles') }}
-          </router-link>
-          <dangerous-button
-            class="ui basic tiny button"
-            :action="purgeSkippedFiles"
-          >
-            {{ $t('views.content.libraries.Quota.button.purge') }}
-            <template #modal-header>
-              <p>
-                {{ $t('views.content.libraries.Quota.modal.purgeSkipped.header') }}
-              </p>
-            </template>
-            <template #modal-content>
-              <p>
-                {{ $t('views.content.libraries.Quota.modal.purgeSkipped.content.description') }}
-              </p>
-            </template>
-            <template #modal-confirm>
-              <div>
-                {{ $t('views.content.libraries.Quota.button.purge') }}
-              </div>
-            </template>
-          </dangerous-button>
+        <div class="label">
+          {{ t('views.content.libraries.Quota.label.errored') }}
         </div>
       </div>
-      <div
-        v-if="quotaStatus.errored > 0"
-        class="column"
-      >
-        <div class="ui tiny danger statistic">
-          <div class="value">
-            {{ humanSize(quotaStatus.errored * 1000 * 1000) }}
-          </div>
-          <div class="label">
-            {{ $t('views.content.libraries.Quota.label.errored') }}
-          </div>
-        </div>
-        <div>
-          <router-link
-            class="ui basic primary tiny button"
-            :to="{name: 'content.libraries.files', query: {q: compileTokens([{field: 'status', value: 'errored'}])}}"
-          >
-            {{ $t('views.content.libraries.Quota.link.viewFiles') }}
-          </router-link>
-          <dangerous-button
-            class="ui basic tiny button"
-            :action="purgeErroredFiles"
-          >
-            {{ $t('views.content.libraries.Quota.button.purge') }}
-            <template #modal-header>
-              <p>
-                {{ $t('views.content.libraries.Quota.modal.purgeErrored.header') }}
-              </p>
-            </template>
-            <template #modal-content>
-              <p>
-                {{ $t('views.content.libraries.Quota.modal.purgeErrored.content.description') }}
-              </p>
-            </template>
-            <template #modal-confirm>
-              <div>
-                {{ $t('views.content.libraries.Quota.button.purge') }}
-              </div>
-            </template>
-          </dangerous-button>
-        </div>
-      </div>
-    </div>
-  </div>
+      <Spacer />
+      <Layout flex>
+        <Link
+          primary
+          solid
+          low-height
+          :to="{name: 'content.libraries.files', query: {q: compileTokens([{field: 'status', value: 'errored'}])}}"
+        >
+          {{ t('views.content.libraries.Quota.link.viewFiles') }}
+        </Link>
+        <dangerous-button
+          low-height
+          :action="purgeErroredFiles"
+          :title="t('views.content.libraries.Quota.modal.purgeErrored.header')"
+        >
+          {{ t('views.content.libraries.Quota.button.purge') }}
+          <template #modal-content>
+            {{ t('views.content.libraries.Quota.modal.purgeErrored.content.description') }}
+          </template>
+          <template #modal-confirm>
+            {{ t('views.content.libraries.Quota.button.purge') }}
+          </template>
+        </dangerous-button>
+      </Layout>
+    </Alert>
+  </Layout>
 </template>
+
+<style lang="scss" scoped>
+.ui.progress {
+    position: relative;
+    display: -webkit-box;
+    display: flex;
+    width: 100%;
+    height: 20px;
+    border: none;
+    margin: 1em 0 2.5em;
+    box-shadow: none;
+    background: rgba(0,0,0,.1);
+    padding: 0;
+    border-radius: .28571429rem
+}
+
+.ui.progress .bar {
+    display: block;
+    line-height: 1;
+    position: relative;
+    width: 0;
+    min-width: 2em;
+    background: #888;
+    border-radius: .28571429rem;
+    -webkit-transition: width .1s ease,background-color .1s ease;
+    transition: width .1s ease,background-color .1s ease;
+    overflow: hidden
+}
+
+.ui.progress .bar>.progress {
+    white-space: nowrap;
+    position: absolute;
+    width: auto;
+    font-size: .92857143em;
+    top: 50%;
+    right: .5em;
+    left: auto;
+    bottom: auto;
+    color: var(--background-color);
+    text-shadow: none;
+    margin-top: -.5em;
+    font-weight: 700;
+    text-align: left
+}
+
+.ui.progress>.label {
+    position: absolute;
+    width: 100%;
+    font-size: 1em;
+    top: 100%;
+    right: auto;
+    left: 0;
+    bottom: auto;
+    font-weight: 700;
+    text-shadow: none;
+    margin-top: .2em;
+    text-align: center;
+    -webkit-transition: color .4s ease;
+    transition: color .4s ease
+}
+
+.ui.progress.success .bar {
+    background-color: var(--success-color)
+}
+
+.ui.progress.success .bar,.ui.progress.success .bar:after {
+    -webkit-animation: none;
+    animation: none
+}
+
+.ui.progress.warning .bar {
+    background-color: var(--warning-color)
+}
+
+.ui.progress.warning .bar,.ui.progress.warning .bar:after {
+    -webkit-animation: none;
+    animation: none
+}
+
+.ui.progress.error .bar {
+    background-color: var(--danger-color)
+}
+
+.ui.progress.error .bar,.ui.progress.error .bar:after {
+    -webkit-animation: none;
+    animation: none
+}
+</style>

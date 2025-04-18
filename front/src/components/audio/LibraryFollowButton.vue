@@ -3,6 +3,7 @@ import type { Library } from '~/types'
 
 import { computed } from 'vue'
 import { useStore } from '~/store'
+import { useI18n } from 'vue-i18n'
 
 interface Events {
   (e: 'unfollowed'): void
@@ -13,6 +14,7 @@ interface Props {
   library: Library
 }
 
+const { t } = useI18n()
 const emit = defineEmits<Events>()
 const props = defineProps<Props>()
 
@@ -39,13 +41,13 @@ const toggle = () => {
   >
     <i class="heart icon" />
     <span v-if="isApproved">
-      {{ $t('components.audio.LibraryFollowButton.button.unfollow') }}
+      {{ t('components.audio.LibraryFollowButton.button.unfollow') }}
     </span>
     <span v-else-if="isPending">
-      {{ $t('components.audio.LibraryFollowButton.button.cancel') }}
+      {{ t('components.audio.LibraryFollowButton.button.cancel') }}
     </span>
     <span v-else>
-      {{ $t('components.audio.LibraryFollowButton.button.follow') }}
+      {{ t('components.audio.LibraryFollowButton.button.follow') }}
     </span>
   </button>
 </template>

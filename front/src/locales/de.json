@@ -2,6 +2,27 @@
   "App": {
     "loading": "Wird geladen…"
   },
+  "vui": {
+    "radio": "Radio",
+    "albums": "{n} Album | {n} Alben",
+    "tracks": "{n} Titel | {n} Titel",
+    "episodes": "{n} Episode | {n} Episoden",
+    "by-user": "von {'@'}{username}",
+    "go-to": "Gehe zu",
+    "pagination": {
+      "previous": "Zurück",
+      "next": "Weiter"
+    },
+    "aria": {
+      "pagination": {
+        "nav": "Nummerierte Navigation",
+        "gotoPage": "Gehe zu Seite {n}",
+        "gotoPrevious": "Gehe zur vorherigen Seite",
+        "gotoNext": "Gehe zur nächsten Seite",
+        "currentPage": "Aktuelle Seite, Seite {n}"
+      }
+    }
+  },
   "components": {
     "About": {
       "description": {

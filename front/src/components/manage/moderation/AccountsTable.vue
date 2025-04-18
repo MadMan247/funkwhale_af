@@ -11,7 +11,11 @@ import axios from 'axios'
 
 import useSharedLabels from '~/composables/locale/useSharedLabels'
 import ActionTable from '~/components/common/ActionTable.vue'
-import Pagination from '~/components/vui/Pagination.vue'
+
+import Layout from '~/components/ui/Layout.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Input from '~/components/ui/Input.vue'
+import Pagination from '~/components/ui/Pagination.vue'
 
 import useSmartSearch from '~/composables/navigation/useSmartSearch'
 import useOrdering from '~/composables/navigation/useOrdering'
@@ -98,24 +102,23 @@ const labels = computed(() => ({
 </script>
 
 <template>
-  <div>
-    <div class="ui inline form">
-      <div class="fields">
-        <div class="ui six wide field">
-          <label for="accounts-search">{{ $t('components.manage.moderation.AccountsTable.label.search') }}</label>
-          <form @submit.prevent="query = search.value">
-            <input
-              id="accounts-search"
-              ref="search"
-              name="search"
-              type="text"
-              :value="query"
-              :placeholder="labels.searchPlaceholder"
-            >
-          </form>
-        </div>
+  <Spacer />
+  <div class="ui inline form">
+    <div class="fields">
+      <form @submit.prevent="query = search.value">
+        <Input
+          id="accounts-search"
+          v-model="query"
+          search
+          :label="t('components.manage.moderation.AccountsTable.label.search')"
+          :placeholder="labels.searchPlaceholder"
+        />
+      </form>
+      <Spacer :size="16" />
+      <Layout flex>
+        <Spacer grow />
         <div class="field">
-          <label for="accounts-ordering">{{ $t('components.manage.moderation.AccountsTable.ordering.label') }}</label>
+          <label for="accounts-ordering">{{ t('components.manage.moderation.AccountsTable.ordering.label') }}</label>
           <select
             id="accounts-ordering"
             v-model="ordering"
@@ -131,117 +134,111 @@ const labels = computed(() => ({
           </select>
         </div>
         <div class="field">
-          <label for="accounts-ordering-direction">{{ $t('components.manage.moderation.AccountsTable.ordering.direction.label') }}</label>
+          <label for="accounts-ordering-direction">{{ t('components.manage.moderation.AccountsTable.ordering.direction.label') }}</label>
           <select
             id="accounts-ordering-direction"
             v-model="orderingDirection"
             class="ui dropdown"
           >
             <option value="+">
-              {{ $t('components.manage.moderation.AccountsTable.ordering.direction.ascending') }}
+              {{ t('components.manage.moderation.AccountsTable.ordering.direction.ascending') }}
             </option>
             <option value="-">
-              {{ $t('components.manage.moderation.AccountsTable.ordering.direction.descending') }}
+              {{ t('components.manage.moderation.AccountsTable.ordering.direction.descending') }}
             </option>
           </select>
         </div>
-      </div>
+      </Layout>
     </div>
-    <div class="dimmable">
-      <div
-        v-if="isLoading"
-        class="ui active inverted dimmer"
+  </div>
+  <div class="dimmable">
+    <Loader v-if="isLoading" />
+    <action-table
+      v-if="result"
+      :objects-data="result"
+      :actions="actions"
+      action-url="manage/accounts/action/"
+      :filters="actionFilters"
+      @action-launched="fetchData"
+    >
+      <template #header-cells>
+        <th>
+          {{ t('components.manage.moderation.AccountsTable.table.account.header.name') }}
+        </th>
+        <th>
+          {{ t('components.manage.moderation.AccountsTable.table.account.header.domain') }}
+        </th>
+        <th>
+          {{ t('components.manage.moderation.AccountsTable.table.account.header.uploads') }}
+        </th>
+        <th>
+          {{ t('components.manage.moderation.AccountsTable.table.account.header.firstSeen') }}
+        </th>
+        <th>
+          {{ t('components.manage.moderation.AccountsTable.table.account.header.lastSeen') }}
+        </th>
+        <th>
+          {{ t('components.manage.moderation.AccountsTable.table.account.header.moderationRule') }}
+        </th>
+      </template>
+      <template
+        #row-cells="scope"
       >
-        <div class="ui loader" />
-      </div>
-      <action-table
-        v-if="result"
-        :objects-data="result"
-        :actions="actions"
-        action-url="manage/accounts/action/"
-        :filters="actionFilters"
-        @action-launched="fetchData"
-      >
-        <template #header-cells>
-          <th>
-            {{ $t('components.manage.moderation.AccountsTable.table.account.header.name') }}
-          </th>
-          <th>
-            {{ $t('components.manage.moderation.AccountsTable.table.account.header.domain') }}
-          </th>
-          <th>
-            {{ $t('components.manage.moderation.AccountsTable.table.account.header.uploads') }}
-          </th>
-          <th>
-            {{ $t('components.manage.moderation.AccountsTable.table.account.header.firstSeen') }}
-          </th>
-          <th>
-            {{ $t('components.manage.moderation.AccountsTable.table.account.header.lastSeen') }}
-          </th>
-          <th>
-            {{ $t('components.manage.moderation.AccountsTable.table.account.header.moderationRule') }}
-          </th>
-        </template>
-        <template
-          #row-cells="scope"
-        >
-          <td>
-            <router-link :to="{name: 'manage.moderation.accounts.detail', params: {id: scope.obj.full_username }}">
-              {{ scope.obj.preferred_username }}
+        <td>
+          <router-link :to="{name: 'manage.moderation.accounts.detail', params: {id: scope.obj.full_username }}">
+            {{ scope.obj.preferred_username }}
+          </router-link>
+        </td>
+        <td>
+          <template v-if="!scope.obj.user">
+            <router-link :to="{name: 'manage.moderation.domains.detail', params: {id: scope.obj.domain }}">
+              <i class="wrench icon" />
             </router-link>
-          </td>
-          <td>
-            <template v-if="!scope.obj.user">
-              <router-link :to="{name: 'manage.moderation.domains.detail', params: {id: scope.obj.domain }}">
-                <i class="wrench icon" />
-              </router-link>
-              <a
-                href=""
-                class="discrete link"
-                :title="scope.obj.domain"
-                @click.prevent="addSearchToken('domain', scope.obj.domain)"
-              >{{ scope.obj.domain }}</a>
-            </template>
             <a
-              v-else
               href=""
-              class="ui tiny accent icon link label"
+              class="discrete link"
+              :title="scope.obj.domain"
               @click.prevent="addSearchToken('domain', scope.obj.domain)"
-            >
-              <i class="home icon" />
-              {{ $t('components.manage.moderation.AccountsTable.link.local') }}
-            </a>
-          </td>
-          <td>
-            {{ scope.obj.uploads_count }}
-          </td>
-          <td>
-            <human-date :date="scope.obj.creation_date" />
-          </td>
-          <td>
-            <human-date
-              v-if="scope.obj.last_fetch_date"
-              :date="scope.obj.last_fetch_date"
-            />
-          </td>
-          <td>
-            <span v-if="scope.obj.instance_policy"><i class="shield icon" />{{ $t('components.manage.moderation.AccountsTable.table.account.moderationRule') }}</span>
-          </td>
-        </template>
-      </action-table>
-    </div>
-    <div>
-      <pagination
-        v-if="result && result.count > paginateBy"
-        v-model:current="page"
-        :compact="true"
-        :paginate-by="paginateBy"
-        :total="result.count"
-      />
+            >{{ scope.obj.domain }}</a>
+          </template>
+          <a
+            v-else
+            href=""
+            class="ui tiny accent icon link label"
+            @click.prevent="addSearchToken('domain', scope.obj.domain)"
+          >
+            <i class="home icon" />
+            {{ t('components.manage.moderation.AccountsTable.link.local') }}
+          </a>
+        </td>
+        <td>
+          {{ scope.obj.uploads_count }}
+        </td>
+        <td>
+          <human-date :date="scope.obj.creation_date" />
+        </td>
+        <td>
+          <human-date
+            v-if="scope.obj.last_fetch_date"
+            :date="scope.obj.last_fetch_date"
+          />
+        </td>
+        <td>
+          <span v-if="scope.obj.instance_policy"><i class="shield icon" />{{ t('components.manage.moderation.AccountsTable.table.account.moderationRule') }}</span>
+        </td>
+      </template>
+    </action-table>
+  </div>
+  <div>
+    <Pagination
+      v-if="page && result && result.count > paginateBy"
+      v-model:page="page"
+      :paginate-by="paginateBy"
+      :pages="result.count"
+    />
 
-      <span v-if="result && result.results.length > 0">
-        {{ $t('components.manage.moderation.AccountsTable.pagination.results', {start: ((page-1) * paginateBy) + 1, end: ((page-1) * paginateBy) + result.results.length, total: result.count}) }}
-      </span>
-    </div>
+    <span v-if="page && result && result.results.length > 0">
+      {{ t('components.manage.moderation.AccountsTable.pagination.results', { start: ((page-1) * paginateBy) + 1, end: ((page-1) * paginateBy) + result.results.length, total: result.count }) }}
+    </span>
   </div>
 </template>

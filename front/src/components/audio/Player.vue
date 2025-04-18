@@ -6,6 +6,7 @@ import { useMouse, useWindowSize } from '@vueuse/core'
 import { computed, ref } from 'vue'
 import { useStore } from '~/store'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 import onKeyboardShortcut from '~/composables/onKeyboardShortcut'
 import time from '~/utils/time'
@@ -14,6 +15,8 @@ import TrackFavoriteIcon from '~/components/favorites/TrackFavoriteIcon.vue'
 import TrackPlaylistIcon from '~/components/playlists/TrackPlaylistIcon.vue'
 import PlayerControls from './PlayerControls.vue'
 import VolumeControl from './VolumeControl.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Button from '~/components/ui/Button.vue'
 
 const {
   LoopingMode,
@@ -43,14 +46,26 @@ const {
 } = useQueue()
 
 const store = useStore()
+const router = useRouter()
 const { t } = useI18n()
 
-const toggleMobilePlayer = () => {
-  store.commit('ui/queueFocused', ['queue', 'player'].includes(store.state.ui.queueFocused as string) ? null : 'player')
+/** Toggle between null and player */
+const togglePlayer = () => {
+  store.commit('ui/queueFocused',
+    store.state.ui.queueFocused === 'queue'
+      ? null
+      : store.state.ui.queueFocused === 'player'
+        ? null
+        : 'player'
+  )
+}
+
+const switchTab = () => {
+  store.commit('ui/queueFocused', store.state.ui.queueFocused === 'player' ? 'queue' : 'player')
 }
 
 // Key binds
-onKeyboardShortcut('e', toggleMobilePlayer)
+onKeyboardShortcut('e', togglePlayer)
 onKeyboardShortcut('p', () => { isPlaying.value = !isPlaying.value })
 onKeyboardShortcut('s', shuffle)
 onKeyboardShortcut('q', clear)
@@ -84,10 +99,6 @@ const labels = computed(() => ({
   addArtistContentFilter: t('components.audio.Player.label.addArtistContentFilter')
 }))
 
-const switchTab = () => {
-  store.commit('ui/queueFocused', store.state.ui.queueFocused === 'player' ? 'queue' : 'player')
-}
-
 const progressBar = ref()
 const touchProgress = (event: MouseEvent) => {
   const time = ((event.clientX - ((event.target as Element).closest('.progress')?.getBoundingClientRect().left ?? 0)) / progressBar.value.offsetWidth) * duration.value
@@ -108,17 +119,18 @@ const loopingTitle = computed(() => {
       : t('components.audio.Player.label.loopingWholeQueue')
 })
 
-const hideArtist = () => {
-  if (currentTrack.value.artistId !== -1 && currentTrack.value.artistCredit) {
-    return store.dispatch('moderation/hide', {
-      type: 'artist',
-      target: {
-        id: currentTrack.value.artistCredit[0].artist.id,
-        name: currentTrack.value.artistCredit[0].artist.name
-      }
-    })
-  }
-}
+// TODO: check if still useful for filtering
+// const hideArtist = () => {
+//   if (currentTrack.value.artistId !== -1 && currentTrack.value.artistCredit) {
+//     return store.dispatch('moderation/hide', {
+//       type: 'artist',
+//       target: {
+//         id: currentTrack.value.artistCredit[0].artist.id,
+//         name: currentTrack.value.artistCredit[0].artist.name
+//       }
+//     })
+//   }
+// }
 </script>
 
 <template>
@@ -135,7 +147,7 @@ const hideArtist = () => {
     />
     <div
       class="ui inverted segment fixed-controls"
-      @click.prevent.stop="toggleMobilePlayer"
+      @click.prevent.stop="togglePlayer"
     >
       <div
         ref="progressBar"
@@ -156,12 +168,13 @@ const hideArtist = () => {
         <div class="controls track-controls queue-not-focused desktop-and-up">
           <div
             class="ui tiny image"
-            @click.stop.prevent="$router.push({name: 'library.tracks.detail', params: {id: currentTrack.id }})"
+            @click.stop.prevent="router.push({name: 'library.tracks.detail', params: {id: currentTrack.id }})"
           >
+            <!-- TODO: Use smaller covers -->
             <img
               ref="cover"
+              v-lazy="store.getters['instance/absoluteUrl'](currentTrack.coverUrl)"
               alt=""
-              :src="$store.getters['instance/absoluteUrl'](currentTrack.coverUrl)"
             >
           </div>
           <div
@@ -170,7 +183,7 @@ const hideArtist = () => {
           >
             <strong>
               <router-link
-                class="small header discrete link track"
+                class="header discrete link track"
                 :to="{name: 'library.tracks.detail', params: {id: currentTrack.id }}"
                 @click.stop.prevent=""
               >
@@ -184,11 +197,11 @@ const hideArtist = () => {
                   :key="ac.artist.id"
                 >
                   <router-link
-                    class="discrete link"
+                    class="small discrete link"
                     :to="{name: 'library.artists.detail', params: {id: ac.artist.id }}"
                     @click.stop.prevent=""
                   >
-                    {{ ac.credit ?? $t('components.audio.Player.meta.unknownArtist') }}
+                    {{ ac.credit ?? t('components.audio.Player.meta.unknownArtist') }}
                   </router-link>
                   <span>{{ ac.joinphrase }}</span>
                 </template>
@@ -196,11 +209,11 @@ const hideArtist = () => {
               <template v-if="currentTrack.albumId !== -1">
                 <span class="middle slash symbol" />
                 <router-link
-                  class="discrete link"
+                  class="small discrete link"
                   :to="{name: 'library.albums.detail', params: {id: currentTrack.albumId }}"
                   @click.stop.prevent=""
                 >
-                  {{ currentTrack.albumTitle ?? $t('components.audio.Player.meta.unknownAlbum') }}
+                  {{ currentTrack.albumTitle ?? t('components.audio.Player.meta.unknownAlbum') }}
                 </router-link>
               </template>
             </div>
@@ -208,51 +221,57 @@ const hideArtist = () => {
         </div>
         <div class="controls track-controls queue-not-focused desktop-and-below">
           <div class="ui tiny image">
+            <!-- TODO: Use smaller covers -->
             <img
               ref="cover"
+              v-lazy="store.getters['instance/absoluteUrl'](currentTrack.coverUrl)"
               alt=""
-              :src="$store.getters['instance/absoluteUrl'](currentTrack.coverUrl)"
             >
           </div>
           <div class="middle aligned content ellipsis">
             <strong>
               {{ currentTrack.title }}
             </strong>
-            <div class="meta">
+            <Layout
+              flex
+              no-gap
+              class="meta"
+            >
               <div
                 v-for="ac in currentTrack.artistCredit"
                 :key="ac.artist.id"
               >
-                {{ ac.credit ?? $t('components.audio.Player.meta.unknownArtist') }}
+                {{ ac.credit ?? t('components.audio.Player.meta.unknownArtist') }}
                 <span>{{ ac.joinphrase }}</span>
               </div>
               <template v-if="currentTrack.albumId !== -1">
                 <span class="middle slash symbol" />
-                {{ currentTrack.albumTitle ?? $t('components.audio.Player.meta.unknownAlbum') }}
+                {{ currentTrack.albumTitle ?? t('components.audio.Player.meta.unknownAlbum') }}
               </template>
-            </div>
+            </Layout>
           </div>
         </div>
         <div
-          v-if="$store.state.auth.authenticated"
+          v-if="store.state.auth.authenticated"
           class="controls desktop-and-up fluid align-right"
         >
           <track-favorite-icon
-            class="control white"
+            ghost
             :track="currentTrack"
           />
           <track-playlist-icon
-            class="control white"
+            ghost
             :track="currentTrack"
           />
-          <button
-            :class="['ui', 'really', 'basic', 'circular', 'icon', 'button', 'control']"
+          <!-- <Button
+            round
+            ghost
+            icon="bi-eye-slash"
             :aria-label="labels.addArtistContentFilter"
             :title="labels.addArtistContentFilter"
             @click="hideArtist"
           >
-            <i :class="['eye slash outline', 'basic', 'icon']" />
-          </button>
+          </Button> -->
         </div>
         <player-controls class="controls queue-not-focused" />
         <div class="controls progress-controls queue-not-focused tablet-and-up small align-left">
@@ -272,49 +291,39 @@ const hideArtist = () => {
         <div class="controls queue-controls when-queue-focused align-right">
           <div class="group">
             <volume-control class="expandable" />
-            <button
-              class="circular control button"
+            <Button
               :class="{ looping: looping !== LoopingMode.None }"
               :title="loopingTitle"
+              ghost
+              round
               :aria-label="loopingTitle"
               :disabled="!currentTrack"
+              :icon="looping === LoopingMode.LoopTrack ? 'bi-repeat-1' : 'bi-repeat'"
               @click.prevent.stop="toggleLooping"
-            >
-              <i class="repeat icon">
-                <span
-                  v-if="looping !== LoopingMode.None"
-                  class="ui circular tiny vibrant label"
-                >
-                  <span
-                    v-if="looping === LoopingMode.LoopTrack"
-                    class="symbol single"
-                  />
-                  <span
-                    v-else-if="looping === LoopingMode.LoopQueue"
-                    class="infinity symbol"
-                  />
-                </span>
-              </i>
-            </button>
+            />
 
-            <button
-              class="circular control button"
+            <Button
+              round
+              ghost
+              :class="{ shuffling: isShuffled }"
               :disabled="queue.length === 0"
               :title="labels.shuffle"
               :aria-label="labels.shuffle"
+              icon="bi-shuffle"
               @click.prevent.stop="shuffle()"
-            >
-              <i :class="['ui', 'random', { disabled: queue.length === 0, shuffling: isShuffled }, 'icon']" />
-            </button>
+            />
           </div>
+
+          <!-- TODO: Remove fake responsive elements -->
           <div class="group">
             <div class="fake-dropdown">
-              <button
-                class="position circular control button desktop-and-up"
+              <Button
                 aria-expanded="true"
-                @click.stop="toggleMobilePlayer"
+                ghost
+                round
+                icon="bi-music-note-list"
+                @click.stop="togglePlayer"
               >
-                <i class="stream icon" />
                 <i18n-t keypath="components.audio.Player.meta.position">
                   <template #index>
                     {{ currentIndex + 1 }}
@@ -323,12 +332,11 @@ const hideArtist = () => {
                     {{ queue.length }}
                   </template>
                 </i18n-t>
-              </button>
-              <button
+              </Button>
+              <Button
                 class="position circular control button desktop-and-below"
-                @click.stop="switchTab"
+                icon="bi-music-note-list"
               >
-                <i class="stream icon" />
                 <i18n-t keypath="components.audio.Player.meta.position">
                   <template #index>
                     {{ currentIndex + 1 }}
@@ -337,46 +345,35 @@ const hideArtist = () => {
                     {{ queue.length }}
                   </template>
                 </i18n-t>
-              </button>
+              </Button>
 
-              <button
-                v-if="$store.state.ui.queueFocused"
-                class="circular control button close-control desktop-and-up"
-                @click.stop="toggleMobilePlayer"
-              >
-                <i class="large down angle icon" />
-              </button>
-              <button
-                v-else
-                class="circular control button desktop-and-up"
-                @click.stop="toggleMobilePlayer"
-              >
-                <i class="large up angle icon" />
-              </button>
-              <button
-                v-if="$store.state.ui.queueFocused === 'player'"
-                class="circular control button close-control desktop-and-below"
+              <Button
+                ghost
+                :class="['desktop-and-up', { 'close-control': store.state.ui.queueFocused }]"
+                :icon="store.state.ui.queueFocused ? 'bi-chevron-down' : 'bi-chevron-up'"
+                :aria-pressed="store.state.ui.queueFocused ? true : undefined"
+                @click.stop="togglePlayer"
+              />
+              <Button
+                ghost
+                :class="['desktop-and-below', { 'close-control': store.state.ui.queueFocused === 'player' }]"
+                :icon="store.state.ui.queueFocused === 'queue' ? 'bi-chevron-down' : 'bi-chevron-up'"
+                :aria-pressed="store.state.ui.queueFocused ? true : undefined"
                 @click.stop="switchTab"
-              >
-                <i class="large up angle icon" />
-              </button>
-              <button
-                v-if="$store.state.ui.queueFocused === 'queue'"
-                class="circular control button desktop-and-below"
-                @click.stop="switchTab"
-              >
-                <i class="large down angle icon" />
-              </button>
+              />
             </div>
-            <button
-              class="circular control button close-control desktop-and-below"
-              @click.stop="$store.commit('ui/queueFocused', null)"
-            >
-              <i class="x icon" />
-            </button>
+            <Button
+              class="close-control desktop-and-below"
+              icon="bi-x"
+              @click.stop="store.commit('ui/queueFocused', null)"
+            />
           </div>
         </div>
       </div>
     </div>
   </section>
 </template>
+
+<style lang="scss" scoped>
+
+</style>

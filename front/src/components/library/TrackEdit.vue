@@ -3,12 +3,17 @@ import type { EditObject, EditObjectType } from '~/composables/moderation/useEdi
 import type { Library } from '~/types'
 
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import store from '~/store'
 import axios from 'axios'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 import EditForm from '~/components/library/EditForm.vue'
+
+import Loader from '~/components/ui/Loader.vue'
+import Header from '~/components/ui/Header.vue'
+import Alert from '~/components/ui/Alert.vue'
 
 interface Props {
   objectType: EditObjectType
@@ -19,6 +24,8 @@ interface Props {
 withDefaults(defineProps<Props>(), {
   libraries: null
 })
+
+const { t } = useI18n()
 
 const canEdit = store.state.auth.availablePermissions.library
 
@@ -41,35 +48,19 @@ fetchLicenses()
 </script>
 
 <template>
-  <section class="ui vertical stripe segment">
-    <div class="ui text container">
-      <h2>
-        <span v-if="canEdit">
-          {{ $t('components.library.TrackEdit.header.edit') }}
-        </span>
-        <span key="2">
-          {{ $t('components.library.TrackEdit.header.suggest') }}
-        </span>
-      </h2>
-      <div
-        v-if="!object.is_local"
-        class="ui message"
-      >
-        {{ $t('components.library.TrackEdit.message.remote') }}
-      </div>
-      <edit-form
-        v-else-if="!isLoadingLicenses"
-        :object-type="objectType"
-        :object="object"
-        :can-edit="canEdit"
-        :licenses="licenses"
-      />
-      <div
-        v-else
-        class="ui inverted active dimmer"
-      >
-        <div class="ui loader" />
-      </div>
-    </div>
-  </section>
+  <Header :h2="canEdit ? t('components.library.TrackEdit.header.edit') : t('components.library.TrackEdit.header.suggest')" />
+  <Alert
+    v-if="!object.is_local"
+    yellow
+  >
+    {{ t('components.library.TrackEdit.message.remote') }}
+  </Alert>
+  <edit-form
+    v-else-if="!isLoadingLicenses"
+    :object-type="objectType"
+    :object="object"
+    :can-edit="canEdit"
+    :licenses="licenses"
+  />
+  <Loader v-else />
 </template>

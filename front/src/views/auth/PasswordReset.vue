@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import type { BackendError } from '~/types'
 
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+
+import Input from '~/components/ui/Input.vue'
+import Button from '~/components/ui/Button.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Link from '~/components/ui/Link.vue'
 
 import axios from 'axios'
 
@@ -38,69 +43,71 @@ const submit = async () => {
 
   isLoading.value = false
 }
-
-const emailInput = ref()
-onMounted(() => emailInput.value.focus())
 </script>
 
 <template>
   <main
     v-title="labels.reset"
-    class="main pusher"
+    class="main"
   >
-    <section class="ui vertical stripe segment">
-      <div class="ui small text container">
-        <h2>
-          {{ $t('views.auth.PasswordReset.header.reset') }}
-        </h2>
-        <form
-          class="ui form"
-          @submit.prevent="submit()"
-        >
-          <div
-            v-if="errors.length > 0"
-            role="alert"
-            class="ui negative message"
+    <h2>
+      {{ t('views.auth.PasswordReset.header.reset') }}
+    </h2>
+    <Layout
+      form
+      stack
+      style="max-width: 600px"
+      @submit.prevent="submit()"
+    >
+      <div
+        v-if="errors.length > 0"
+        role="alert"
+        class="ui negative message"
+      >
+        <h4 class="header">
+          {{ t('views.auth.PasswordReset.header.failure') }}
+        </h4>
+        <ul class="list">
+          <li
+            v-for="(error, key) in errors"
+            :key="key"
           >
-            <h4 class="header">
-              {{ $t('views.auth.PasswordReset.header.failure') }}
-            </h4>
-            <ul class="list">
-              <li
-                v-for="(error, key) in errors"
-                :key="key"
-              >
-                {{ error }}
-              </li>
-            </ul>
-          </div>
-          <p>
-            {{ $t('views.auth.PasswordReset.help.form') }}
-          </p>
-          <div class="field">
-            <label for="account-email">{{ $t('views.auth.PasswordReset.label.email') }}</label>
-            <input
-              id="account-email"
-              ref="emailInput"
-              v-model="email"
-              required
-              type="email"
-              name="email"
-              autofocus
-              :placeholder="labels.placeholder"
-            >
-          </div>
-          <router-link :to="{path: '/login'}">
-            {{ $t('views.auth.PasswordReset.link.back') }}
-          </router-link>
-          <button
-            :class="['ui', {'loading': isLoading}, 'right', 'floated', 'success', 'button']"
-            type="submit"
-          >
-            {{ $t('views.auth.PasswordReset.button.requestReset') }}
-          </button>
-        </form>
+            {{ error }}
+          </li>
+        </ul>
       </div>
-    </section>
+      <p>
+        {{ t('views.auth.PasswordReset.help.form') }}
+      </p>
+      <Input
+        id="account-email"
+        ref="emailInput"
+        v-model="email"
+        :label="t('views.auth.PasswordReset.label.email')"
+        required
+        type="email"
+        name="email"
+        autofocus
+        :placeholder="labels.placeholder"
+      />
+      <Layout flex>
+        <Button
+          :class="['ui', {'loading': isLoading}, 'success', 'button']"
+          type="submit"
+          primary
+          auto
+        >
+          {{ t('views.auth.PasswordReset.button.requestReset') }}
+        </Button>
+        <Link
+          :to="{path: '/login'}"
+          solid
+          secondary
+          button-width
+        >
+          {{ t('views.auth.PasswordReset.link.back') }}
+        </Link>
+      </Layout>
+    </Layout>
   </main>
 </template>

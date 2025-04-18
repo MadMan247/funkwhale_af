@@ -3,13 +3,13 @@ import type { BackendError, Channel, Upload, Track } from '~/types'
 import type { VueUploadItem } from 'vue-upload-component'
 
 import { computed, ref, reactive, watchEffect, watch } from 'vue'
-import { whenever, useCurrentElement } from '@vueuse/core'
+import { whenever } from '@vueuse/core'
 import { humanSize } from '~/utils/filters'
 import { useI18n } from 'vue-i18n'
 import { useStore } from '~/store'
 
 import axios from 'axios'
-import $ from 'jquery'
+import { type paths, type operations, type components } from '~/generated/types.ts'
 
 import UploadMetadataForm from '~/components/channels/UploadMetadataForm.vue'
 import FileUploadWidget from '~/components/library/FileUploadWidget.vue'
@@ -18,13 +18,19 @@ import AlbumSelect from '~/components/channels/AlbumSelect.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 
+import Layout from '~/components/ui/Layout.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Button from '~/components/ui/Button.vue'
+import Loader from '~/components/ui/Loader.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+
 interface Events {
   (e: 'status', status: UploadStatus): void
-  (e: 'step', step: 1 | 2 | 3): void
 }
 
 interface Props {
-  channel?: Channel | null
+  channel: Channel | null,
+  filter: 'podcast' | 'music' | undefined,
 }
 
 interface QuotaStatus {
@@ -57,8 +63,12 @@ const store = useStore()
 
 const errors = ref([] as string[])
 
-const values = reactive({
-  channel: props.channel?.uuid ?? null,
+const values = reactive<{
+  channelUuid: string | null; // Channel UUID
+  license: string | null;
+  album: string | null;
+}>({
+  channelUuid: props.channel?.uuid ?? null,
   license: null,
   album: null
 })
@@ -68,29 +78,91 @@ const files = ref([] as VueUploadItem[])
 //
 // Channels
 //
-const availableChannels = reactive({
-  channels: [] as Channel[],
-  count: 0,
-  loading: false
-})
+const availableChannels = ref<Channel[] | null>(null)
+
+/*
+          availableChannels>1?  :=1     :=0
+          |                               |       |
+          v                               v       v
+props   select a channel           |       create empty channel
+|         |                                     null
+v         v                                       |
+          channelDropdownId                 v
+          |
+          v
+selectedChannel
+|
+v
+as a model to Album
+|
+v
+albums
+
+*/
+
+// In the channel dropdown, we can select a value
+//
+
+const channelDropdownId = ref<Channel['artist']['id'] | null>(null)
+const isLoading = ref(false)
+
+const selectedChannel = computed(() =>
+  // Deeplink / Preset channel
+  props.channel
+    ? props.channel
+    // Not yet loaded the available channels
+    : availableChannels.value === null
+      ? null
+      // No channels available
+      : availableChannels.value.length === 0
+        ? (createEmptyChannel(), null)
+        // Exactly one available channel
+        : availableChannels.value.length === 1
+          ? availableChannels.value[0]
+          // Multiple available channels
+          : availableChannels.value.find(({ artist }) => artist.id === channelDropdownId.value) || null
+)
+
+const emptyChannelCreateRequest:components['schemas']['ChannelCreateRequest'] = {
+  name: store.state.auth.fullUsername,
+  username: store.state.auth.username,
+  description: null,
+  tags: [],
+  content_category: 'music'
+}
+
+const createEmptyChannel = async () => {
+  try {
+    await axios.post(
+      'channels/',
+      (emptyChannelCreateRequest satisfies operations['create_channel_2']['requestBody']['content']['application/json'])
+    )
+  } catch (error) {
+    errors.value = (error as BackendError).backendErrors
+  }
+}
 
 const fetchChannels = async () => {
-  availableChannels.loading = true
-
+  isLoading.value = true
   try {
-    const response = await axios.get('channels/', { params: { scope: 'me' } })
-    availableChannels.channels = response.data.results
-    availableChannels.count = response.data.count
+    const response = await axios.get<paths['/api/v2/channels/']['get']['responses']['200']['content']['application/json']>(
+      'channels/',
+      { params: { scope: 'me' } }
+    )
+
+    availableChannels.value = response.data.results.filter(channel =>
+      props.filter === undefined
+        ? true
+        : channel.artist?.content_category === props.filter
+    )
+
   } catch (error) {
     errors.value = (error as BackendError).backendErrors
   }
 
-  availableChannels.loading = false
+  isLoading.value = false
 }
 
-const selectedChannel = computed(() => availableChannels.channels.find((channel) => channel.uuid === values.channel) ?? null)
-
-//
 // Quota and space
 //
 const quotaStatus = ref()
@@ -125,13 +197,13 @@ const remainingSpace = computed(() => Math.max(
 //
 const includeDraftUploads = ref()
 const draftUploads = ref([] as Upload[])
-whenever(() => values.channel !== null, async () => {
+whenever(() => values.channelUuid !== null, async () => {
   files.value = []
   draftUploads.value = []
 
   try {
     const response = await axios.get('uploads', {
-      params: { import_status: 'draft', channel: values.channel }
+      params: { import_status: 'draft', channel: values.channelUuid }
     })
 
     draftUploads.value = response.data.results as Upload[]
@@ -156,12 +228,6 @@ const beforeFileUpload = (newFile: VueUploadItem) => {
     newFile.active = true
   }
 }
-
-const baseImportMetadata = computed(() => ({
-  channel: values.channel,
-  import_status: 'draft',
-  import_metadata: { license: values.license, album: values.album }
-}))
 
 //
 // Uploaded files
@@ -213,6 +279,13 @@ const uploadedFilesById = computed(() => uploadedFiles.value.reduce((acc: Record
 //
 // Metadata
 //
+
+const baseImportMetadata = computed(() => ({
+  channel: selectedChannel,
+  import_status: 'draft',
+  import_metadata: { license: values.license, album: values.album }
+}))
+
 type Metadata = Pick<Track, 'title' | 'position' | 'tags'> & { cover: string | null, description: string }
 const uploadImportData = reactive({} as Record<string, Metadata>)
 const audioMetadata = reactive({} as Record<string, Record<string, string>>)
@@ -237,7 +310,7 @@ const fetchAudioMetadata = async (uuid: string) => {
 
   for (const key of ['title', 'position', 'tags'] as const) {
     if (uploadImportData[uuid][key] === undefined) {
-      uploadImportData[uuid][key] = response.data[key] as never
+      // uploadImportData[uuid][key] = response.data[key] as never
     }
   }
 
@@ -301,70 +374,7 @@ const retry = async (file: VueUploadItem) => {
 fetchChannels()
 fetchQuota()
 
-//
-// Dropdown
-//
-const el = useCurrentElement()
-watch(() => availableChannels.channels, () => {
-  $(el.value).find('#channel-dropdown').dropdown({
-    onChange (value) {
-      values.channel = value
-    },
-    values: availableChannels.channels.map((channel) => {
-      const value = {
-        name: channel.artist?.name ?? '',
-        value: channel.uuid,
-        selected: props.channel?.uuid === channel.uuid
-      } as {
-        name: string
-        value: string
-        selected: boolean
-        image?: string
-        imageClass?: string
-        icon?: string
-        iconClass?: string
-      }
-
-      if (channel.artist?.cover?.urls.medium_square_crop) {
-        value.image = store.getters['instance/absoluteUrl'](channel.artist.cover.urls.medium_square_crop)
-        value.imageClass = channel.artist.content_category !== 'podcast'
-          ? 'ui image avatar'
-          : 'ui image'
-      } else {
-        value.icon = 'user'
-        value.iconClass = channel.artist?.content_category !== 'podcast'
-          ? 'circular icon'
-          : 'bordered icon'
-      }
-
-      return value
-    })
-  })
-
-  $(el.value).find('#channel-dropdown').dropdown('hide')
-})
-
-//
-// Step
-//
-const step = ref<1 | 2 | 3>(1)
-watchEffect(() => {
-  emit('step', step.value)
-
-  if (step.value === 2) {
-    selectedUploadId.value = null
-  }
-})
-
-watch(selectedUploadId, async (to, from) => {
-  if (to) {
-    step.value = 3
-  }
-
-  if (!to && step.value !== 2) {
-    step.value = 2
-  }
-
+watch(selectedUploadId, async (_, from) => {
   if (from) {
     await patchUpload(from, { import_metadata: uploadImportData[from] })
   }
@@ -400,23 +410,28 @@ const labels = computed(() => ({
   editTitle: t('components.channels.UploadForm.button.edit')
 }))
 
-const isLoading = ref(false)
 const publish = async () => {
   isLoading.value = true
 
   errors.value = []
-
   try {
-    await axios.post('uploads/action/', {
+    // Post list of uuids of uploadedFiles to axios action:publish
+
+    /* { import_status: components["schemas"]["ImportStatusEnum"];
+    audio_file: string;} */
+
+    await axios.post<paths['/api/v2/uploads/action/']['post']['responses']['200']['content']['application/json']>('uploads/action/', {
       action: 'publish',
       objects: uploadedFiles.value.map((file) => file.response?.uuid)
     })
 
+    // Tell the store that the uploaded files are pending import
     store.commit('channels/publish', {
       uploads: uploadedFiles.value.map((file) => ({ ...file.response, import_status: 'pending' })),
       channel: selectedChannel.value
     })
   } catch (error) {
+    // TODO: Use inferred error type instead of typecasting
     errors.value = (error as BackendError).backendErrors
   }
 
@@ -424,23 +439,24 @@ const publish = async () => {
 }
 
 defineExpose({
-  step,
   publish
 })
 </script>
 
 <template>
-  <form
-    :class="['ui', { loading: availableChannels.loading }, 'form component-file-upload']"
+  <Layout
+    form
+    gap-8
+    :class="['ui', { loading: isLoading }, 'form component-file-upload']"
     @submit.stop.prevent
   >
-    <div
+    <!-- Error message -->
+    <Alert
       v-if="errors.length > 0"
-      role="alert"
-      class="ui negative message"
+      red
     >
       <h4 class="header">
-        {{ $t('components.channels.UploadForm.header.error') }}
+        {{ t('components.channels.UploadForm.header.error') }}
       </h4>
       <ul class="list">
         <li
@@ -450,182 +466,199 @@ defineExpose({
           {{ error }}
         </li>
       </ul>
-    </div>
-    <div :class="['ui', 'required', {hidden: step > 1}, 'field']">
-      <label for="channel-dropdown">
-        {{ $t('components.channels.UploadForm.label.channel') }}
-      </label>
-      <div
-        id="channel-dropdown"
-        class="ui search normal selection dropdown"
+    </Alert>
+
+    <!-- Select Album and License -->
+
+    <div :class="['ui', 'required', 'field']">
+      <label
+        v-if="availableChannels !== null && availableChannels.length === 1"
       >
-        <div class="text" />
-        <i class="dropdown icon" />
-      </div>
+        {{ `${t('components.channels.UploadForm.label.channel')}: ${selectedChannel?.artist.name}` }}
+      </label>
+      <label
+        v-else
+        for="channel-dropdown"
+      >
+        {{ t('components.channels.UploadForm.label.channel') }}
+      </label>
+      <select
+        v-if="availableChannels !== null && availableChannels.length > 1"
+        id="channel-dropdown"
+        v-model="channelDropdownId"
+        class="dropdown"
+      >
+        <option
+          v-for="availableChannel in availableChannels"
+          :key="availableChannel.artist.id"
+          :value="availableChannel.artist.id"
+        >
+          {{ availableChannel.artist.name }}
+        </option>
+      </select>
     </div>
     <album-select
+      v-if="selectedChannel !== null"
       v-model.number="values.album"
       :channel="selectedChannel"
-      :class="['ui', {hidden: step > 1}, 'field']"
     />
-    <license-select
-      v-model="values.license"
-      :class="['ui', {hidden: step > 1}, 'field']"
-    />
-    <div :class="['ui', {hidden: step > 1}, 'message']">
+    <div>
+      <license-select
+        v-if="values.license !== null"
+        v-model="values.license"
+        :class="['ui', 'field']"
+      />
       <div class="content">
         <p>
           <i class="copyright icon" />
-          {{ $t('components.channels.UploadForm.help.license') }}
+          {{ t('components.channels.UploadForm.help.license') }}
         </p>
       </div>
     </div>
-    <template v-if="step === 2 || step === 3">
-      <div
-        v-if="remainingSpace === 0"
-        role="alert"
-        class="ui warning message"
+
+    <!-- Files to upload -->
+    <template v-if="remainingSpace === 0">
+      <Alert
+        red
       >
-        <div class="content">
-          <p>
-            <i class="warning icon" />
-            {{ $t('components.channels.UploadForm.warning.quota') }}
-          </p>
-        </div>
-      </div>
-      <template v-else>
-        <div
-          v-if="step === 2 && draftUploads?.length > 0 && includeDraftUploads === undefined"
-          class="ui visible info message"
+        <i class="bi bi-exclamation-triangle" />
+        {{ t('components.channels.UploadForm.warning.quota') }}
+      </Alert>
+    </template>
+    <template v-else>
+      <Alert
+        v-if="draftUploads?.length > 0 && includeDraftUploads === undefined"
+        blue
+      >
+        <p>
+          <i class="bi bi-circle-clockwise" />
+          {{ t('components.channels.UploadForm.message.pending') }}
+        </p>
+        <Button
+          @click.stop.prevent="includeDraftUploads = false"
         >
-          <p>
-            <i class="redo icon" />
-            {{ $t('components.channels.UploadForm.message.pending') }}
-          </p>
-          <button
-            class="ui basic button"
-            @click.stop.prevent="includeDraftUploads = false"
-          >
-            {{ $t('components.channels.UploadForm.button.ignore') }}
-          </button>
-          <button
-            class="ui basic button"
-            @click.stop.prevent="includeDraftUploads = true"
-          >
-            {{ $t('components.channels.UploadForm.button.resume') }}
-          </button>
-        </div>
-        <div
-          v-if="uploadedFiles.length > 0"
-          :class="[{hidden: step === 3}]"
+          {{ t('components.channels.UploadForm.button.ignore') }}
+        </Button>
+        <Button
+          @click.stop.prevent="includeDraftUploads = true"
         >
-          <div
-            v-for="file in uploadedFiles"
-            :key="file.id"
-            class="channel-file"
-          >
-            <div class="content">
-              <div
-                v-if="file.response?.uuid"
-                role="button"
-                class="ui basic icon button"
-                :title="labels.editTitle"
-                @click.stop.prevent="selectedUploadId = file.response?.uuid"
-              >
-                <i class="pencil icon" />
-              </div>
-              <div
-                v-if="file.error"
-                class="ui basic danger icon label"
-                :title="file.error.toString()"
-                @click.stop.prevent="selectedUploadId = file.response?.uuid"
-              >
-                <i class="warning sign icon" />
-              </div>
-              <div
-                v-else-if="file.active && !file.response"
-                class="ui active slow inline loader"
-              />
-            </div>
-            <h4 class="ui header">
-              <template v-if="file.metadata.title">
-                {{ file.metadata.title }}
-              </template>
-              <template v-else>
-                {{ file.name }}
-              </template>
-              <div class="sub header">
-                <template v-if="file.response?.uuid">
-                  {{ humanSize(file.size ?? 0) }}
-                  <template v-if="file.response.duration">
-                    <span class="middle middledot symbol" />
-                    <human-duration :duration="file.response.duration" />
-                  </template>
-                </template>
-                <template v-else>
-                  <span v-if="file.active">
-                    {{ $t('components.channels.UploadForm.status.uploading') }}
-                  </span>
-                  <span v-else-if="file.error">
-                    {{ $t('components.channels.UploadForm.status.errored') }}
-                  </span>
-                  <span v-else>
-                    {{ $t('components.channels.UploadForm.status.pending') }}
-                  </span>
-                  <span class="middle middledot symbol" />
-                  {{ humanSize(file.size ?? 0) }}
-                  <span class="middle middledot symbol" />
-                  {{ parseFloat(file.progress ?? '0') }}
-                  <span class="percent symbol" />
-                </template>
-                <span class="middle middledot symbol" />
-                <a @click.stop.prevent="remove(file)">
-                  {{ $t('components.channels.UploadForm.button.remove') }}
-                </a>
-                <template v-if="file.error">
-                  <span class="middle middledot symbol" />
-                  <a @click.stop.prevent="retry(file)">
-                    {{ $t('components.channels.UploadForm.button.retry') }}
-                  </a>
-                </template>
-              </div>
-            </h4>
-          </div>
-        </div>
-        <upload-metadata-form
-          v-if="selectedUpload"
-          v-model:values="uploadImportData[selectedUploadId]"
-          :upload="selectedUpload"
-        />
+          {{ t('components.channels.UploadForm.button.resume') }}
+        </Button>
+      </Alert>
+      <Alert
+        v-if="uploadedFiles.length > 0"
+        v-bind="{[ uploadedFiles.some(file=>file.error) ? 'red' : 'green' ]:true}"
+      >
         <div
-          v-if="step === 2"
-          class="ui message"
+          v-for="file in uploadedFiles"
+          :key="file.id"
+          class="channel-file"
         >
           <div class="content">
-            <p>
-              <i class="info icon" />
-              {{ $t('components.channels.UploadForm.description.extensions', {extensions: $store.state.ui.supportedExtensions.join(', ')}) }}
-            </p>
+            <Button
+              v-if="file.response?.uuid"
+              icon="bi-pencil-fill"
+              class="ui basic icon button"
+              :title="labels.editTitle"
+              @click.stop.prevent="selectedUploadId = file.response?.uuid"
+            />
+            <div
+              v-if="file.error"
+              class="ui basic danger icon label"
+              :title="file.error.toString()"
+              @click.stop.prevent="selectedUploadId = file.response?.uuid"
+            >
+              <i class="bi bi-exclamation-triangle-fill" />
+            </div>
+            <Loader v-else-if="file.active && !file.response" />
           </div>
+          <h4 class="ui header">
+            <template v-if="file.metadata.title">
+              {{ file.metadata.title }}
+            </template>
+            <template v-else>
+              {{ file.name }}
+            </template>
+            <div class="sub header">
+              <template v-if="file.response?.uuid">
+                {{ humanSize(file.size ?? 0) }}
+                <template v-if="file.response.duration">
+                  <span class="middle middledot symbol" />
+                  <human-duration :duration="file.response.duration" />
+                </template>
+              </template>
+              <template v-else>
+                <span v-if="file.active">
+                  {{ t('components.channels.UploadForm.status.uploading') }}
+                </span>
+                <span v-else-if="file.error">
+                  {{ t('components.channels.UploadForm.status.errored') }}
+                </span>
+                <span v-else>
+                  {{ t('components.channels.UploadForm.status.pending') }}
+                </span>
+                <span class="middle middledot symbol" />
+                {{ humanSize(file.size ?? 0) }}
+                <span class="middle middledot symbol" />
+                {{ parseFloat(file.progress ?? '0') }}
+                <span class="percent symbol" />
+              </template>
+              <span class="middle middledot symbol" />
+              <a @click.stop.prevent="remove(file)">
+                {{ t('components.channels.UploadForm.button.remove') }}
+              </a>
+              <template v-if="file.error">
+                <span class="middle middledot symbol" />
+                <a @click.stop.prevent="retry(file)">
+                  {{ t('components.channels.UploadForm.button.retry') }}
+                </a>
+              </template>
+            </div>
+          </h4>
         </div>
-        <file-upload-widget
-          ref="upload"
-          v-model="files"
-          :class="['ui', 'icon', 'basic', 'button', 'channels', {hidden: step === 3}]"
-          :data="baseImportMetadata"
-          @input-file="beforeFileUpload"
-        >
-          <div>
-            <i class="upload icon" />&nbsp;
-            {{ $t('components.channels.UploadForm.message.dragAndDrop') }}
-          </div>
-          <div class="ui very small divider" />
-          <div>
-            {{ $t('components.channels.UploadForm.label.openBrowser') }}
-          </div>
-        </file-upload-widget>
-        <div class="ui hidden divider" />
-      </template>
+      </Alert>
     </template>
-  </form>
+    <upload-metadata-form
+      v-if="selectedUpload"
+      v-model:values="uploadImportData[selectedUploadId]"
+      :upload="selectedUpload"
+    />
+    <Alert
+      blue
+      class="ui message"
+    >
+      <Layout
+        flex
+        gap-8
+      >
+        <i class="bi bi-info-circle-fill" />
+        {{ t('components.channels.UploadForm.description.extensions', {extensions: store.state.ui.supportedExtensions.join(', ')}) }}
+      </Layout>
+    </Alert>
+    <FileUploadWidget
+      v-if="selectedChannel && selectedChannel.uuid"
+      ref="upload"
+      v-model="files"
+      :class="['ui', 'button', 'channels']"
+      :channel="selectedChannel.uuid"
+      :data="baseImportMetadata"
+      @input-file="beforeFileUpload"
+    >
+      <div>
+        <i class="bi bi-upload" />&nbsp;
+        {{ t('components.channels.UploadForm.message.dragAndDrop') }}
+      </div>
+      <div class="ui very small divider" />
+      <Button
+        primary
+        icon="bi-folder2-open"
+      >
+        {{ t('components.channels.UploadForm.label.openBrowser') }}
+      </Button>
+      <Spacer
+        class="divider"
+        :size="32"
+      />
+    </FileUploadWidget>
+  </Layout>
 </template>

@@ -12,7 +12,13 @@ import { useStore } from '~/store'
 import axios from 'axios'
 
 import UserRequestCard from '~/components/manage/moderation/UserRequestCard.vue'
-import Pagination from '~/components/vui/Pagination.vue'
+
+import Layout from '~/components/ui/Layout.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Pagination from '~/components/ui/Pagination.vue'
+import Input from '~/components/ui/Input.vue'
+import Loader from '~/components/ui/Loader.vue'
+import Header from '~/components/ui/Header.vue'
 
 import useSmartSearch from '~/composables/navigation/useSmartSearch'
 import useSharedLabels from '~/composables/locale/useSharedLabels'
@@ -92,110 +98,106 @@ const labels = computed(() => ({
 </script>
 
 <template>
-  <main v-title="labels.reports">
-    <section class="ui vertical stripe segment">
-      <h2 class="ui header">
-        {{ $t('views.admin.moderation.RequestsList.header.userRequests') }}
-      </h2>
-      <div class="ui hidden divider" />
-      <div class="ui inline form">
-        <div class="fields">
-          <div class="ui field">
-            <label for="requests-search">{{ $t('views.admin.moderation.RequestsList.label.search') }}</label>
-            <form @submit.prevent="query = search.value">
-              <input
-                id="requests-search"
-                ref="search"
-                name="search"
-                type="text"
-                :value="query"
-                :placeholder="labels.searchPlaceholder"
-              >
-            </form>
-          </div>
-          <div class="field">
-            <label for="requests-status">{{ $t('views.admin.moderation.RequestsList.label.status') }}</label>
-            <select
-              id="requests-status"
-              class="ui dropdown"
-              :value="getTokenValue('status', '')"
-              @change="addSearchToken('status', ($event.target as HTMLSelectElement).value)"
-            >
-              <option value="">
-                {{ $t('views.admin.moderation.RequestsList.option.status.all') }}
-              </option>
-              <option value="pending">
-                {{ $t('views.admin.moderation.RequestsList.option.status.pending') }}
-              </option>
-              <option value="approved">
-                {{ $t('views.admin.moderation.RequestsList.option.status.approved') }}
-              </option>
-              <option value="refused">
-                {{ $t('views.admin.moderation.RequestsList.option.status.refused') }}
-              </option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="requests-ordering">{{ $t('views.admin.moderation.RequestsList.ordering.label') }}</label>
-            <select
-              id="requests-ordering"
-              v-model="ordering"
-              class="ui dropdown"
-            >
-              <option
-                v-for="(option, key) in orderingOptions"
-                :key="key"
-                :value="option[0]"
-              >
-                {{ sharedLabels.filters[option[1]] }}
-              </option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="requests-ordering-direction">{{ $t('views.admin.moderation.RequestsList.ordering.direction.label') }}</label>
-            <select
-              id="requests-ordering-direction"
-              v-model="orderingDirection"
-              class="ui dropdown"
-            >
-              <option value="+">
-                {{ $t('views.admin.moderation.RequestsList.ordering.direction.ascending') }}
-              </option>
-              <option value="-">
-                {{ $t('views.admin.moderation.RequestsList.ordering.direction.descending') }}
-              </option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div
-        v-if="isLoading"
-        class="ui active inverted dimmer"
-      >
-        <div class="ui loader" />
-      </div>
-      <div v-else-if="!result || result.count === 0">
-        <empty-state
-          :refresh="true"
-          @refresh="fetchData()"
-        />
-      </div>
-      <template v-else>
-        <user-request-card
-          v-for="obj in result.results"
-          :key="obj.uuid"
-          :init-obj="obj"
-          @handled="fetchData"
-        />
-        <div class="ui center aligned basic segment">
-          <pagination
-            v-if="result.count > paginateBy"
-            v-model:current="page"
-            :paginate-by="paginateBy"
-            :total="result.count"
+  <Header
+    page-heading
+    :h1="t('views.admin.moderation.RequestsList.header.userRequests')"
+  />
+  <Spacer />
+  <div class="ui inline form">
+    <div class="fields">
+      <div class="ui field">
+        <form @submit.prevent="query = search.value">
+          <Input
+            id="requests-search"
+            ref="search"
+            v-model="query"
+            name="search"
+            search
+            :label="t('views.admin.moderation.RequestsList.label.search')"
+            :placeholder="labels.searchPlaceholder"
           />
+        </form>
+      </div>
+      <Spacer :size="16" />
+      <Layout flex>
+        <Spacer grow />
+        <div class="field">
+          <label for="requests-status">{{ t('views.admin.moderation.RequestsList.label.status') }}</label>
+          <select
+            id="requests-status"
+            class="ui dropdown"
+            :value="getTokenValue('status', '')"
+            @change="addSearchToken('status', ($event.target as HTMLSelectElement).value)"
+          >
+            <option value="">
+              {{ t('views.admin.moderation.RequestsList.option.status.all') }}
+            </option>
+            <option value="pending">
+              {{ t('views.admin.moderation.RequestsList.option.status.pending') }}
+            </option>
+            <option value="approved">
+              {{ t('views.admin.moderation.RequestsList.option.status.approved') }}
+            </option>
+            <option value="refused">
+              {{ t('views.admin.moderation.RequestsList.option.status.refused') }}
+            </option>
+          </select>
         </div>
-      </template>
-    </section>
-  </main>
+        <div class="field">
+          <label for="requests-ordering">{{ t('views.admin.moderation.RequestsList.ordering.label') }}</label>
+          <select
+            id="requests-ordering"
+            v-model="ordering"
+            class="ui dropdown"
+          >
+            <option
+              v-for="(option, key) in orderingOptions"
+              :key="key"
+              :value="option[0]"
+            >
+              {{ sharedLabels.filters[option[1]] }}
+            </option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="requests-ordering-direction">{{ t('views.admin.moderation.RequestsList.ordering.direction.label') }}</label>
+          <select
+            id="requests-ordering-direction"
+            v-model="orderingDirection"
+            class="ui dropdown"
+          >
+            <option value="+">
+              {{ t('views.admin.moderation.RequestsList.ordering.direction.ascending') }}
+            </option>
+            <option value="-">
+              {{ t('views.admin.moderation.RequestsList.ordering.direction.descending') }}
+            </option>
+          </select>
+        </div>
+      </Layout>
+    </div>
+  </div>
+  <Loader v-if="isLoading" />
+  <div v-else-if="!result || result.count === 0">
+    <Spacer />
+    <empty-state
+      :refresh="true"
+      @refresh="fetchData()"
+    />
+  </div>
+  <template v-else>
+    <Spacer />
+    <user-request-card
+      v-for="obj in result.results"
+      :key="obj.uuid"
+      :init-obj="obj"
+      @handled="fetchData"
+    />
+    <Pagination
+      v-if="page && result.count > paginateBy"
+      v-model:page="page"
+      v-model:pages="result.count"
+      :paginate-by="paginateBy"
+    />
+  </template>
 </template>

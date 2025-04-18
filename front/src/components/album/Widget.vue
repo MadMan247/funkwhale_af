@@ -6,21 +6,27 @@ import { useStore } from '~/store'
 
 import axios from 'axios'
 
-import AlbumCard from '~/components/audio/album/Card.vue'
-
+import usePage from '~/composables/navigation/usePage'
 import useErrorHandler from '~/composables/useErrorHandler'
+
+import AlbumCard from '~/components/album/Card.vue'
+import Section from '~/components/ui/Section.vue'
+import Loader from '~/components/ui/Loader.vue'
+import Pagination from '~/components/ui/Pagination.vue'
 
 interface Props {
   filters: Record<string, string | boolean>
   showCount?: boolean
   search?: boolean
   limit?: number
+  title?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   showCount: false,
   search: false,
-  limit: 12
+  limit: 12,
+  title: undefined
 })
 
 const store = useStore()
@@ -28,6 +34,7 @@ const store = useStore()
 const query = ref('')
 const albums = reactive([] as Album[])
 const count = ref(0)
+const page = usePage()
 const nextPage = ref()
 
 const isLoading = ref(false)
@@ -38,13 +45,14 @@ const fetchData = async (url = 'albums/') => {
     const params = {
       q: query.value,
       ...props.filters,
+      page: page.value,
       page_size: props.limit
     }
 
     const response = await axios.get(url, { params })
     nextPage.value = response.data.next
     count.value = response.data.count
-    albums.push(...response.data.results)
+    albums.splice(0, albums.length, ...response.data.results)
   } catch (error) {
     useErrorHandler(error as Error)
   }
@@ -52,68 +60,58 @@ const fetchData = async (url = 'albums/') => {
   isLoading.value = false
 }
 
+setTimeout(fetchData, 1000)
+
 const performSearch = () => {
   albums.length = 0
   fetchData()
 }
 
 watch(
-  () => store.state.moderation.lastUpdate,
+  [() => store.state.moderation.lastUpdate, page],
   () => fetchData(),
   { immediate: true }
 )
 </script>
 
 <template>
-  <div class="wrapper">
-    <h3
-      v-if="!!$slots.title"
-      class="ui header"
-    >
-      <slot name="title" />
-      <span
-        v-if="showCount"
-        class="ui tiny circular label"
-      >{{ count }}</span>
-    </h3>
-    <slot />
+  <Section
+    align-left
+    :h2="title"
+    :columns-per-item="1"
+  >
     <inline-search-bar
       v-if="search"
       v-model="query"
+      style="grid-column: 1 / -1;"
       @search="performSearch"
     />
-    <div class="ui hidden divider" />
-    <div class="ui app-cards cards">
-      <div
-        v-if="isLoading"
-        class="ui inverted active dimmer"
-      >
-        <div class="ui loader" />
-      </div>
+    <Loader
+      v-if="isLoading"
+      style="grid-column: 1 / -1;"
+    />
+    <template v-if="!isLoading && albums.length > 0">
       <album-card
         v-for="album in albums"
         :key="album.id"
         :album="album"
       />
-    </div>
+    </template>
     <slot
       v-if="!isLoading && albums.length === 0"
       name="empty-state"
     >
       <empty-state
         :refresh="true"
+        style="grid-column: 1 / -1;"
         @refresh="fetchData"
       />
     </slot>
-    <template v-if="nextPage">
-      <div class="ui hidden divider" />
-      <button
-        v-if="nextPage"
-        :class="['ui', 'basic', 'button']"
-        @click="fetchData(nextPage)"
-      >
-        {{ $t('components.audio.album.Widget.button.more') }}
-      </button>
-    </template>
-  </div>
+    <Pagination
+      v-if="page && albums && count > props.limit"
+      v-model:page="page"
+      :pages="Math.ceil((count || 0) / props.limit)"
+      style="grid-column: 1 / -1;"
+    />
+  </Section>
 </template>

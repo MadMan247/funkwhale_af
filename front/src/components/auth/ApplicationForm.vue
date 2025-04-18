@@ -7,6 +7,8 @@ import { computedEager } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { uniq } from 'lodash-es'
 
+import Button from '~/components/ui/Button.vue'
+
 import useScopes from '~/composables/auth/useScopes'
 
 interface Events {
@@ -120,7 +122,7 @@ const allScopes = computed(() => {
       class="ui negative message"
     >
       <h4 class="header">
-        {{ $t('components.auth.ApplicationForm.header.failure') }}
+        {{ t('components.auth.ApplicationForm.header.failure') }}
       </h4>
       <ul class="list">
         <li
@@ -132,7 +134,7 @@ const allScopes = computed(() => {
       </ul>
     </div>
     <div class="ui field">
-      <label for="application-name">{{ $t('components.auth.ApplicationForm.label.name') }}</label>
+      <label for="application-name">{{ t('components.auth.ApplicationForm.label.name') }}</label>
       <input
         id="application-name"
         v-model="fields.name"
@@ -142,7 +144,7 @@ const allScopes = computed(() => {
       >
     </div>
     <div class="ui field">
-      <label for="redirect-uris">{{ $t('components.auth.ApplicationForm.label.redirectUri') }}</label>
+      <label for="redirect-uris">{{ t('components.auth.ApplicationForm.label.redirectUri') }}</label>
       <input
         id="redirect-uris"
         v-model="fields.redirect_uris"
@@ -150,13 +152,13 @@ const allScopes = computed(() => {
         type="text"
       >
       <p class="help">
-        {{ $t('components.auth.ApplicationForm.help.redirectUri') }}
+        {{ t('components.auth.ApplicationForm.help.redirectUri') }}
       </p>
     </div>
     <div class="ui field">
-      <label>{{ $t('components.auth.ApplicationForm.label.scopes.label') }}</label>
+      <label>{{ t('components.auth.ApplicationForm.label.scopes.label') }}</label>
       <p>
-        {{ $t('components.auth.ApplicationForm.label.scopes.description') }}
+        {{ t('components.auth.ApplicationForm.label.scopes.description') }}
       </p>
       <div class="ui stackable two column grid">
         <div
@@ -198,16 +200,16 @@ const allScopes = computed(() => {
         </div>
       </div>
     </div>
-    <button
-      :class="['ui', {'loading': isLoading}, 'success', 'button']"
+    <Button
+      :is-loading="isLoading"
       type="submit"
     >
       <span v-if="app !== null">
-        {{ $t('components.auth.ApplicationForm.button.update') }}
+        {{ t('components.auth.ApplicationForm.button.update') }}
       </span>
       <span v-else>
-        {{ $t('components.auth.ApplicationForm.button.create') }}
+        {{ t('components.auth.ApplicationForm.button.create') }}
       </span>
-    </button>
+    </Button>
   </form>
 </template>

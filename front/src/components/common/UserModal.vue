@@ -8,6 +8,8 @@ import useTheme from '~/composables/useTheme'
 import { useVModel } from '@vueuse/core'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useStore } from '~/store'
+import { useRouter } from 'vue-router'
 
 import { SUPPORTED_LOCALES } from '~/init/locale'
 
@@ -20,6 +22,9 @@ interface Events {
 interface Props {
   show: boolean
 }
+
+const router = useRouter()
+const store = useStore()
 
 const emit = defineEmits<Events>()
 const props = defineProps<Props>()
@@ -62,18 +67,18 @@ const locale = computed(() => SUPPORTED_LOCALES[i18nLocale.value as SupportedLan
     :fullscreen="false"
   >
     <div
-      v-if="$store.state.auth.authenticated"
+      v-if="store.state.auth.authenticated"
       class="header"
     >
       <img
-        v-if="$store.state.auth.profile?.avatar && $store.state.auth.profile?.avatar.urls.medium_square_crop"
-        v-lazy="$store.getters['instance/absoluteUrl']($store.state.auth.profile?.avatar.urls.medium_square_crop)"
+        v-if="store.state.auth.profile?.avatar && store.state.auth.profile?.avatar.urls.medium_square_crop"
+        v-lazy="store.getters['instance/absoluteUrl'](store.state.auth.profile?.avatar.urls.medium_square_crop)"
         alt=""
         class="ui centered small circular image"
       >
       <actor-avatar
         v-else
-        :actor="{preferred_username: $store.state.auth.username, full_username: $store.state.auth.username,}"
+        :actor="{preferred_username: store.state.auth.username, full_username: store.state.auth.username,}"
       />
       <h3 class="user-modal title">
         {{ labels.header }}
@@ -124,12 +129,12 @@ const locale = computed(() => SUPPORTED_LOCALES[i18nLocale.value as SupportedLan
           </div>
         </div>
         <div class="ui divider" />
-        <template v-if="$store.state.auth.authenticated">
+        <template v-if="store.state.auth.authenticated">
           <div class="row">
             <div
               class="column"
               role="button"
-              @click.prevent.exact="$router.push({name: 'profile.overview', params: { username: $store.state.auth.username }})"
+              @click.prevent.exact="router.push({name: 'profile.overview', params: { username: store.state.auth.username }})"
             >
               <i class="user icon user-modal list-icon" />
               <span class="user-modal list-item">{{ labels.profile }}</span>
@@ -137,7 +142,7 @@ const locale = computed(() => SUPPORTED_LOCALES[i18nLocale.value as SupportedLan
           </div>
           <div class="row">
             <router-link
-              v-if="$store.state.auth.authenticated"
+              v-if="store.state.auth.authenticated"
               v-slot="{ navigate }"
               custom
               :to="{ name: 'notifications' }"
@@ -212,7 +217,7 @@ const locale = computed(() => SUPPORTED_LOCALES[i18nLocale.value as SupportedLan
         <div class="ui divider" />
 
         <router-link
-          v-if="$store.state.auth.authenticated"
+          v-if="store.state.auth.authenticated"
           v-slot="{ navigate }"
           custom
           :to="{ name: 'logout' }"
@@ -244,7 +249,7 @@ const locale = computed(() => SUPPORTED_LOCALES[i18nLocale.value as SupportedLan
           </div>
         </router-link>
         <router-link
-          v-if="!$store.state.auth.authenticated && $store.state.instance.settings.users.registration_enabled.value"
+          v-if="!store.state.auth.authenticated && store.state.instance.settings.users.registration_enabled.value"
           v-slot="{ navigate }"
           custom
           :to="{ name: 'signup' }"

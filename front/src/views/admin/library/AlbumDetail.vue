@@ -3,13 +3,26 @@ import { humanSize, truncate } from '~/utils/filters'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { computed, ref } from 'vue'
+import { useStore } from '~/store'
 
 import axios from 'axios'
 
+import DangerousButton from '~/components/common/DangerousButton.vue'
 import FetchButton from '~/components/federation/FetchButton.vue'
 import TagsList from '~/components/tags/List.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
+import Link from '~/components/ui/Link.vue'
+import Popover from '~/components/ui/Popover.vue'
+import PopoverItem from '~/components/ui/popover/PopoverItem.vue'
+import OptionsButton from '~/components/ui/button/Options.vue'
+import Loader from '~/components/ui/Loader.vue'
+import Header from '~/components/ui/Header.vue'
+import Heading from '~/components/ui/Heading.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Pill from '~/components/ui/Pill.vue'
+
 
 interface Props {
   id: number
@@ -17,11 +30,13 @@ interface Props {
 
 const props = defineProps<Props>()
 
+const store = useStore()
 const { t } = useI18n()
 const router = useRouter()
 
 const labels = computed(() => ({
-  statsWarning: t('views.admin.library.AlbumDetail.warning.stats')
+  statsWarning: t('views.admin.library.AlbumDetail.warning.stats'),
+  more: t('components.library.AlbumDropdown.button.more')
 }))
 
 const isLoading = ref(false)
@@ -71,362 +86,483 @@ const remove = async () => {
 }
 
 const getQuery = (field: string, value: string) => `${field}:"${value}"`
+
+const open = ref(false)
 </script>
 
 <template>
-  <main>
-    <div
-      v-if="isLoading"
-      class="ui vertical segment"
-    >
-      <div :class="['ui', 'centered', 'active', 'inline', 'loader']" />
-    </div>
-    <template v-if="object">
-      <section
-        v-title="object.title"
-        :class="['ui', 'head', 'vertical', 'stripe', 'segment']"
+  <Loader v-if="isLoading" />
+  <Header
+    v-if="object"
+    v-title="object.title"
+    :h1="truncate(object.title)"
+    page-heading
+  >
+    <template #image>
+      <img
+        v-if="object.cover?.urls.original"
+        v-lazy="store.getters['instance/absoluteUrl'](object.cover.urls.medium_square_crop)"
+        alt=""
       >
-        <div class="ui stackable one column grid">
-          <div class="ui column">
-            <div class="segment-content">
-              <h2 class="ui header">
-                <img
-                  v-if="object.cover?.urls.original"
-                  v-lazy="$store.getters['instance/absoluteUrl'](object.cover.urls.medium_square_crop)"
-                  alt=""
-                >
-                <img
-                  v-else
-                  alt=""
-                  src="../../../assets/audio/default-cover.png"
-                >
-                <div class="content">
-                  {{ truncate(object.title) }}
-                  <div class="sub header">
-                    <template v-if="object.is_local">
-                      <span class="ui tiny accent label">
-                        <i class="home icon" />
-                        {{ $t('views.admin.library.AlbumDetail.header.local') }}
-                      </span>
-                      &nbsp;
-                    </template>
-                  </div>
-                </div>
-              </h2>
-
-              <template v-if="object.tags && object.tags.length > 0">
-                <tags-list
-                  :limit="5"
-                  detail-route="manage.library.tags.detail"
-                  :tags="object.tags"
-                />
-                <div class="ui hidden divider" />
-              </template>
-
-              <div class="header-buttons">
-                <div class="ui icon buttons">
-                  <router-link
-                    class="ui labeled icon button"
-                    :to="{name: 'library.albums.detail', params: {id: object.id }}"
-                  >
-                    <i class="info icon" />
-                    {{ $t('views.admin.library.AlbumDetail.link.localProfile') }}
-                  </router-link>
-                  <button
-                    v-dropdown
-                    class="ui floating dropdown icon button"
-                  >
-                    <i class="dropdown icon" />
-                    <div class="menu">
-                      <a
-                        v-if="$store.state.auth.profile && $store.state.auth.profile.is_superuser"
-                        class="basic item"
-                        :href="$store.getters['instance/absoluteUrl'](`/api/admin/music/album/${object.id}`)"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <i class="wrench icon" />
-                        {{ $t('views.admin.library.AlbumDetail.link.django') }}
-                      </a>
-                      <a
-                        v-if="object.mbid"
-                        class="basic item"
-                        :href="`https://musicbrainz.org/release/${object.mbid}`"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <i class="external icon" />
-                        {{ $t('views.admin.library.AlbumDetail.link.musicbrainz') }}
-                      </a>
-                      <fetch-button
-                        v-if="!object.is_local"
-                        class="basic item"
-                        :url="`albums/${object.id}/fetches/`"
-                        @refresh="fetchData"
-                      >
-                        <i class="refresh icon" />&nbsp;
-                        {{ $t('views.admin.library.AlbumDetail.button.remoteRefresh') }}
-                      </fetch-button>
-                      <a
-                        class="basic item"
-                        :href="object.url || object.fid"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <i class="external icon" />
-                        {{ $t('views.admin.library.AlbumDetail.link.remoteProfile') }}
-                      </a>
-                    </div>
-                  </button>
-                </div>
-                <div class="ui buttons">
-                  <router-link
-                    v-if="object.is_local"
-                    :to="{name: 'library.albums.edit', params: {id: object.id }}"
-                    class="ui labeled icon button"
-                  >
-                    <i class="edit icon" />
-                    {{ $t('views.admin.library.AlbumDetail.button.edit') }}
-                  </router-link>
-                </div>
-                <div class="ui buttons">
-                  <dangerous-button
-                    :class="['ui', {loading: isLoading}, 'basic danger button']"
-                    :action="remove"
-                  >
-                    {{ $t('views.admin.library.AlbumDetail.button.delete') }}
-                    <template #modal-header>
-                      <p>
-                        {{ $t('views.admin.library.AlbumDetail.modal.delete.header') }}
-                      </p>
-                    </template>
-                    <template #modal-content>
-                      <div>
-                        <p>
-                          {{ $t('views.admin.library.AlbumDetail.modal.delete.content.warning') }}
-                        </p>
-                      </div>
-                    </template>
-                    <template #modal-confirm>
-                      <p>
-                        {{ $t('views.admin.library.AlbumDetail.button.delete') }}
-                      </p>
-                    </template>
-                  </dangerous-button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <div class="ui vertical stripe segment">
-        <div class="ui stackable three column grid">
-          <div class="column">
-            <section>
-              <h3 class="ui header">
-                <i class="info icon" />
-                <div class="content">
-                  {{ $t('views.admin.library.AlbumDetail.header.albumData') }}
-                </div>
-              </h3>
-              <table class="ui very basic table">
-                <tbody>
-                  <tr>
-                    <td>
-                      {{ $t('views.admin.library.AlbumDetail.table.album.title') }}
-                    </td>
-                    <td>
-                      {{ object.title }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <router-link :to="{name: 'manage.library.artists.detail', params: {id: object.artist.id }}">
-                        {{ $t('views.admin.library.AlbumDetail.link.artist') }}
-                      </router-link>
-                    </td>
-                    <td>
-                      {{ object.artist.name }}
-                    </td>
-                  </tr>
-                  <tr v-if="!object.is_local">
-                    <td>
-                      <router-link :to="{name: 'manage.moderation.domains.detail', params: {id: object.domain }}">
-                        {{ $t('views.admin.library.AlbumDetail.link.domain') }}
-                      </router-link>
-                    </td>
-                    <td>
-                      {{ object.domain }}
-                    </td>
-                  </tr>
-                  <tr v-if="object.description">
-                    <td>
-                      {{ $t('views.admin.library.AlbumDetail.table.album.description') }}
-                    </td>
-                    <sanitized-html
-                      tag="td"
-                      :html="object.description.html"
-                    />
-                  </tr>
-                </tbody>
-              </table>
-            </section>
-          </div>
-          <div class="column">
-            <section>
-              <h3 class="ui header">
-                <i class="feed icon" />
-                <div class="content">
-                  {{ $t('views.admin.library.AlbumDetail.header.activity') }}&nbsp;
-                  <span :data-tooltip="labels.statsWarning"><i class="question circle icon" /></span>
-                </div>
-              </h3>
-              <div
-                v-if="isLoadingStats"
-                class="ui placeholder"
-              >
-                <div class="full line" />
-                <div class="short line" />
-                <div class="medium line" />
-                <div class="long line" />
-              </div>
-              <table
-                v-else
-                class="ui very basic table"
-              >
-                <tbody>
-                  <tr>
-                    <td>
-                      {{ $t('views.admin.library.AlbumDetail.table.activity.firstSeen') }}
-                    </td>
-                    <td>
-                      <human-date :date="object.creation_date" />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {{ $t('views.admin.library.AlbumDetail.table.activity.listenings') }}
-                    </td>
-                    <td>
-                      {{ stats.listenings }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {{ $t('views.admin.library.AlbumDetail.table.activity.favorited') }}
-                    </td>
-                    <td>
-                      {{ stats.track_favorites }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {{ $t('views.admin.library.AlbumDetail.table.activity.playlists') }}
-                    </td>
-                    <td>
-                      {{ stats.playlists }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <router-link :to="{name: 'manage.moderation.reports.list', query: {q: getQuery('target', `album:${object.id}`) }}">
-                        {{ $t('views.admin.library.AlbumDetail.link.reports') }}
-                      </router-link>
-                    </td>
-                    <td>
-                      {{ stats.reports }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <router-link :to="{name: 'manage.library.edits', query: {q: getQuery('target', 'album ' + object.id)}}">
-                        {{ $t('views.admin.library.AlbumDetail.link.edits') }}
-                      </router-link>
-                    </td>
-                    <td>
-                      {{ stats.mutations }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </section>
-          </div>
-          <div class="column">
-            <section>
-              <h3 class="ui header">
-                <i class="music icon" />
-                <div class="content">
-                  {{ $t('views.admin.library.AlbumDetail.header.audioContent') }}&nbsp;
-                  <span :data-tooltip="labels.statsWarning"><i class="question circle icon" /></span>
-                </div>
-              </h3>
-              <div
-                v-if="isLoadingStats"
-                class="ui placeholder"
-              >
-                <div class="full line" />
-                <div class="short line" />
-                <div class="medium line" />
-                <div class="long line" />
-              </div>
-              <table
-                v-else
-                class="ui very basic table"
-              >
-                <tbody>
-                  <tr>
-                    <td>
-                      {{ $t('views.admin.library.AlbumDetail.table.audioContent.cachedSize') }}
-                    </td>
-                    <td>
-                      {{ humanSize(stats.media_downloaded_size) }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {{ $t('views.admin.library.AlbumDetail.table.audioContent.totalSize') }}
-                    </td>
-                    <td>
-                      {{ humanSize(stats.media_total_size) }}
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>
-                      <router-link :to="{name: 'manage.library.libraries', query: {q: getQuery('album_id', object.id) }}">
-                        {{ $t('views.admin.library.AlbumDetail.link.libraries') }}
-                      </router-link>
-                    </td>
-                    <td>
-                      {{ stats.libraries }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <router-link :to="{name: 'manage.library.uploads', query: {q: getQuery('album_id', object.id) }}">
-                        {{ $t('views.admin.library.AlbumDetail.link.uploads') }}
-                      </router-link>
-                    </td>
-                    <td>
-                      {{ stats.uploads }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <router-link :to="{name: 'manage.library.tracks', query: {q: getQuery('album_id', object.id) }}">
-                        {{ $t('views.admin.library.AlbumDetail.link.tracks') }}
-                      </router-link>
-                    </td>
-                    <td>
-                      {{ object.tracks_count }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </section>
-          </div>
-        </div>
-      </div>
+      <img
+        v-else
+        alt=""
+        src="../../../assets/audio/default-cover.png"
+      >
     </template>
-  </main>
+    <div class="sub header">
+      <template v-if="object.is_local">
+        <Pill>
+          <i class="bi bi-house-fill" />
+          {{ t('views.admin.library.AlbumDetail.header.local') }}
+        </Pill>
+      </template>
+      <template v-if="!object.is_local">
+        <Pill>
+          <i class="bi bi-box-arrow-up-right" />
+          {{ t('views.admin.library.AlbumDetail.header.federated') }}
+        </Pill>
+      </template>
+    </div>
+
+    <TagsList
+      v-if="object.tags && object.tags.length > 0"
+      :limit="5"
+      detail-route="manage.library.tags.detail"
+      :tags="object.tags"
+    />
+    <Spacer />
+    <Layout
+      flex
+      class="header-buttons"
+    >
+      <Link
+        solid
+        primary
+        low-height
+        icon="bi-info-circle"
+        :to="{name: 'library.albums.detail', params: {id: object.id }}"
+      >
+        {{ t('views.admin.library.AlbumDetail.link.localProfile') }}
+      </Link>
+      <fetch-button
+        v-if="!object.is_local"
+        class="basic item"
+        :url="`albums/${object.id}/fetches/`"
+        @refresh="fetchData"
+      >
+        <i class="refresh icon" />&nbsp;
+        {{ t('views.admin.library.AlbumDetail.button.remoteRefresh') }}
+      </fetch-button>
+      <Link
+        v-if="object.is_local"
+        solid
+        primary
+        low-height
+        icon="bi-pencil-fill"
+        :to="{name: 'library.albums.edit', params: {id: object.id }}"
+      >
+        {{ t('views.admin.library.AlbumDetail.button.edit') }}
+      </Link>
+      <dangerous-button
+        :is-loading="isLoading"
+        low-height
+        icon="bi-trash"
+        :action="remove"
+        :title="t('views.admin.library.AlbumDetail.modal.delete.header')"
+      >
+        {{ t('views.admin.library.AlbumDetail.button.delete') }}
+        <template #modal-content>
+          {{ t('views.admin.library.AlbumDetail.modal.delete.content.warning') }}
+        </template>
+        <template #modal-confirm>
+          {{ t('views.admin.library.AlbumDetail.button.delete') }}
+        </template>
+      </dangerous-button>
+      <Spacer grow />
+      <Popover v-model="open">
+        <template #default="{ toggleOpen }">
+          <OptionsButton
+            :title="labels.more"
+            is-square-small
+            @click="toggleOpen()"
+          />
+        </template>
+
+        <template #items>
+          <PopoverItem
+            v-if="store.state.auth.profile && store.state.auth.profile.is_superuser"
+            :to="store.getters['instance/absoluteUrl'](`/api/admin/music/album/${object.id}`)"
+            icon="bi-wrench"
+            target="_blank"
+          >
+            {{ t('views.admin.library.AlbumDetail.link.django') }}
+          </PopoverItem>
+          <PopoverItem
+            v-if="!object.is_local"
+            :to="`albums/${object.id}/fetches/`"
+            icon="bi-arrow-clockwise"
+            @click="fetchData()"
+          >
+            {{ t('views.admin.library.AlbumDetail.button.remoteRefresh') }}
+          </PopoverItem>
+          <PopoverItem
+            v-if="object.mbid"
+            :to="`https://musicbrainz.org/release/${object.mbid}`"
+            icon="bi-box-arrow-up-right"
+            target="_blank"
+          >
+            {{ t('views.admin.library.AlbumDetail.link.musicbrainz') }}
+          </PopoverItem>
+          <PopoverItem
+            :to="object.url || object.fid"
+            icon="bi-box-arrow-up-right"
+            target="_blank"
+          >
+            {{ t('views.admin.library.AlbumDetail.link.remoteProfile') }}
+          </PopoverItem>
+        </template>
+      </Popover>
+    </Layout>
+  </Header>
+  <Layout
+    flex
+    gap-64
+  >
+    <Layout
+      stack
+      style="flex: 1; gap: 0;"
+    >
+      <Heading
+        :h3="t('views.admin.library.AlbumDetail.header.albumData')"
+        class="category"
+      />
+      <Layout
+        flex
+        class="details"
+      >
+        <span
+          class="label"
+        >
+          {{ t('views.admin.library.AlbumDetail.table.album.title') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">{{ object?.title }}</span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <span class="label">
+          {{ t('views.admin.library.AlbumDetail.link.artist') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <Link
+          v-for="a in object?.artist_credit"
+          :key="a.artist.id"
+          class="value"
+          :to="{name: 'manage.library.artists.detail', params: {id: a.artist.id }}"
+        >
+          {{ a.artist.name }}
+        </Link>
+      </Layout>
+      <Layout
+        v-if="!object?.is_local"
+        flex
+        class="details"
+      >
+        <Link :to="{name: 'manage.moderation.domains.detail', params: {id: object?.domain }}">
+          {{ t('views.admin.library.AlbumDetail.link.domain') }}
+        </Link>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">{{ object?.domain }}</span>
+      </Layout>
+      <Layout
+        v-if="object?.description"
+        flex
+        class="details"
+      >
+        <span
+          class="label"
+        >
+          {{ t('views.admin.library.AlbumDetail.table.album.description') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <sanitized-html
+          tag="span"
+          class="value"
+          :html="object.description.html"
+        />
+      </Layout>
+    </Layout>
+    <Layout
+      stack
+      style="flex: 1; gap: 0;"
+    >
+      <Heading
+        :h3="t('views.admin.library.AlbumDetail.header.activity')"
+        class="category"
+      />
+      <Layout
+        flex
+        class="details"
+      >
+        <span
+          class="label"
+        >
+          {{ t('views.admin.library.AlbumDetail.table.activity.firstSeen') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <human-date :date="object?.creation_date" />
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <span
+          class="label"
+        >
+          {{ t('views.admin.library.AlbumDetail.table.activity.listenings') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <span
+          class="label"
+        >
+          {{ stats?.listenings }}
+        </span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <span
+          class="label"
+        >
+          {{ t('views.admin.library.AlbumDetail.table.activity.favorited') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <span
+          class="value"
+        >
+          {{ stats?.track_favorites ?? 0 }}
+        </span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <span
+          class="label"
+        >
+          {{ t('views.admin.library.AlbumDetail.table.activity.playlists') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <span
+          class="value"
+        >
+          {{ stats?.playlists }}
+        </span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <Link
+          class="label"
+          :to="{name: 'manage.moderation.reports.list', query: {q: getQuery('target', `album:${object?.id}`) }}"
+        >
+          {{ t('views.admin.library.AlbumDetail.link.reports') }}
+        </Link>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">
+          {{ stats?.reports }}
+        </span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <Link
+          class="label"
+          :to="{name: 'manage.library.edits', query: {q: getQuery('target', 'album ' + object?.id)}}"
+        >
+          {{ t('views.admin.library.AlbumDetail.link.edits') }}
+        </Link>
+        <Spacer grow />
+        <span class="value">
+          {{ stats?.mutations }}
+        </span>
+      </Layout>
+    </Layout>
+    <Layout
+      stack
+      style="flex: 1; gap: 0;"
+    >
+      <Heading
+        :h3="t('views.admin.library.AlbumDetail.header.audioContent')"
+        class="category"
+        align-left
+      />
+      <Layout
+        flex
+        class="details"
+      >
+        <span
+          class="label"
+        >
+          {{ t('views.admin.library.AlbumDetail.table.audioContent.cachedSize') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">
+          {{ humanSize(stats?.media_downloaded_size) }}
+        </span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <span
+          class="label"
+        >
+          {{ t('views.admin.library.AlbumDetail.table.audioContent.totalSize') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">
+          {{ humanSize(stats?.media_total_size) }}
+        </span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <Link
+          :to="{name: 'manage.library.libraries', query: {q: getQuery('album_id', object?.id) }}"
+        >
+          {{ t('views.admin.library.AlbumDetail.link.libraries') }}
+        </Link>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">
+          {{ stats?.libraries }}
+        </span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <Link
+          :to="{name: 'manage.library.uploads', query: {q: getQuery('album_id', object?.id) }}"
+        >
+          {{ t('views.admin.library.AlbumDetail.link.uploads') }}
+        </Link>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">
+          {{ stats?.uploads }}
+        </span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <Link
+          :to="{name: 'manage.library.tracks', query: {q: getQuery('album_id', object?.id) }}"
+        >
+          {{ t('views.admin.library.AlbumDetail.link.tracks') }}
+        </Link>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">
+          {{ object?.tracks_count }}
+        </span>
+      </Layout>
+    </Layout>
+  </Layout>
 </template>
+
+<style scoped lang="scss">
+.channel-image {
+  width: 200px;
+  height: 200px;
+  border: none;
+}
+
+h3.category {
+  margin-bottom: 16px;
+}
+
+.details {
+  padding: 0 16px;
+  height: 72px;
+  align-items: center;
+  border-top: 1px solid;
+  min-width: 280px;
+
+  @include light-theme {
+    border-color: var(--fw-gray-300);
+  }
+  @include dark-theme {
+    border-color: var(--fw-gray-800);
+  }
+
+  .label {
+    font-weight: 800;
+
+    @include light-theme {
+      color: var(--fw-gray-600);
+    }
+
+    @include dark-theme {
+      color: var(--fw-gray-500);
+    }
+  }
+
+  a.value {
+    text-decoration: underline;
+  }
+
+  &:last-child {
+    border-bottom: 1px solid;
+  }
+}
+
+</style>

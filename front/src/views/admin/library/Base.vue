@@ -1,73 +1,57 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
+import Layout from '~/components/ui/Layout.vue'
+import Nav from '~/components/ui/Nav.vue'
 
 const { t } = useI18n()
 const labels = computed(() => ({
   title: t('views.admin.library.Base.title'),
   secondaryMenu: t('views.admin.library.Base.menu.secondary')
 }))
+
+const tabs = ref([
+  {
+    title: t('views.admin.library.Base.link.edits'),
+    to: {name: 'manage.library.edits'}
+  }, {
+    title: t('views.admin.library.Base.link.channels'),
+    to: {name: 'manage.channels'}
+  }, {
+    title: t('views.admin.library.Base.link.artists'),
+    to: {name: 'manage.library.artists'}
+  }, {
+    title: t('views.admin.library.Base.link.albums'),
+    to: {name: 'manage.library.albums'}
+  }, {
+    title: t('views.admin.library.Base.link.tracks'),
+    to: {name: 'manage.library.tracks'}
+  }, {
+    title: t('views.admin.library.Base.link.libraries'),
+    to: {name: 'manage.library.libraries'}
+  }, {
+    title: t('views.admin.library.Base.link.uploads'),
+    to: {name: 'manage.library.uploads'}
+  }, {
+    title: t('views.admin.library.Base.link.tags'),
+    to: {name: 'manage.library.tags'}
+  }
+])
+
+const route = useRoute()
 </script>
 
 <template>
-  <div
+  <Layout
     v-title="labels.title"
-    class="main pusher page-admin-library"
+    main
+    stack
+    class="page-admin-library"
   >
-    <nav
-      class="ui secondary pointing menu"
-      role="navigation"
-      :aria-label="labels.secondaryMenu"
-    >
-      <router-link
-        class="ui item"
-        :to="{name: 'manage.library.edits'}"
-      >
-        {{ $t('views.admin.library.Base.link.edits') }}
-      </router-link>
-      <router-link
-        class="ui item"
-        :to="{name: 'manage.channels'}"
-      >
-        {{ $t('views.admin.library.Base.link.channels') }}
-      </router-link>
-      <router-link
-        class="ui item"
-        :to="{name: 'manage.library.artists'}"
-      >
-        {{ $t('views.admin.library.Base.link.artists') }}
-      </router-link>
-      <router-link
-        class="ui item"
-        :to="{name: 'manage.library.albums'}"
-      >
-        {{ $t('views.admin.library.Base.link.albums') }}
-      </router-link>
-      <router-link
-        class="ui item"
-        :to="{name: 'manage.library.tracks'}"
-      >
-        {{ $t('views.admin.library.Base.link.tracks') }}
-      </router-link>
-      <router-link
-        class="ui item"
-        :to="{name: 'manage.library.libraries'}"
-      >
-        {{ $t('views.admin.library.Base.link.libraries') }}
-      </router-link>
-      <router-link
-        class="ui item"
-        :to="{name: 'manage.library.uploads'}"
-      >
-        {{ $t('views.admin.library.Base.link.uploads') }}
-      </router-link>
-      <router-link
-        class="ui item"
-        :to="{name: 'manage.library.tags'}"
-      >
-        {{ $t('views.admin.library.Base.link.tags') }}
-      </router-link>
-    </nav>
-    <router-view :key="$route.fullPath" />
-  </div>
+    <Nav v-model="tabs" />
+
+    <router-view :key="route.fullPath" />
+  </Layout>
 </template>

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { Track, Artist, Album, Playlist, Library, Channel, Actor } from '~/types'
 import type { PlayOptionsProps } from '~/composables/audio/usePlayOptions'
-// import type { Track } from '~/types'
 
 import { useStore } from '~/store'
+import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import SemanticModal from '~/components/semantic/Modal.vue'
+import Modal from '~/components/ui/Modal.vue'
 import { computed, ref } from 'vue'
 import usePlayOptions from '~/composables/audio/usePlayOptions'
 import useReport from '~/composables/moderation/useReport'
@@ -55,11 +55,13 @@ const show = useVModel(props, 'show', emit)
 
 const { report, getReportableObjects } = useReport()
 const { enqueue, enqueueNext } = usePlayOptions(props)
+
 const store = useStore()
+const router = useRouter()
+const { t } = useI18n()
 
 const isFavorite = computed(() => store.getters['favorites/isFavorite'](props.track.id))
 
-const { t } = useI18n()
 const favoriteButton = computed(() => isFavorite.value
   ? t('components.audio.podcast.Modal.button.removeFromFavorites')
   : t('components.audio.podcast.Modal.button.addToFavorites')
@@ -90,18 +92,19 @@ const labels = computed(() => ({
 </script>
 
 <template>
-  <semantic-modal
+  <Modal
     ref="modal"
-    v-model:show="show"
+    v-model="show"
+    :title="track.title"
     :scrolling="true"
-    :additional-classes="['scrolling-track-options']"
+    class="scrolling-track-options"
   >
-    <div class="header">
+    <template #topright>
       <div class="ui large centered rounded image">
         <img
           v-if="track.album && track.album.cover && track.album.cover.urls.original"
           v-lazy="
-            $store.getters['instance/absoluteUrl'](
+            store.getters['instance/absoluteUrl'](
               track.album.cover.urls.medium_square_crop
             )
           "
@@ -111,7 +114,7 @@ const labels = computed(() => ({
         <img
           v-else-if="track.cover"
           v-lazy="
-            $store.getters['instance/absoluteUrl'](
+            store.getters['instance/absoluteUrl'](
               track.cover.urls.medium_square_crop
             )
           "
@@ -133,18 +136,15 @@ const labels = computed(() => ({
           src="../../../assets/audio/default-cover.png"
         >
       </div>
-      <h3 class="track-modal-title">
-        {{ track.title }}
-      </h3>
       <h4 class="track-modal-subtitle">
         {{ generateTrackCreditString(track) }}
       </h4>
-    </div>
+    </template>
     <div class="ui hidden divider" />
     <div class="content">
       <div class="ui one column unstackable grid">
         <div
-          v-if="$store.state.auth.authenticated && track.artist_credit?.[0].artist?.content_category !== 'podcast'"
+          v-if="store.state.auth.authenticated && track.artist_credit?.[0].artist?.content_category !== 'podcast'"
           class="row"
         >
           <div
@@ -152,7 +152,7 @@ const labels = computed(() => ({
             class="column"
             role="button"
             :aria-label="favoriteButton"
-            @click.stop="$store.dispatch('favorites/toggle', track.id)"
+            @click.stop="store.dispatch('favorites/toggle', track.id)"
           >
             <i
               :class="[
@@ -175,7 +175,7 @@ const labels = computed(() => ({
             :aria-label="labels.addToQueue"
             @click.stop.prevent="
               enqueue();
-              modal.closeModal();
+              show=false
             "
           >
             <i class="plus icon track-modal list-icon" />
@@ -189,7 +189,7 @@ const labels = computed(() => ({
             :aria-label="labels.playNext"
             @click.stop.prevent="
               enqueueNext(true);
-              modal.closeModal();
+              show=false
             "
           >
             <i class="step forward icon track-modal list-icon" />
@@ -202,11 +202,11 @@ const labels = computed(() => ({
             role="button"
             :aria-label="labels.startRadio"
             @click.stop.prevent="
-              $store.dispatch('radios/start', {
+              store.dispatch('radios/start', {
                 type: 'similar',
                 objectId: track.id,
               });
-              modal.closeModal();
+              show=false
             "
           >
             <i class="rss icon track-modal list-icon" />
@@ -218,7 +218,7 @@ const labels = computed(() => ({
             class="column"
             role="button"
             :aria-label="labels.addToPlaylist"
-            @click.stop="$store.commit('playlists/chooseTrack', track)"
+            @click.stop="store.commit('playlists/chooseTrack', track)"
           >
             <i class="list icon track-modal list-icon" />
             <span class="track-modal list-item">{{
@@ -236,7 +236,7 @@ const labels = computed(() => ({
             role="button"
             :aria-label="albumDetailsButton"
             @click.prevent.exact="
-              $router.push({
+              router.push({
                 name: 'library.albums.detail',
                 params: { id: track.album?.id },
               })
@@ -258,7 +258,7 @@ const labels = computed(() => ({
             class="column"
             role="button"
             :aria-label="artistDetailsButton"
-            @click.prevent.exact="$router.push({ name: 'library.artists.detail', params: { id: ac.artist.id } })"
+            @click.prevent.exact="router.push({ name: 'library.artists.detail', params: { id: ac.artist.id } })"
           >
             <i class="user icon track-modal list-icon" />
             <span class="track-modal list-item">{{ ac.artist.name }}</span>
@@ -271,7 +271,7 @@ const labels = computed(() => ({
             role="button"
             :aria-label="trackDetailsButton"
             @click.prevent.exact="
-              $router.push({
+              router.push({
                 name: 'library.tracks.detail',
                 params: { id: track.id },
               })
@@ -298,5 +298,5 @@ const labels = computed(() => ({
         </div>
       </div>
     </div>
-  </semantic-modal>
+  </Modal>
 </template>

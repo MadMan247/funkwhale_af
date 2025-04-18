@@ -26,18 +26,14 @@ const labels = computed(() => ({
 <template>
   <main
     v-title="labels.title"
-    class="main pusher"
+    class="main"
   >
-    <section class="ui vertical stripe segment">
-      <div class="ui small text container">
-        <h2>
-          {{ $t('views.auth.Signup.header.createAccount') }}
-        </h2>
-        <signup-form
-          :default-invitation="defaultInvitation"
-          :next="next"
-        />
-      </div>
-    </section>
+    <h2>
+      {{ t('views.auth.Signup.header.createAccount') }}
+    </h2>
+    <signup-form
+      :default-invitation="defaultInvitation"
+      :next="next"
+    />
   </main>
 </template>

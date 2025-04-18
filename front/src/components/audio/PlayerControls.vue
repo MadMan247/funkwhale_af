@@ -5,7 +5,10 @@ import { computed } from 'vue'
 import { usePlayer } from '~/composables/audio/player'
 import { useQueue } from '~/composables/audio/queue'
 
-const { playPrevious, hasNext, playNext, currentTrack } = useQueue()
+import Button from '~/components/ui/Button.vue'
+
+// TODO: Check if we want to use `currentTrack` from useQueue() in order to disable some icon. Or not.
+const { playPrevious, hasNext, playNext } = useQueue()
 const { isPlaying } = usePlayer()
 
 const { t } = useI18n()
@@ -19,40 +22,33 @@ const labels = computed(() => ({
 
 <template>
   <div class="player-controls">
-    <button
+    <Button
       :title="labels.previous"
       :aria-label="labels.previous"
-      class="circular button control tablet-and-up"
+      round
+      ghost
+      class="control tablet-and-up"
+      icon="bi-skip-backward-fill"
       @click.prevent.stop="playPrevious()"
-    >
-      <i :class="['ui', 'large', 'backward step', 'icon']" />
-    </button>
-    <button
-      v-if="!isPlaying"
-      :title="labels.play"
-      :aria-label="labels.play"
-      class="circular button control"
-      @click.prevent.stop="isPlaying = true"
-    >
-      <i :class="['ui', 'big', 'play', {'disabled': !currentTrack}, 'icon']" />
-    </button>
-    <button
-      v-else
-      :title="labels.pause"
-      :aria-label="labels.pause"
-      class="circular button control"
-      @click.prevent.stop="isPlaying = false"
-    >
-      <i :class="['ui', 'big', 'pause', {'disabled': !currentTrack}, 'icon']" />
-    </button>
-    <button
+    />
+    <Button
+      :title="isPlaying ? labels.pause : labels.play"
+      round
+      ghost
+      :aria-label="isPlaying ? labels.pause : labels.play"
+      :class="['control', isPlaying ? 'pause' : 'play', 'large']"
+      :icon="isPlaying ? 'bi-pause-fill' : 'bi-play-fill'"
+      @click.prevent.stop="isPlaying = !isPlaying"
+    />
+    <Button
       :title="labels.next"
       :aria-label="labels.next"
+      round
+      ghost
       :disabled="!hasNext"
-      class="circular button control"
+      class="control"
+      icon="bi-skip-forward-fill"
       @click.prevent.stop="playNext()"
-    >
-      <i :class="['ui', 'large', {'disabled': !hasNext}, 'forward step', 'icon']" />
-    </button>
+    />
   </div>
 </template>

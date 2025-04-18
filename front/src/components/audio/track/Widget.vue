@@ -1,19 +1,26 @@
 <script setup lang="ts">
 import type { Track, Listening } from '~/types'
 
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive, watch, onMounted } from 'vue'
 import { useStore } from '~/store'
 import { clone } from 'lodash-es'
+import { useI18n } from 'vue-i18n'
+import { getArtistCoverUrl } from '~/utils/utils'
 
 import axios from 'axios'
-
+import usePage from '~/composables/navigation/usePage'
 import useWebSocketHandler from '~/composables/useWebSocketHandler'
+
 import PlayButton from '~/components/audio/PlayButton.vue'
 import TagsList from '~/components/tags/List.vue'
+import Section from '~/components/ui/Section.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Loader from '~/components/ui/Loader.vue'
+import Heading from '~/components/ui/Heading.vue'
+import Pagination from '~/components/ui/Pagination.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
-
-import { getArtistCoverUrl } from '~/utils/utils'
 
 interface Events {
   (e: 'count', count: number): void
@@ -23,55 +30,61 @@ interface Props {
   filters: Record<string, string | boolean>
   url: string
   isActivity?: boolean
-  showCount?: boolean
   limit?: number
   itemClasses?: string
   websocketHandlers?: string[]
+  title?: string
 }
 
 const emit = defineEmits<Events>()
 const props = withDefaults(defineProps<Props>(), {
   isActivity: true,
-  showCount: false,
-  limit: 5,
+  limit: 9,
   itemClasses: '',
-  websocketHandlers: () => []
+  websocketHandlers: () => [],
+  title: undefined
 })
 
 const store = useStore()
+const { t } = useI18n()
 
 const objects = reactive([] as Listening[])
 const count = ref(0)
-const nextPage = ref<string | null>(null)
+const page = usePage()
 
 const isLoading = ref(false)
+
 const fetchData = async (url = props.url) => {
   isLoading.value = true
 
   const params = {
     ...clone(props.filters),
-    page_size: props.limit
+    page: page.value,
+    page_size: props.limit ?? 9
   }
 
   try {
     const response = await axios.get(url, { params })
-    nextPage.value = response.data.next
     count.value = response.data.count
 
     const newObjects = !props.isActivity
       ? response.data.results.map((track: Track) => ({ track }))
       : response.data.results
 
-    objects.push(...newObjects)
+    objects.splice(0, objects.length, ...newObjects)
   } catch (error) {
     useErrorHandler(error as Error)
+  } finally {
+    isLoading.value = false
   }
-
-  isLoading.value = false
 }
 
+onMounted(() => {
+  setTimeout(fetchData, 1000)
+})
+
 watch(
-  () => store.state.moderation.lastUpdate,
+  [() => store.state.moderation.lastUpdate, page],
   () => fetchData(),
   { immediate: true }
 )
@@ -79,150 +92,249 @@ watch(
 watch(count, (to) => emit('count', to))
 
 watch(() => props.websocketHandlers.includes('Listen'), (to) => {
-  useWebSocketHandler('Listen', (event) => {
-    // TODO (wvffle): Add reactivity to recently listened / favorited / added (#1316, #1534)
-    // count.value += 1
+  if (to) {
+    useWebSocketHandler('Listen', (event: unknown) => {
+      // Handle WebSocket events for "Listen"
 
-    // objects.unshift(event as Listening)
-    // objects.pop()
-  })
-})
+      // Add the event to `objects` reactively
+      objects.unshift(event as Listening)
+
+      // Keep the array size within limits (e.g., remove the last item if needed)
+      if (objects.length > props.limit) {
+        objects.pop()
+      }
+    })
+  }
+}, { immediate: true })
 </script>
 
 <template>
-  <div class="component-track-widget">
-    <h3 v-if="!!$slots.title">
-      <slot name="title" />
-      <span
-        v-if="showCount"
-        class="ui tiny circular label"
-      >{{ count }}</span>
-    </h3>
-    <div
-      v-if="count > 0"
-      class="ui divided unstackable items"
+  <Section
+    align-left
+    :h2="title"
+    :columns-per-item="4"
+  >
+    <Loader
+      v-if="isLoading"
+      style="grid-column: 1 / -1;"
+    />
+    <Alert
+      v-if="!isLoading && count === 0"
+      style="grid-column: 1 / -1;"
+      blue
+      align-items="center"
     >
-      <div
-        v-for="object in objects"
-        :key="object.id"
-        :class="['item', itemClasses]"
-      >
-        <div class="ui tiny image">
-          <img
-            v-if="object.track.album && object.track.album.cover"
-            v-lazy="$store.getters['instance/absoluteUrl'](object.track.album.cover.urls.medium_square_crop)"
-            alt=""
-          >
-          <img
-            v-else-if="object.track.cover"
-            v-lazy="$store.getters['instance/absoluteUrl'](object.track.cover.urls.medium_square_crop)"
-            alt=""
-          >
-          <img
-            v-else-if="object.track.artist_credit && object.track.artist_credit.length > 0"
-            v-lazy="getArtistCoverUrl(object.track.artist_credit)"
-            alt=""
-          >
-          <img
-            v-else
-            alt=""
-            src="../../../assets/audio/default-cover.png"
-          >
-          <play-button
-            class="play-overlay"
-            :icon-only="true"
-            :button-classes="['ui', 'circular', 'tiny', 'vibrant', 'icon', 'button']"
-            :track="object.track"
+      <h4>
+        <i class="bi bi-search" />
+        {{ t('components.audio.track.Widget.empty.noResults') }}
+      </h4>
+    </Alert>
+    <!-- TODO: Use activity.vue -->
+    <div
+      v-for="object in (count > 0 ? objects : [])"
+      :key="object.id"
+      class="funkwhale activity"
+      :class="['item', itemClasses]"
+    >
+      <div class="activity-image">
+        <img
+          v-if="object.track.album && object.track.album.cover"
+          v-lazy="store.getters['instance/absoluteUrl'](object.track.album.cover.urls.small_square_crop)"
+          alt=""
+        >
+        <img
+          v-else-if="object.track.cover"
+          v-lazy="store.getters['instance/absoluteUrl'](object.track.cover.urls.small_square_crop)"
+          alt=""
+        >
+        <img
+          v-else-if="object.track.artist_credit && object.track.artist_credit.length > 1"
+          v-lazy="getArtistCoverUrl(object.track.artist_credit)"
+          alt=""
+        >
+        <i
+          v-else
+          class="bi bi-vinyl-fill"
+        />
+        <!-- TODO: Add Playbutton overlay -->
+      </div>
+      <div class="activity-content">
+        <router-link
+          class="funkwhale link artist"
+          :to="{name: 'library.tracks.detail', params: {id: object.track.id}}"
+        >
+          <Heading
+            :h3="object.track.title"
+            title
           />
+        </router-link>
+        <Spacer :size="2" />
+        <div
+          v-if="object.track.artist_credit"
+          class="funkwhale link artist"
+        >
+          <span
+            v-for="ac in object.track.artist_credit"
+            :key="ac.artist.id"
+          >
+            <router-link
+              class="discrete link"
+              :to="{ name: 'library.artists.detail', params: { id: ac.artist.id } }"
+            >
+              {{ ac.credit }}
+            </router-link>
+            <span v-if="ac.joinphrase">{{ ac.joinphrase }}</span>
+          </span>
         </div>
-        <div class="middle aligned content">
-          <div class="ui unstackable grid">
-            <div class="thirteen wide stretched column">
-              <div class="ellipsis">
-                <router-link :to="{name: 'library.tracks.detail', params: {id: object.track.id}}">
-                  {{ object.track.title }}
-                </router-link>
-              </div>
-              <div
-                v-if="object.track.artist_credit"
-                class="meta ellipsis"
-              >
-                <span
-                  v-for="ac in object.track.artist_credit"
-                  :key="ac.artist.id"
-                >
-                  <router-link
-                    class="discrete link"
-                    :to="{ name: 'library.artists.detail', params: { id: ac.artist.id } }"
-                  >
-                    {{ ac.credit }}
-                  </router-link>
-                  <span v-if="ac.joinphrase">{{ ac.joinphrase }}</span>
-                </span>
-              </div>
-              <tags-list
-                label-classes="tiny"
-                :truncate-size="20"
-                :limit="2"
-                :show-more="false"
-                :tags="object.track.tags"
-              />
-
-              <div
-                v-if="isActivity"
-                class="extra"
-              >
-                <router-link
-                  class="left floated"
-                  :to="{name: 'profile.overview', params: {username: object.actor.name}}"
-                >
-                  <span class="at symbol" />{{ object.actor.name }}
-                </router-link>
-                <span class="right floated"><human-date :date="object.creation_date" /></span>
-              </div>
-            </div>
-            <div class="one wide stretched column">
-              <play-button
-                class="basic icon"
-                :account="object.actor"
-                :dropdown-only="true"
-                :dropdown-icon-classes="['ellipsis', 'vertical', 'large really discrete']"
-                :track="object.track"
-              />
-            </div>
-          </div>
+        <Spacer :size="8" />
+        <TagsList
+          label-classes="tiny"
+          :truncate-size="20"
+          :limit="2"
+          :show-more="false"
+          :tags="object.track.tags"
+        />
+        <Spacer :size="4" />
+        <div
+          v-if="isActivity"
+          class="extra"
+        >
+          <router-link
+            class="funkwhale link user"
+            :to="{name: 'profile.overview', params: {username: object.actor.name}}"
+          >
+            <span class="at symbol" />{{ object.actor.name }}
+          </router-link>
+          <span class="right floated"><human-date :date="object.creation_date" /></span>
         </div>
       </div>
-      <div
-        v-if="isLoading"
-        class="ui inverted active dimmer"
-      >
-        <div class="ui loader" />
-      </div>
+      <play-button
+        :account="object.actor"
+        :dropdown-only="true"
+        :track="object.track"
+        square-small
+      />
     </div>
-    <div
-      v-else
-      class="ui placeholder segment"
-    >
-      <div class="ui icon header">
-        <i class="music icon" />
-        {{ $t('components.audio.track.Widget.empty.noResults') }}
-      </div>
-      <div
-        v-if="isLoading"
-        class="ui inverted active dimmer"
-      >
-        <div class="ui loader" />
-      </div>
-    </div>
-    <template v-if="nextPage">
-      <div class="ui hidden divider" />
-      <button
-        :class="['ui', 'basic', 'button']"
-        @click="fetchData(nextPage as string)"
-      >
-        {{ $t('components.audio.track.Widget.button.more') }}
-      </button>
-    </template>
-  </div>
+    <Pagination
+      v-if="page && count > props.limit"
+      v-model:page="page"
+      :pages="Math.ceil((count || 0) / props.limit)"
+      style="grid-column: 1 / -1;"
+    />
+  </Section>
 </template>
+
+<style lang="scss" scoped>
+.funkwhale {
+  &.activity {
+    padding-top: 14px;
+    border-top: 1px solid;
+    margin: -11px 0;
+
+    @include light-theme {
+      border-color: var(--fw-gray-300);
+    }
+    @include dark-theme {
+      border-color: var(--fw-gray-800);
+    }
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+    grid-column: span 4;
+
+    &:last-child {
+      border-bottom: 1px solid;
+    }
+
+    > .activity-image {
+
+      width: 40px;
+      aspect-ratio: 1;
+      overflow: hidden;
+      border-radius: var(--fw-border-radius);
+
+      > img {
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: cover;
+      }
+
+      > i {
+        font-size: 40px;
+        line-height: 36px;
+      }
+
+      > .play-button {
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 0 !important;
+        width: 100%;
+        aspect-ratio: 1;
+        margin: 0;
+        border: 0 !important;
+        opacity: 0;
+      }
+    }
+
+    &:hover {
+      .play-button {
+        opacity: 1;
+      }
+    }
+
+    > .activity-content {
+
+      a {
+        text-decoration: none;
+        color: var(--color);
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      > .track-title {
+        font-weight: 700;
+        line-height: 1.5em;
+        @include dark-theme {
+          color: var(--fw-gray-300);
+        }
+      }
+
+      .artist {
+        font-size: 15px;
+      }
+
+      .user, time {
+        line-height: 1.5em;
+        font-size: 0.8125rem;
+        color: var(--fw-gray-500);
+      }
+    }
+  }
+}
+
+@include light-theme {
+
+  .play-button {
+    background: rgba(255, 255, 255, .5);
+
+    &:hover {
+      --fw-text-color: var(--fw-gray-800) !important;
+    }
+  }
+}
+
+@include dark-theme {
+
+  .play-button {
+    background: rgba(0, 0, 0, .2);
+
+    &:hover {
+      background: rgba(0, 0, 0, .8);
+      --fw-text-color: var(--fw-gray-200) !important;
+    }
+  }
+}
+</style>

@@ -4,15 +4,24 @@ import type { Track, Album, Artist, Library, ArtistCredit } from '~/types'
 import { momentFormat } from '~/utils/filters'
 import { computed, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { sum } from 'lodash-es'
+import { useStore } from '~/store'
+import { useQueue } from '~/composables/audio/queue'
 
 import axios from 'axios'
 
 import ArtistCreditLabel from '~/components/audio/ArtistCreditLabel.vue'
+import TrackFavoriteIcon from '~/components/favorites/TrackFavoriteIcon.vue'
+import TrackPlaylistIcon from '~/components/playlists/TrackPlaylistIcon.vue'
 import PlayButton from '~/components/audio/PlayButton.vue'
-import TagsList from '~/components/tags/List.vue'
 import AlbumDropdown from './AlbumDropdown.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Header from '~/components/ui/Header.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Loader from '~/components/ui/Loader.vue'
+import Button from '~/components/ui/Button.vue'
+import HumanDuration from '~/components/common/HumanDuration.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 import useLogger from '~/composables/useLogger'
@@ -22,8 +31,10 @@ interface Events {
 }
 
 interface Props {
-  id: number
+  id: number | string
 }
+
+const store = useStore()
 
 const emit = defineEmits<Events>()
 const props = defineProps<Props>()
@@ -51,9 +62,15 @@ const publicLibraries = computed(() => libraries.value?.filter(library => librar
 const logger = useLogger()
 
 const { t } = useI18n()
+
 const labels = computed(() => ({
-  title: t('components.library.AlbumBase.title')
+  title: t('components.library.AlbumBase.title'),
+  shuffle: t('components.audio.Player.label.shuffleQueue')
 }))
+
+const {
+  shuffle
+} = useQueue()
 
 const isLoading = ref(false)
 const fetchData = async () => {
@@ -63,12 +80,10 @@ const fetchData = async () => {
 
   artistCredit.value = albumResponse.data.artist_credit
 
+  // fetch the first artist of the album
   const artistResponse = await axios.get(`artists/${albumResponse.data.artist_credit[0].artist.id}/`)
 
   artist.value = artistResponse.data
-  if (artist.value?.channel) {
-    artist.value.channel.artist = artist.value
-  }
 
   object.value = albumResponse.data
   if (object.value) {
@@ -116,6 +131,8 @@ const fetchTracks = async () => {
 watch(() => props.id, fetchData, { immediate: true })
 
 const router = useRouter()
+const route = useRoute()
+
 const remove = async () => {
   isLoading.value = true
   try {
@@ -131,227 +148,154 @@ const remove = async () => {
 </script>
 
 <template>
-  <main>
-    <div
-      v-if="isLoading"
-      v-title="labels.title"
-      class="ui vertical segment"
-    >
-      <div :class="['ui', 'centered', 'active', 'inline', 'loader']" />
-    </div>
-    <template v-if="object">
-      <section class="ui vertical stripe segment channel-serie">
-        <div class="ui stackable grid container">
-          <div class="ui seven wide column">
-            <div
-              v-if="isSerie"
-              class="padded basic segment"
-            >
-              <div
-                v-if="isSerie"
-                class="ui two column grid"
-              >
-                <div class="column">
-                  <div class="large two-images">
-                    <img
-                      v-if="object.cover && object.cover.urls.original"
-                      v-lazy="$store.getters['instance/absoluteUrl'](object.cover.urls.medium_square_crop)"
-                      alt=""
-                      class="channel-image"
-                    >
-                    <img
-                      v-else
-                      alt=""
-                      class="channel-image"
-                      src="../../assets/audio/default-cover.png"
-                    >
-                    <img
-                      v-if="object.cover && object.cover.urls.original"
-                      v-lazy="$store.getters['instance/absoluteUrl'](object.cover.urls.medium_square_crop)"
-                      alt=""
-                      class="channel-image"
-                    >
-                    <img
-                      v-else
-                      alt=""
-                      class="channel-image"
-                      src="../../assets/audio/default-cover.png"
-                    >
-                  </div>
-                </div>
-                <div class="ui column right aligned">
-                  <tags-list
-                    v-if="object.tags && object.tags.length > 0"
-                    :tags="object.tags"
-                  />
-                  <div class="ui small hidden divider" />
-                  <human-duration
-                    v-if="totalDuration > 0"
-                    :duration="totalDuration"
-                  />
-                  <template v-if="totalTracks > 0">
-                    <div class="ui hidden very small divider" />
-                    <span v-if="isSerie">
-                      {{ $t('components.library.AlbumBase.meta.episodes', totalTracks) }}
-                    </span>
-                    <span v-else>
-                      {{ $t('components.library.AlbumBase.meta.tracks', totalTracks) }}
-                    </span>
-                  </template>
-                  <div class="ui small hidden divider" />
-                  <play-button
-                    class="vibrant"
-                    :tracks="object.tracks"
-                    :is-playable="object.is_playable"
-                  />
-                  <div class="ui hidden horizontal divider" />
-                  <album-dropdown
-                    :object="object"
-                    :public-libraries="publicLibraries"
-                    :is-loading="isLoading"
-                    :is-album="isAlbum"
-                    :is-serie="isSerie"
-                    :is-channel="isChannel"
-                    :artist-credit="artistCredit"
-                    @remove="remove"
-                  />
-                </div>
-              </div>
-              <div class="ui small hidden divider" />
-              <header>
-                <h2
-                  class="ui header"
-                  :title="object.title"
-                >
-                  {{ object.title }}
-                </h2>
-                <artist-credit-label
-                  v-if="artistCredit"
-                  :artist-credit="artistCredit"
-                />
-              </header>
-            </div>
-            <div
-              v-else
-              class="ui center aligned text padded basic segment"
-            >
-              <img
-                v-if="object.cover && object.cover.urls.original"
-                v-lazy="$store.getters['instance/absoluteUrl'](object.cover.urls.medium_square_crop)"
-                alt=""
-                class="channel-image"
-              >
-              <img
-                v-else
-                alt=""
-                class="channel-image"
-                src="../../assets/audio/default-cover.png"
-              >
-              <div class="ui hidden divider" />
-              <header>
-                <h2
-                  class="ui header"
-                  :title="object.title"
-                >
-                  {{ object.title }}
-                </h2>
-                <artist-credit-label
-                  v-if="artistCredit"
-                  :artist-credit="artistCredit"
-                />
-              </header>
-              <div
-                v-if="object.release_date || (totalTracks > 0)"
-                class="ui small hidden divider"
-              />
-              <template v-if="object.release_date">
-                {{ momentFormat(new Date(object.release_date ?? '1970-01-01'), 'Y') }}
-                <span class="middle middledot symbol" />
-              </template>
-              <template v-if="totalTracks > 0">
-                <span v-if="isSerie">
-                  {{ $t('components.library.AlbumBase.meta.episodes', totalTracks) }}
-                </span>
-                <span v-else>
-                  {{ $t('components.library.AlbumBase.meta.tracks', totalTracks) }}
-                </span>
-                <span class="middle middledot symbol" />
-              </template>
-              <human-duration
-                v-if="totalDuration > 0"
-                :duration="totalDuration"
-              />
-              <div class="ui small hidden divider" />
-              <play-button
-                class="vibrant"
-                :album="object"
-                :is-playable="object.is_playable"
-              />
-              <div class="ui horizontal hidden divider" />
-              <album-dropdown
-                :object="object"
-                :public-libraries="publicLibraries"
-                :is-loading="isLoading"
-                :is-album="isAlbum"
-                :is-serie="isSerie"
-                :is-channel="isChannel"
-                :artist-credit="artistCredit"
-                @remove="remove"
-              />
-              <div v-if="(object.tags && object.tags.length > 0) || object.description || $store.state.auth.authenticated && object.is_local">
-                <div class="ui small hidden divider" />
-                <div class="ui divider" />
-                <div class="ui small hidden divider" />
-                <template v-if="object.tags && object.tags.length > 0">
-                  <tags-list :tags="object.tags" />
-                  <div class="ui small hidden divider" />
-                </template>
-                <rendered-description
-                  v-if="object.description"
-                  :content="object.description"
-                  :can-update="false"
-                />
-                <router-link
-                  v-else-if="$store.state.auth.authenticated && object.is_local"
-                  :to="{name: 'library.albums.edit', params: {id: object.id }}"
-                >
-                  <i class="pencil icon" />
-                  {{ $t('components.library.AlbumBase.link.addDescription') }}
-                </router-link>
-              </div>
-            </div>
-            <template v-if="isSerie">
-              <div class="ui hidden divider" />
-              <rendered-description
-                v-if="object.description"
-                :content="object.description"
-                :can-update="false"
-              />
-              <router-link
-                v-else-if="$store.state.auth.authenticated && object.is_local"
-                :to="{name: 'library.albums.edit', params: {id: object.id }}"
-              >
-                <i class="pencil icon" />
-                {{ $t('components.library.AlbumBase.link.addDescription') }}
-              </router-link>
-            </template>
-          </div>
-          <div class="nine wide column">
-            <router-view
-              v-if="object"
-              :key="$route.fullPath"
-              :paginate-by="paginateBy"
-              :total-tracks="totalTracks"
-              :is-serie="isSerie"
-              :artist-credit="artistCredit"
-              :object="object"
-              :is-loading-tracks="isLoadingTracks"
-              object-type="album"
-              @libraries-loaded="libraries = $event"
-            />
-          </div>
-        </div>
-      </section>
+  <Loader
+    v-if="isLoading"
+    v-title="labels.title"
+  />
+  <Header
+    v-if="object"
+    :h1="object.title"
+    page-heading
+  >
+    <template #image>
+      <img
+        v-if="object.cover && object.cover.urls.original"
+        v-lazy="store.getters['instance/absoluteUrl'](object.cover.urls.large_square_crop)"
+        :alt="object.title"
+        class="channel-image"
+      >
+      <img
+        v-else
+        alt=""
+        class="channel-image"
+        src="../../assets/audio/default-cover.png"
+      >
     </template>
-  </main>
+    <artist-credit-label
+      v-if="artistCredit"
+      :artist-credit="artistCredit"
+    />
+    <!-- Metadata: -->
+    <Layout
+      gap-4
+      class="meta"
+    >
+      <Layout
+        flex
+        gap-4
+      >
+        <template v-if="object.release_date">
+          {{ momentFormat(new Date(object.release_date ?? '1970-01-01'), 'Y') }}
+          <i class="bi bi-dot" />
+        </template>
+        <template v-if="totalTracks > 0">
+          <span v-if="isSerie">
+            {{ t('components.library.AlbumBase.meta.episodes', totalTracks) }}
+          </span>
+          <span v-else>
+            {{ t('components.library.AlbumBase.meta.tracks', totalTracks) }}
+          </span>
+        </template>
+        <i
+          v-if="totalDuration > 0"
+          class="bi bi-dot"
+        />
+        <human-duration
+          v-if="totalDuration > 0"
+          :duration="totalDuration"
+        />
+        <!--TODO: License -->
+      </Layout>
+    </Layout>
+    <RenderedDescription
+      v-if="object.description"
+      :content="{ html: object.description.html }"
+      :truncate-length="50"
+    />
+    <Layout flex>
+      <PlayButton
+        v-if="object.tracks"
+        split
+        :tracks="object.tracks"
+        low-height
+        :is-playable="object.is_playable"
+      />
+      <Button
+        v-if="object?.tracks?.length && object?.tracks?.length > 2"
+        primary
+        icon="bi-shuffle"
+        low-height
+        :aria-label="labels.shuffle"
+        @click.prevent.stop="shuffle()"
+      >
+        {{ labels.shuffle }}
+      </Button>
+      <DangerousButton
+        v-if="artistCredit[0] &&
+          store.state.auth.authenticated &&
+          artistCredit[0].artist.channel
+          /* TODO: Re-implement once attributed_to is not only a number
+              && artistCredit[0].artist.attributed_to?.full_username === store.state.auth.fullUsername
+          */"
+        :is-loading="isLoading"
+        low-height
+        icon="bi-trash"
+        @confirm="remove()"
+      >
+        {{ t('components.library.AlbumDropdown.button.delete') }}
+      </DangerousButton>
+      <Spacer
+        h
+        grow
+      />
+      <TrackFavoriteIcon
+        v-if="store.state.auth.authenticated"
+        square-small
+        :album="object"
+      />
+      <TrackPlaylistIcon
+        v-if="store.state.auth.authenticated"
+        square-small
+        :album="object"
+      />
+      <!-- TODO: Share Button -->
+      <album-dropdown
+        :object="object"
+        :public-libraries="publicLibraries"
+        :is-loading="isLoading"
+        :is-album="isAlbum"
+        :is-serie="isSerie"
+        :is-channel="isChannel"
+        :artist-credit="artistCredit"
+        @remove="remove"
+      />
+    </Layout>
+  </Header>
+
+  <div style="flex 1;">
+    <router-view
+      v-if="object"
+      :key="route.fullPath"
+      :paginate-by="paginateBy"
+      :total-tracks="totalTracks"
+      :is-serie="isSerie"
+      :artist-credit="artistCredit"
+      :object="object"
+      :is-loading-tracks="isLoadingTracks"
+      object-type="album"
+      @libraries-loaded="libraries = $event"
+    />
+  </div>
 </template>
+
+<style scoped lang="scss">
+  .meta {
+    font-size: 15px;
+    @include light-theme {
+      color: var(--fw-gray-700);
+    }
+    @include dark-theme {
+      color: var(--fw-gray-500);
+    }
+  }
+</style>

@@ -4,5 +4,9 @@
     <div class="audio-bar" />
     <div class="audio-bar" />
     <div class="audio-bar" />
+    <div class="audio-bar" />
+    <div class="audio-bar" />
+    <div class="audio-bar" />
+    <div class="audio-bar" />
   </div>
 </template>

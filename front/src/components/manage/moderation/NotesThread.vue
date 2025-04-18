@@ -3,10 +3,13 @@ import type { Note } from '~/types'
 
 import { useMarkdownRaw } from '~/composables/useMarkdown'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import axios from 'axios'
 
 import useErrorHandler from '~/composables/useErrorHandler'
+
+import DangerousButton from '~/components/common/DangerousButton.vue'
 
 interface Events {
   (e: 'deleted', uuid: string): void
@@ -14,6 +17,8 @@ interface Events {
 interface Props {
   notes: Note[]
 }
+
+const { t } = useI18n()
 
 const emit = defineEmits<Events>()
 defineProps<Props>()
@@ -60,27 +65,19 @@ const remove = async (note: Note) => {
         </div>
         <div class="meta">
           <dangerous-button
-            :class="['ui', {loading: isLoading}, 'basic borderless mini button']"
+            :is-loading="isLoading"
+            low-height
+            icon="bi-trash"
+            :title="t('components.manage.moderation.NotesThread.modal.delete.header')"
             @confirm="remove(note)"
           >
-            <i class="trash icon" />
-            {{ $t('components.manage.moderation.NotesThread.button.delete') }}
-            <template #modal-header>
-              <p>
-                {{ $t('components.manage.moderation.NotesThread.modal.delete.header') }}
-              </p>
-            </template>
+            {{ t('components.manage.moderation.NotesThread.button.delete') }}
+
             <template #modal-content>
-              <div>
-                <p>
-                  {{ $t('components.manage.moderation.NotesThread.modal.delete.content.warning') }}
-                </p>
-              </div>
+              {{ t('components.manage.moderation.NotesThread.modal.delete.content.warning') }}
             </template>
             <template #modal-confirm>
-              <p>
-                {{ $t('components.manage.moderation.NotesThread.button.delete') }}
-              </p>
+              {{ t('components.manage.moderation.NotesThread.button.delete') }}
             </template>
           </dangerous-button>
         </div>

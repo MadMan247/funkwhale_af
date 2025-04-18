@@ -4,6 +4,7 @@ import type { License } from '~/types'
 import { computed, reactive, ref } from 'vue'
 import axios from 'axios'
 import { useVModel } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
 
 interface Events {
   (e: 'update:modelValue', value: string): void
@@ -12,6 +13,8 @@ interface Events {
 interface Props {
   modelValue: string | null
 }
+
+const { t } = useI18n()
 
 const emit = defineEmits<Events>()
 const props = withDefaults(defineProps<Props>(), {
@@ -55,7 +58,7 @@ fetchLicenses()
 <template>
   <div>
     <label for="license-dropdown">
-      {{ $t('components.channels.LicenseSelect.label.license') }}
+      {{ t('components.channels.LicenseSelect.label.license') }}
     </label>
     <select
       id="license-dropdown"
@@ -63,7 +66,7 @@ fetchLicenses()
       class="ui search normal dropdown"
     >
       <option value="">
-        {{ $t('components.channels.LicenseSelect.option.none') }}
+        {{ t('components.channels.LicenseSelect.option.none') }}
       </option>
       <option
         v-for="l in featuredLicenses"
@@ -84,7 +87,7 @@ fetchLicenses()
         target="_blank"
         rel="noreferrer noopener"
       >
-        {{ $t('components.channels.LicenseSelect.link.license') }}
+        {{ t('components.channels.LicenseSelect.link.license') }}
       </a>
     </p>
   </div>

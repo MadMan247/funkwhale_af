@@ -5,11 +5,20 @@ import axios from 'axios'
 import { clone } from 'lodash-es'
 import useMarkdown, { useMarkdownRaw } from '~/composables/useMarkdown'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import Layout from '~/components/ui/Layout.vue'
+import Input from '~/components/ui/Input.vue'
+import Toggle from '~/components/ui/Toggle.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Button from '~/components/ui/Button.vue'
 
 interface Props {
   plugin: Plugin
   libraries: Library[]
 }
+
+const { t } = useI18n()
 
 const props = defineProps<Props>()
 
@@ -53,8 +62,9 @@ const submitAndScan = async () => {
 </script>
 
 <template>
-  <form
-    :class="['ui segment form', {loading: isLoading}]"
+  <Layout
+    form
+    :class="['ui form', {loading: isLoading}]"
     @submit.prevent="submit"
   >
     <h3>{{ plugin.label }}</h3>
@@ -63,23 +73,20 @@ const submitAndScan = async () => {
       :html="description"
     />
     <template v-if="plugin.homepage">
-      <div class="ui small hidden divider" />
       <a
         :href="plugin.homepage"
         target="_blank"
       >
         <i class="external icon" />
-        {{ $t('components.auth.Plugin.link.documentation') }}
+        {{ t('components.auth.Plugin.link.documentation') }}
       </a>
     </template>
-    <div class="ui clearing hidden divider" />
-    <div
+    <Alert
       v-if="errors.length > 0"
-      role="alert"
-      class="ui negative message"
+      red
     >
       <h4 class="header">
-        {{ $t('components.auth.Plugin.header.failure') }}
+        {{ t('components.auth.Plugin.header.failure') }}
       </h4>
       <ul class="list">
         <li
@@ -89,23 +96,19 @@ const submitAndScan = async () => {
           {{ error }}
         </li>
       </ul>
-    </div>
+    </Alert>
     <div class="field">
-      <div class="ui toggle checkbox">
-        <input
-          :id="`${plugin.name}-enabled`"
-          v-model="enabled"
-          type="checkbox"
-        >
-        <label :for="`${plugin.name}-enabled`">{{ $t('components.auth.Plugin.label.pluginEnabled') }}</label>
-      </div>
+      <Toggle
+        v-model="enabled"
+        big
+        :label="t('components.auth.Plugin.label.pluginEnabled')"
+      />
     </div>
-    <div class="ui clearing hidden divider" />
     <div
       v-if="plugin.source"
       class="field"
     >
-      <label for="plugin-library">{{ $t('components.auth.Plugin.label.library') }}</label>
+      <label for="plugin-library">{{ t('components.auth.Plugin.label.library') }}</label>
       <select
         id="plugin-library"
         v-model="values['library']"
@@ -119,7 +122,7 @@ const submitAndScan = async () => {
         </option>
       </select>
       <div>
-        {{ $t('components.auth.Plugin.description.library') }}
+        {{ t('components.auth.Plugin.description.library') }}
       </div>
     </div>
     <template v-if="(plugin.conf?.length ?? 0) > 0">
@@ -131,12 +134,12 @@ const submitAndScan = async () => {
           v-if="field.type === 'text'"
           class="field"
         >
-          <label :for="`plugin-${field.name}`">{{ field.label || field.name }}</label>
-          <input
+          <Input
             :id="`plugin-${field.name}`"
             v-model="values[field.name]"
+            :label="field.label || field.name"
             type="text"
-          >
+          />
           <sanitized-html
             v-if="field.help"
             :html="useMarkdownRaw(field.help)"
@@ -146,10 +149,10 @@ const submitAndScan = async () => {
           v-if="field.type === 'long_text'"
           class="field"
         >
-          <label :for="`plugin-${field.name}`">{{ field.label || field.name }}</label>
           <textarea
             :id="`plugin-${field.name}`"
             v-model="values[field.name]"
+            :label="field.label || field.name"
             type="text"
             rows="5"
           />
@@ -162,12 +165,12 @@ const submitAndScan = async () => {
           v-if="field.type === 'url'"
           class="field"
         >
-          <label :for="`plugin-${field.name}`">{{ field.label || field.name }}</label>
-          <input
+          <Input
             :id="`plugin-${field.name}`"
             v-model="values[field.name]"
+            :label="field.label || field.name"
             type="url"
-          >
+          />
           <sanitized-html
             v-if="field.help"
             :html="useMarkdownRaw(field.help)"
@@ -177,12 +180,12 @@ const submitAndScan = async () => {
           v-if="field.type === 'password'"
           class="field"
         >
-          <label :for="`plugin-${field.name}`">{{ field.label || field.name }}</label>
-          <input
+          <Input
             :id="`plugin-${field.name}`"
             v-model="values[field.name]"
-            type="password"
-          >
+            :label="field.label || field.name"
+            password
+          />
           <sanitized-html
             v-if="field.help"
             :html="useMarkdownRaw(field.help)"
@@ -192,30 +195,27 @@ const submitAndScan = async () => {
           v-if="field.type === 'boolean'"
           class="field"
         >
-          <div class="ui toggle checkbox">
-            <input
-              :id="`plugin-${field.name}`"
-              v-model="values[field.name]"
-              type="checkbox"
-            >
-            <label :for="`plugin-${field.name}`">{{ field.label || field.name }}</label>
-          </div>
+          <Toggle
+            v-model="values[field.name]"
+            :label="field.label || field.name"
+          />
         </div>
       </template>
     </template>
-    <button
+    <Button
       type="submit"
-      :class="['ui', {'loading': isLoading}, 'right', 'floated', 'button']"
+      primary
+      :class="[{'loading': isLoading}]"
     >
-      {{ $t('components.auth.Plugin.button.save') }}
-    </button>
-    <button
+      {{ t('components.auth.Plugin.button.save') }}
+    </Button>
+    <Button
       v-if="plugin.source"
-      :class="['ui', {'loading': isLoading}, 'right', 'floated', 'button']"
+      primary
+      :class="[{'loading': isLoading}]"
       @click.prevent="submitAndScan"
     >
-      {{ $t('components.auth.Plugin.button.scan') }}
-    </button>
-    <div class="ui clearing hidden divider" />
-  </form>
+      {{ t('components.auth.Plugin.button.scan') }}
+    </Button>
+  </Layout>
 </template>

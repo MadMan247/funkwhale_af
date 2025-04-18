@@ -1,83 +1,16 @@
 <script setup lang="ts">
 import type { Album } from '~/types'
 
-import PlayButton from '~/components/audio/PlayButton.vue'
-import { momentFormat } from '~/utils/filters'
-import { computed } from 'vue'
-import { useStore } from '~/store'
+import AlbumCard from '~/components/album/Card.vue'
 
 interface Props {
   album: Album
 }
 
-const props = defineProps<Props>()
-const store = useStore()
+defineProps<Props>()
 
-const imageUrl = computed(() => props.album.cover?.urls.original
-  ? store.getters['instance/absoluteUrl'](props.album.cover.urls.medium_square_crop)
-  : null
-)
 </script>
 
 <template>
-  <div class="card app-card component-album-card">
-    <router-link
-      class="discrete link"
-      :to="{name: 'library.albums.detail', params: {id: album.id}}"
-    >
-      <div
-        v-lazy:background-image="imageUrl"
-        :class="['ui', 'head-image', 'image', {'default-cover': !album.cover || !album.cover.urls.original}]"
-      >
-        <play-button
-          :icon-only="true"
-          :is-playable="album.is_playable"
-          :button-classes="['ui', 'circular', 'large', 'vibrant', 'icon', 'button']"
-          :album="album"
-        />
-      </div>
-    </router-link>
-    <div class="content">
-      <strong>
-        <router-link
-          class="discrete link"
-          :to="{name: 'library.albums.detail', params: {id: album.id}}"
-        >
-          {{ album.title }}
-        </router-link>
-      </strong>
-      <div class="description">
-        <span>
-          <template
-            v-for="ac in album.artist_credit"
-            :key="ac.artist.id"
-          >
-            <router-link
-              class="discrete link"
-              :to="{ name: 'library.artists.detail', params: { id: ac.artist.id }}"
-            >
-              {{ ac.credit }}
-            </router-link>
-            <span>{{ ac.joinphrase }}</span>
-          </template>
-        </span>
-      </div>
-    </div>
-    <div class="extra content">
-      <span v-if="album.release_date">
-        {{ momentFormat(new Date(album.release_date), 'Y') }}
-        <span class="middle middledot symbol" />
-      </span>
-      <span>
-        {{ $t('components.audio.album.Card.meta.tracks', album.tracks_count) }}
-      </span>
-      <play-button
-        class="right floated basic icon"
-        :dropdown-only="true"
-        :is-playable="album.is_playable"
-        :dropdown-icon-classes="['ellipsis', 'horizontal', 'large really discrete']"
-        :album="album"
-      />
-    </div>
-  </div>
+  <AlbumCard :album="album" />
 </template>

@@ -12,15 +12,24 @@ import { useI18n } from 'vue-i18n'
 import time from '~/utils/time'
 import axios from 'axios'
 
-import ImportStatusModal from '~/components/library/ImportStatusModal.vue'
-import ActionTable from '~/components/common/ActionTable.vue'
-import Pagination from '~/components/vui/Pagination.vue'
-
 import useSharedLabels from '~/composables/locale/useSharedLabels'
 import useSmartSearch from '~/composables/navigation/useSmartSearch'
 import useOrdering from '~/composables/navigation/useOrdering'
 import useErrorHandler from '~/composables/useErrorHandler'
 import usePage from '~/composables/navigation/usePage'
+
+import ImportStatusModal from '~/components/library/ImportStatusModal.vue'
+import ActionTable from '~/components/common/ActionTable.vue'
+
+import Layout from '~/components/ui/Layout.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Pagination from '~/components/ui/Pagination.vue'
+import Button from '~/components/ui/Button.vue'
+import Input from '~/components/ui/Input.vue'
+import Loader from '~/components/ui/Loader.vue'
+
+// This is the 'processing' tab in the old upload process
 
 interface Events {
   (e: 'fetch-start'): void
@@ -47,8 +56,6 @@ const props = withDefaults(defineProps<Props>(), {
   orderingConfigName: undefined
 })
 
-const search = ref()
-
 const page = usePage()
 const result = ref<BackendResponse<Upload>>()
 
@@ -73,7 +80,7 @@ const actions = computed(() => [
     label: t('views.content.libraries.FilesTable.action.delete'),
     isDangerous: true,
     allowAll: true,
-    confirmColor: 'danger'
+    confirmColor: 'danger' as const
   },
   {
     name: 'relaunch_import',
@@ -133,27 +140,28 @@ const getImportStatusChoice = (importStatus: ImportStatus) => {
 </script>
 
 <template>
-  <div>
-    <div class="ui inline form">
-      <div class="fields">
-        <div class="ui six wide field">
-          <label for="files-search">
-            {{ $t('views.content.libraries.FilesTable.label.search') }}
-          </label>
-          <form @submit.prevent="query = search.value">
-            <input
-              id="files-search"
-              ref="search"
-              name="search"
-              type="text"
-              :value="query"
-              :placeholder="labels.searchPlaceholder"
-            >
-          </form>
-        </div>
+  <Layout
+    form
+    class="ui form"
+  >
+    <Layout
+      stack
+      class="fields"
+    >
+      <div class="field">
+        <Input
+          id="search"
+          v-model="query"
+          search
+          :label="t('views.content.libraries.FilesTable.label.search')"
+          :placeholder="t('views.content.libraries.FilesTable.placeholder.search')"
+        />
+      </div>
+      <Layout flex>
+        <Spacer grow />
         <div class="field">
           <label for="import-status">
-            {{ $t('views.content.libraries.FilesTable.label.importStatus') }}
+            {{ t('views.content.libraries.FilesTable.label.importStatus') }}
           </label>
           <select
             id="import-status"
@@ -162,28 +170,28 @@ const getImportStatusChoice = (importStatus: ImportStatus) => {
             @change="addSearchToken('status', ($event.target as HTMLSelectElement).value)"
           >
             <option value>
-              {{ $t('views.content.libraries.FilesTable.option.status.all') }}
+              {{ t('views.content.libraries.FilesTable.option.status.all') }}
             </option>
             <option value="draft">
-              {{ $t('views.content.libraries.FilesTable.option.status.draft') }}
+              {{ t('views.content.libraries.FilesTable.option.status.draft') }}
             </option>
             <option value="pending">
-              {{ $t('views.content.libraries.FilesTable.option.status.pending') }}
+              {{ t('views.content.libraries.FilesTable.option.status.pending') }}
             </option>
             <option value="skipped">
-              {{ $t('views.content.libraries.FilesTable.option.status.skipped') }}
+              {{ t('views.content.libraries.FilesTable.option.status.skipped') }}
             </option>
             <option value="errored">
-              {{ $t('views.content.libraries.FilesTable.option.status.failed') }}
+              {{ t('views.content.libraries.FilesTable.option.status.failed') }}
             </option>
             <option value="finished">
-              {{ $t('views.content.libraries.FilesTable.option.status.finished') }}
+              {{ t('views.content.libraries.FilesTable.option.status.finished') }}
             </option>
           </select>
         </div>
         <div class="field">
           <label for="ordering-select">
-            {{ $t('views.content.libraries.FilesTable.ordering.label') }}
+            {{ t('views.content.libraries.FilesTable.ordering.label') }}
           </label>
           <select
             id="ordering-select"
@@ -201,7 +209,7 @@ const getImportStatusChoice = (importStatus: ImportStatus) => {
         </div>
         <div class="field">
           <label for="ordering-direction">
-            {{ $t('views.content.libraries.FilesTable.ordering.direction.label') }}
+            {{ t('views.content.libraries.FilesTable.ordering.direction.label') }}
           </label>
           <select
             id="ordering-direction"
@@ -209,150 +217,138 @@ const getImportStatusChoice = (importStatus: ImportStatus) => {
             class="ui dropdown"
           >
             <option value="+">
-              {{ $t('views.content.libraries.FilesTable.ordering.direction.ascending') }}
+              {{ t('views.content.libraries.FilesTable.ordering.direction.ascending') }}
             </option>
             <option value="-">
-              {{ $t('views.content.libraries.FilesTable.ordering.direction.descending') }}
+              {{ t('views.content.libraries.FilesTable.ordering.direction.descending') }}
             </option>
           </select>
         </div>
-      </div>
-    </div>
-    <import-status-modal
-      v-if="detailedUpload"
-      v-model:show="showUploadDetailModal"
-      :upload="detailedUpload"
+      </Layout>
+    </Layout>
+  </Layout>
+  <Spacer />
+  <import-status-modal
+    v-if="detailedUpload"
+    v-model:show="showUploadDetailModal"
+    :upload="detailedUpload"
+  />
+  <Loader v-if="isLoading" />
+  <Alert
+    v-else-if="!result || result?.results.length === 0 && !needsRefresh"
+    blue
+    align-items="center"
+  >
+    <i class="bi bi-upload" />
+    <span>
+      {{ t('views.content.libraries.FilesTable.empty.noTracks') }}
+    </span>
+  </Alert>
+  <action-table
+    v-else
+    :id-field="'uuid'"
+    :objects-data="result"
+    :custom-objects="customObjects"
+    :actions="actions"
+    :refreshable="true"
+    :needs-refresh="needsRefresh"
+    :action-url="'uploads/action/'"
+    :filters="actionFilters"
+    @action-launched="fetchData"
+    @refresh="fetchData"
+  >
+    <template #header-cells>
+      <th>
+        {{ t('views.content.libraries.FilesTable.table.file.header.title') }}
+      </th>
+      <th>
+        {{ t('views.content.libraries.FilesTable.table.file.header.artist') }}
+      </th>
+      <th>
+        {{ t('views.content.libraries.FilesTable.table.file.header.album') }}
+      </th>
+      <th>
+        {{ t('views.content.libraries.FilesTable.table.file.header.uploadDate') }}
+      </th>
+      <th>
+        {{ t('views.content.libraries.FilesTable.table.file.header.importStatus') }}
+      </th>
+      <th>
+        {{ t('views.content.libraries.FilesTable.table.file.header.duration') }}
+      </th>
+      <th>
+        {{ t('views.content.libraries.FilesTable.table.file.header.size') }}
+      </th>
+    </template>
+    <template
+      #row-cells="scope"
+    >
+      <template v-if="scope.obj.track">
+        <td>
+          <router-link :to="{name: 'library.tracks.detail', params: {id: scope.obj.track.id }}">
+            {{ truncate(scope.obj.track.title, 25) }}
+          </router-link>
+        </td>
+        <td>
+          <a
+            href=""
+            class="discrete link"
+            @click.prevent="addSearchToken('artist', scope.obj.track.artist.name)"
+          >{{ truncate(scope.obj.track.artist.name, 20) }}</a>
+        </td>
+        <td>
+          <a
+            v-if="scope.obj.track.album"
+            href=""
+            class="discrete link"
+            @click.prevent="addSearchToken('album', scope.obj.track.album.title)"
+          >{{ truncate(scope.obj.track.album.title, 20) }}</a>
+        </td>
+      </template>
+      <template v-else>
+        <td :title="scope.obj.source">
+          {{ truncate(scope.obj.source, 25) }}
+        </td>
+        <td />
+        <td />
+      </template>
+      <td>
+        <human-date :date="scope.obj.creation_date" />
+      </td>
+      <td>
+        <a
+          href=""
+          class="discrete link"
+          :title="getImportStatusChoice(scope.obj.import_status).help"
+          @click.prevent="addSearchToken('status', scope.obj.import_status)"
+        >{{ getImportStatusChoice(scope.obj.import_status).label }}</a>
+        <Button
+          secondary
+          :title="sharedLabels.fields.import_status.label"
+          :aria-label="labels.showStatus"
+          icon="bi-question-circle-fill"
+          @click="detailedUpload = scope.obj; showUploadDetailModal = true"
+        />
+      </td>
+      <td v-if="scope.obj.duration">
+        {{ time.parse(scope.obj.duration) }}
+      </td>
+      <td v-else>
+        {{ t('views.content.libraries.FilesTable.notApplicable') }}
+      </td>
+      <td v-if="scope.obj.size">
+        {{ humanSize(scope.obj.size) }}
+      </td>
+      <td v-else>
+        {{ t('views.content.libraries.FilesTable.notApplicable') }}
+      </td>
+    </template>
+  </action-table>
+  <div>
+    <Pagination
+      v-if="page && result && result.count > paginateBy"
+      v-model:page="page"
+      :pages="Math.ceil(result.count / paginateBy)"
     />
-    <div class="dimmable">
-      <div
-        v-if="isLoading"
-        class="ui active inverted dimmer"
-      >
-        <div class="ui loader" />
-      </div>
-      <div
-        v-else-if="!result || result?.results.length === 0 && !needsRefresh"
-        class="ui placeholder segment"
-      >
-        <div class="ui icon header">
-          <i class="upload icon" />
-          {{ $t('views.content.libraries.FilesTable.empty.noTracks') }}
-        </div>
-      </div>
-      <action-table
-        v-else
-        :id-field="'uuid'"
-        :objects-data="result"
-        :custom-objects="customObjects"
-        :actions="actions"
-        :refreshable="true"
-        :needs-refresh="needsRefresh"
-        :action-url="'uploads/action/'"
-        :filters="actionFilters"
-        @action-launched="fetchData"
-        @refresh="fetchData"
-      >
-        <template #header-cells>
-          <th>
-            {{ $t('views.content.libraries.FilesTable.table.file.header.title') }}
-          </th>
-          <th>
-            {{ $t('views.content.libraries.FilesTable.table.file.header.artist') }}
-          </th>
-          <th>
-            {{ $t('views.content.libraries.FilesTable.table.file.header.album') }}
-          </th>
-          <th>
-            {{ $t('views.content.libraries.FilesTable.table.file.header.uploadDate') }}
-          </th>
-          <th>
-            {{ $t('views.content.libraries.FilesTable.table.file.header.importStatus') }}
-          </th>
-          <th>
-            {{ $t('views.content.libraries.FilesTable.table.file.header.duration') }}
-          </th>
-          <th>
-            {{ $t('views.content.libraries.FilesTable.table.file.header.size') }}
-          </th>
-        </template>
-        <template
-          #row-cells="scope"
-        >
-          <template v-if="scope.obj.track">
-            <td>
-              <router-link :to="{name: 'library.tracks.detail', params: {id: scope.obj.track.id }}">
-                {{ truncate(scope.obj.track.title, 25) }}
-              </router-link>
-            </td>
-            <td>
-              <a
-                href=""
-                class="discrete link"
-                @click.prevent="addSearchToken('artist', scope.obj.track.artist.name)"
-              >{{ truncate(scope.obj.track.artist.name, 20) }}</a>
-            </td>
-            <td>
-              <a
-                v-if="scope.obj.track.album"
-                href=""
-                class="discrete link"
-                @click.prevent="addSearchToken('album', scope.obj.track.album.title)"
-              >{{ truncate(scope.obj.track.album.title, 20) }}</a>
-            </td>
-          </template>
-          <template v-else>
-            <td :title="scope.obj.source">
-              {{ truncate(scope.obj.source, 25) }}
-            </td>
-            <td />
-            <td />
-          </template>
-          <td>
-            <human-date :date="scope.obj.creation_date" />
-          </td>
-          <td>
-            <a
-              href=""
-              class="discrete link"
-              :title="getImportStatusChoice(scope.obj.import_status).help"
-              @click.prevent="addSearchToken('status', scope.obj.import_status)"
-            >{{ getImportStatusChoice(scope.obj.import_status).label }}</a>
-            <button
-              class="ui tiny basic icon button"
-              :title="sharedLabels.fields.import_status.label"
-              :aria-label="labels.showStatus"
-              @click="detailedUpload = scope.obj; showUploadDetailModal = true"
-            >
-              <i class="question circle outline icon" />
-            </button>
-          </td>
-          <td v-if="scope.obj.duration">
-            {{ time.parse(scope.obj.duration) }}
-          </td>
-          <td v-else>
-            {{ $t('views.content.libraries.FilesTable.notApplicable') }}
-          </td>
-          <td v-if="scope.obj.size">
-            {{ humanSize(scope.obj.size) }}
-          </td>
-          <td v-else>
-            {{ $t('views.content.libraries.FilesTable.notApplicable') }}
-          </td>
-        </template>
-      </action-table>
-    </div>
-    <div>
-      <pagination
-        v-if="result && result.count > paginateBy"
-        v-model:current="page"
-        :compact="true"
-        :paginate-by="paginateBy"
-        :total="result.count"
-      />
-
-      <span v-if="result && result.results.length > 0">
-        {{ $t('views.content.libraries.FilesTable.pagination.results', {start: ((page-1) * paginateBy) + 1, end: ((page-1) * paginateBy) + result.results.length, total: result.count}) }}
-      </span>
-    </div>
   </div>
 </template>

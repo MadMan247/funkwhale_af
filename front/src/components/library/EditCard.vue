@@ -7,11 +7,18 @@ import { diffWordsWithSpace } from 'diff'
 import { useRouter } from 'vue-router'
 import { computed, ref } from 'vue'
 import { useStore } from '~/store'
+import { useI18n } from 'vue-i18n'
 
 import axios from 'axios'
 
 import useEditConfigs from '~/composables/moderation/useEditConfigs'
 import useErrorHandler from '~/composables/useErrorHandler'
+
+import DangerousButton from '~/components/common/DangerousButton.vue'
+
+import Button from '~/components/ui/Button.vue'
+import Card from '~/components/ui/Card.vue'
+import Spacer from '~/components/ui/Spacer.vue'
 
 interface Events {
   (e: 'approved', isApproved: boolean): void
@@ -22,6 +29,8 @@ interface Props {
   obj: Review
   currentState?: ReviewState
 }
+
+const { t } = useI18n()
 
 const emit = defineEmits<Events>()
 const props = withDefaults(defineProps<Props>(), {
@@ -148,48 +157,32 @@ const approve = async (approved: boolean) => {
 
   isLoading.value = false
 }
+
+const alertProps = computed(() => {
+  return {
+    green: props.obj.is_approved && props.obj.is_applied || undefined,
+    red: props.obj.is_approved === false || undefined,
+    yellow: props.obj.is_applied === false || undefined
+  } as const
+})
 </script>
 
 <template>
-  <div class="ui fluid card">
+  <Card
+    :alert-props="alertProps"
+    :to="detailUrl"
+    :title="t('components.library.EditCard.header.modification', {id: obj.uuid.substring(0, 8)})"
+  >
     <div class="content">
-      <h4 class="header">
-        <router-link :to="detailUrl">
-          {{ $t('components.library.EditCard.header.modification', {id: obj.uuid.substring(0, 8)}) }}
-        </router-link>
-      </h4>
       <div class="meta">
         <router-link
           v-if="obj.target && obj.target.type === 'track'"
-          :to="{name: 'library.tracks.detail', params: {id: obj.target.id }}"
+          :to="{ name: 'library.tracks.detail', params: { id: obj.target.id } }"
+          :class="/* TODO: find out: what is isInteractive? */ undefined"
         >
-          <i class="music icon" />
-          {{ $t('components.library.EditCard.link.track', {id: obj.target.id, name: obj.target.repr}) }}
+          <i class="bi bi-file-music-fill" />
+          {{ t('components.library.EditCard.link.track', {id: obj.target.id, name: obj.target.repr}) }}
         </router-link>
-        <br>
-        <human-date
-          :date="obj.creation_date"
-          :icon="true"
-        />
-
-        <span class="right floated">
-          <span v-if="obj.is_approved && obj.is_applied">
-            <i class="success check icon" />
-            {{ $t('components.library.EditCard.status.applied') }}
-          </span>
-          <span v-else-if="obj.is_approved">
-            <i class="success check icon" />
-            {{ $t('components.library.EditCard.status.approved') }}
-          </span>
-          <span v-else-if="obj.is_approved === null">
-            <i class="warning hourglass icon" />
-            {{ $t('components.library.EditCard.status.pending') }}
-          </span>
-          <span v-else-if="obj.is_approved === false">
-            <i class="danger x icon" />
-            {{ $t('components.library.EditCard.status.rejected') }}
-          </span>
-        </span>
       </div>
     </div>
     <div
@@ -198,21 +191,39 @@ const approve = async (approved: boolean) => {
     >
       {{ obj.summary }}
     </div>
-    <div class="content">
+
+    <template #alert>
+      <span class="right floated">
+        <span v-if="obj.is_approved && obj.is_applied">
+          <i class="green bi bi-check" />
+          {{ t('components.library.EditCard.status.applied') }}
+        </span>
+        <span v-else-if="obj.is_approved">
+          <i class="green bi bi-check" />
+          {{ t('components.library.EditCard.status.approved') }}
+        </span>
+        <span v-else-if="obj.is_approved === null">
+          <i class="yellow bi bi-hourglass" />
+          {{ t('components.library.EditCard.status.pending') }}
+        </span>
+        <span v-else-if="obj.is_approved === false">
+          <i class="destructive bi bi-x" />
+          {{ t('components.library.EditCard.status.rejected') }}
+        </span>
+      </span>
       <table
         v-if="obj.type === 'update'"
-        class="ui celled very basic fixed stacking table"
       >
         <thead>
           <tr>
             <th>
-              {{ $t('components.library.EditCard.table.update.header.field') }}
+              {{ t('components.library.EditCard.table.update.header.field') }}
             </th>
             <th>
-              {{ $t('components.library.EditCard.table.update.header.oldValue') }}
+              {{ t('components.library.EditCard.table.update.header.oldValue') }}
             </th>
             <th>
-              {{ $t('components.library.EditCard.table.update.header.newValue') }}
+              {{ t('components.library.EditCard.table.update.header.newValue') }}
             </th>
           </tr>
         </thead>
@@ -226,9 +237,9 @@ const approve = async (approved: boolean) => {
             <td v-if="field.diff">
               <template v-if="field.config?.type === 'attachment' && field.oldRepr">
                 <img
-                  class="ui image"
+                  class="image"
                   alt=""
-                  :src="$store.getters['instance/absoluteUrl'](`api/v1/attachments/${field.oldRepr}/proxy?next=medium_square_crop`)"
+                  :src="store.getters['instance/absoluteUrl'](`api/v1/attachments/${field.oldRepr}/proxy?next=medium_square_crop`)"
                 >
               </template>
               <template v-else>
@@ -242,7 +253,7 @@ const approve = async (approved: boolean) => {
               </template>
             </td>
             <td v-else>
-              {{ $t('components.library.EditCard.table.update.notApplicable') }}
+              {{ t('components.library.EditCard.table.update.notApplicable') }}
             </td>
 
             <td
@@ -253,7 +264,7 @@ const approve = async (approved: boolean) => {
                 <img
                   class="ui image"
                   alt=""
-                  :src="$store.getters['instance/absoluteUrl'](`api/v1/attachments/${field.newRepr}/proxy?next=medium_square_crop`)"
+                  :src="store.getters['instance/absoluteUrl'](`api/v1/attachments/${field.newRepr}/proxy?next=medium_square_crop`)"
                 >
               </template>
               <template v-else>
@@ -274,7 +285,7 @@ const approve = async (approved: boolean) => {
                 <img
                   class="ui image"
                   alt=""
-                  :src="$store.getters['instance/absoluteUrl'](`api/v1/attachments/${field.newRepr}/proxy?next=medium_square_crop`)"
+                  :src="store.getters['instance/absoluteUrl'](`api/v1/attachments/${field.newRepr}/proxy?next=medium_square_crop`)"
                 >
               </template>
               <template v-else>
@@ -284,55 +295,73 @@ const approve = async (approved: boolean) => {
           </tr>
         </tbody>
       </table>
-    </div>
+    </template>
+
     <div
       v-if="obj.created_by"
       class="extra content"
     >
+      <Spacer :size="8" />
       <actor-link :actor="obj.created_by" />
     </div>
-    <div
+
+    <template #footer>
+      <human-date
+        :date="obj.creation_date"
+        :icon="true"
+      />
+    </template>
+
+    <template
       v-if="canDelete || canApprove"
-      class="ui bottom attached buttons"
+      #action
     >
-      <button
+      <Button
         v-if="canApprove && obj.is_approved !== true"
-        :class="['ui', {loading: isLoading}, 'success', 'basic', 'button']"
+        primary
+        :is-loading="isLoading"
         @click="approve(true)"
       >
-        {{ $t('components.library.EditCard.button.approve') }}
-      </button>
-      <button
+        {{ t('components.library.EditCard.button.approve') }}
+      </Button>
+      <Button
         v-if="canApprove && obj.is_approved === null"
-        :class="['ui', {loading: isLoading}, 'warning', 'basic', 'button']"
+        destructive
+        :is-loading="isLoading"
         @click="approve(false)"
       >
-        {{ $t('components.library.EditCard.button.reject') }}
-      </button>
+        {{ t('components.library.EditCard.button.reject') }}
+      </Button>
+      <!--TODO: Make Dangerous Button hand through isLoading prop -->
       <dangerous-button
         v-if="canDelete"
-        :class="['ui', {loading: isLoading}, 'basic danger button']"
+        :is-loading="isLoading"
         :action="remove"
+        :title="t('components.library.EditCard.modal.delete.header')"
       >
-        {{ $t('components.library.EditCard.button.delete') }}
-        <template #modal-header>
-          <p>
-            {{ $t('components.library.EditCard.modal.delete.header') }}
-          </p>
-        </template>
+        {{ t('components.library.EditCard.button.delete') }}
         <template #modal-content>
-          <div>
-            <p>
-              {{ $t('components.library.EditCard.modal.content.warning') }}
-            </p>
-          </div>
+          {{ t('components.library.EditCard.modal.content.warning') }}
         </template>
         <template #modal-confirm>
-          <p>
-            {{ $t('components.library.EditCard.button.delete') }}
-          </p>
+          {{ t('components.library.EditCard.button.delete') }}
         </template>
       </dangerous-button>
-    </div>
-  </div>
+    </template>
+  </Card>
 </template>
+
+<style scoped>
+table {
+  width: 100%;
+  font-size: 12px;
+
+  th, td {
+      padding: 8px;
+      text-align: left;
+    }
+  .image {
+    width: 100%;
+  }
+}
+</style>

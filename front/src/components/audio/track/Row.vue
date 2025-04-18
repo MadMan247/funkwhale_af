@@ -6,11 +6,16 @@ import { computed, ref } from 'vue'
 
 import usePlayOptions from '~/composables/audio/usePlayOptions'
 
+import { usePlayer } from '~/composables/audio/player'
+import { useQueue } from '~/composables/audio/queue'
+import { useStore } from '~/store'
 import TrackFavoriteIcon from '~/components/favorites/TrackFavoriteIcon.vue'
 import PlayIndicator from '~/components/audio/track/PlayIndicator.vue'
 import PlayButton from '~/components/audio/PlayButton.vue'
-import { usePlayer } from '~/composables/audio/player'
-import { useQueue } from '~/composables/audio/queue'
+
+import Button from '~/components/ui/Button.vue'
+
+const store = useStore()
 
 interface Props extends PlayOptionsProps {
   track: Track
@@ -60,11 +65,14 @@ const hover = ref(false)
 
 <template>
   <div
-    :class="[{ active }, 'track-row row']"
+    :class="[{ active }, 'track-row row', $style.row]"
+    style="display: contents;"
     @dblclick="activateTrack(track, index)"
     @mousemove="hover = true"
     @mouseout="hover = false"
   >
+    <!-- 1. column: Play button or track position -->
+
     <div
       class="actions one wide left floated column"
       role="button"
@@ -78,32 +86,29 @@ const hover = ref(false)
             !hover
         "
       />
-      <button
+      <Button
         v-else-if="
           !isPlaying &&
             active &&
             !hover
         "
-        class="ui really tiny basic icon button play-button paused"
-      >
-        <i class="play icon" />
-      </button>
-      <button
+        ghost
+        icon="bi-play-fill"
+      />
+      <Button
         v-else-if="
           isPlaying &&
             active &&
             hover
         "
-        class="ui really tiny basic icon button play-button"
-      >
-        <i class="pause icon" />
-      </button>
-      <button
+        ghost
+        icon="bi-pause-fill"
+      />
+      <Button
         v-else-if="hover"
-        class="ui really tiny basic icon button play-button"
-      >
-        <i class="play icon" />
-      </button>
+        ghost
+        icon="bi-play-fill"
+      />
       <span
         v-else-if="showPosition"
         class="track-position"
@@ -111,40 +116,35 @@ const hover = ref(false)
         {{ `${track.position}`.padStart(2, '0') }}
       </span>
     </div>
+
     <div
-      v-if="showArt"
       class="image left floated column"
       role="button"
       @click.prevent.exact="activateTrack(track, index)"
     >
       <img
-        v-if="track.album?.cover?.urls.original"
-        v-lazy="$store.getters['instance/absoluteUrl'](track.album.cover.urls.medium_square_crop)"
-        alt=""
-        class="ui artist-track mini image"
+        v-if="showArt && track.cover?.urls.original"
+        v-lazy="store.getters['instance/absoluteUrl'](track.cover.urls.small_square_crop)"
+        :alt="track.title"
+        class="track_image"
       >
       <img
-        v-else-if="track.cover?.urls.original"
-        v-lazy="$store.getters['instance/absoluteUrl'](track.cover.urls.medium_square_crop)"
+        v-else-if="showArt && track.album?.cover?.urls.original"
+        v-lazy="store.getters['instance/absoluteUrl'](track.album.cover.urls.small_square_crop)"
         alt=""
-        class="ui artist-track mini image"
+        class="track_image"
       >
       <img
-        v-else-if="track.artist_credit?.length && track.artist_credit[0].artist.cover?.urls.original"
-        v-lazy="$store.getters['instance/absoluteUrl'](track.artist_credit[0].artist.cover.urls.medium_square_crop) "
+        v-else-if="showArt"
         alt=""
-        class="ui artist-track mini image"
-      >
-      <img
-        v-else
-        alt=""
-        class="ui artist-track mini image"
+        class="track_image"
         src="../../../assets/audio/default-cover.png"
       >
     </div>
+
     <div
       tabindex="0"
-      class="content ellipsis left floated column"
+      class="content ellipsis column left floated column"
     >
       <a
         @click="activateTrack(track, index)"
@@ -152,22 +152,23 @@ const hover = ref(false)
         {{ track.title }}
       </a>
     </div>
+
     <div
-      v-if="showAlbum"
       class="content ellipsis left floated column"
     >
       <router-link
+        v-if="showAlbum"
         :to="{ name: 'library.albums.detail', params: { id: track.album?.id } }"
       >
         {{ track.album?.title }}
       </router-link>
     </div>
+
     <div
-      v-if="showArtist"
       class="content ellipsis left floated column"
     >
       <template
-        v-for="ac in track.artist_credit"
+        v-for="ac in (showArtist ? track.artist_credit : [])"
         :key="ac.artist.id"
       >
         <router-link
@@ -182,41 +183,49 @@ const hover = ref(false)
         <span>{{ ac.joinphrase }}</span>
       </template>
     </div>
+
     <div
-      v-if="$store.state.auth.authenticated"
       class="meta right floated column"
     >
       <track-favorite-icon
-        class="tiny"
-        :border="false"
+        v-if="store.state.auth.authenticated"
+        ghost
         :track="track"
       />
     </div>
+
     <div
-      v-if="showDuration"
       class="meta right floated column"
     >
       <human-duration
-        v-if="track.uploads[0] && track.uploads[0].duration"
+        v-if="showDuration && track.uploads && track.uploads.length > 0 && track.uploads[0].duration"
         :duration="track.uploads[0].duration"
       />
     </div>
+
     <div
       v-if="displayActions"
       class="meta right floated column"
     >
-      <play-button
-        id="playmenu"
-        class="play-button basic icon"
+      <PlayButton
         :dropdown-only="true"
         :is-playable="track.is_playable"
-        :dropdown-icon-classes="[
-          'ellipsis',
-          'vertical',
-          'large really discrete',
-        ]"
         :track="track"
+        class="ui floating dropdown"
+        ghost
       />
     </div>
   </div>
 </template>
+
+<style module>
+  .row > :has(> :is(a, span)) {
+    line-height: 46px;
+  }
+  .row > div {
+    /* total height 64px, according to designs on penpot */
+    margin-bottom: 8px;
+    margin-right: 8px;
+    height: 48px;
+  }
+</style>

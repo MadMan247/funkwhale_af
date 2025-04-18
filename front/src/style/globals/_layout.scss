@@ -1,6 +1,6 @@
 
 .main.with-background, .opaque {
-  background: var(--site-background);
+  background: var(--background-color);
 }
 
 .main.pusher > .ui.secondary.menu {
@@ -40,7 +40,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   display: flex;
-  min-height: 100vh;
   flex-direction: column;
   &.has-bottom-player {
     padding-bottom: $bottom-player-height;
@@ -163,7 +162,6 @@
   }
 }
 
-.main.pusher,
 .ui.vertical.segment {
   color: var(--main-color);
   background: var(--main-background);

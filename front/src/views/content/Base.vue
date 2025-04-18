@@ -1,8 +1,22 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import { useRoute } from 'vue-router'
+
+import Nav from '~/components/ui/Nav.vue'
+import Spacer from '~/components/ui/Spacer.vue'
 
 const { t } = useI18n()
+const route = useRoute()
+
+const tabs = ref([{
+  title: t('views.content.Base.link.libraries'),
+  to: { name: 'content.libraries.index'}
+},
+{
+  title: t('views.content.Base.link.tracks'),
+  to: { name: 'content.libraries.files' }
+}])
 
 const labels = computed(() => ({
   secondaryMenu: t('views.content.Base.menu.secondary'),
@@ -13,26 +27,13 @@ const labels = computed(() => ({
 <template>
   <main
     v-title="labels.title"
-    class="main pusher"
+    class="main"
   >
-    <nav
-      class="ui secondary pointing menu"
-      role="navigation"
+    <Nav
+      v-model="tabs"
       :aria-label="labels.secondaryMenu"
-    >
-      <router-link
-        class="ui item"
-        :to="{name: 'content.libraries.index'}"
-      >
-        {{ $t('views.content.Base.link.libraries') }}
-      </router-link>
-      <router-link
-        class="ui item"
-        :to="{name: 'content.libraries.files'}"
-      >
-        {{ $t('views.content.Base.link.tracks') }}
-      </router-link>
-    </nav>
-    <router-view :key="$route.fullPath" />
+    />
+    <Spacer />
+    <router-view :key="route.fullPath" />
   </main>
 </template>

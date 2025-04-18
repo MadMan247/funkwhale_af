@@ -2,7 +2,12 @@
 import type { BackendError, Channel } from '~/types'
 
 import { computed, watch, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import axios from 'axios'
+
+import Layout from '~/components/ui/Layout.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Input from '~/components/ui/Input.vue'
 
 interface Events {
   (e: 'submittable', value: boolean): void
@@ -10,12 +15,11 @@ interface Events {
   (e: 'created'): void
 }
 
-interface Props {
-  channel: Channel
-}
+const channel = defineModel<Channel>({ required: true })
+
+const { t } = useI18n()
 
 const emit = defineEmits<Events>()
-const props = defineProps<Props>()
 
 const title = ref('')
 
@@ -28,7 +32,7 @@ const submit = async () => {
   try {
     await axios.post('albums/', {
       title: title.value,
-      artist: props.channel.artist?.id
+      artist: channel.value.artist?.id
     })
 
     emit('created')
@@ -49,17 +53,17 @@ defineExpose({
 </script>
 
 <template>
-  <form
+  <Layout
+    form
     :class="['ui', {loading: isLoading}, 'form']"
     @submit.stop.prevent
   >
-    <div
+    <Alert
       v-if="errors.length > 0"
-      role="alert"
-      class="ui negative message"
+      red
     >
       <h4 class="header">
-        {{ $t('components.channels.AlbumForm.header.error') }}
+        {{ t('components.channels.AlbumForm.header.error') }}
       </h4>
       <ul class="list">
         <li
@@ -69,15 +73,13 @@ defineExpose({
           {{ error }}
         </li>
       </ul>
-    </div>
+    </Alert>
     <div class="ui required field">
-      <label for="album-title">
-        {{ $t('components.channels.AlbumForm.label.albumTitle') }}
-      </label>
-      <input
+      <Input
         v-model="title"
         type="text"
-      >
+        :label="t('components.channels.AlbumForm.label.albumTitle')"
+      />
     </div>
-  </form>
+  </Layout>
 </template>

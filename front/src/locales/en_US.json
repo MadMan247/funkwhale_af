@@ -2,6 +2,27 @@
   "App": {
     "loading": "Loading…"
   },
+  "vui": {
+    "radio": "Radio",
+    "albums": "{n} album | {n} albums",
+    "tracks": "{n} track | {n} tracks",
+    "episodes": "{n} episode | {n} episodes",
+    "by-user": "by {'@'}{username}",
+    "go-to": "Go to",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "aria": {
+      "pagination": {
+        "nav": "Pagination Navigation",
+        "gotoPage": "Go to Page {n}",
+        "gotoPrevious": "Go to Previous Page",
+        "gotoNext": "Go to Next Page",
+        "currentPage": "Current Page, Page {n}"
+      }
+    }
+  },
   "components": {
     "About": {
       "description": {
@@ -309,7 +330,7 @@
           "save": "Save"
         },
         "header": {
-          "error": "Error while saving settings.",
+          "error": "{label}: Error while saving settings.",
           "image": "Current image"
         },
         "message": {
@@ -574,7 +595,8 @@
         "Card": {
           "meta": {
             "episodes": "No episodes | {n} episode | {n} episodes",
-            "tracks": "No tracks | {n} track | {n} tracks"
+            "tracks": "No tracks | {n} track | {n} tracks",
+            "albums": "No albums | {n} album | {n} albums"
           }
         },
         "Widget": {
@@ -1006,6 +1028,7 @@
         }
       },
       "AlbumSelect": {
+        "add": "Add Album",
         "label": {
           "album": "Album",
           "series": "Series"
@@ -1621,6 +1644,7 @@
       },
       "EditForm": {
         "button": {
+          "backToAlbum": "Back to Album",
           "cancel": "Cancel",
           "clear": "Clear",
           "new": "Submit another edit",
@@ -1695,6 +1719,7 @@
               "size": "Size",
               "status": "Status"
             },
+            "progressNum": "{current} / {total}",
             "progress": "{percent}%",
             "status": {
               "pending": "Pending",
@@ -2845,7 +2870,8 @@
           "visibility": "Playlist visiblity"
         },
         "placeholder": {
-          "name": "My awesome playlist"
+          "name": "My awesome playlist",
+          "description": "Description"
         }
       },
       "PlaylistModal": {
@@ -2900,19 +2926,6 @@
         "placeholder": {
           "noPlaylists": "No playlists have been created yet"
         }
-      },
-      "PlaylistDropdown": {
-        "button": {
-          "import": {
-            "header": "Rebuild playlist",
-            "description": "This will update the playlist with the content of the xspf file. Existing playlist tracks will be deleted"
-          },
-          "export": {
-            "header": "Download playlist",
-            "description": "This will provide an xspf file with the playlist data"
-          }
-        },
-        "more": "More"
       }
     },
     "radios": {
@@ -2992,6 +3005,7 @@
           "privacyLevel": {
             "choices": {
               "instance": "Everyone on this instance",
+              "followers": "My followers",
               "private": "Nobody except me",
               "public": "Everyone, across all instances"
             },
@@ -2999,7 +3013,8 @@
             "label": "Activity visibility",
             "shortChoices": {
               "instance": "Instance",
-              "private": "Private",
+              "followers": "Followers",
+              "private": "Nobody except me",
               "public": "Everyone"
             }
           },
@@ -3231,6 +3246,16 @@
       "newAppVersion": "A new version of the app is available."
     }
   },
+  "modals": {
+    "search": {
+      "tryAgain": "If the following link does not work, wait a few seconds and try again"
+    },
+    "upload": {
+      "library": "Host music you listen to",
+      "musicChannel": "Publish music you make",
+      "podcastChannel": "Publish podcasts you make"
+    }
+  },
   "views": {
     "ChooseInstance": {
       "button": {
@@ -3309,7 +3334,9 @@
         "radios": "Radios",
         "series": "Series",
         "tags": "Tags",
-        "tracks": "Tracks"
+        "tracks": "Tracks",
+        "rss": "RSS feeds",
+        "fetches": "Federation fetches"
       }
     },
     "admin": {
@@ -3325,11 +3352,13 @@
           "channelData": "Channel data"
         },
         "label": {
-          "local": "Local"
+          "local": "Local",
+          "federated": "Federated"
         },
         "link": {
           "django": "View in Django's admin",
-          "localProfile": "Open local profile"
+          "localProfile": "Open local profile",
+          "rss": "RSS feed"
         },
         "modal": {
           "delete": {
@@ -3412,7 +3441,8 @@
             "activity": "Activity",
             "albumData": "Album data",
             "audioContent": "Audio content",
-            "local": "Local"
+            "local": "Local",
+            "federated": "Federated"
           },
           "link": {
             "artist": "Artist",
@@ -3465,7 +3495,8 @@
             "activity": "Activity",
             "artistData": "Artist data",
             "audioContent": "Audio content",
-            "local": "Local"
+            "local": "Local",
+            "federated": "Federated"
           },
           "link": {
             "albums": "Albums",
@@ -3581,7 +3612,8 @@
         },
         "TagDetail": {
           "button": {
-            "delete": "Delete"
+            "delete": "Delete",
+            "more": "Show more"
           },
           "header": {
             "activity": "Activity",
@@ -3621,6 +3653,7 @@
           "header": {
             "activity": "Activity",
             "local": "Local",
+            "federated": "Federated",
             "trackData": "Track data"
           },
           "link": {
@@ -3672,11 +3705,13 @@
         "UploadDetail": {
           "button": {
             "delete": "Delete",
-            "download": "Download"
+            "download": "Download",
+            "more": "Show more"
           },
           "header": {
             "activity": "Activity",
             "audioContent": "Audio content",
+            "federated": "Federated",
             "local": "Local",
             "uploadData": "Upload data"
           },
@@ -4043,10 +4078,13 @@
         "link": {
           "activity": "Activity",
           "domainView": "View on {domain}",
+          "edit": "Edit profile",
           "moderation": "Open in moderation interface",
-          "overview": "Overview"
+          "overview": "Overview",
+          "manageUploads": "Manage uploads"
         },
-        "title": "{username}'s profile"
+        "title": "{username}'s profile",
+        "copyUsername": "Copy federated profile link"
       },
       "ProfileOverview": {
         "button": {
@@ -4345,7 +4383,7 @@
             "currentUsage": "Current usage"
           },
           "label": {
-            "currentUsage": "{amount} used on {max} allowed",
+            "currentUsage": "{currentAmount} used on {max} allowed",
             "errored": "Errored files",
             "pending": "Pending files",
             "percentUsed": "{progress}%",
@@ -4540,6 +4578,12 @@
       }
     },
     "playlists": {
+      "Card": {
+        "title": "Updated on {date}",
+        "meta": {
+          "tracks": "No tracks | {n} track | {n} tracks"
+        }
+      },
       "Detail": {
         "button": {
           "cancel": "Cancel",
@@ -4557,7 +4601,9 @@
           "tracks": "Tracks"
         },
         "meta": {
-          "tracks": "Playlist containing {n} track, by {username} | Playlist containing {n} tracks, by {username}"
+          "attribution": "by",
+          "tracks": "Playlist containing {n} track, by {username} | Playlist containing {n} tracks, by {username}",
+          "updated": "updated"
         },
         "modal": {
           "delete": {
@@ -4571,6 +4617,59 @@
           }
         },
         "title": "Playlist"
+      },
+      "Editor": {
+        "button": {
+          "addDuplicate": "Add anyway",
+          "clear": "Clear playlist",
+          "copy": "Copy the current queue to this playlist",
+          "insertFromQueue": "Insert from queue ({n} track) | Insert from queue ({n} tracks"
+        },
+        "error": {
+          "sync": "An error occurred while saving your changes"
+        },
+        "header": {
+          "editor": "Playlist editor"
+        },
+        "help": {
+          "reorder": "Drag and drop rows to reorder tracks in the playlist"
+        },
+        "loading": {
+          "sync": "Syncing changes to server…"
+        },
+        "message": {
+          "sync": "Changes synced with server"
+        },
+        "modal": {
+          "clearPlaylist": {
+            "content": {
+              "warning": "This will remove all tracks from this playlist and cannot be undone."
+            },
+            "header": "Do you want to clear the playlist \"{playlist}\"?"
+          }
+        },
+        "warning": {
+          "duplicate": "Some tracks in your queue are already in this playlist:"
+        }
+      },
+      "Form": {
+        "button": {
+          "create": "Create playlist",
+          "update": "Update playlist"
+        },
+        "header": {
+          "createFailure": "The playlist could not be created",
+          "createPlaylist": "Create a new playlist",
+          "createSuccess": "Playlist created",
+          "updateSuccess": "Playlist updated"
+        },
+        "label": {
+          "name": "Playlist name",
+          "visibility": "Playlist visibility"
+        },
+        "placeholder": {
+          "name": "My awesome playlist"
+        }
       },
       "List": {
         "button": {
@@ -4602,6 +4701,72 @@
         "placeholder": {
           "search": "Enter playlist name…"
         }
+      },
+      "PlaylistModal": {
+        "button": {
+          "addDuplicate": "Add anyway",
+          "addToPlaylist": "Add to this playlist",
+          "addTrack": "Add track",
+          "cancel": "Cancel",
+          "edit": "Edit"
+        },
+        "empty": {
+          "noPlaylists": "No playlists have been created yet"
+        },
+        "header": {
+          "addFailure": "The track can't be added to a playlist",
+          "addToPlaylist": "Add to playlist",
+          "available": "Available playlists",
+          "manage": "Manage playlists",
+          "noResults": "No results matching your filter",
+          "track": "{title}, by {artist}"
+        },
+        "label": {
+          "filter": "Filter"
+        },
+        "placeholder": {
+          "filterPlaylist": "Enter playlist name"
+        },
+        "table": {
+          "edit": {
+            "header": {
+              "edit": "Edit",
+              "lastModification": "Last modification",
+              "name": "Name",
+              "tracks": "Tracks"
+            }
+          }
+        },
+        "warning": {
+          "duplicate": "{ 0 } is already in { 1 }."
+        }
+      },
+      "TrackPlaylistIcon": {
+        "button": {
+          "add": "Add to playlist…"
+        }
+      },
+      "Widget": {
+        "button": {
+          "create": "Create playlist",
+          "more": "Show more"
+        },
+        "placeholder": {
+          "noPlaylists": "No playlists have been created yet"
+        }
+      },
+      "PlaylistDropdown": {
+        "button": {
+          "import": {
+            "header": "Rebuild playlist",
+            "description": "This will update the playlist with the content of the xspf file. Existing playlist tracks will be deleted"
+          },
+          "export": {
+            "header": "Download playlist",
+            "description": "This will provide an xspf file with the playlist data"
+          }
+        },
+        "more": "More"
       }
     },
     "radios": {

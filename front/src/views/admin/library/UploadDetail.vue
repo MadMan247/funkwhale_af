@@ -4,11 +4,26 @@ import type { PrivacyLevel, ImportStatus } from '~/types'
 import { humanSize, truncate } from '~/utils/filters'
 import { useRouter } from 'vue-router'
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useStore } from '~/store'
 
 import time from '~/utils/time'
 import axios from 'axios'
 
 import ImportStatusModal from '~/components/library/ImportStatusModal.vue'
+import DangerousButton from '~/components/common/DangerousButton.vue'
+import Header from '~/components/ui/Header.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import HumanDate from '~/components/common/HumanDate.vue'
+import Link from '~/components/ui/Link.vue'
+import Button from '~/components/ui/Button.vue'
+import Heading from '~/components/ui/Heading.vue'
+import OptionsButton from '~/components/ui/button/Options.vue'
+import Popover from '~/components/ui/Popover.vue'
+import PopoverItem from '~/components/ui/popover/PopoverItem.vue'
+import Loader from '~/components/ui/Loader.vue'
+import Pill from '~/components/ui/Pill.vue'
 
 import useSharedLabels from '~/composables/locale/useSharedLabels'
 import useErrorHandler from '~/composables/useErrorHandler'
@@ -19,14 +34,24 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const sharedLabels = useSharedLabels()
 const router = useRouter()
+const store = useStore()
+const { t } = useI18n()
 
-const privacyLevels = computed(() => sharedLabels.fields.privacy_level.shortChoices[object.value.library.privacy_level as PrivacyLevel])
-const importStatus = computed(() => sharedLabels.fields.import_status.choices[object.value.import_status as ImportStatus].label)
+const sharedLabels = useSharedLabels()
 
 const isLoading = ref(false)
 const object = ref()
+const showUploadDetailModal = ref(false)
+const open = ref(false)
+
+const privacyLevels = computed(() =>
+  sharedLabels.fields.privacy_level.shortChoices[object.value?.library?.privacy_level as PrivacyLevel]
+)
+const importStatus = computed(() =>
+  sharedLabels.fields.import_status.choices[object.value?.import_status as ImportStatus]?.label
+)
+
 const fetchData = async () => {
   isLoading.value = true
 
@@ -56,343 +81,417 @@ const remove = async () => {
 }
 
 const getQuery = (field: string, value: string) => `${field}:"${value}"`
-const displayName = (object: any) => object.filename ?? object.source ?? object.uuid
-
-const showUploadDetailModal = ref(false)
+const displayName = (object: any) => object?.filename ?? object?.source ?? object?.uuid
 </script>
 
 <template>
-  <main>
-    <div
-      v-if="isLoading"
-      class="ui vertical segment"
-    >
-      <div :class="['ui', 'centered', 'active', 'inline', 'loader']" />
-    </div>
-    <template v-if="object">
-      <import-status-modal
-        v-model:show="showUploadDetailModal"
-        :upload="object"
-      />
-      <section
-        v-title="displayName(object)"
-        :class="['ui', 'head', 'vertical', 'stripe', 'segment']"
-      >
-        <div class="ui stackable one column grid">
-          <div class="ui column">
-            <div class="segment-content">
-              <h2 class="ui header">
-                <i class="circular inverted file icon" />
-                <div class="content">
-                  {{ truncate(displayName(object)) }}
-                  <div class="sub header">
-                    <template v-if="object.is_local">
-                      <span class="ui tiny accent label">
-                        <i class="home icon" />
-                        {{ $t('views.admin.library.UploadDetail.header.local') }}
-                      </span>
-                      &nbsp;
-                    </template>
-                  </div>
-                </div>
-              </h2>
-              <div class="header-buttons">
-                <div class="ui icon buttons">
-                  <a
-                    v-if="$store.state.auth.profile && $store.state.auth.profile.is_superuser"
-                    class="ui labeled icon button"
-                    :href="$store.getters['instance/absoluteUrl'](`/api/admin/music/upload/${object.id}`)"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <i class="wrench icon" />
-                    {{ $t('views.admin.library.UploadDetail.link.django') }}
-                  </a>
-                  <button
-                    v-dropdown
-                    class="ui floating dropdown icon button"
-                  >
-                    <i class="dropdown icon" />
-                    <div class="menu">
-                      <a
-                        v-if="$store.state.auth.profile && $store.state.auth.profile.is_superuser"
-                        class="basic item"
-                        :href="$store.getters['instance/absoluteUrl'](`/api/admin/music/upload/${object.id}`)"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <i class="wrench icon" />
-                        {{ $t('views.admin.library.UploadDetail.link.django') }}
-                      </a>
-                      <a
-                        class="basic item"
-                        :href="object.url || object.fid"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <i class="external icon" />
-                        {{ $t('views.admin.library.UploadDetail.link.remoteProfile') }}
-                      </a>
-                    </div>
-                  </button>
-                </div>
-                <div class="ui buttons">
-                  <a
-                    v-if="object.audio_file"
-                    class="ui labeled icon button"
-                    :href="$store.getters['instance/absoluteUrl'](object.audio_file)"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <i class="download icon" />
-                    {{ $t('views.admin.library.UploadDetail.button.download') }}
-                  </a>
-                </div>
-                <div class="ui buttons">
-                  <dangerous-button
-                    :class="['ui', {loading: isLoading}, 'basic danger button']"
-                    :action="remove"
-                  >
-                    {{ $t('views.admin.library.UploadDetail.button.delete') }}
-                    <template #modal-header>
-                      <p>
-                        {{ $t('views.admin.library.UploadDetail.modal.delete.header') }}
-                      </p>
-                    </template>
-                    <template #modal-content>
-                      <div>
-                        <p>
-                          {{ $t('views.admin.library.UploadDetail.modal.delete.content.warning') }}
-                        </p>
-                      </div>
-                    </template>
-                    <template #modal-confirm>
-                      <p>
-                        {{ $t('views.admin.library.UploadDetail.button.delete') }}
-                      </p>
-                    </template>
-                  </dangerous-button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <div class="ui vertical stripe segment">
-        <div class="ui stackable three column grid">
-          <div class="column">
-            <section>
-              <h3 class="ui header">
-                <i class="info icon" />
-                <div class="content">
-                  {{ $t('views.admin.library.UploadDetail.header.uploadData') }}
-                </div>
-              </h3>
-              <table class="ui very basic table">
-                <tbody>
-                  <tr>
-                    <td>
-                      {{ $t('views.admin.library.UploadDetail.table.upload.name') }}
-                    </td>
-                    <td>
-                      {{ displayName(object) }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <router-link :to="{name: 'manage.library.uploads', query: {q: getQuery('privacy_level', object.library.privacy_level) }}">
-                        {{ $t('views.admin.library.UploadDetail.link.visibility') }}
-                      </router-link>
-                    </td>
-                    <td>
-                      {{ privacyLevels }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <router-link :to="{name: 'manage.moderation.accounts.detail', params: {id: object.library.actor.full_username }}">
-                        {{ $t('views.admin.library.UploadDetail.link.account') }}
-                      </router-link>
-                    </td>
-                    <td>
-                      {{ object.library.actor.preferred_username }}
-                    </td>
-                  </tr>
-                  <tr v-if="!object.is_local">
-                    <td>
-                      <router-link :to="{name: 'manage.moderation.domains.detail', params: {id: object.domain }}">
-                        {{ $t('views.admin.library.UploadDetail.link.domain') }}
-                      </router-link>
-                    </td>
-                    <td>
-                      {{ object.domain }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <router-link :to="{name: 'manage.library.uploads', query: {q: getQuery('status', object.import_status) }}">
-                        {{ $t('views.admin.library.UploadDetail.link.importStatus') }}
-                      </router-link>
-                    </td>
-                    <td>
-                      {{ importStatus }}
-                      <button
-                        class="ui tiny basic icon button"
-                        :title="sharedLabels.fields.import_status.label"
-                        @click="showUploadDetailModal = true"
-                      >
-                        <i class="question circle outline icon" />
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <router-link :to="{name: 'manage.library.libraries.detail', params: {id: object.library.uuid }}">
-                        {{ $t('views.admin.library.UploadDetail.link.library') }}
-                      </router-link>
-                    </td>
-                    <td>
-                      {{ object.library.name }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </section>
-          </div>
-          <div class="column">
-            <section>
-              <h3 class="ui header">
-                <i class="feed icon" />
-                <div class="content">
-                  {{ $t('views.admin.library.UploadDetail.header.activity') }}&nbsp;
-                </div>
-              </h3>
-              <table class="ui very basic table">
-                <tbody>
-                  <tr>
-                    <td>
-                      {{ $t('views.admin.library.UploadDetail.table.activity.firstSeen') }}
-                    </td>
-                    <td>
-                      <human-date :date="object.creation_date" />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {{ $t('views.admin.library.UploadDetail.table.activity.accessedDate') }}
-                    </td>
-                    <td>
-                      <human-date
-                        v-if="object.accessed_date"
-                        :date="object.accessed_date"
-                      />
-                      <span
-                        v-else
-                      >
-                        {{ $t('views.admin.library.UploadDetail.notApplicable') }}
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </section>
-          </div>
-          <div class="column">
-            <section>
-              <h3 class="ui header">
-                <i class="music icon" />
-                <div class="content">
-                  {{ $t('views.admin.library.UploadDetail.header.audioContent') }}&nbsp;
-                </div>
-              </h3>
-              <table class="ui very basic table">
-                <tbody>
-                  <tr v-if="object.track">
-                    <td>
-                      <router-link :to="{name: 'manage.library.tracks.detail', params: {id: object.track.id }}">
-                        {{ $t('views.admin.library.UploadDetail.table.audioContent.track') }}
-                      </router-link>
-                    </td>
-                    <td>
-                      {{ object.track.title }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {{ $t('views.admin.library.UploadDetail.table.audioContent.cachedSize') }}
-                    </td>
-                    <td>
-                      <template v-if="object.audio_file">
-                        {{ humanSize(object.size) }}
-                      </template>
-                      <span
-                        v-else
-                      >
-                        {{ $t('views.admin.library.UploadDetail.notApplicable') }}
-                      </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {{ $t('views.admin.library.UploadDetail.table.audioContent.size') }}
-                    </td>
-                    <td>
-                      {{ humanSize(object.size) }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {{ $t('views.admin.library.UploadDetail.table.audioContent.bitrate.label') }}
-                    </td>
-                    <td>
-                      <template v-if="object.bitrate">
-                        {{ $t('views.admin.library.UploadDetail.table.audioContent.bitrate.value', {bitrate: humanSize(object.bitrate)}) }}
-                      </template>
-                      <span
-                        v-else
-                      >
-                        {{ $t('views.admin.library.UploadDetail.notApplicable') }}
-                      </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {{ $t('views.admin.library.UploadDetail.table.audioContent.duration') }}
-                    </td>
-                    <td>
-                      <template v-if="object.duration">
-                        {{ time.parse(object.duration) }}
-                      </template>
-                      <span
-                        v-else
-                      >
-                        {{ $t('views.admin.library.UploadDetail.notApplicable') }}
-                      </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <router-link :to="{name: 'manage.library.uploads', query: {q: getQuery('type', object.mimetype) }}">
-                        {{ $t('views.admin.library.UploadDetail.link.type') }}
-                      </router-link>
-                    </td>
-                    <td>
-                      <template v-if="object.mimetype">
-                        {{ object.mimetype }}
-                      </template>
-                      <span
-                        v-else
-                      >
-                        {{ $t('views.admin.library.UploadDetail.notApplicable') }}
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </section>
-          </div>
-        </div>
-      </div>
+  <Loader v-if="isLoading" />
+  <Header
+    v-if="object"
+    v-title="displayName(object)"
+    :h1="truncate(displayName(object))"
+    page-heading
+  >
+    <template #image>
+      <i class="avatar circular bi bi-file-earmark-music" />
     </template>
-  </main>
+    <div class="sub header">
+      <template v-if="object?.is_local">
+        <Pill>
+          <i class="bi bi-house-fill" />
+          {{ t('views.admin.library.UploadDetail.header.local') }}
+        </Pill>
+      </template>
+      <template v-else>
+        <Pill>
+          <i class="bi bi-box-arrow-up-right" />
+          {{ t('views.admin.library.UploadDetail.header.federated') }}
+        </Pill>
+      </template>
+    </div>
+
+    <Layout
+      flex
+      class="header-buttons"
+    >
+      <Link
+        v-if="store.state.auth.profile?.is_superuser"
+        solid
+        primary
+        :to="store.getters['instance/absoluteUrl'](`/api/admin/music/upload/${object?.id}`)"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <i class="bi bi-wrench" />
+        {{ t('views.admin.library.UploadDetail.link.django') }}
+      </Link>
+      <Link
+        v-if="object?.audio_file"
+        solid
+        primary
+        :to="store.getters['instance/absoluteUrl'](object?.audio_file)"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <i class="bi bi-download" />
+        {{ t('views.admin.library.UploadDetail.button.download') }}
+      </Link>
+      <dangerous-button
+        :is-loading="isLoading"
+        :action="remove"
+        :title="t('views.admin.library.UploadDetail.modal.delete.header')"
+      >
+        {{ t('views.admin.library.UploadDetail.button.delete') }}
+        <template #modal-content>
+          {{ t('views.admin.library.UploadDetail.modal.delete.content.warning') }}
+        </template>
+        <template #modal-confirm>
+          {{ t('views.admin.library.UploadDetail.button.delete') }}
+        </template>
+      </dangerous-button>
+      <Spacer grow />
+      <Popover v-model="open">
+        <template #default="{ toggleOpen }">
+          <OptionsButton
+            :title="t('views.admin.library.UploadDetail.button.more')"
+            is-square-small
+            @click="toggleOpen()"
+          />
+        </template>
+
+        <template #items>
+          <PopoverItem
+            v-if="store.state.auth.profile?.is_superuser"
+            :to="store.getters['instance/absoluteUrl'](`/api/admin/music/upload/${object?.id}`)"
+            icon="bi-wrench"
+            target="_blank"
+          >
+            {{ t('views.admin.library.UploadDetail.link.django') }}
+          </PopoverItem>
+          <PopoverItem
+            :to="object?.url || object?.fid"
+            icon="bi-box-arrow-up-right"
+            target="_blank"
+          >
+            {{ t('views.admin.library.UploadDetail.link.remoteProfile') }}
+          </PopoverItem>
+        </template>
+      </Popover>
+    </Layout>
+  </Header>
+
+  <Layout
+    flex
+    gap-64
+  >
+    <Layout
+      stack
+      style="flex: 1; gap: 0;"
+    >
+      <Heading
+        :h3="t('views.admin.library.UploadDetail.header.uploadData')"
+        class="category"
+      />
+      <Layout
+        flex
+        class="details"
+      >
+        <span class="label">
+          {{ t('views.admin.library.UploadDetail.table.upload.name') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">{{ displayName(object) }}</span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <Link
+          class="label"
+          :to="{ name: 'manage.library.uploads', query: { q: getQuery('privacy_level', object?.library?.privacy_level) } }"
+        >
+          {{ t('views.admin.library.UploadDetail.link.visibility') }}
+        </Link>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">{{ privacyLevels }}</span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <Link
+          class="label"
+          :to="{ name: 'manage.moderation.accounts.detail', params: { id: object?.library?.actor?.full_username } }"
+        >
+          {{ t('views.admin.library.UploadDetail.link.account') }}
+        </Link>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">{{ object?.library?.actor?.preferred_username }}</span>
+      </Layout>
+      <Layout
+        v-if="!object?.is_local"
+        flex
+        class="details"
+      >
+        <Link
+          class="label"
+          :to="{ name: 'manage.moderation.domains.detail', params: { id: object?.domain } }"
+        >
+          {{ t('views.admin.library.UploadDetail.link.domain') }}
+        </Link>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">{{ object?.domain }}</span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <Link
+          class="label"
+          :to="{ name: 'manage.library.uploads', query: { q: getQuery('status', object?.import_status) } }"
+        >
+          {{ t('views.admin.library.UploadDetail.link.importStatus') }}
+        </Link>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">
+          {{ importStatus }}
+          <Button
+            :title="sharedLabels.fields.import_status.label"
+            icon="bi-question-circle"
+            @click="showUploadDetailModal = true"
+          />
+        </span>
+      </Layout>
+    </Layout>
+    <Layout
+      stack
+      style="flex: 1; gap: 0;"
+    >
+      <Heading
+        :h3="t('views.admin.library.UploadDetail.header.activity')"
+        class="category"
+      />
+      <Layout
+        flex
+        class="details"
+      >
+        <span class="label">
+          {{ t('views.admin.library.UploadDetail.table.activity.firstSeen') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <human-date :date="object?.creation_date" />
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <span class="label">
+          {{ t('views.admin.library.UploadDetail.table.activity.accessedDate') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">
+          <human-date
+            v-if="object?.accessed_date"
+            :date="object?.accessed_date"
+          />
+          <span v-else>
+            {{ t('views.admin.library.UploadDetail.notApplicable') }}
+          </span>
+        </span>
+      </Layout>
+    </Layout>
+    <Layout
+      stack
+      style="flex: 1; gap: 0;"
+    >
+      <Heading
+        :h3="t('views.admin.library.UploadDetail.header.audioContent')"
+        class="category"
+      />
+      <Layout
+        v-if="object?.track"
+        flex
+        class="details"
+      >
+        <Link
+          class="label"
+          :to="{ name: 'manage.library.tracks.detail', params: { id: object?.track?.id } }"
+        >
+          {{ t('views.admin.library.UploadDetail.table.audioContent.track') }}
+        </Link>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">{{ object?.track?.title }}</span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <span class="label">
+          {{ t('views.admin.library.UploadDetail.table.audioContent.cachedSize') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">
+          <template v-if="object?.audio_file">
+            {{ humanSize(object?.size) }}
+          </template>
+          <span v-else>
+            {{ t('views.admin.library.UploadDetail.notApplicable') }}
+          </span>
+        </span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <span class="label">
+          {{ t('views.admin.library.UploadDetail.table.audioContent.size') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">{{ humanSize(object?.size) }}</span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <span class="label">
+          {{ t('views.admin.library.UploadDetail.table.audioContent.bitrate.label') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">
+          <template v-if="object?.bitrate">
+            {{ t('views.admin.library.UploadDetail.table.audioContent.bitrate.value', { bitrate: humanSize(object?.bitrate) }) }}
+          </template>
+          <span v-else>
+            {{ t('views.admin.library.UploadDetail.notApplicable') }}
+          </span>
+        </span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <span class="label">
+          {{ t('views.admin.library.UploadDetail.table.audioContent.duration') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">
+          <template v-if="object?.duration">
+            {{ time.parse(object?.duration) }}
+          </template>
+          <span v-else>
+            {{ t('views.admin.library.UploadDetail.notApplicable') }}
+          </span>
+        </span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <Link
+          class="label"
+          :to="{ name: 'manage.library.uploads', query: { q: getQuery('type', object?.mimetype) } }"
+        >
+          {{ t('views.admin.library.UploadDetail.link.type') }}
+        </Link>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">
+          <template v-if="object?.mimetype">
+            {{ object?.mimetype }}
+          </template>
+          <span v-else>
+            {{ t('views.admin.library.UploadDetail.notApplicable') }}
+          </span>
+        </span>
+      </Layout>
+    </Layout>
+  </Layout>
+  <import-status-modal
+    v-model:show="showUploadDetailModal"
+    :upload="object"
+  />
 </template>
+
+<style scoped lang="scss">
+  .avatar {
+    font-size: 64px;
+  }
+
+  h3.category {
+    margin-bottom: 16px;
+  }
+
+  .details {
+    padding: 0 16px;
+    height: 72px;
+    align-items: center;
+    border-top: 1px solid;
+    min-width: 280px;
+
+    @include light-theme {
+      border-color: var(--fw-gray-300);
+    }
+    @include dark-theme {
+      border-color: var(--fw-gray-800);
+    }
+
+    .label {
+      font-weight: 800;
+
+      @include light-theme {
+        color: var(--fw-gray-600);
+      }
+
+      @include dark-theme {
+        color: var(--fw-gray-500);
+      }
+    }
+
+    a.label,
+    a.value {
+      text-decoration: underline;
+    }
+
+    &:last-child {
+      border-bottom: 1px solid;
+    }
+  }
+</style>

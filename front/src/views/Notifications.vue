@@ -14,6 +14,13 @@ import useWebSocketHandler from '~/composables/useWebSocketHandler'
 import useErrorHandler from '~/composables/useErrorHandler'
 import useMarkdown from '~/composables/useMarkdown'
 
+import Layout from '~/components/ui/Layout.vue'
+import Loader from '~/components/ui/Loader.vue'
+import Header from '~/components/ui/Header.vue'
+import Toggle from '~/components/ui/Toggle.vue'
+import Button from '~/components/ui/Button.vue'
+import Alert from '~/components/ui/Alert.vue'
+
 const store = useStore()
 const supportMessage = useMarkdown(() => store.state.instance.settings.instance.support_message.value)
 const { t } = useI18n()
@@ -90,180 +97,169 @@ const markAllAsRead = async () => {
 </script>
 
 <template>
-  <main
+  <Layout
     v-title="labels.title"
-    class="main pusher page-notifications"
+    main
+    stack
+    class="main page-notifications"
   >
-    <section class="ui vertical aligned stripe segment">
-      <div class="ui container">
+    <div
+      v-if="additionalNotifications"
+    >
+      <Header
+        page-heading
+        :h1="t('views.Notifications.header.messages')"
+      />
+      <Layout flex>
         <div
-          v-if="additionalNotifications"
-          class="ui container"
+          v-if="showInstanceSupportMessage"
         >
-          <h1 class="ui header">
-            {{ $t('views.Notifications.header.messages') }}
-          </h1>
-          <div class="ui two column stackable grid">
-            <div
-              v-if="showInstanceSupportMessage"
-              class="column"
+          <Alert blue>
+            <h4 class="header">
+              {{ t('views.Notifications.header.instanceSupport') }}
+            </h4>
+            <sanitized-html :html="supportMessage" />
+          </Alert>
+          <div class="ui bottom attached segment">
+            <form
+              class="ui inline form"
+              @submit.prevent="setDisplayDate('instance_support_message_display_date', instanceSupportMessageDelay)"
             >
-              <div class="ui attached info message">
-                <h4 class="header">
-                  {{ $t('views.Notifications.header.instanceSupport') }}
-                </h4>
-                <sanitized-html :html="supportMessage" />
-              </div>
-              <div class="ui bottom attached segment">
-                <form
-                  class="ui inline form"
-                  @submit.prevent="setDisplayDate('instance_support_message_display_date', instanceSupportMessageDelay)"
+              <div class="inline field">
+                <label for="instance-reminder-delay">
+                  {{ t('views.Notifications.label.reminder') }}
+                </label>
+                <select
+                  id="instance-reminder-delay"
+                  v-model="instanceSupportMessageDelay"
                 >
-                  <div class="inline field">
-                    <label for="instance-reminder-delay">
-                      {{ $t('views.Notifications.label.reminder') }}
-                    </label>
-                    <select
-                      id="instance-reminder-delay"
-                      v-model="instanceSupportMessageDelay"
-                    >
-                      <option :value="30">
-                        {{ $t('views.Notifications.option.delay.30') }}
-                      </option>
-                      <option :value="60">
-                        {{ $t('views.Notifications.option.delay.60') }}
-                      </option>
-                      <option :value="90">
-                        {{ $t('views.Notifications.option.delay.90') }}
-                      </option>
-                      <!-- NOTE: Postpone notification 100 years, so that the user never sees it -->
-                      <option :value="36500">
-                        {{ $t('views.Notifications.option.delay.never') }}
-                      </option>
-                    </select>
-                    <button
-                      type="submit"
-                      class="ui right floated basic button"
-                    >
-                      {{ $t('views.Notifications.button.submit') }}
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-            <div
-              v-if="showFunkwhaleSupportMessage"
-              class="column"
-            >
-              <div class="ui info attached message">
-                <h4 class="header">
-                  {{ $t('views.Notifications.header.funkwhaleSupport') }}
-                </h4>
-                <p>
-                  {{ $t('views.Notifications.message.funkwhaleSupport') }}
-                </p>
-                <a
-                  href="https://funkwhale.audio/donate"
-                  target="_blank"
-                  rel="noopener"
-                  class="ui primary inverted button"
+                  <option :value="30">
+                    {{ t('views.Notifications.option.delay.30') }}
+                  </option>
+                  <option :value="60">
+                    {{ t('views.Notifications.option.delay.60') }}
+                  </option>
+                  <option :value="90">
+                    {{ t('views.Notifications.option.delay.90') }}
+                  </option>
+                  <!-- NOTE: Postpone notification 100 years, so that the user never sees it -->
+                  <option :value="36500">
+                    {{ t('views.Notifications.option.delay.never') }}
+                  </option>
+                </select>
+                <Button
+                  type="submit"
+                  secondary
                 >
-                  {{ $t('views.Notifications.link.donate') }}
-                </a>
-                <a
-                  href="https://contribute.funkwhale.audio"
-                  target="_blank"
-                  rel="noopener"
-                  class="ui secondary inverted button"
-                >
-                  {{ $t('views.Notifications.link.help') }}
-                </a>
+                  {{ t('views.Notifications.button.submit') }}
+                </Button>
               </div>
-              <div class="ui bottom attached segment">
-                <form
-                  class="ui inline form"
-                  @submit.prevent="setDisplayDate('funkwhale_support_message_display_date', funkwhaleSupportMessageDelay)"
-                >
-                  <div class="inline field">
-                    <label for="funkwhale-reminder-delay">
-                      {{ $t('views.Notifications.label.reminder') }}
-                    </label>
-                    <select
-                      id="funkwhale-reminder-delay"
-                      v-model="funkwhaleSupportMessageDelay"
-                    >
-                      <option :value="30">
-                        {{ $t('views.Notifications.option.delay.30') }}
-                      </option>
-                      <option :value="60">
-                        {{ $t('views.Notifications.option.delay.60') }}
-                      </option>
-                      <option :value="90">
-                        {{ $t('views.Notifications.option.delay.90') }}
-                      </option>
-                      <!-- NOTE: Postpone notification 100 years, so that the user never sees it -->
-                      <option :value="36500">
-                        {{ $t('views.Notifications.option.delay.never') }}
-                      </option>
-                    </select>
-                    <button
-                      type="submit"
-                      class="ui right floated basic button"
-                    >
-                      {{ $t('views.Notifications.button.submit') }}
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
+            </form>
           </div>
         </div>
-        <h1 class="ui header">
-          {{ $t('views.Notifications.header.notifications') }}
-        </h1>
-        <div class="ui toggle checkbox">
-          <input
-            id="show-read-notifications"
-            v-model="filters.is_read"
-            type="checkbox"
+        <Alert
+          v-if="showFunkwhaleSupportMessage"
+          blue
+        >
+          <h4 class="header">
+            {{ t('views.Notifications.header.funkwhaleSupport') }}
+          </h4>
+          <p>
+            {{ t('views.Notifications.message.funkwhaleSupport') }}
+          </p>
+          <a
+            href="https://funkwhale.audio/donate"
+            target="_blank"
+            rel="noopener"
+            class="ui primary inverted button"
           >
-          <label for="show-read-notifications">{{ $t('views.Notifications.label.showRead') }}</label>
-        </div>
-        <button
-          v-if="filters.is_read === false && notifications.count > 0"
-          class="ui basic labeled icon right floated button"
-          @click.prevent="markAllAsRead"
-        >
-          <i class="ui check icon" />
-          {{ $t('views.Notifications.button.read') }}
-        </button>
-        <div class="ui hidden divider" />
+            {{ t('views.Notifications.link.donate') }}
+          </a>
+          <a
+            href="https://contribute.funkwhale.audio"
+            target="_blank"
+            rel="noopener"
+            class="ui secondary inverted button"
+          >
+            {{ t('views.Notifications.link.help') }}
+          </a>
+          <template #actions>
+            <form
+              class="ui inline form"
+              @submit.prevent="setDisplayDate('funkwhale_support_message_display_date', funkwhaleSupportMessageDelay)"
+            >
+              <Layout flex>
+                <label
+                  for="funkwhale-reminder-delay"
+                  style="align-self: center;"
+                >
+                  {{ t('views.Notifications.label.reminder') }}
+                </label>
+                <select
+                  id="funkwhale-reminder-delay"
+                  v-model="funkwhaleSupportMessageDelay"
+                  class="ui dropdown"
+                  style="margin-top: 0px;"
+                >
+                  <option :value="30">
+                    {{ t('views.Notifications.option.delay.30') }}
+                  </option>
+                  <option :value="60">
+                    {{ t('views.Notifications.option.delay.60') }}
+                  </option>
+                  <option :value="90">
+                    {{ t('views.Notifications.option.delay.90') }}
+                  </option>
+                  <!-- NOTE: Postpone notification 100 years, so that the user never sees it -->
+                  <option :value="36500">
+                    {{ t('views.Notifications.option.delay.never') }}
+                  </option>
+                </select>
+                <Button
+                  type="submit"
+                  primary
+                >
+                  {{ t('views.Notifications.button.submit') }}
+                </Button>
+              </Layout>
+            </form>
+          </template>
+        </Alert>
+      </Layout>
+    </div>
+    <Header
+      page-heading
+      :h1="t('views.Notifications.header.notifications')"
+    />
+    <Toggle
+      id="show-read-notifications"
+      v-model="filters.is_read"
+      :label="t('views.Notifications.label.showRead')"
+    />
+    <Button
+      v-if="filters.is_read === false && notifications.count > 0"
+      secondary
+      icon="bi-check-all"
+      @click.prevent="markAllAsRead"
+    >
+      {{ t('views.Notifications.button.read') }}
+    </Button>
 
-        <div
-          v-if="isLoading"
-          :class="['ui', {'active': isLoading}, 'inverted', 'dimmer']"
-        >
-          <div class="ui text loader">
-            {{ $t('views.Notifications.loading.notifications') }}
-          </div>
-        </div>
+    <Loader v-if="isLoading" />
 
-        <table
-          v-else-if="notifications.count > 0"
-          class="ui table"
-        >
-          <tbody>
-            <notification-row
-              v-for="item in notifications.results"
-              :key="item.id"
-              :initial-item="item"
-            />
-          </tbody>
-        </table>
-        <p v-else-if="additionalNotifications === 0">
-          {{ $t('views.Notifications.empty.notifications') }}
-        </p>
-      </div>
-    </section>
-  </main>
+    <Layout
+      v-else-if="notifications.count > 0"
+      stack
+      :grid-template-columns="['auto', 'auto', 'auto', 'auto']"
+    >
+      <notification-row
+        v-for="item in notifications.results"
+        :key="item.id"
+        :initial-item="item"
+      />
+    </Layout>
+    <p v-else-if="additionalNotifications === 0">
+      {{ t('views.Notifications.empty.notifications') }}
+    </p>
+  </Layout>
 </template>

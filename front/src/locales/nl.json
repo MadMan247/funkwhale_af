@@ -2,6 +2,32 @@
   "App": {
     "loading": "Laden…"
   },
+  "vui": {
+    "radio": "Radio",
+    "albums": "{n} album | {n} albums",
+    "tracks": "{n} nummer | {n} nummers",
+    "episodes": "{n} aflevering | {n} afleveringen",
+    "by-user": "door {'@'}{username}",
+    "go-to": "Ga naar",
+    "pagination": {
+      "previous": "Vorige",
+      "next": "Volgende"
+    },
+    "privacy-level": {
+      "private": "Privé",
+      "public": "Openbaar",
+      "pod": "pod"
+    },
+    "aria": {
+      "pagination": {
+        "nav": "Pagina navigatie",
+        "gotoPage": "Ga naar pagina {n}",
+        "gotoPrevious": "Ga naar Vorige Pagina",
+        "gotoNext": "Ga naar Volgende Pagina",
+        "currentPage": "Huidige pagina, pagina {n}"
+      }
+    }
+  },
   "components": {
     "About": {
       "description": {

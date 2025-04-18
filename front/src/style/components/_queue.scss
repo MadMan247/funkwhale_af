@@ -1,3 +1,14 @@
+.opaque {
+  @include dark-theme {
+    background-color: rgba(#292525, 0.8);
+  }
+  @include light-theme {
+    background-color: rgba(#ffffff, 0.8);
+  }
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
 .queue-controls {
   @include media("<desktop") {
     height: $bottom-player-height;
@@ -5,7 +16,6 @@
 }
 
 .ui.clearing.segment {
-  background-color: var(--site-background);
   box-shadow: var(--secondary-menu-box-shadow);
   margin: 0 !important;
 }
@@ -26,14 +36,13 @@
 
   .queue-controls {
     @include media("<desktop") {
-      background: var(--site-background);
     }
   }
   &.main {
     position: fixed;
     min-height: 100vh;
     width: 100vw;
-    z-index: 10000;
+    z-index: 1000;
   }
   &.main > .button {
     position: fixed;
@@ -50,6 +59,11 @@
     > * {
       padding: 0.5em;
     }
+  }
+  #queue .sub.header {
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: normal;
   }
   .queue-column {
     overflow-y: auto;
@@ -72,6 +86,9 @@
   }
   .image-cell {
     width: 4em;
+  }
+  .mini.image {
+    width: 40px;
   }
   .queue.segment {
     @include media("<desktop") {
@@ -208,18 +225,30 @@
   }
 
   .player-controls {
+    display: flex;
     .control:not(:first-child) {
       margin-left: 1em;
     }
-    .icon {
-      font-size: 1.1em;
-    }
 
-    button {
-      padding: 0;
+    &.queue-controls .button {
+      width: 80px !important;
+      height: 80px !important;
+      background: transparent !important;
       border: none;
-      background-color: transparent;
-      color: inherit;
+      &:hover {
+        background: transparent;
+        i {
+          transform: scale(1.2);
+        }
+      }
+      &.large {
+        > i {
+          font-size: 4em;
+        }
+      }
+      > i {
+        font-size: 2em;
+      }
     }
   }
 
@@ -297,6 +326,21 @@
         max-width: 90%;
       }
 
+      h1 {
+        margin-bottom: 0px;
+        a.track {
+          font-size: 24px;
+          font-weight: 600;
+        }
+      }
+      h2 {
+        margin-top: 0px;
+        margin-bottom: 10px;
+        a {
+          font-size: 16px;
+        }
+      }
+
       .cover-container {
         width: 50vh;
         max-width: 90%;
@@ -327,6 +371,7 @@
           img {
             object-fit: contain;
             object-position: center;
+            box-shadow: 0px 2px 8px 0px rgb(0 0 0 / 20%);
           }
 
           &:hover .cover-buttons {
@@ -416,6 +461,11 @@
         font-size: 1.5rem;
         width: 54vh;
         max-width: 90%;
+        .position.bar {
+          position: relative;
+          bottom: 5px;
+          height: 5px;
+        }
       }
     }
 
@@ -468,10 +518,25 @@
       }
     }
 
-    // NOTE: Taken from semantic ui
+    /* button.pink > i {
+      color: var(--fw-red-800);
+    } */
+
     &.active {
-      background: #E0E0E0;
-      color: #000000de;
+      background: var(--player-color);
+      color: var(--player-background);
+
+      .button > i {
+        color: var(--player-background);
+      }
+
+      /* .button.pink > i {
+        color: var(--fw-red-800);
+      } */
+
+      &:hover .button > i {
+          color: var(--player-color);
+        }
     }
   }
 }

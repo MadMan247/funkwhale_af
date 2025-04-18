@@ -13,7 +13,12 @@ import axios from 'axios'
 
 import ReportCategoryDropdown from '~/components/moderation/ReportCategoryDropdown.vue'
 import ReportCard from '~/components/manage/moderation/ReportCard.vue'
-import Pagination from '~/components/vui/Pagination.vue'
+
+import Layout from '~/components/ui/Layout.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Header from '~/components/ui/Header.vue'
+import Input from '~/components/ui/Input.vue'
+import Pagination from '~/components/ui/Pagination.vue'
 
 import useSmartSearch from '~/composables/navigation/useSmartSearch'
 import useSharedLabels from '~/composables/locale/useSharedLabels'
@@ -42,11 +47,13 @@ const logger = useLogger()
 
 const search = ref()
 
-const page = usePage()
 const result = ref<BackendResponse<Report>>()
 
 const { onOrderingUpdate, orderingString, paginateBy, ordering, orderingDirection } = useOrdering(props)
 const { onSearch, query, addSearchToken, getTokenValue } = useSmartSearch(props)
+
+const page = usePage()
+const pages = computed(() => result.value?.count ? Math.ceil(result.value.count / paginateBy.value) : 0)
 
 const orderingOptions: [OrderingField, keyof typeof sharedLabels.filters][] = [
   ['creation_date', 'creation_date'],
@@ -99,29 +106,36 @@ const labels = computed(() => ({
 </script>
 
 <template>
-  <main v-title="labels.reports">
-    <section class="ui vertical stripe segment">
-      <h2 class="ui header">
-        {{ $t('views.admin.moderation.ReportsList.header.reports') }}
-      </h2>
-      <div class="ui hidden divider" />
-      <div class="ui inline form">
-        <div class="fields">
-          <div class="ui field">
-            <label for="reports-search">{{ $t('views.admin.moderation.ReportsList.label.search') }}</label>
-            <form @submit.prevent="query = search.value">
-              <input
-                id="reports-search"
-                ref="search"
-                name="search"
-                type="text"
-                :value="query"
-                :placeholder="labels.searchPlaceholder"
-              >
-            </form>
-          </div>
+  <Layout
+    v-title="labels.reports"
+    stack
+  >
+    <Header
+      page-heading
+      :h1="t('views.admin.moderation.ReportsList.header.reports')"
+    />
+    <div class="ui inline form">
+      <div class="fields">
+        <div class="ui field">
+          <label for="reports-search">{{ t('views.admin.moderation.ReportsList.label.search') }}</label>
+          <form @submit.prevent="query = search.value">
+            <Input
+              id="reports-search"
+              ref="search"
+              v-model="query"
+              name="search"
+              search
+              :placeholder="labels.searchPlaceholder"
+            />
+          </form>
+        </div>
+        <Spacer :size="16" />
+        <Layout
+          flex
+        >
+          <Spacer grow />
           <div class="field">
-            <label for="reports-status">{{ $t('views.admin.moderation.ReportsList.label.status') }}</label>
+            <label for="reports-status">{{ t('views.admin.moderation.ReportsList.label.status') }}</label>
             <select
               id="reports-status"
               class="ui dropdown"
@@ -129,13 +143,13 @@ const labels = computed(() => ({
               @change="addSearchToken('resolved', ($event.target as HTMLSelectElement).value)"
             >
               <option value="">
-                {{ $t('views.admin.moderation.ReportsList.option.status.all') }}
+                {{ t('views.admin.moderation.ReportsList.option.status.all') }}
               </option>
               <option value="yes">
-                {{ $t('views.admin.moderation.ReportsList.option.status.resolved') }}
+                {{ t('views.admin.moderation.ReportsList.option.status.resolved') }}
               </option>
               <option value="no">
-                {{ $t('views.admin.moderation.ReportsList.option.status.unresolved') }}
+                {{ t('views.admin.moderation.ReportsList.option.status.unresolved') }}
               </option>
             </select>
           </div>
@@ -147,7 +161,7 @@ const labels = computed(() => ({
             @update:model-value="addSearchToken('category', $event)"
           />
           <div class="field">
-            <label for="reports-ordering">{{ $t('views.admin.moderation.ReportsList.ordering.label') }}</label>
+            <label for="reports-ordering">{{ t('views.admin.moderation.ReportsList.ordering.label') }}</label>
             <select
               id="reports-ordering"
               v-model="ordering"
@@ -163,50 +177,50 @@ const labels = computed(() => ({
             </select>
           </div>
           <div class="field">
-            <label for="reports-ordering-direction">{{ $t('views.admin.moderation.ReportsList.ordering.direction.label') }}</label>
+            <label for="reports-ordering-direction">{{ t('views.admin.moderation.ReportsList.ordering.direction.label') }}</label>
             <select
               id="reports-ordering-direction"
               v-model="orderingDirection"
               class="ui dropdown"
             >
               <option value="+">
-                {{ $t('views.admin.moderation.ReportsList.ordering.direction.ascending') }}
+                {{ t('views.admin.moderation.ReportsList.ordering.direction.ascending') }}
               </option>
               <option value="-">
-                {{ $t('views.admin.moderation.ReportsList.ordering.direction.descending') }}
+                {{ t('views.admin.moderation.ReportsList.ordering.direction.descending') }}
               </option>
             </select>
           </div>
-        </div>
+        </Layout>
       </div>
-      <div
-        v-if="isLoading"
-        class="ui active inverted dimmer"
-      >
-        <div class="ui loader" />
-      </div>
-      <div v-else-if="!result || result.count === 0">
-        <empty-state
-          :refresh="true"
-          @refresh="fetchData()"
-        />
-      </div>
-      <div v-else-if="mode === 'card'">
-        <report-card
-          v-for="obj in result.results"
-          :key="obj.uuid"
-          :init-obj="obj"
-          @handled="fetchData"
-        />
-      </div>
-      <div class="ui center aligned basic segment">
-        <pagination
-          v-if="result && result.count > paginateBy"
-          v-model:current="page"
-          :paginate-by="paginateBy"
-          :total="result.count"
-        />
-      </div>
-    </section>
-  </main>
+    </div>
+    <div
+      v-if="isLoading"
+      class="ui active inverted dimmer"
+    >
+      <div class="ui loader" />
+    </div>
+    <div v-else-if="!result || result.count === 0">
+      <empty-state
+        :refresh="true"
+        @refresh="fetchData()"
+      />
+    </div>
+    <div v-else-if="mode === 'card'">
+      <report-card
+        v-for="obj in result.results"
+        :key="obj.uuid"
+        :init-obj="obj"
+        @handled="fetchData"
+      />
+    </div>
+    <div class="ui center aligned basic segment">
+      <Pagination
+        v-if="page && result && result.count > paginateBy"
+        v-model:page="page"
+        :pages="pages"
+        :paginate-by="paginateBy"
+      />
+    </div>
+  </Layout>
 </template>

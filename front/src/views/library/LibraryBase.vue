@@ -11,6 +11,13 @@ import axios from 'axios'
 
 import LibraryFollowButton from '~/components/audio/LibraryFollowButton.vue'
 import RadioButton from '~/components/radios/Button.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Loader from '~/components/ui/Loader.vue'
+import OptionsButton from '~/components/ui/button/Options.vue'
+import Popover from '~/components/ui/Popover.vue'
+import PopoverItem from '~/components/ui/popover/PopoverItem.vue'
+import Header from '~/components/ui/Header.vue'
+import Nav from '~/components/ui/Nav.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 import useReport from '~/composables/moderation/useReport'
@@ -77,214 +84,167 @@ watchEffect(() => {
 })
 
 const updateUploads = (count: number) => {
-  if (object.value) {
-    object.value.uploads_count += count
-  }
+  object.value = object.value
+    ? { ...object.value, uploads_count: object.value.uploads_count + count }
+    : null
 }
+
+const tabs = ref([{
+  title: t('views.library.LibraryBase.link.artists'),
+  to: { name: 'library.detail' }
+}, {
+  title: t('views.library.LibraryBase.link.albums'),
+  to: { name: 'library.detail.albums' }
+}, {
+  title: t('views.library.LibraryBase.link.tracks'),
+  to: { name: 'library.detail.tracks' }
+}
+])
 </script>
 
 <template>
-  <main v-title="labels.title">
-    <div class="ui vertical stripe segment container">
-      <div
-        v-if="isLoading"
-        class="ui centered active inline loader"
+  <Layout
+    v-title="labels.title"
+    stack
+    main
+  >
+    <Loader v-if="isLoading" />
+    <Header
+      page-heading
+      :h1="object?.name"
+    >
+      <template #action>
+        <Popover>
+          <template #default="{ toggleOpen }">
+            <OptionsButton
+              @click="toggleOpen"
+            />
+          </template>
+
+          <template #items>
+            <PopoverItem
+              v-if="object?.actor.domain != store.getters['instance/domain']"
+              :to="object?.fid"
+              target="_blank"
+              icon="bi-box-arrow-up-right"
+            >
+              {{ t('views.library.LibraryBase.link.domain', {domain: object?.actor.domain}) }}
+            </PopoverItem>
+            <PopoverItem
+              v-for="obj in getReportableObjects({library: object})"
+              :key="obj.target.type + obj.target.id"
+              icon="bi-share"
+              @click.stop.prevent="report(obj)"
+            >
+              {{ obj.label }}
+            </PopoverItem>
+
+            <hr>
+
+            <PopoverItem
+              v-if="store.state.auth.availablePermissions['moderation']"
+              icon="bi-wrench"
+              :to="{name: 'manage.library.libraries.detail', params: {id: object?.uuid}}"
+            >
+              {{ t('views.library.LibraryBase.link.moderation') }}
+            </PopoverItem>
+          </template>
+        </Popover>
+      </template>
+    </Header>
+    <div
+      class="sub header ellipsis"
+      :title="object?.actor.full_username"
+    >
+      <actor-link
+        :avatar="false"
+        :actor="object?.actor"
+        :truncate-length="0"
+      >
+        {{ t('views.library.LibraryBase.link.owner', {username: object?.actor.full_username}) }}
+      </actor-link>
+    </div>
+    <Layout flex>
+      <span
+        v-if="object?.privacy_level === 'me'"
+        :title="labels.tooltips.me"
+      >
+        <i class="bi bi-lock" />
+        {{ labels.visibility.me }}
+      </span>
+      <span
+        v-else-if="object?.privacy_level === 'instance'"
+        :title="labels.tooltips.instance"
+      >
+        <i class="bi bi-lock-open" />
+        {{ labels.visibility.instance }}
+      </span>
+      <span
+        v-else-if="object?.privacy_level === 'everyone'"
+        :title="labels.tooltips.everyone"
+        class="bi bi-dot"
+      >
+        <i class="bi bi-globe" />
+        {{ labels.visibility.everyone }}
+      </span>
+      <span
+        v-if="object"
+        class="middledot icon"
+      >
+        <i class="bi bi-music-note-list" />
+        {{ t('views.library.LibraryBase.meta.tracks', object.uploads_count) }}
+      </span>
+      <span v-if="object && 'size' in object && object.size && typeof object.size === 'number'">
+        <i class="bi bi-database-fill" />
+        {{ humanSize(object.size as number) }}
+      </span>
+    </Layout>
+
+    <Layout
+      flex
+      class="header-buttons"
+    >
+      <radio-button
+        :disabled="!isPlayable || null"
+        type="library"
+        :object-id="object?.uuid"
       />
       <div
-        v-else-if="object"
-        class="ui stackable grid"
+        v-if="!isOwner"
       >
-        <div class="ui five wide column">
-          <button
-            ref="dropdown"
-            v-dropdown="{direction: 'downward'}"
-            class="ui pointing dropdown icon small basic right floated button"
-            style="position: absolute; right: 1em; top: 1em;"
-          >
-            <i class="ellipsis vertical icon" />
-            <div class="menu">
-              <a
-                v-if="object.actor.domain != $store.getters['instance/domain']"
-                :href="object.fid"
-                target="_blank"
-                class="basic item"
-              >
-                <i class="external icon" />
-                {{ $t('views.library.LibraryBase.link.domain', {domain: object.actor.domain}) }}
-              </a>
-              <div
-                v-for="obj in getReportableObjects({library: object})"
-                :key="obj.target.type + obj.target.id"
-                role="button"
-                class="basic item"
-                @click.stop.prevent="report(obj)"
-              >
-                <i class="share icon" /> {{ obj.label }}
-              </div>
-
-              <div class="divider" />
-              <router-link
-                v-if="$store.state.auth.availablePermissions['moderation']"
-                class="basic item"
-                :to="{name: 'manage.library.libraries.detail', params: {id: object.uuid}}"
-              >
-                <i class="wrench icon" />
-                {{ $t('views.library.LibraryBase.link.moderation') }}
-              </router-link>
-            </div>
-          </button>
-          <h1 class="ui header">
-            <div class="ui hidden divider" />
-            <div class="ellipsis content">
-              <i class="layer group small icon" />
-              <span>{{ object.name }}</span>
-              <div class="ui very small hidden divider" />
-              <div
-                class="sub header ellipsis"
-                :title="object.actor.full_username"
-              >
-                <actor-link
-                  :avatar="false"
-                  :actor="object.actor"
-                  :truncate-length="0"
-                >
-                  {{ $t('views.library.LibraryBase.link.owner', {username: object.actor.full_username}) }}
-                </actor-link>
-              </div>
-            </div>
-          </h1>
-          <p>
-            <span
-              v-if="object.privacy_level === 'me'"
-              :title="labels.tooltips.me"
-            >
-              <i class="lock icon" />
-              {{ labels.visibility.me }}
-            </span>
-            <span
-              v-else-if="object.privacy_level === 'instance'"
-              :title="labels.tooltips.instance"
-            >
-              <i class="lock open icon" />
-              {{ labels.visibility.instance }}
-            </span>
-            <span
-              v-else-if="object.privacy_level === 'everyone'"
-              :title="labels.tooltips.everyone"
-              class="middledot icon"
-            >
-              <i class="globe icon" />
-              {{ labels.visibility.everyone }}
-            </span>
-            <span class="middledot icon">
-              <i class="music icon" />
-              {{ $t('views.library.LibraryBase.meta.tracks', object.uploads_count) }}
-            </span>
-            <span v-if="object.size">
-              <i class="database icon" />
-              {{ humanSize(object.size) }}
-            </span>
-          </p>
-
-          <div class="header-buttons">
-            <div class="ui small buttons">
-              <radio-button
-                :disabled="!isPlayable || null"
-                type="library"
-                :object-id="object.uuid"
-              />
-            </div>
-            <div
-              v-if="!isOwner"
-              class="ui small buttons"
-            >
-              <library-follow-button
-                v-if="$store.state.auth.authenticated"
-                :library="object"
-              />
-            </div>
-          </div>
-
-          <template v-if="$store.getters['ui/layoutVersion'] === 'large'">
-            <rendered-description
-              :content="object.description ? {html: object.description} : null"
-              :update-url="`channels/${object.uuid}/`"
-              :can-update="false"
-            />
-            <div class="ui hidden divider" />
-          </template>
-          <div class="ui form">
-            <div class="field">
-              <label for="copy-input">
-                {{ $t('views.library.LibraryBase.label.sharingLink') }}
-              </label>
-              <p>
-                {{ $t('views.library.LibraryBase.description.sharingLink') }}
-              </p>
-              <copy-input :value="object.fid" />
-            </div>
-          </div>
-        </div>
-        <div class="ui eleven wide column">
-          <div class="ui head vertical stripe segment">
-            <div class="ui container">
-              <div class="ui secondary pointing center aligned menu">
-                <router-link
-                  class="item"
-                  exact-active-class="active"
-                  active-class=""
-                  :to="{name: 'library.detail'}"
-                >
-                  {{ $t('views.library.LibraryBase.link.artists') }}
-                </router-link>
-                <router-link
-                  class="item"
-                  exact-active-class="active"
-                  active-class=""
-                  :to="{name: 'library.detail.albums'}"
-                >
-                  {{ $t('views.library.LibraryBase.link.albums') }}
-                </router-link>
-                <router-link
-                  class="item"
-                  exact-active-class="active"
-                  active-class=""
-                  :to="{name: 'library.detail.tracks'}"
-                >
-                  {{ $t('views.library.LibraryBase.link.tracks') }}
-                </router-link>
-                <router-link
-                  v-if="isOwner"
-                  class="item"
-                  exact-active-class="active"
-                  active-class=""
-                  :to="{name: 'library.detail.upload'}"
-                >
-                  <i class="upload icon" />
-                  {{ $t('views.library.LibraryBase.button.upload') }}
-                </router-link>
-                <router-link
-                  v-if="isOwner"
-                  class="item"
-                  exact-active-class="active"
-                  active-class=""
-                  :to="{name: 'library.detail.edit'}"
-                >
-                  <i class="pencil icon" />
-                  {{ $t('views.library.LibraryBase.button.edit') }}
-                </router-link>
-              </div>
-              <div class="ui hidden divider" />
-              <router-view
-                :is-owner="isOwner"
-                :object="object"
-                @updated="fetchData"
-                @uploads-finished="updateUploads"
-              />
-            </div>
-          </div>
-        </div>
+        <library-follow-button
+          v-if="store.state.auth.authenticated && object"
+          :library="object"
+        />
       </div>
-    </div>
-  </main>
+    </Layout>
+
+    <!-- TODO: Add `description` field to library -->
+    <!-- @vue-ignore -->
+    <rendered-description
+      v-if="object && 'description' in object"
+      :content="{ html: object.description }"
+      :update-url="`channels/${object.uuid}/`"
+      :can-update="false"
+    />
+    <Layout form>
+      <div class="field">
+        <copy-input
+          :value="object?.fid"
+          :label="t('views.library.LibraryBase.label.sharingLink')"
+        />
+        <p>
+          {{ t('views.library.LibraryBase.description.sharingLink') }}
+        </p>
+      </div>
+    </Layout>
+    <Nav v-model="tabs" />
+
+    <router-view
+      :is-owner="isOwner"
+      :object="object"
+      @updated="fetchData"
+      @uploads-finished="updateUploads"
+    />
+  </Layout>
 </template>

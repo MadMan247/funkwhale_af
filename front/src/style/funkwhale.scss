@@ -1,0 +1,31 @@
+@charset "utf-8";
+@import "base/index";
+@import "inc/theme.scss";
+@import "font";
+@import "colors";
+
+html, body {
+  font-family: $font-main;
+  font-size: 16px;
+  margin: 0;
+}
+
+.has-background-light {
+  background-color: var(--fw-gray-100);
+}
+
+* {
+  --fw-translate-x: 0;
+  --fw-translate-y: 0;
+  --fw-scale: 1;
+}
+
+.funkwhale,
+:root {
+  --fw-border-radius: 8px;
+}
+
+:root{
+  /* Do not show white background when scrolling past the end */
+  overscroll-behavior: none;
+}

@@ -1,68 +1,105 @@
 <script setup lang="ts">
-import type { Channel } from '~/types'
-import SemanticModal from '~/components/semantic/Modal.vue'
-import ChannelAlbumForm from '~/components/channels/AlbumForm.vue'
-import { watch, ref } from 'vue'
+import type { Channel, BackendError } from '~/types'
 
-interface Events {
-  (e: 'created'): void
-}
+import axios from 'axios'
 
-interface Props {
-  channel: Channel
-}
+import { watch, computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useModal } from '~/ui/composables/useModal.ts'
 
-const emit = defineEmits<Events>()
-defineProps<Props>()
+import Layout from '~/components/ui/Layout.vue'
+import Modal from '~/components/ui/Modal.vue'
+import Button from '~/components/ui/Button.vue'
+import Input from '~/components/ui/Input.vue'
+import Alert from '~/components/ui/Alert.vue'
+
+const { t } = useI18n()
+
+const channel = defineModel<Channel>({ required: true })
+const emit = defineEmits(['created'])
+const newAlbumTitle = ref<string>('')
 
 const isLoading = ref(false)
-const submittable = ref(false)
-const show = ref(false)
+const submittable = computed(() => newAlbumTitle.value.length > 0)
+const errors = ref<string[]>([])
 
-watch(show, () => {
+const isOpen = useModal('album').isOpen
+
+watch(isOpen, () => {
   isLoading.value = false
-  submittable.value = false
+  newAlbumTitle.value = '' // Reset the title to ensure submittable becomes false
 })
 
-const albumForm = ref()
+const submit = async () => {
+  isLoading.value = true
+  errors.value = []
+
+  try {
+    await axios.post('albums/', {
+      title: newAlbumTitle.value,
+      artist: channel.value.artist?.id
+    })
+  } catch (error) {
+    errors.value = (error as BackendError).backendErrors
+  } finally {
+    isLoading.value = false
+    emit('created')
+  }
+}
+
 defineExpose({
-  show
+  submit
 })
 </script>
 
 <template>
-  <semantic-modal
-    v-model:show="show"
+  <Modal
+    v-model="isOpen"
+    :title="channel?.artist?.content_category === 'podcast' ? t('components.channels.AlbumModal.header.newSeries') : t('components.channels.AlbumModal.header.newAlbum')"
     class="small"
+    :cancel="t('components.channels.AlbumModal.button.cancel')"
   >
-    <h4 class="header">
-      <span v-if="channel.content_category === 'podcast'">
-        {{ $t('components.channels.AlbumModal.header.newSeries') }}
-      </span>
-      <span v-else>
-        {{ $t('components.channels.AlbumModal.header.newAlbum') }}
-      </span>
-    </h4>
-    <div class="scrolling content">
-      <channel-album-form
-        ref="albumForm"
-        :channel="channel"
-        @loading="isLoading = $event"
-        @submittable="submittable = $event"
-        @created="emit('created')"
-      />
-    </div>
-    <div class="actions">
-      <button class="ui basic cancel button">
-        {{ $t('components.channels.AlbumModal.button.cancel') }}
-      </button>
-      <button
-        :class="['ui', 'primary', {loading: isLoading}, 'button']"
-        :disabled="!submittable"
-        @click.stop.prevent="albumForm.submit()"
+    <template #alert>
+      <Alert
+        v-if="errors?.length > 0"
+        red
       >
-        {{ $t('components.channels.AlbumModal.button.create') }}
-      </button>
-    </div>
-  </semantic-modal>
+        <h4 class="header">
+          {{ t('components.channels.AlbumForm.header.error') }}
+        </h4>
+        <ul class="list">
+          <li
+            v-for="(error, key) in errors"
+            :key="key"
+          >
+            {{ error }}
+          </li>
+        </ul>
+      </Alert>
+    </template>
+
+    <Layout
+      form
+      :class="['ui', {loading: isLoading}, 'form']"
+      @submit.stop.prevent
+    >
+      <Input
+        v-model="newAlbumTitle"
+        required
+        type="text"
+        :label="t('components.channels.AlbumForm.label.albumTitle')"
+      />
+    </Layout>
+
+    <template #actions>
+      <Button
+        :is-loading="isLoading"
+        :disabled="!submittable"
+        primary
+        @click.stop.prevent="submit()"
+      >
+        {{ t('components.channels.AlbumModal.button.create') }}
+      </Button>
+    </template>
+  </Modal>
 </template>

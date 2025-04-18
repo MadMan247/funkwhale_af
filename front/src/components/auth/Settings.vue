@@ -3,9 +3,8 @@ import type { BackendError, Application, PrivacyLevel } from '~/types'
 import type { $ElementType } from 'utility-types'
 
 import axios from 'axios'
-import $ from 'jquery'
 
-import { computed, reactive, ref, onMounted } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useStore } from '~/store'
@@ -13,9 +12,19 @@ import { useStore } from '~/store'
 import useSharedLabels from '~/composables/locale/useSharedLabels'
 import useLogger from '~/composables/useLogger'
 
+import DangerousButton from '~/components/common/DangerousButton.vue'
 import SubsonicTokenForm from '~/components/auth/SubsonicTokenForm.vue'
 import AttachmentInput from '~/components/common/AttachmentInput.vue'
 import PasswordInput from '~/components/forms/PasswordInput.vue'
+
+import Input from '~/components/ui/Input.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Slider from '~/components/ui/Slider.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Heading from '~/components/ui/Heading.vue'
+import Button from '~/components/ui/Button.vue'
+import Link from '~/components/ui/Link.vue'
+import Textarea from '~/components/ui/Textarea.vue'
 
 const SETTINGS_ORDER: FieldId[] = ['summary', 'privacy_level']
 
@@ -260,587 +269,548 @@ const changeEmail = async () => {
   isChangingEmail.value = false
 }
 
-onMounted(() => {
-  $('select.dropdown').dropdown()
-})
-
 fetchApps()
 fetchOwnedApps()
 </script>
 
 <template>
-  <main
+  <Layout
     v-title="labels.title"
-    class="main pusher"
+    main
+    stack
   >
-    <div class="ui vertical stripe segment">
-      <section class="ui text container">
-        <h2 class="ui header">
-          {{ $t('components.auth.Settings.header.accountSettings') }}
-        </h2>
-        <form
-          class="ui form"
-          @submit.prevent="submitSettings()"
-        >
-          <div
-            v-if="settings.success"
-            class="ui positive message"
-          >
-            <h4 class="header">
-              {{ $t('components.auth.Settings.header.settingsUpdated') }}
-            </h4>
-          </div>
-          <div
-            v-if="settings.errors.length > 0"
-            role="alert"
-            class="ui negative message"
-          >
-            <h4 class="header">
-              {{ $t('components.auth.Settings.header.updateFailure') }}
-            </h4>
-            <ul class="list">
-              <li
-                v-for="(error, key) in settings.errors"
-                :key="key"
-              >
-                {{ error }}
-              </li>
-            </ul>
-          </div>
-          <div
-            v-for="f in orderedSettingsFields"
-            :key="f.id"
-            class="field"
-          >
-            <label :for="f.id">{{ sharedLabels.fields[f.id].label }}</label>
-            <p v-if="sharedLabels.fields[f.id].help">
-              {{ sharedLabels.fields[f.id].help }}
-            </p>
-            <select
-              v-if="f.type === 'dropdown'"
-              :id="f.id"
-              v-model="f.value"
-              class="ui dropdown"
-            >
-              <option
-                v-for="(c, key) in f.choices"
-                :key="key"
-                :value="c"
-              >
-                {{ sharedLabels.fields[f.id].choices?.[c] }}
-              </option>
-            </select>
-            <content-form
-              v-if="f.type === 'content'"
-              v-model="f.value.text"
-              :field-id="f.id"
-            />
-          </div>
-          <button
-            :class="['ui', { loading: isLoading }, 'button']"
-            type="submit"
-          >
-            {{ $t('components.auth.Settings.button.updateSettings') }}
-          </button>
-        </form>
-      </section>
-      <section class="ui text container">
-        <div class="ui hidden divider" />
-        <h2 class="ui header">
-          {{ $t('components.auth.Settings.header.avatar') }}
-        </h2>
-        <div class="ui form">
-          <div
-            v-if="avatarErrors.length > 0"
-            role="alert"
-            class="ui negative message"
-          >
-            <h4 class="header">
-              {{ $t('components.auth.Settings.header.avatarFailure') }}
-            </h4>
-            <ul class="list">
-              <li
-                v-for="(error, key) in avatarErrors"
-                :key="key"
-              >
-                {{ error }}
-              </li>
-            </ul>
-          </div>
-          <attachment-input
-            v-model="avatar.uuid"
-            :initial-value="initialAvatar"
-            @update:model-value="submitAvatar($event)"
-            @delete="avatar = {uuid: null}"
-          >
-            {{ $t('components.auth.Settings.label.avatar') }}
-          </attachment-input>
-        </div>
-      </section>
-
-      <section class="ui text container">
-        <div class="ui hidden divider" />
-        <h2 class="ui header">
-          {{ $t('components.auth.Settings.header.changePassword') }}
-        </h2>
-        <div class="ui message">
-          {{ $t('components.auth.Settings.description.changePassword.paragraph1') }}&nbsp;{{ $t('components.auth.Settings.description.changePassword.paragraph2') }}
-        </div>
-        <form
-          class="ui form"
-          @submit.prevent="submitPassword()"
-        >
-          <div
-            v-if="passwordError"
-            role="alert"
-            class="ui negative message"
-          >
-            <h4 class="header">
-              {{ $t('components.auth.Settings.header.passwordFailure') }}
-            </h4>
-            <ul class="list">
-              <li v-if="passwordError == 'invalid_credentials'">
-                {{ $t('components.auth.Settings.help.changePassword') }}
-              </li>
-            </ul>
-          </div>
-          <div class="field">
-            <label for="old-password-field">{{ $t('components.auth.Settings.label.currentPassword') }}</label>
-            <password-input
-              v-model="credentials.oldPassword"
-              field-id="old-password-field"
-              required
-            />
-          </div>
-          <div class="field">
-            <label for="new-password-field">{{ $t('components.auth.Settings.label.newPassword') }}</label>
-            <password-input
-              v-model="credentials.newPassword"
-              field-id="new-password-field"
-              required
-            />
-          </div>
-          <dangerous-button
-            :class="['ui', {'loading': isLoadingPassword}, {disabled: !credentials.newPassword || !credentials.oldPassword}, 'warning', 'button']"
-            :action="submitPassword"
-          >
-            {{ $t('components.auth.Settings.button.password') }}
-            <template #modal-header>
-              <p>
-                {{ $t('components.auth.Settings.modal.changePassword.header') }}
-              </p>
-            </template>
-            <template #modal-content>
-              <div>
-                <p>
-                  {{ $t('components.auth.Settings.modal.changePassword.content.warning') }}
-                </p>
-                <ul>
-                  <li>
-                    {{ $t('components.auth.Settings.modal.changePassword.content.logout') }}
-                  </li>
-                  <li>
-                    {{ $t('components.auth.Settings.modal.changePassword.content.subsonic') }}
-                  </li>
-                </ul>
-              </div>
-            </template>
-            <template #modal-confirm>
-              <div>
-                {{ $t('components.auth.Settings.button.disableSubsonic') }}
-              </div>
-            </template>
-          </dangerous-button>
-        </form>
-        <div class="ui hidden divider" />
-        <subsonic-token-form />
-      </section>
-
-      <section
-        id="content-filters"
-        class="ui text container"
+    <Heading
+      :h1="t('components.auth.Settings.header.accountSettings')"
+      page-heading
+    />
+    <Layout
+      form
+      @submit.prevent="submitSettings()"
+    >
+      <Alert
+        v-if="settings.success"
+        green
       >
-        <div class="ui hidden divider" />
-        <h2 class="ui header">
-          <i class="eye slash outline icon" />
-          <div class="content">
-            {{ $t('components.auth.Settings.header.contentFilters') }}
-          </div>
-        </h2>
-        <p>
-          {{ $t('components.auth.Settings.description.contentFilters') }}
-        </p>
-
-        <button
-          class="ui icon button"
-          @click="$store.dispatch('moderation/fetchContentFilters')"
-        >
-          <i class="refresh icon" />&nbsp;
-          {{ $t('components.auth.Settings.button.refresh') }}
-        </button>
-        <h3 class="ui header">
-          {{ $t('components.auth.Settings.header.hiddenArtists') }}
-        </h3>
-        <table class="ui compact very basic unstackable table">
-          <thead>
-            <tr>
-              <th>
-                {{ $t('components.auth.Settings.table.artists.header.name') }}
-              </th>
-              <th>
-                {{ $t('components.auth.Settings.table.artists.header.creationDate') }}
-              </th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="filter in $store.getters['moderation/artistFilters']()"
-              :key="filter.uuid"
-            >
-              <td>
-                <router-link :to="{name: 'library.artists.detail', params: {id: filter.target.id }}">
-                  {{ filter.target.name }}
-                </router-link>
-              </td>
-              <td>
-                <human-date :date="filter.creation_date" />
-              </td>
-              <td>
-                <button
-                  class="ui basic tiny button"
-                  @click="$store.dispatch('moderation/deleteContentFilter', filter.uuid)"
-                >
-                  {{ $t('components.auth.Settings.button.delete') }}
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-      <section
-        id="grants"
-        class="ui text container"
+        <h4 class="header">
+          {{ t('components.auth.Settings.header.settingsUpdated') }}
+        </h4>
+      </Alert>
+      <Alert
+        v-if="settings.errors.length > 0"
+        red
+        role="alert"
       >
-        <div class="ui hidden divider" />
-        <h2 class="ui header">
-          <i class="open lock icon" />
-          <div class="content">
-            {{ $t('components.auth.Settings.header.authorizedApps') }}
-          </div>
-        </h2>
-        <p>
-          {{ $t('components.auth.Settings.description.authorizedApps') }}
-        </p>
-        <button
-          :class="['ui', 'icon', { loading: isLoadingApps }, 'button']"
-          @click="fetchApps()"
-        >
-          <i class="refresh icon" />&nbsp;
-          {{ $t('components.auth.Settings.button.refresh') }}
-        </button>
-        <table
-          v-if="apps.length > 0"
-          class="ui compact very basic unstackable table"
-        >
-          <thead>
-            <tr>
-              <th>
-                {{ $t('components.auth.Settings.table.authorizedApps.header.application') }}
-              </th>
-              <th>
-                {{ $t('components.auth.Settings.table.authorizedApps.header.permissions') }}
-              </th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="app in apps"
-              :key="app.client_id"
-            >
-              <td>
-                {{ app.name }}
-              </td>
-              <td>
-                {{ app.scopes }}
-              </td>
-              <td>
-                <dangerous-button
-                  :class="['ui', 'tiny', 'danger', { loading: isRevoking.has(app.client_id) }, 'button']"
-                  @confirm="revokeApp(app.client_id)"
-                >
-                  {{ $t('components.auth.Settings.button.revoke') }}
-                  <template #modal-header>
-                    <p>
-                      {{ $t('components.auth.Settings.modal.revokeApp.header', {app: app.name}) }}
-                    </p>
-                  </template>
-                  <template #modal-content>
-                    <p>
-                      {{ $t('components.auth.Settings.modal.revokeApp.content.warning') }}
-                    </p>
-                  </template>
-                  <template #modal-confirm>
-                    <div>
-                      {{ $t('components.auth.Settings.button.revokeAccess') }}
-                    </div>
-                  </template>
-                </dangerous-button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <empty-state v-else>
-          <template #title>
-            {{ $t('components.auth.Settings.header.noApps') }}
-          </template>
-          {{ $t('components.auth.Settings.help.noApps') }}
-        </empty-state>
-      </section>
-      <section
-        id="apps"
-        class="ui text container"
-      >
-        <div class="ui hidden divider" />
-        <h2 class="ui header">
-          <i class="code icon" />
-          <div class="content">
-            {{ $t('components.auth.Settings.header.yourApps') }}
-          </div>
-        </h2>
-        <p>
-          {{ $t('components.auth.Settings.description.yourApps') }}
-        </p>
-        <router-link
-          class="ui success button"
-          :to="{name: 'settings.applications.new'}"
-        >
-          {{ $t('components.auth.Settings.link.newApp') }}
-        </router-link>
-        <table
-          v-if="ownedApps.length > 0"
-          class="ui compact very basic unstackable table"
-        >
-          <thead>
-            <tr>
-              <th>
-                {{ $t('components.auth.Settings.table.yourApps.header.application') }}
-              </th>
-              <th>
-                {{ $t('components.auth.Settings.table.yourApps.header.scopes') }}
-              </th>
-              <th>
-                {{ $t('components.auth.Settings.table.yourApps.header.creationDate') }}
-              </th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="app in ownedApps"
-              :key="app.client_id"
-            >
-              <td>
-                <router-link :to="{name: 'settings.applications.edit', params: {id: app.client_id}}">
-                  {{ app.name }}
-                </router-link>
-              </td>
-              <td>
-                {{ app.scopes }}
-              </td>
-              <td>
-                <human-date :date="app.created" />
-              </td>
-              <td>
-                <router-link
-                  class="ui tiny success button"
-                  :to="{name: 'settings.applications.edit', params: {id: app.client_id}}"
-                >
-                  {{ $t('components.auth.Settings.button.edit') }}
-                </router-link>
-                <dangerous-button
-                  :class="['ui', 'tiny', 'danger', { loading: isDeleting.has(app.client_id) }, 'button']"
-                  @confirm="deleteApp(app.client_id)"
-                >
-                  {{ $t('components.auth.Settings.button.remove') }}
-                  <template #modal-header>
-                    <p>
-                      {{ $t('components.auth.Settings.modal.deleteApp.header', {app: app.name}) }}
-                    </p>
-                  </template>
-                  <template #modal-content>
-                    <p>
-                      {{ $t('components.auth.Settings.modal.deleteApp.content.warning') }}
-                    </p>
-                  </template>
-                  <template #modal-confirm>
-                    <div>
-                      {{ $t('components.auth.Settings.button.removeApp') }}
-                    </div>
-                  </template>
-                </dangerous-button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <empty-state v-else>
-          <template #title>
-            {{ $t('components.auth.Settings.header.noPersonalApps') }}
-          </template>
-          {{ $t('components.auth.Settings.help.noPersonalApps') }}
-        </empty-state>
-      </section>
-
-      <section
-        id="plugins"
-        class="ui text container"
-      >
-        <div class="ui hidden divider" />
-        <h2 class="ui header">
-          <i class="code icon" />
-          <div class="content">
-            {{ $t('components.auth.Settings.header.plugins') }}
-          </div>
-        </h2>
-        <p>
-          {{ $t('components.auth.Settings.description.plugins') }}
-        </p>
-        <router-link
-          class="ui success button"
-          :to="{name: 'settings.plugins'}"
-        >
-          {{ $t('components.auth.Settings.link.managePlugins') }}
-        </router-link>
-      </section>
-      <section class="ui text container">
-        <div class="ui hidden divider" />
-        <h2 class="ui header">
-          <i class="comment icon" />
-          <div class="content">
-            {{ $t('components.auth.Settings.header.changeEmail') }}
-          </div>
-        </h2>
-        <p>
-          {{ $t('components.auth.Settings.description.changeEmail') }}
-        </p>
-        <p>
-          {{ $t('components.auth.Settings.message.currentEmail', { email: $store.state.auth.profile?.email }) }}
-        </p>
-        <form
-          class="ui form"
-          @submit.prevent="changeEmail"
-        >
-          <div
-            v-if="changeEmailErrors.length > 0"
-            role="alert"
-            class="ui negative message"
+        <h4 class="header">
+          {{ t('components.auth.Settings.header.updateFailure') }}
+        </h4>
+        <ul class="list">
+          <li
+            v-for="(error, key) in settings.errors"
+            :key="key"
           >
-            <h4 class="header">
-              {{ $t('components.auth.Settings.header.emailFailure') }}
-            </h4>
-            <ul class="list">
-              <li
-                v-for="(error, key) in changeEmailErrors"
-                :key="key"
-              >
-                {{ error }}
-              </li>
-            </ul>
-          </div>
-          <div class="field">
-            <label for="new-email">{{ $t('components.auth.Settings.label.newEmail') }}</label>
-            <input
-              id="new-email"
-              v-model="newEmail"
-              required
-              type="email"
-            >
-          </div>
-          <div class="field">
-            <label for="current-password-field-email">{{ $t('components.auth.Settings.label.password') }}</label>
-            <password-input
-              v-model="emailPassword"
-              field-id="current-password-field-email"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            class="ui button"
-          >
-            {{ $t('components.auth.Settings.button.update') }}
-          </button>
-        </form>
-      </section>
-      <section class="ui text container">
-        <div class="ui hidden divider" />
-        <h2 class="ui header">
-          <i class="trash icon" />
-          <div class="content">
-            {{ $t('components.auth.Settings.header.deleteAccount') }}
-          </div>
-        </h2>
-        <p>
-          {{ $t('components.auth.Settings.description.deleteAccount') }}
-        </p>
-        <div
+            {{ error }}
+          </li>
+        </ul>
+      </Alert>
+      <div
+        v-for="f in orderedSettingsFields"
+        :key="f.id + sharedLabels.fields[f.id].help"
+        class="field"
+      >
+        <Textarea
+          v-if="f.type === 'content'"
+          v-model="f.value.text"
+          :label="sharedLabels.fields[f.id].label"
+          :placeholder="sharedLabels.fields[f.id].help"
+        />
+        <template v-else>
+          <label :for="f.id">{{ sharedLabels.fields[f.id].label }}</label>
+          <p v-if="sharedLabels.fields[f.id].help">
+            {{ sharedLabels.fields[f.id].help }}
+          </p>
+          <Slider
+            v-if="f.type === 'dropdown'"
+            v-model="f.value"
+            :options="Object.fromEntries(f.choices.map(c => [c, sharedLabels.fields[f.id].choices?.[c] || c]))"
+          />
+        </template>
+      </div>
+      <Button
+        primary
+        :is-loading="isLoading"
+        type="submit"
+      >
+        {{ t('components.auth.Settings.button.updateSettings') }}
+      </Button>
+    </Layout>
+    <section class="ui text container">
+      <h2 class="ui header">
+        {{ t('components.auth.Settings.header.avatar') }}
+      </h2>
+      <Layout form>
+        <Alert
+          v-if="avatarErrors.length > 0"
+          red
           role="alert"
-          class="ui warning message"
         >
-          {{ $t('components.auth.Settings.warning.deleteAccount') }}
+          <h4 class="header">
+            {{ t('components.auth.Settings.header.avatarFailure') }}
+          </h4>
+          <ul class="list">
+            <li
+              v-for="(error, key) in avatarErrors"
+              :key="key"
+            >
+              {{ error }}
+            </li>
+          </ul>
+        </Alert>
+        <attachment-input
+          v-model="avatar.uuid"
+          :initial-value="initialAvatar"
+          @update:model-value="submitAvatar($event)"
+          @delete="avatar = {uuid: null}"
+        >
+          {{ t('components.auth.Settings.label.avatar') }}
+        </attachment-input>
+      </Layout>
+    </section>
+
+    <section class="ui text container">
+      <h2 class="ui header">
+        {{ t('components.auth.Settings.header.changePassword') }}
+      </h2>
+      <div class="ui message">
+        {{ t('components.auth.Settings.description.changePassword.paragraph1') }}&nbsp;{{ t('components.auth.Settings.description.changePassword.paragraph2') }}
+      </div>
+      <Layout
+        form
+        @submit.prevent="submitPassword()"
+      >
+        <Alert
+          v-if="passwordError"
+          role="alert"
+        >
+          <h4 class="header">
+            {{ t('components.auth.Settings.header.passwordFailure') }}
+          </h4>
+          <ul class="list">
+            <li v-if="passwordError == 'invalid_credentials'">
+              {{ t('components.auth.Settings.help.changePassword') }}
+            </li>
+          </ul>
+        </Alert>
+        <div class="field">
+          <label for="old-password-field">{{ t('components.auth.Settings.label.currentPassword') }}</label>
+          <password-input
+            v-model="credentials.oldPassword"
+            field-id="old-password-field"
+            required
+          />
         </div>
-        <div class="ui form">
-          <div
-            v-if="accountDeleteErrors.length > 0"
-            role="alert"
-            class="ui negative message"
-          >
-            <h4 class="header">
-              {{ $t('components.auth.Settings.header.accountFailure') }}
-            </h4>
-            <ul class="list">
-              <li
-                v-for="(error, key) in accountDeleteErrors"
-                :key="key"
-              >
-                {{ error }}
-              </li>
-            </ul>
-          </div>
-          <div class="field">
-            <label for="current-password-field">{{ $t('components.auth.Settings.label.currentPassword') }}</label>
-            <password-input
-              v-model="deleteAccountPassword"
-              field-id="current-password-field"
-              required
-            />
-          </div>
-          <dangerous-button
-            :class="['ui', {'loading': isDeletingAccount}, {disabled: !deleteAccountPassword}, {danger: deleteAccountPassword}, 'button']"
-            :action="deleteAccount"
-          >
-            {{ $t('components.auth.Settings.button.deleteAccount') }}
-            <template #modal-header>
+        <div class="field">
+          <label for="new-password-field">{{ t('components.auth.Settings.label.newPassword') }}</label>
+          <password-input
+            v-model="credentials.newPassword"
+            field-id="new-password-field"
+            required
+          />
+        </div>
+        <dangerous-button
+          :class="['ui', {'loading': isLoadingPassword}, {disabled: !credentials.newPassword || !credentials.oldPassword}, 'warning', 'button']"
+          :action="submitPassword"
+          :title="t('components.auth.Settings.modal.changePassword.header')"
+        >
+          {{ t('components.auth.Settings.button.password') }}
+          <template #modal-content>
+            <div>
               <p>
-                {{ $t('components.auth.Settings.modal.deleteAccount.header') }}
+                {{ t('components.auth.Settings.modal.changePassword.content.warning') }}
               </p>
-            </template>
-            <template #modal-content>
-              <div>
-                <p>
-                  {{ $t('components.auth.Settings.modal.deleteAccount.content.warning') }}
-                </p>
-              </div>
-            </template>
-            <template #modal-confirm>
-              <div>
-                {{ $t('components.auth.Settings.button.deleteAccountConfirm') }}
-              </div>
-            </template>
-          </dangerous-button>
+              <ul>
+                <li>
+                  {{ t('components.auth.Settings.modal.changePassword.content.logout') }}
+                </li>
+                <li>
+                  {{ t('components.auth.Settings.modal.changePassword.content.subsonic') }}
+                </li>
+              </ul>
+            </div>
+          </template>
+          <template #modal-confirm>
+            <div>
+              {{ t('components.auth.Settings.button.disableSubsonic') }}
+            </div>
+          </template>
+        </dangerous-button>
+      </Layout>
+      <div class="ui hidden divider" />
+      <subsonic-token-form />
+    </section>
+
+    <section
+      id="content-filters"
+      class="ui text container"
+    >
+      <h2 class="ui header">
+        <i class="bi bi-eye-slash" />
+        <div class="content">
+          {{ t('components.auth.Settings.header.contentFilters') }}
         </div>
-      </section>
-    </div>
-  </main>
+      </h2>
+      <p>
+        {{ t('components.auth.Settings.description.contentFilters') }}
+      </p>
+
+      <Button
+        primary
+        icon="bi-arrow-clockwise"
+        @click="store.dispatch('moderation/fetchContentFilters')"
+      >
+        {{ t('components.auth.Settings.button.refresh') }}
+      </Button>
+      <h3 class="ui header">
+        {{ t('components.auth.Settings.header.hiddenArtists') }}
+      </h3>
+      <table class="ui compact very basic unstackable table">
+        <thead>
+          <tr>
+            <th>
+              {{ t('components.auth.Settings.table.artists.header.name') }}
+            </th>
+            <th>
+              {{ t('components.auth.Settings.table.artists.header.creationDate') }}
+            </th>
+            <th />
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="filter in store.getters['moderation/artistFilters']()"
+            :key="filter.uuid"
+          >
+            <td>
+              <router-link :to="{name: 'library.artists.detail', params: {id: filter.target.id }}">
+                {{ filter.target.name }}
+              </router-link>
+            </td>
+            <td>
+              <human-date :date="filter.creation_date" />
+            </td>
+            <td>
+              <Button
+                secondary
+                @click="store.dispatch('moderation/deleteContentFilter', filter.uuid)"
+              >
+                {{ t('components.auth.Settings.button.delete') }}
+              </Button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    <section
+      id="grants"
+      class="ui text container"
+    >
+      <div class="ui hidden divider" />
+      <h2 class="ui header">
+        <i class="bi bi-unlock-fill" />
+        <div class="content">
+          {{ t('components.auth.Settings.header.authorizedApps') }}
+        </div>
+      </h2>
+      <p>
+        {{ t('components.auth.Settings.description.authorizedApps') }}
+      </p>
+      <Button
+        primary
+        icon="bi-arrow-clockwise"
+        :is-loading="isLoadingApps"
+        @click="fetchApps()"
+      >
+        {{ t('components.auth.Settings.button.refresh') }}
+      </Button>
+      <table
+        v-if="apps.length > 0"
+        class="ui compact very basic unstackable table"
+      >
+        <thead>
+          <tr>
+            <th>
+              {{ t('components.auth.Settings.table.authorizedApps.header.application') }}
+            </th>
+            <th>
+              {{ t('components.auth.Settings.table.authorizedApps.header.permissions') }}
+            </th>
+            <th />
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="app in apps"
+            :key="app.client_id"
+          >
+            <td>
+              {{ app.name }}
+            </td>
+            <td>
+              {{ app.scopes }}
+            </td>
+            <td>
+              <dangerous-button
+                :class="['ui', 'tiny', 'danger', { loading: isRevoking.has(app.client_id) }, 'button']"
+                :title="t('components.auth.Settings.modal.revokeApp.header', {app: app.name})"
+                @confirm="revokeApp(app.client_id)"
+              >
+                {{ t('components.auth.Settings.button.revoke') }}
+                <template #modal-content>
+                  {{ t('components.auth.Settings.modal.revokeApp.content.warning') }}
+                </template>
+                <template #modal-confirm>
+                  {{ t('components.auth.Settings.button.revokeAccess') }}
+                </template>
+              </dangerous-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <empty-state v-else>
+        <template #title>
+          {{ t('components.auth.Settings.header.noApps') }}
+        </template>
+        {{ t('components.auth.Settings.help.noApps') }}
+      </empty-state>
+    </section>
+    <section
+      id="apps"
+      class="ui text container"
+    >
+      <div class="ui hidden divider" />
+      <h2 class="ui header">
+        <i class="bi bi-code-slash" />
+        <div class="content">
+          {{ t('components.auth.Settings.header.yourApps') }}
+        </div>
+      </h2>
+      <p>
+        {{ t('components.auth.Settings.description.yourApps') }}
+      </p>
+      <Link
+        class="ui success button"
+        :to="{name: 'settings.applications.new'}"
+      >
+        {{ t('components.auth.Settings.link.newApp') }}
+      </Link>
+      <table
+        v-if="ownedApps.length > 0"
+        class="ui compact very basic unstackable table"
+      >
+        <thead>
+          <tr>
+            <th>
+              {{ t('components.auth.Settings.table.yourApps.header.application') }}
+            </th>
+            <th>
+              {{ t('components.auth.Settings.table.yourApps.header.scopes') }}
+            </th>
+            <th>
+              {{ t('components.auth.Settings.table.yourApps.header.creationDate') }}
+            </th>
+            <th />
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="app in ownedApps"
+            :key="app.client_id"
+          >
+            <td>
+              <router-link :to="{name: 'settings.applications.edit', params: {id: app.client_id}}">
+                {{ app.name }}
+              </router-link>
+            </td>
+            <td>
+              {{ app.scopes }}
+            </td>
+            <td>
+              <human-date :date="app.created" />
+            </td>
+            <td>
+              <Link
+                class="ui tiny success button"
+                :to="{name: 'settings.applications.edit', params: {id: app.client_id}}"
+              >
+                {{ t('components.auth.Settings.button.edit') }}
+              </Link>
+              <DangerousButton
+                :is-loading="isDeleting.has(app.client_id)"
+                class="tiny"
+                :title="t('components.auth.Settings.modal.deleteApp.header', {app: app.name})"
+                @confirm="deleteApp(app.client_id)"
+              >
+                {{ t('components.auth.Settings.button.remove') }}
+                <template #modal-content>
+                  {{ t('components.auth.Settings.modal.deleteApp.content.warning') }}
+                </template>
+                <template #modal-confirm>
+                  {{ t('components.auth.Settings.button.removeApp') }}
+                </template>
+              </DangerousButton>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <empty-state v-else>
+        <template #title>
+          {{ t('components.auth.Settings.header.noPersonalApps') }}
+        </template>
+        {{ t('components.auth.Settings.help.noPersonalApps') }}
+      </empty-state>
+    </section>
+
+    <section
+      id="plugins"
+      class="ui text container"
+    >
+      <div class="ui hidden divider" />
+      <h2 class="ui header">
+        <i class="bi bi-code" />
+        <div class="content">
+          {{ t('components.auth.Settings.header.plugins') }}
+        </div>
+      </h2>
+      <p>
+        {{ t('components.auth.Settings.description.plugins') }}
+      </p>
+      <Link
+        primary
+        solid
+        :to="{name: 'settings.plugins'}"
+        icon="bi-puzzle-fill"
+      >
+        {{ t('components.auth.Settings.link.managePlugins') }}
+      </Link>
+    </section>
+    <section class="ui text container">
+      <div class="ui hidden divider" />
+      <h2 class="ui header">
+        <i class="bi bi-envelope-at" />
+        <div class="content">
+          {{ t('components.auth.Settings.header.changeEmail') }}
+        </div>
+      </h2>
+      <p>
+        {{ t('components.auth.Settings.description.changeEmail') }}
+      </p>
+      <p>
+        {{ t('components.auth.Settings.message.currentEmail', { email: store.state.auth.profile?.email }) }}
+      </p>
+      <Layout
+        form
+        @submit.prevent="changeEmail"
+      >
+        <Alert
+          v-if="changeEmailErrors.length > 0"
+          red
+          role="alert"
+        >
+          <h4 class="header">
+            {{ t('components.auth.Settings.header.emailFailure') }}
+          </h4>
+          <ul class="list">
+            <li
+              v-for="(error, key) in changeEmailErrors"
+              :key="key"
+            >
+              {{ error }}
+            </li>
+          </ul>
+        </Alert>
+        <div class="field">
+          <label for="new-email">{{ t('components.auth.Settings.label.newEmail') }}</label>
+          <Input
+            id="new-email"
+            v-model="newEmail"
+            required
+            type="email"
+          />
+        </div>
+        <div class="field">
+          <label for="current-password-field-email">{{ t('components.auth.Settings.label.password') }}</label>
+          <password-input
+            v-model="emailPassword"
+            field-id="current-password-field-email"
+            required
+          />
+        </div>
+        <Button
+          primary
+          type="submit"
+        >
+          {{ t('components.auth.Settings.button.update') }}
+        </Button>
+      </Layout>
+    </section>
+    <section class="ui text container">
+      <div class="ui hidden divider" />
+      <h2 class="ui header">
+        <i class="bi bi-trash" />
+        <div class="content">
+          {{ t('components.auth.Settings.header.deleteAccount') }}
+        </div>
+      </h2>
+      <p>
+        {{ t('components.auth.Settings.description.deleteAccount') }}
+      </p>
+      <Alert
+        yellow
+        role="alert"
+      >
+        {{ t('components.auth.Settings.warning.deleteAccount') }}
+      </Alert>
+      <Layout form>
+        <Alert
+          v-if="accountDeleteErrors.length > 0"
+          red
+          role="alert"
+        >
+          <h4 class="header">
+            {{ t('components.auth.Settings.header.accountFailure') }}
+          </h4>
+          <ul class="list">
+            <li
+              v-for="(error, key) in accountDeleteErrors"
+              :key="key"
+            >
+              {{ error }}
+            </li>
+          </ul>
+        </Alert>
+        <div class="field">
+          <label for="current-password-field">{{ t('components.auth.Settings.label.currentPassword') }}</label>
+          <password-input
+            v-model="deleteAccountPassword"
+            field-id="current-password-field"
+            required
+          />
+        </div>
+        <dangerous-button
+          :is-loading="isDeletingAccount"
+          :disabled="!deleteAccountPassword || undefined"
+          :class="{danger: deleteAccountPassword}"
+          :action="deleteAccount"
+          :title="t('components.auth.Settings.modal.deleteAccount.header')"
+        >
+          {{ t('components.auth.Settings.button.deleteAccount') }}
+          <template #modal-content>
+            {{ t('components.auth.Settings.modal.deleteAccount.content.warning') }}
+          </template>
+          <template #modal-confirm>
+            {{ t('components.auth.Settings.button.deleteAccountConfirm') }}
+          </template>
+        </dangerous-button>
+      </Layout>
+    </section>
+  </Layout>
 </template>

@@ -4,12 +4,20 @@ import type { Track, Radio } from '~/types'
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import { useStore } from '~/store'
 
 import axios from 'axios'
 
+import DangerousButton from '~/components/common/DangerousButton.vue'
 import TrackTable from '~/components/audio/track/Table.vue'
 import RadioButton from '~/components/radios/Button.vue'
-import Pagination from '~/components/vui/Pagination.vue'
+
+import Layout from '~/components/ui/Layout.vue'
+import Header from '~/components/ui/Header.vue'
+import Section from '~/components/ui/Section.vue'
+import Pagination from '~/components/ui/Pagination.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Button from '~/components/ui/Button.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 
@@ -52,6 +60,8 @@ const fetchData = async () => {
 watch(page, fetchData, { immediate: true })
 
 const router = useRouter()
+const store = useStore()
+
 const deleteRadio = async () => {
   try {
     await axios.delete(`radios/radios/${props.id}/`)
@@ -63,99 +73,84 @@ const deleteRadio = async () => {
 </script>
 
 <template>
-  <main>
-    <div
+  <Layout
+    stack
+    main
+  >
+    <Loader
       v-if="isLoading"
       v-title="labels.title"
-      class="ui vertical segment"
-    >
-      <div :class="['ui', 'centered', 'active', 'inline', 'loader']" />
-    </div>
-    <section
+    />
+    <Header
       v-if="!isLoading && radio"
       v-title="radio.name"
-      class="ui head vertical center aligned stripe segment"
-    >
-      <div class="segment-content">
-        <h2 class="ui center aligned icon header">
-          <i class="circular inverted feed primary icon" />
-          <div class="content">
-            {{ radio.name }}
-            <div class="sub header">
-              {{ $t('views.radios.Detail.header.radio', {tracks: totalTracks}) }}<username :username="radio.user.username" />
-            </div>
-          </div>
-        </h2>
-        <div class="ui hidden divider" />
-        <radio-button
-          type="custom"
-          :custom-radio-id="radio.id"
-        />
-        <template v-if="$store.state.auth.username === radio.user.username">
-          <router-link
-            class="ui icon labeled button"
-            :to="{name: 'library.radios.edit', params: {id: radio.id}}"
-          >
-            <i class="pencil icon" />
-            {{ $t('views.radios.Detail.button.edit') }}
-          </router-link>
-          <dangerous-button
-            class="ui labeled danger icon button"
-            :action="deleteRadio"
-          >
-            <i class="trash icon" /> {{ $t('views.radios.Detail.button.delete') }}
-            <template #modal-header>
-              <p>
-                {{ $t('views.radios.Detail.modal.delete.header', {radio: radio.name}) }}
-              </p>
-            </template>
-            <template #modal-content>
-              <p>
-                {{ $t('views.radios.Detail.modal.delete.content.warning') }}
-              </p>
-            </template>
-            <template #modal-confirm>
-              <p>
-                {{ $t('views.radios.Detail.button.confirm') }}
-              </p>
-            </template>
-          </dangerous-button>
-        </template>
-      </div>
-    </section>
-    <section
+      page-heading
+      :h1="radio.name"
+    />
+    <h2 class="sub header">
+      {{ t('views.radios.Detail.header.radio', {tracks: totalTracks}) }}<username :username="radio?.user.username" />
+    </h2>
+    <Layout flex>
+      <radio-button
+        :custom-radio-id="radio?.id"
+      />
+      <template v-if="store.state.auth.username === radio?.user.username">
+        <Button
+          icon="bi-pencil"
+          secondary
+          :to="{name: 'library.radios.edit', params: {id: radio?.id}}"
+        >
+          {{ t('views.radios.Detail.button.edit') }}
+        </Button>
+        <dangerous-button
+          :action="deleteRadio"
+          :title="t('views.radios.Detail.modal.delete.header', {radio: radio.name})"
+          icon="bi-trash"
+        >
+          {{ t('views.radios.Detail.button.delete') }}
+          <template #modal-content>
+            {{ t('views.radios.Detail.modal.delete.content.warning') }}
+          </template>
+          <template #modal-confirm>
+            {{ t('views.radios.Detail.button.confirm') }}
+          </template>
+        </dangerous-button>
+      </template>
+    </Layout>
+    <Section
       v-if="totalTracks > 0"
-      class="ui vertical stripe segment"
+      :h2="t('views.radios.Detail.header.tracks')"
     >
-      <h2>
-        {{ $t('views.radios.Detail.header.tracks') }}
-      </h2>
       <track-table :tracks="tracks" />
-      <div class="ui center aligned basic segment">
-        <pagination
-          v-if="totalTracks > 25"
-          v-model:current="page"
-          :paginate-by="25"
-          :total="totalTracks"
-        />
-      </div>
-    </section>
-    <div
+      <Pagination
+        v-if="totalTracks > 25"
+        v-model:page="page"
+        :pages="Math.ceil(totalTracks / 25)"
+      />
+    </Section>
+    <Alert
       v-else-if="!isLoading && totalTracks === 0"
-      class="ui placeholder segment"
+      blue
     >
-      <div class="ui icon header">
-        <i class="rss icon" />
-        {{ $t('views.radios.Detail.empty.noTracks') }}
-      </div>
-      <router-link
-        v-if="$store.state.auth.username === radio?.user.username"
-        class="ui success icon labeled button"
-        :to="{name: 'library.radios.edit', params: { id: radio?.id }}"
+      <Layout
+        stack
+        style="text-align: center;"
       >
-        <i class="pencil icon" />
-        {{ $t('views.radios.Detail.button.edit') }}
-      </router-link>
-    </div>
-  </main>
+        <i
+          class="bi bi-broadcast-pin"
+          style="font-size: 5em;"
+        />
+        {{ t('views.radios.Detail.empty.noTracks') }}
+        <Button
+          v-if="store.state.auth.username === radio?.user.username"
+          primary
+          icon="bi-pencil"
+          style="align-self: center;"
+          :to="{name: 'library.radios.edit', params: { id: radio?.id }}"
+        >
+          {{ t('views.radios.Detail.button.edit') }}
+        </Button>
+      </Layout>
+    </Alert>
+  </Layout>
 </template>

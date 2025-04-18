@@ -2,6 +2,9 @@
 import type { Library } from '~/types'
 
 import TrackTable from '~/components/audio/track/Table.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 interface Props {
   object: Library
@@ -25,12 +28,12 @@ defineProps<Props>()
             <span
               v-if="isOwner"
             >
-              {{ $t('views.library.DetailTracks.empty.upload') }}
+              {{ t('views.library.DetailTracks.empty.upload') }}
             </span>
             <span
               v-else
             >
-              {{ $t('views.library.DetailTracks.empty.follow') }}
+              {{ t('views.library.DetailTracks.empty.follow') }}
             </span>
           </p>
         </empty-state>

@@ -47,13 +47,11 @@ fetchData()
 </script>
 
 <template>
-  <section :class="['ui', 'vertical', 'stripe', { loading: isLoading }, 'segment']">
-    <div class="ui text container">
-      <edit-card
-        v-if="obj"
-        :obj="obj"
-        :current-state="currentState"
-      />
-    </div>
+  <section :class="{ loading: isLoading }">
+    <edit-card
+      v-if="obj"
+      :obj="obj"
+      :current-state="currentState"
+    />
   </section>
 </template>

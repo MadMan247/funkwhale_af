@@ -7,12 +7,13 @@ import { useI18n } from 'vue-i18n'
 
 import { usePlayer } from '~/composables/audio/player'
 import { useQueue } from '~/composables/audio/queue'
+import { useStore } from '~/store'
 
 import usePlayOptions from '~/composables/audio/usePlayOptions'
 
 import TrackFavoriteIcon from '~/components/favorites/TrackFavoriteIcon.vue'
 import TrackModal from '~/components/audio/track/Modal.vue'
-import { generateTrackCreditString, getArtistCoverUrl } from '~/utils/utils'
+import { generateTrackCreditString } from '~/utils/utils'
 
 interface Props extends PlayOptionsProps {
   track: Track
@@ -54,6 +55,8 @@ const { isPlaying } = usePlayer()
 const { activateTrack } = usePlayOptions(props)
 
 const { t } = useI18n()
+const store = useStore()
+
 const actionsButtonLabel = computed(() => t('components.audio.track.MobileRow.button.actions'))
 </script>
 
@@ -70,20 +73,14 @@ const actionsButtonLabel = computed(() => t('components.audio.track.MobileRow.bu
       @click.prevent.exact="activateTrack(track, index)"
     >
       <img
-        v-if="track.album?.cover?.urls.original"
-        v-lazy="$store.getters['instance/absoluteUrl'](track.album.cover.urls.medium_square_crop)"
+        v-if="track.cover"
+        v-lazy="store.getters['instance/absoluteUrl'](track.cover.urls.small_square_crop)"
         alt=""
         class="ui artist-track mini image"
       >
       <img
-        v-else-if="track.cover"
-        v-lazy="$store.getters['instance/absoluteUrl'](track.cover.urls.medium_square_crop)"
-        alt=""
-        class="ui artist-track mini image"
-      >
-      <img
-        v-else-if="track.artist_credit.length && track.artist_credit[0].artist.cover"
-        v-lazy="getArtistCoverUrl(track.artist_credit)"
+        v-else-if="track.album?.cover?.urls.original"
+        v-lazy="store.getters['instance/absoluteUrl'](track.album.cover.urls.small_square_crop)"
         alt=""
         class="ui artist-track mini image"
       >
@@ -113,13 +110,13 @@ const actionsButtonLabel = computed(() => t('components.audio.track.MobileRow.bu
         {{ generateTrackCreditString(track) }}
         <span class="middle middledot symbol" />
         <human-duration
-          v-if="track.uploads[0] && track.uploads[0].duration"
-          :duration="track.uploads[0].duration"
+          v-if="track.uploads?.[0]?.duration"
+          :duration="track.uploads[0]?.duration"
         />
       </p>
     </div>
     <div
-      v-if="$store.state.auth.authenticated"
+      v-if="store.state.auth.authenticated"
       :class="[
         'meta',
         'right',

@@ -3,14 +3,20 @@ import type { Radio } from '~/types'
 
 import { ref, computed } from 'vue'
 import { useStore } from '~/store'
+import { useI18n } from 'vue-i18n'
 
 import RadioButton from './Button.vue'
+import Card from '~/components/ui/Card.vue'
+import Button from '~/components/ui/Button.vue'
+import Spacer from '~/components/ui/Spacer.vue'
 
 interface Props {
   type: string
   customRadio?: Radio | null
   objectId?: string | null
 }
+
+const { t } = useI18n()
 
 const props = withDefaults(defineProps<Props>(), {
   customRadio: null,
@@ -30,20 +36,30 @@ const customRadioId = computed(() => props.customRadio?.id ?? null)
 </script>
 
 <template>
-  <div class="ui card">
-    <div class="content">
-      <h4 class="header">
-        <router-link
-          v-if="radio.id"
-          class="discrete link"
-          :to="{name: 'library.radios.detail', params: {id: radio.id}}"
-        >
-          {{ radio.name }}
-        </router-link>
-        <template v-else>
-          {{ radio.name }}
-        </template>
-      </h4>
+  <Card
+    v-if="radio.id"
+    small
+    blue
+    :title="radio.name"
+    :to="{name: 'library.radios.detail', params: {id: radio.id}}"
+  >
+    <template #topright>
+      <radio-button
+        :type="type"
+        :custom-radio-id="customRadioId"
+        :object-id="objectId"
+        play-only
+      />
+    </template>
+
+    <template #default>
+      <user-link
+        v-if="radio.user"
+        :user="radio.user"
+        :avatar="false"
+        discrete
+      />
+      <Spacer />
       <div
         class="description"
         :class="{expanded: isDescriptionExpanded}"
@@ -51,27 +67,69 @@ const customRadioId = computed(() => props.customRadio?.id ?? null)
       >
         {{ radio.description }}
       </div>
-    </div>
-    <div class="extra content">
+    </template>
+
+    <template #action>
+      <Button
+        v-if="store.state.auth.authenticated && type === 'custom' && radio.user.id === store.state.auth.profile?.id"
+        primary
+        full
+        grow
+        :to="{name: 'library.radios.edit', params: {id: customRadioId }}"
+      >
+        {{ t('components.radios.Card.button.edit') }}
+      </Button>
+    </template>
+  </Card>
+  <Card
+    v-else
+    small
+    solid
+    blue
+    icon="bi-boombox-fill"
+    :title="radio.name"
+  >
+    <template #default>
       <user-link
         v-if="radio.user"
+        discrete
         :user="radio.user"
-        class="left floated"
+        :avatar="false"
       />
-      <div class="ui hidden divider" />
+      <Spacer v-if="radio.user" />
+      <div
+        class="description"
+        :class="{expanded: isDescriptionExpanded}"
+        @click="isDescriptionExpanded = !isDescriptionExpanded"
+      >
+        {{ radio.description }}
+      </div>
+    </template>
+
+    <template #action>
       <radio-button
-        class="right floated button"
         :type="type"
         :custom-radio-id="customRadioId"
         :object-id="objectId"
+        grow
       />
-      <router-link
-        v-if="$store.state.auth.authenticated && type === 'custom' && radio.user.id === $store.state.auth.profile?.id"
-        class="ui success button right floated"
+      <Button
+        v-if="store.state.auth.authenticated && type === 'custom' && radio.user.id === store.state.auth.profile?.id"
+        secondary
         :to="{name: 'library.radios.edit', params: {id: customRadioId }}"
       >
-        {{ $t('components.radios.Card.button.edit') }}
-      </router-link>
-    </div>
-  </div>
+        {{ t('components.radios.Card.button.edit') }}
+      </Button>
+    </template>
+  </Card>
 </template>
+
+<style lang="scss" scoped>
+.play-button.is-icon-only {
+  top: 16px;
+  right: 16px;
+}
+h6.title {
+  font-size: 3em;
+}
+</style>

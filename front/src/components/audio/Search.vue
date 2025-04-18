@@ -6,8 +6,8 @@ import { ref, computed, reactive, watch, onMounted } from 'vue'
 import { refDebounced } from '@vueuse/core'
 
 import axios from 'axios'
-import AlbumCard from '~/components/audio/album/Card.vue'
-import ArtistCard from '~/components/audio/artist/Card.vue'
+import AlbumCard from '~/components/album/Card.vue'
+import ArtistCard from '~/components/artist/Card.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 import useLogger from '~/composables/useLogger'
@@ -73,7 +73,7 @@ const labels = computed(() => ({
 <template>
   <div>
     <h2>
-      {{ $t('components.audio.Search.header.search') }}
+      {{ t('components.audio.Search.header.search') }}
     </h2>
     <div :class="['ui', {'loading': isLoading }, 'search']">
       <div class="ui icon big input">
@@ -89,7 +89,7 @@ const labels = computed(() => ({
     </div>
     <template v-if="query.length > 0">
       <h3 class="ui title">
-        {{ $t('components.audio.Search.header.artists') }}
+        {{ t('components.audio.Search.header.artists') }}
       </h3>
       <div v-if="results.artists.length > 0">
         <div class="ui cards">
@@ -101,12 +101,12 @@ const labels = computed(() => ({
         </div>
       </div>
       <p v-else>
-        {{ $t('components.audio.Search.empty.noArtists') }}
+        {{ t('components.audio.Search.empty.noArtists') }}
       </p>
     </template>
     <template v-if="query.length > 0">
       <h3 class="ui title">
-        {{ $t('components.audio.Search.header.albums') }}
+        {{ t('components.audio.Search.header.albums') }}
       </h3>
       <div
         v-if="results.albums.length > 0"
@@ -124,7 +124,7 @@ const labels = computed(() => ({
         </div>
       </div>
       <p v-else>
-        {{ $t('components.audio.Search.empty.noAlbums') }}
+        {{ t('components.audio.Search.empty.noAlbums') }}
       </p>
     </template>
   </div>

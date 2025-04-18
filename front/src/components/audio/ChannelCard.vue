@@ -9,7 +9,9 @@ import { computed } from 'vue'
 import moment from 'moment'
 
 import PlayButton from '~/components/audio/PlayButton.vue'
-import TagsList from '~/components/tags/List.vue'
+import Card from '~/components/ui/Card.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import ActorLink from '~/components/common/ActorLink.vue'
 
 interface Props {
   object: Channel
@@ -41,64 +43,92 @@ const updatedAgo = computed(() => moment(props.object.artist?.modification_date)
 </script>
 
 <template>
-  <div class="card app-card">
-    <div
-      v-lazy:background-image="imageUrl"
-      :class="['ui', 'head-image', {'circular': object.artist?.content_category != 'podcast'}, {'padded': object.artist?.content_category === 'podcast'}, 'image', {'default-cover': !object.artist?.cover}]"
-      @click="$router.push({name: 'channels.detail', params: {id: urlId}})"
-    >
-      <play-button
-        :icon-only="true"
-        :is-playable="true"
-        :button-classes="['ui', 'circular', 'large', 'vibrant', 'icon', 'button']"
+  <Card
+    :title="object.artist?.name"
+    :tags="object.artist?.tags ?? []"
+    class="artist-card"
+    :to="{name: 'channels.detail', params: {id: urlId}}"
+    solid
+    small
+  >
+    <template #topright>
+      <PlayButton
+        icon-only
         :artist="object.artist"
+        :is-playable="true"
       />
-    </div>
-    <div class="content">
-      <strong>
-        <router-link
-          class="discrete link"
-          :to="{name: 'channels.detail', params: {id: urlId}}"
-        >
-          {{ object.artist?.name }}
-        </router-link>
-      </strong>
-      <div class="description">
-        <span
-          v-if="object.artist?.content_category === 'podcast'"
-          class="meta ellipsis"
-        >
-          {{ $t('components.audio.ChannelCard.meta.episodes', object.artist.tracks_count) }}
-        </span>
-        <span v-else>
-          {{ $t('components.audio.ChannelCard.meta.tracks', object.artist?.tracks_count ?? 0) }}
-        </span>
-        <tags-list
-          label-classes="tiny"
-          :truncate-size="20"
-          :limit="2"
-          :show-more="false"
-          :tags="object.artist?.tags ?? []"
-        />
-      </div>
-    </div>
-    <div class="extra content">
+    </template>
+
+    <template #image>
+      <img
+        v-if="imageUrl"
+        v-lazy="imageUrl"
+        :alt="object.artist?.name"
+        :class="[object.artist?.content_category === 'podcast' ? 'podcast-image' : 'channel-image']"
+      >
+      <i
+        v-else
+        class="bi bi-person-circle"
+        style="font-size: 167px; margin: 16px;"
+      />
+    </template>
+
+    <template #default>
+      <Spacer :size="8" />
+      <ActorLink
+        :actor="object.attributed_to"
+        discrete
+      />
+    </template>
+
+    <template #footer>
       <time
-        class="meta ellipsis"
         :datetime="object.artist?.modification_date"
         :title="updatedTitle"
       >
         {{ updatedAgo }}
       </time>
-      <play-button
-        class="right floated basic icon"
+      <i class="bi bi-dot" />
+      <span
+        v-if="object.artist?.content_category === 'podcast'"
+      >
+        {{ t('components.audio.ChannelCard.meta.episodes', object.artist.tracks_count) }}
+      </span>
+      <span v-else>
+        {{ t('components.audio.ChannelCard.meta.tracks', object.artist?.tracks_count ?? 0) }}
+      </span>
+      <Spacer
+        h
+        grow
+      />
+      <PlayButton
         :dropdown-only="true"
         :is-playable="true"
-        :dropdown-icon-classes="['ellipsis', 'horizontal', 'large really discrete']"
         :artist="object.artist"
         :channel="object"
         :account="object.attributed_to"
+        discrete
       />
-    </div>
-  </div>
+    </template>
+  </Card>
 </template>
+
+<style lang="scss" scoped>
+.channel-image {
+  border-radius: 50%;
+  width: 168px;
+  height: 168px;
+  margin: 16px;
+}
+
+.podcast-image {
+  width: 168px;
+  height: 168px;
+  margin: 16px;
+}
+
+.play-button {
+  top: 16px;
+  right: 16px;
+}
+</style>

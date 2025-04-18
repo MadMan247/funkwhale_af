@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import type { FSLogs } from '~/types'
+import { useI18n } from 'vue-i18n'
 
 interface Props {
   data: FSLogs
 }
 
 defineProps<Props>()
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -15,7 +18,7 @@ defineProps<Props>()
       class="ui active dimmer"
     >
       <div class="ui text loader">
-        {{ $t('components.library.FsLogs.empty.notStarted') }}
+        {{ t('components.library.FsLogs.empty.notStarted') }}
       </div>
     </div>
     <template v-else>

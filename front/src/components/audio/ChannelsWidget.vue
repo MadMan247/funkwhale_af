@@ -1,47 +1,57 @@
 <script setup lang="ts">
-import type { BackendError, BackendResponse, Channel } from '~/types'
+import type { BackendError, PaginatedChannelList } from '~/types'
+import { type operations } from '~/generated/types.ts'
 
-import { ref, reactive } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { clone } from 'lodash-es'
 
 import axios from 'axios'
 
+import usePage from '~/composables/navigation/usePage'
+
 import ChannelCard from '~/components/audio/ChannelCard.vue'
+import Loader from '~/components/ui/Loader.vue'
+import Section from '~/components/ui/Section.vue'
+import Pagination from '~/components/ui/Pagination.vue'
 
 interface Events {
-  (e: 'fetched', channels: BackendResponse<Channel>): void
+  (e: 'fetched', channels: PaginatedChannelList): void
 }
 
 interface Props {
   filters: object
   limit?: number
+  title?: string
 }
 
 const emit = defineEmits<Events>()
 const props = withDefaults(defineProps<Props>(), {
-  limit: 5
+  limit: 5,
+  title: undefined
 })
 
-const channels = reactive([] as Channel[])
+const result = ref<PaginatedChannelList>()
 const errors = ref([] as string[])
 const nextPage = ref()
+const page = usePage()
 const count = ref(0)
 
 const isLoading = ref(false)
+
 const fetchData = async (url = 'channels/') => {
   isLoading.value = true
 
-  const params = {
+  const params: operations['get_channels_2']['parameters']['query'] = {
     ...clone(props.filters),
-    page_size: props.limit,
-    include_channels: true
+    page: page.value,
+    page_size: props.limit
   }
 
   try {
-    const response = await axios.get(url, { params })
+    const response = await axios.get<PaginatedChannelList>(url, { params })
     nextPage.value = response.data.next
     count.value = response.data.count
-    channels.push(...response.data.results)
+    result.value = response.data
     emit('fetched', response.data)
   } catch (error) {
     errors.value = (error as BackendError).backendErrors
@@ -50,41 +60,51 @@ const fetchData = async (url = 'channels/') => {
   isLoading.value = false
 }
 
-fetchData()
+onMounted(() => {
+  fetchData()
+})
+
+watch([() => props.filters, page],
+  () => fetchData(),
+  { deep: true }
+)
 </script>
 
 <template>
-  <div>
-    <slot />
-    <div class="ui hidden divider" />
-    <div class="ui app-cards cards">
-      <div
-        v-if="isLoading"
-        class="ui inverted active dimmer"
-      >
-        <div class="ui loader" />
-      </div>
-      <channel-card
-        v-for="object in channels"
-        :key="object.uuid"
-        :object="object"
-      />
-    </div>
-    <template v-if="nextPage">
-      <div class="ui hidden divider" />
-      <button
-        v-if="nextPage"
-        :class="['ui', 'basic', 'button']"
-        @click="fetchData(nextPage)"
-      >
-        {{ $t('components.audio.ChannelsWidget.button.showMore') }}
-      </button>
-    </template>
-    <template v-if="!isLoading && channels.length === 0">
+  <Section
+    align-left
+    :columns-per-item="1"
+    :h2="title || undefined"
+  >
+    <Loader
+      v-if="isLoading"
+      style="grid-column: 1 / -1;"
+    />
+    <template
+      v-if="!isLoading && result?.count === 0"
+    >
       <empty-state
         :refresh="true"
+        style="grid-column: 1 / -1;"
         @refresh="fetchData('channels/')"
       />
     </template>
-  </div>
+    <Pagination
+      v-if="page && result && count > limit && limit > 16"
+      v-model:page="page"
+      :pages="Math.ceil((count || 0) / limit)"
+      style="grid-column: 1 / -1;"
+    />
+    <channel-card
+      v-for="channel in result?.results"
+      :key="channel.uuid"
+      :object="channel"
+    />
+    <Pagination
+      v-if="page && result && count > limit"
+      v-model:page="page"
+      :pages="Math.ceil((count || 0) / limit)"
+      style="grid-column: 1 / -1;"
+    />
+  </Section>
 </template>

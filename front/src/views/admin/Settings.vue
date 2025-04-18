@@ -2,14 +2,17 @@
 import type { SettingsGroup as SettingsGroupType } from '~/types'
 
 import axios from 'axios'
-import $ from 'jquery'
 
-import { ref, nextTick, onMounted, computed, watch } from 'vue'
-import { useCurrentElement } from '@vueuse/core'
+import { ref, nextTick, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
 import SettingsGroup from '~/components/admin/SettingsGroup.vue'
+
+import Layout from '~/components/ui/Layout.vue'
+import Loader from '~/components/ui/Loader.vue'
+import Header from '~/components/ui/Header.vue'
+import Toc from '~/components/ui/Toc.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 
@@ -152,17 +155,6 @@ if (route.hash) {
   scrollTo(route.hash.slice(1))
 }
 
-const el = useCurrentElement()
-onMounted(async () => {
-  await nextTick()
-  $(el.value).find('select.dropdown').dropdown()
-})
-
-watch(settingsData, async () => {
-  await nextTick()
-  $(el.value).find('.sticky').sticky({ context: '#settings-grid' })
-})
-
 const isLoading = ref(false)
 const fetchSettings = async () => {
   isLoading.value = true
@@ -182,42 +174,31 @@ await nextTick()
 </script>
 
 <template>
-  <main
-    v-title="labels.settings"
-    class="main pusher"
+  <Layout
+    main
+    stack
+    :class="['ui', {'loading': isLoading}]"
   >
-    <div class="ui vertical stripe segment">
-      <div class="ui text container">
-        <div :class="['ui', {'loading': isLoading}, 'form']" />
-        <div
-          v-if="settingsData"
-          id="settings-grid"
-          class="ui grid"
-        >
-          <div class="twelve wide stretched column">
-            <settings-group
-              v-for="group in groups"
-              :key="group.id"
-              :settings-data="settingsData"
-              :group="group"
-            />
-          </div>
-          <div class="four wide column">
-            <div class="ui sticky vertical secondary menu">
-              <div class="header item">
-                {{ $t('views.admin.Settings.header.sections') }}
-              </div>
-              <a
-                v-for="(group, key) in groups"
-                :key="key"
-                :class="['menu', {active: group.id === current}, 'item']"
-                :href="'#' + group.id"
-                @click.prevent="scrollTo(group.id)"
-              >{{ group.label }}</a>
-            </div>
-          </div>
-        </div>
-      </div>
+    <Loader v-if="isLoading" />
+    <Header
+      page-heading
+      :h1="labels.settings"
+    />
+    <div
+      v-if="settingsData"
+      id="settings-grid"
+      class="ui grid"
+    >
+      <Toc
+        heading="h2"
+      >
+        <settings-group
+          v-for="group in groups"
+          :key="group.id"
+          :settings-data="settingsData"
+          :group="group"
+        />
+      </Toc>
     </div>
-  </main>
+  </Layout>
 </template>

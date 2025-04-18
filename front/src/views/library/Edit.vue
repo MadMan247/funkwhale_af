@@ -10,6 +10,14 @@ import LibraryForm from '~/views/content/libraries/Form.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 
+import { useI18n } from 'vue-i18n'
+import { useStore } from '~/store'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const { t } = useI18n()
+const store = useStore()
+
 interface Events {
   (e: 'updated'): void
 }
@@ -43,6 +51,10 @@ fetchData()
 const updateApproved = async (follow: LibraryFollow, approved: boolean) => {
   try {
     await axios.post(`federation/follows/library/${follow.uuid}/${approved ? 'accept' : 'reject'}/`)
+
+    // TODO: This is not how Axios works. You have to send a request with
+    // the correct type as a parameter.
+    // @ts-expect-error Post this with the axios payload: { ...follow, approved }
     follow.approved = approved
   } catch (error) {
     useErrorHandler(error as Error)
@@ -55,24 +67,24 @@ const updateApproved = async (follow: LibraryFollow, approved: boolean) => {
     <library-form
       :library="object"
       @updated="emit('updated')"
-      @deleted="$router.push({name: 'profile.overview', params: {username: $store.state.auth.username}})"
+      @deleted="router.push({name: 'profile.overview', params: {username: store.state.auth.username}})"
     />
     <div class="ui hidden divider" />
     <h2 class="ui header">
-      {{ $t('views.library.Edit.header.libraryContents') }}
+      {{ t('views.library.Edit.header.libraryContents') }}
     </h2>
     <library-files-table :filters="{ library: object.uuid }" />
 
     <div class="ui hidden divider" />
     <h2 class="ui header">
-      {{ $t('views.library.Edit.header.followers') }}
+      {{ t('views.library.Edit.header.followers') }}
     </h2>
     <div
       v-if="isLoading"
       :class="['ui', {'active': isLoading}, 'inverted', 'dimmer']"
     >
       <div class="ui text loader">
-        {{ $t('views.library.Edit.loading.followers') }}
+        {{ t('views.library.Edit.loading.followers') }}
       </div>
     </div>
     <table
@@ -82,16 +94,16 @@ const updateApproved = async (follow: LibraryFollow, approved: boolean) => {
       <thead>
         <tr>
           <th>
-            {{ $t('views.library.Edit.table.action.header.user') }}
+            {{ t('views.library.Edit.table.action.header.user') }}
           </th>
           <th>
-            {{ $t('views.library.Edit.table.action.header.date') }}
+            {{ t('views.library.Edit.table.action.header.date') }}
           </th>
           <th>
-            {{ $t('views.library.Edit.table.action.header.status') }}
+            {{ t('views.library.Edit.table.action.header.status') }}
           </th>
           <th>
-            {{ $t('views.library.Edit.table.action.header.action') }}
+            {{ t('views.library.Edit.table.action.header.action') }}
           </th>
         </tr>
       </thead>
@@ -106,19 +118,19 @@ const updateApproved = async (follow: LibraryFollow, approved: boolean) => {
             v-if="follow.approved === null"
             :class="['ui', 'warning', 'basic', 'label']"
           >
-            {{ $t('views.library.Edit.table.action.status.pending') }}
+            {{ t('views.library.Edit.table.action.status.pending') }}
           </span>
           <span
             v-else-if="follow.approved === true"
             :class="['ui', 'success', 'basic', 'label']"
           >
-            {{ $t('views.library.Edit.table.action.status.accepted') }}
+            {{ t('views.library.Edit.table.action.status.accepted') }}
           </span>
           <span
             v-else-if="follow.approved === false"
             :class="['ui', 'danger', 'basic', 'label']"
           >
-            {{ $t('views.library.Edit.table.action.status.rejected') }}
+            {{ t('views.library.Edit.table.action.status.rejected') }}
           </span>
         </td>
         <td>
@@ -128,7 +140,7 @@ const updateApproved = async (follow: LibraryFollow, approved: boolean) => {
             @click="updateApproved(follow, true)"
           >
             <i class="ui check icon" />
-            {{ $t('views.library.Edit.button.accept') }}
+            {{ t('views.library.Edit.button.accept') }}
           </button>
           <button
             v-if="follow.approved === null || follow.approved === true"
@@ -136,13 +148,13 @@ const updateApproved = async (follow: LibraryFollow, approved: boolean) => {
             @click="updateApproved(follow, false)"
           >
             <i class="ui x icon" />
-            {{ $t('views.library.Edit.button.reject') }}
+            {{ t('views.library.Edit.button.reject') }}
           </button>
         </td>
       </tr>
     </table>
     <p v-else>
-      {{ $t('views.library.Edit.empty.noFollowers') }}
+      {{ t('views.library.Edit.empty.noFollowers') }}
     </p>
   </section>
 </template>

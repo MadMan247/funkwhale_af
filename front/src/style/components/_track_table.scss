@@ -9,12 +9,20 @@
     flex-grow: 1;
   }
   .row:not(.mobile) {
-    border-bottom: 1px solid var(--border-color);
+    border-top: 1px solid var(--border-color);
+    color: var(--fw-gray-500);
   }
 }
 
 .track-row.row {
   align-content: center;
+  &:last-child {
+    border-bottom: 1px solid var(--border-color);
+  }
+  .meta.column > time {
+    position: relative;
+    top: 14px;
+  }
 }
 
 .track-row,
@@ -39,7 +47,6 @@
     visibility: visible;
   }
   .actions {
-    display: block;
     max-width: 2rem;
     width: 100%;
   }
@@ -59,15 +66,11 @@
     height: 100%;
     vertical-align: middle;
   }
-  .ui.artist-track.mini.image {
-    top: auto;
-    bottom: 0;
-    position: absolute;
-    margin: auto;
+  .image.column {
+    padding: 8px;
   }
-
-  .image.left.floated.column {
-    width: 51px;
+  .track_image {
+    height: 40px;
   }
 }
 
@@ -85,6 +88,10 @@
   height: 75px;
   align-items: center;
   display: flex;
+
+  &:hover {
+    background: rgba(155, 155, 155, 0.1);
+  }
 
   > div {
     margin-right: 0.25em;
@@ -168,15 +175,14 @@
 
 .track-position {
   cursor: pointer;
-  display: contents;
+  display: inline;
   min-height: 1em;
   outline: none;
   border: none;
   vertical-align: baseline;
   font-family: var(--font-family);
-  margin: 0 0.25em 0 0;
   line-height: 1em;
-  padding: 0.5rem;
+  padding: 12px;
   user-select: none;
 
   .mobile span {

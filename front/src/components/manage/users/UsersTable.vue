@@ -10,7 +10,11 @@ import { useI18n } from 'vue-i18n'
 import axios from 'axios'
 
 import ActionTable from '~/components/common/ActionTable.vue'
-import Pagination from '~/components/vui/Pagination.vue'
+import Pagination from '~/components/ui/Pagination.vue'
+
+import Layout from '~/components/ui/Layout.vue'
+import Input from '~/components/ui/Input.vue'
+import Spacer from '~/components/ui/Spacer.vue'
 
 import useSharedLabels from '~/composables/locale/useSharedLabels'
 import useErrorHandler from '~/composables/useErrorHandler'
@@ -102,21 +106,27 @@ const labels = computed(() => ({
 </script>
 
 <template>
-  <div>
-    <div class="ui inline form">
-      <div class="fields">
-        <div class="ui field">
-          <label for="users-search">{{ $t('components.manage.users.UsersTable.label.search') }}</label>
-          <input
-            id="users-search"
-            v-model="query"
-            name="search"
-            type="text"
-            :placeholder="labels.searchPlaceholder"
-          >
-        </div>
+  <Layout
+    form
+    class="ui form"
+  >
+    <div class="fields">
+      <div class="ui field">
+        <Input
+          id="users-search"
+          v-model="query"
+          search
+          :label="t('components.manage.users.UsersTable.label.search')"
+          name="search"
+          type="text"
+          :placeholder="labels.searchPlaceholder"
+        />
+      </div>
+      <Spacer :size="16" />
+      <Layout flex>
+        <Spacer grow />
         <div class="field">
-          <label for="users-ordering">{{ $t('components.manage.users.UsersTable.ordering.label') }}</label>
+          <label for="users-ordering">{{ t('components.manage.users.UsersTable.ordering.label') }}</label>
           <select
             id="users-ordering"
             v-model="ordering"
@@ -132,21 +142,21 @@ const labels = computed(() => ({
           </select>
         </div>
         <div class="field">
-          <label for="users-ordering-direction">{{ $t('components.manage.users.UsersTable.ordering.direction.label') }}</label>
+          <label for="users-ordering-direction">{{ t('components.manage.users.UsersTable.ordering.direction.label') }}</label>
           <select
             id="users-ordering-direction"
             v-model="orderingDirection"
             class="ui dropdown"
           >
             <option value="+">
-              {{ $t('components.manage.users.UsersTable.ordering.direction.ascending') }}
+              {{ t('components.manage.users.UsersTable.ordering.direction.ascending') }}
             </option>
             <option value="-">
-              {{ $t('components.manage.users.UsersTable.ordering.direction.descending') }}
+              {{ t('components.manage.users.UsersTable.ordering.direction.descending') }}
             </option>
           </select>
         </div>
-      </div>
+      </Layout>
     </div>
     <div class="dimmable">
       <div
@@ -165,25 +175,25 @@ const labels = computed(() => ({
       >
         <template #header-cells>
           <th>
-            {{ $t('components.manage.users.UsersTable.table.user.header.username') }}
+            {{ t('components.manage.users.UsersTable.table.user.header.username') }}
           </th>
           <th>
-            {{ $t('components.manage.users.UsersTable.table.user.header.email') }}
+            {{ t('components.manage.users.UsersTable.table.user.header.email') }}
           </th>
           <th>
-            {{ $t('components.manage.users.UsersTable.table.user.header.accountStatus') }}
+            {{ t('components.manage.users.UsersTable.table.user.header.accountStatus') }}
           </th>
           <th>
-            {{ $t('components.manage.users.UsersTable.table.user.header.signup') }}
+            {{ t('components.manage.users.UsersTable.table.user.header.signup') }}
           </th>
           <th>
-            {{ $t('components.manage.users.UsersTable.table.user.header.lastActivity') }}
+            {{ t('components.manage.users.UsersTable.table.user.header.lastActivity') }}
           </th>
           <th>
-            {{ $t('components.manage.users.UsersTable.table.user.header.permissions') }}
+            {{ t('components.manage.users.UsersTable.table.user.header.permissions') }}
           </th>
           <th>
-            {{ $t('components.manage.users.UsersTable.table.user.header.status') }}
+            {{ t('components.manage.users.UsersTable.table.user.header.status') }}
           </th>
         </template>
         <template
@@ -210,11 +220,11 @@ const labels = computed(() => ({
             <span
               v-if="scope.obj.is_active"
               class="ui basic success label"
-            >{{ $t('components.manage.users.UsersTable.table.user.accountStatus.active') }}</span>
+            >{{ t('components.manage.users.UsersTable.table.user.accountStatus.active') }}</span>
             <span
               v-else
               class="ui basic label"
-            >{{ $t('components.manage.users.UsersTable.table.user.accountStatus.inactive') }}</span>
+            >{{ t('components.manage.users.UsersTable.table.user.accountStatus.inactive') }}</span>
           </td>
           <td>
             <human-date :date="scope.obj.date_joined" />
@@ -225,7 +235,7 @@ const labels = computed(() => ({
               :date="scope.obj.last_activity"
             />
             <template v-else>
-              {{ $t('components.manage.users.UsersTable.notApplicable') }}
+              {{ t('components.manage.users.UsersTable.notApplicable') }}
             </template>
           </td>
           <td>
@@ -243,31 +253,30 @@ const labels = computed(() => ({
             <span
               v-if="scope.obj.is_superuser"
               class="ui pink label"
-            >{{ $t('components.manage.users.UsersTable.table.user.status.admin') }}</span>
+            >{{ t('components.manage.users.UsersTable.table.user.status.admin') }}</span>
             <span
               v-else-if="scope.obj.is_staff"
               class="ui purple label"
-            >{{ $t('components.manage.users.UsersTable.table.user.status.staff') }}</span>
+            >{{ t('components.manage.users.UsersTable.table.user.status.staff') }}</span>
             <span
               v-else
               class="ui basic label"
-            >{{ $t('components.manage.users.UsersTable.table.user.status.regular') }}</span>
+            >{{ t('components.manage.users.UsersTable.table.user.status.regular') }}</span>
           </td>
         </template>
       </action-table>
     </div>
     <div>
-      <pagination
+      <Pagination
         v-if="result && result.count > paginateBy"
-        v-model:current="page"
-        :compact="true"
+        v-model:page="page"
+        v-model:pages="result.count"
         :paginate-by="paginateBy"
-        :total="result.count"
       />
 
       <span v-if="result && result.results.length > 0">
-        {{ $t('components.manage.users.UsersTable.pagination.results', {start: ((page-1) * paginateBy) + 1, end: ((page-1) * paginateBy) + result.results.length, total: result.count}, result.results.length) }}
+        {{ t('components.manage.users.UsersTable.pagination.results', { start: ((page-1) * paginateBy) + 1, end: ((page-1) * paginateBy) + result.results.length, total: result.count }, result.results.length) }}
       </span>
     </div>
-  </div>
+  </Layout>
 </template>

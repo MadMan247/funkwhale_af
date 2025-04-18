@@ -2,6 +2,28 @@
   "App": {
     "loading": "Loading…"
   },
+  "vui": {
+    "radio": "Radio",
+    "by-user": "by {username}",
+    "go-to": "Go to",
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous page",
+      "next": "Next page"
+    },
+    "albums": "{n} album | {n} albums",
+    "tracks": "{n} track | {n} tracks",
+    "episodes": "{n} episode | {n} episodes",
+    "aria": {
+      "pagination": {
+        "nav": "Pagination Navigation",
+        "gotoPage": "Goto Page {n}",
+        "gotoPrevious": "Goto Previous Page",
+        "gotoNext": "Goto Next Page",
+        "currentPage": "Current Page, Page {n}"
+      }
+    }
+  },
   "components": {
     "About": {
       "description": {
@@ -574,7 +596,8 @@
         "Card": {
           "meta": {
             "episodes": "No episodes | {n} episode | {n} episodes",
-            "tracks": "No tracks | {n} track | {n} tracks"
+            "tracks": "No tracks | {n} track | {n} tracks",
+            "albums": "No albums | {n} album | {n} albums"
           }
         },
         "Widget": {
@@ -1178,7 +1201,8 @@
           "copy": "Copy"
         },
         "message": {
-          "success": "Text copied to clipboard!"
+          "success": "Text copied to clipboard!",
+          "fail": "Failed to copy text to clipboard, maybe your browser doesn't support this feature."
         }
       },
       "DangerousButton": {
@@ -1844,13 +1868,18 @@
       },
       "TagDetail": {
         "header": {
+          "albums": "Albums",
+          "artists": "Artists",
           "channels": "Channels",
           "tracks": "Tracks"
         },
         "link": {
-          "albums": "Albums",
-          "artists": "Artists",
-          "moderation": "Open in moderation interface"
+          "albums": "View all Albums with this tag",
+          "artists": "View all Artists with this tag",
+          "channels": "View all Channels with this tag",
+          "django": "View in Django's admin",
+          "localProfile": "Open local profile",
+          "tracks": "View all Tracks with this tag"
         }
       },
       "TagSelector": {
@@ -2791,9 +2820,44 @@
     },
     "playlists": {
       "Card": {
+        "title": "Updated on {date}",
         "meta": {
           "tracks": "No tracks | {n} track | {n} tracks"
         }
+      },
+      "Detail": {
+        "button": {
+          "cancel": "Cancel",
+          "confirm": "Delete playlist",
+          "delete": "Delete",
+          "edit": "Edit",
+          "embed": "Embed",
+          "playAll": "Play all",
+          "stopEdit": "Stop Editing"
+        },
+        "empty": {
+          "noTracks": "There are no tracks in this playlist yet"
+        },
+        "header": {
+          "tracks": "Tracks"
+        },
+        "meta": {
+          "attribution": "by",
+          "tracks": "Playlist containing {n} track, by {username} | Playlist containing {n} tracks, by {username}",
+          "updated": "updated"
+        },
+        "modal": {
+          "delete": {
+            "content": {
+              "warning": "This will completely delete this playlist and cannot be undone."
+            },
+            "header": "Do you want to delete the playlist {playlist}?"
+          },
+          "embed": {
+            "header": "Embed this playlist on your website"
+          }
+        },
+        "title": "Playlist"
       },
       "Editor": {
         "button": {
@@ -2847,6 +2911,50 @@
         "placeholder": {
           "name": "My awesome playlist"
         }
+      },
+      "List": {
+        "button": {
+          "create": "Create a playlist",
+          "manage": "Manage your playlists",
+          "search": "Search"
+        },
+        "empty": {
+          "noResults": "No results matching your query"
+        },
+        "header": {
+          "browse": "Browsing playlists",
+          "playlists": "Playlists"
+        },
+        "label": {
+          "search": "Search"
+        },
+        "ordering": {
+          "direction": {
+            "ascending": "Ascending",
+            "descending": "Descending",
+            "label": "Order"
+          },
+          "label": "Ordering"
+        },
+        "pagination": {
+          "results": "Results per page"
+        },
+        "placeholder": {
+          "search": "Enter playlist name…"
+        }
+      },
+      "PlaylistDropdown": {
+        "button": {
+          "import": {
+            "header": "Rebuild playlist",
+            "description": "This will update the playlist with the content of the xspf file. Existing playlist tracks will be deleted"
+          },
+          "export": {
+            "header": "Download playlist",
+            "description": "This will provide an xspf file with the playlist data"
+          }
+        },
+        "more": "More"
       },
       "PlaylistModal": {
         "button": {
@@ -2924,13 +3032,6 @@
         "button": {
           "more": "Show 1 more tag | Show {n} more tags"
         }
-      }
-    },
-    "vui": {
-      "Pagination": {
-        "label": "Pagination",
-        "next": "Next Page",
-        "previous": "Previous Page"
       }
     }
   },
@@ -3573,13 +3674,6 @@
             "activity": "Activity",
             "audioContent": "Audio content",
             "tagData": "Tag data"
-          },
-          "link": {
-            "albums": "Albums",
-            "artists": "Artists",
-            "django": "View in Django's admin",
-            "localProfile": "Open local profile",
-            "tracks": "Tracks"
           },
           "modal": {
             "delete": {

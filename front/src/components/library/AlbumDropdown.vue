@@ -3,17 +3,18 @@ import type { Album, ArtistCredit, Library } from '~/types'
 
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useStore } from '~/store'
 
 import { getDomain } from '~/utils'
 
 import useReport from '~/composables/moderation/useReport'
 
 import EmbedWizard from '~/components/audio/EmbedWizard.vue'
-import SemanticModal from '~/components/semantic/Modal.vue'
 
-interface Events {
-  (e: 'remove'): void
-}
+import Modal from '~/components/ui/Modal.vue'
+import Popover from '~/components/ui/Popover.vue'
+import PopoverItem from '~/components/ui/popover/PopoverItem.vue'
+import OptionsButton from '~/components/ui/button/Options.vue'
 
 interface Props {
   isLoading: boolean
@@ -23,9 +24,10 @@ interface Props {
   isAlbum: boolean
   isChannel: boolean
   isSerie: boolean
+
 }
 
-const emit = defineEmits<Events>()
+const store = useStore()
 const props = defineProps<Props>()
 const { report, getReportableObjects } = useReport()
 
@@ -38,147 +40,131 @@ const labels = computed(() => ({
   more: t('components.library.AlbumDropdown.button.more')
 }))
 
-const isEmbedable = computed(() => (props.isChannel && props.artistCredit[0].artist?.channel?.actor) || props.publicLibraries.length)
+// TODO: What is the condition for an album to be embeddable?
+// (a) props.publicLibraries.length
+// (b) I am the channel's artist: props.isChannel && props.artistCredit[0].artist?.channel?.actor)
+const isEmbedable = computed(() => (props.publicLibraries.length))
 const musicbrainzUrl = computed(() => props.object?.mbid ? `https://musicbrainz.org/release/${props.object.mbid}` : null)
 const discogsUrl = computed(() => `https://discogs.com/search/?type=release&title=${encodeURI(props.object?.title)}&artist=${encodeURI(props.object?.artist_credit[0].artist.name)}`)
 
-const remove = () => emit('remove')
+const open = ref(false)
 </script>
 
 <template>
   <span>
-
-    <semantic-modal
+    <Modal
       v-if="isEmbedable"
-      v-model:show="showEmbedModal"
+      v-model="showEmbedModal"
+      :title="t('components.library.AlbumDropdown.modal.embed.header')"
+      :cancel="t('components.library.AlbumDropdown.button.cancel')"
     >
-      <h4 class="header">
-        {{ $t('components.library.AlbumDropdown.modal.embed.header') }}
-      </h4>
       <div class="scrolling content">
         <div class="description">
           <embed-wizard
             :id="object.id"
             type="album"
           />
-
         </div>
       </div>
-      <div class="actions">
-        <button class="ui basic deny button">
-          {{ $t('components.library.AlbumDropdown.button.cancel') }}
-        </button>
-      </div>
-    </semantic-modal>
-    <button
-      v-dropdown="{direction: 'downward'}"
-      class="ui floating dropdown circular icon basic button"
-      :title="labels.more"
-    >
-      <i class="ellipsis vertical icon" />
-      <div class="menu">
-        <a
-          v-if="domain != $store.getters['instance/domain']"
-          :href="object.fid"
-          target="_blank"
-          class="basic item"
-        >
-          <i class="external icon" />
-          {{ $t('components.library.AlbumDropdown.link.domain') }}
-        </a>
+    </Modal>
+    <Popover v-model="open">
+      <template #default="{ toggleOpen }">
+        <OptionsButton
+          :title="labels.more"
+          is-square-small
+          @click="toggleOpen()"
+        />
+      </template>
 
-        <div
+      <template #items>
+        <PopoverItem
+          v-if="domain != store.getters['instance/domain']"
+          :to="object.fid"
+          icon="bi-box-arrow-up-right"
+          target="_blank"
+        >
+          {{ t('components.library.AlbumDropdown.link.domain') }}
+        </PopoverItem>
+
+        <PopoverItem
           v-if="isEmbedable"
-          role="button"
-          class="basic item"
+          icon="bi-code"
           @click="showEmbedModal = !showEmbedModal"
         >
-          <i class="code icon" />
-          {{ $t('components.library.AlbumDropdown.button.embed') }}
-        </div>
-        <a
+          {{ t('components.library.AlbumDropdown.button.embed') }}
+        </PopoverItem>
+
+        <PopoverItem
           v-if="isAlbum && musicbrainzUrl"
-          :href="musicbrainzUrl"
+          :to="musicbrainzUrl"
+          icon="bi-box-arrow-up-right"
           target="_blank"
           rel="noreferrer noopener"
-          class="basic item"
         >
-          <i class="external icon" />
-          {{ $t('components.library.AlbumDropdown.link.musicbrainz') }}
-        </a>
-        <a
+          {{ t('components.library.AlbumDropdown.link.musicbrainz') }}
+        </PopoverItem>
+
+        <PopoverItem
           v-if="!isChannel && isAlbum"
-          :href="discogsUrl"
+          :to="discogsUrl"
+          icon="bi-box-arrow-up-right"
           target="_blank"
           rel="noreferrer noopener"
-          class="basic item"
         >
-          <i class="external icon" />
-          {{ $t('components.library.AlbumDropdown.link.discogs') }}
-        </a>
-        <router-link
+          {{ t('components.library.AlbumDropdown.link.discogs') }}
+        </PopoverItem>
+
+        <PopoverItem
           v-if="object.is_local"
-          :to="{name: 'library.albums.edit', params: {id: object.id }}"
-          class="basic item"
+          :to="{ name: 'library.albums.edit', params: { id: object.id } }"
+          icon="bi-pencil"
         >
-          <i class="edit icon" />
-          {{ $t('components.library.AlbumDropdown.button.edit') }}
-        </router-link>
-        <dangerous-button
-          v-if="artistCredit[0] && $store.state.auth.authenticated && artistCredit[0].artist.channel && artistCredit[0].artist.attributed_to?.full_username === $store.state.auth.fullUsername"
-          :class="['ui', {loading: isLoading}, 'item']"
-          @confirm="remove()"
-        >
-          <i class="ui trash icon" />
-          {{ $t('components.library.AlbumDropdown.button.delete') }}
-          <template #modal-header>
-            <p>
-              {{ $t('components.library.AlbumDropdown.modal.delete.header') }}
-            </p>
-          </template>
-          <template #modal-content>
-            <div>
-              <p>
-                {{ $t('components.library.AlbumDropdown.modal.delete.content.warning') }}
-              </p>
-            </div>
-          </template>
-          <template #modal-confirm>
-            <p>
-              {{ $t('components.library.AlbumDropdown.button.delete') }}
-            </p>
-          </template>
-        </dangerous-button>
-        <div class="divider" />
-        <div
-          v-for="obj in getReportableObjects({album: object, channel: artistCredit[0]?.artist.channel})"
+          {{ t('components.library.AlbumDropdown.button.edit') }}
+        </PopoverItem>
+
+        <hr>
+
+        <PopoverItem
+          v-for="obj in getReportableObjects({
+            album: object
+            /*
+
+            TODO: The type of the following field has changed to number.
+            Find out if we want to load the corresponding channel instead.
+
+            , channel: artistCredit[0]?.artist.channel
+            */
+          })"
           :key="obj.target.type + obj.target.id"
-          role="button"
-          class="basic item"
-          @click.stop.prevent="report(obj)"
+          icon="bi-flag"
+          @click="report(obj)"
         >
-          <i class="share icon" /> {{ obj.label }}
-        </div>
-        <div class="divider" />
-        <router-link
-          v-if="$store.state.auth.availablePermissions['library']"
-          class="basic item"
-          :to="{name: 'manage.library.albums.detail', params: {id: object.id}}"
+          {{ obj.label }}
+        </PopoverItem>
+
+        <hr>
+
+        <PopoverItem
+          v-if="store.state.auth.availablePermissions['library']"
+          :to="{
+            name: 'manage.library.albums.detail',
+            params: { id: object.id }
+          }"
+          icon="bi-wrench"
         >
-          <i class="wrench icon" />
-          {{ $t('components.library.AlbumDropdown.link.moderation') }}
-        </router-link>
-        <a
-          v-if="$store.state.auth.profile && $store.state.auth.profile?.is_superuser"
-          class="basic item"
-          :href="$store.getters['instance/absoluteUrl'](`/api/admin/music/album/${object.id}`)"
+          {{ t('components.library.AlbumDropdown.link.moderation') }}
+        </PopoverItem>
+
+        <PopoverItem
+          v-if="store.state.auth.profile?.is_superuser"
+          :to="store.getters['instance/absoluteUrl'](`/api/admin/music/album/${object.id}`)"
+          icon="bi-wrench"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <i class="wrench icon" />
-          {{ $t('components.library.AlbumDropdown.link.django') }}
-        </a>
-      </div>
-    </button>
+          {{ t('components.library.AlbumDropdown.link.django') }}
+        </PopoverItem>
+      </template>
+    </Popover>
   </span>
 </template>

@@ -3,7 +3,7 @@ import type { Track } from '~/types'
 
 import PodcastRow from '~/components/audio/podcast/Row.vue'
 import TrackMobileRow from '~/components/audio/track/MobileRow.vue'
-import Pagination from '~/components/vui/Pagination.vue'
+import Pagination from '~/components/ui/Pagination.vue'
 
 interface Props {
   tracks: Track[]
@@ -61,11 +61,9 @@ const { page } = defineModels<{ page: number, }>()
         v-if="paginateResults"
         class="ui center aligned basic segment desktop-and-up"
       >
-        <pagination
-          v-bind="$attrs"
-          v-model:current="page"
-          :total="total"
-          :paginate-by="paginateBy"
+        <Pagination
+          v-model:page="page"
+          :pages="Math.ceil((total || 0)/paginateBy)"
         />
       </div>
     </div>
@@ -90,12 +88,10 @@ const { page } = defineModels<{ page: number, }>()
         v-if="paginateResults"
         class="ui center aligned basic segment tablet-and-below"
       >
-        <pagination
+        <Pagination
           v-if="paginateResults"
-          v-bind="$attrs"
-          v-model:current="page"
-          :total="total"
-          :compact="true"
+          v-model:page="page"
+          :pages="Math.ceil((total || 0)/paginateBy)"
         />
       </div>
     </div>

@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useClipboard, useVModel } from '@vueuse/core'
 import { useStore } from '~/store'
+
+import Input from '~/components/ui/Input.vue'
 
 interface Events {
   (e: 'update:modelValue', value: string): void
@@ -23,15 +25,11 @@ const props = withDefaults(defineProps<Props>(), {
 
 const value = useVModel(props, 'modelValue', emit)
 
-const showPassword = ref(props.defaultShow)
-
 const { t } = useI18n()
 const labels = computed(() => ({
   title: t('components.forms.PasswordInput.title'),
   copy: t('components.forms.PasswordInput.button.copy')
 }))
-
-const passwordInputType = computed(() => showPassword.value ? 'text' : 'password')
 
 const store = useStore()
 const { isSupported: canCopy, copy } = useClipboard({ source: value })
@@ -45,30 +43,38 @@ const copyPassword = () => {
 </script>
 
 <template>
-  <div class="ui fluid action input">
-    <input
+  <div>
+    <Input
       :id="fieldId"
       v-model="value"
+      password
       required
-      name="password"
-      :type="passwordInputType"
     >
-    <button
-      type="button"
-      :title="labels.title"
-      class="ui icon button"
-      @click.prevent="showPassword = !showPassword"
-    >
-      <i class="eye icon" />
-    </button>
-    <button
-      v-if="copyButton && canCopy"
-      type="button"
-      class="ui icon button"
-      :title="labels.copy"
-      @click.prevent="copyPassword"
-    >
-      <i class="copy icon" />
-    </button>
+      <template #input-right>
+        <button
+          v-if="copyButton && canCopy"
+          role="switch"
+          type="button"
+          class="input-right copy"
+          :title="labels.copy"
+          @click.prevent="copyPassword"
+        >
+          <i class="bi bi-copy" />
+        </button>
+      </template>
+    </Input>
   </div>
 </template>
+
+<style lang="scss" scoped>
+  .funkwhale.input .input-right.copy {
+    position: absolute;
+    background:transparent;
+    border:none;
+    appearance:none;
+    right: 40px;
+    bottom: 12px;
+    font-size: 18px;
+    color: var(--fw-placeholder-color);
+  }
+</style>

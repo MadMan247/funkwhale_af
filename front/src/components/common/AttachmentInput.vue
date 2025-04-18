@@ -5,7 +5,11 @@ import axios from 'axios'
 import { useVModel } from '@vueuse/core'
 import { reactive, ref, watch } from 'vue'
 import { useStore } from '~/store'
+import { useI18n } from 'vue-i18n'
 import useFormData from '~/composables/useFormData'
+
+import Button from '~/components/ui/Button.vue'
+import Alert from '~/components/ui/Alert.vue'
 
 interface Events {
   (e: 'update:modelValue', value: string | null): void
@@ -19,6 +23,8 @@ interface Props {
   name?: string | undefined
   initialValue?: string | undefined
 }
+
+const { t } = useI18n()
 
 const emit = defineEmits<Events>()
 const props = withDefaults(defineProps<Props>(), {
@@ -101,13 +107,13 @@ const getAttachmentUrl = (uuid: string) => {
 
 <template>
   <div class="ui form">
-    <div
+    <Alert
       v-if="errors.length > 0"
+      red
       role="alert"
-      class="ui negative message"
     >
       <h4 class="header">
-        {{ $t('components.common.AttachmentInput.header.failure') }}
+        {{ t('components.common.AttachmentInput.header.failure') }}
       </h4>
       <ul class="list">
         <li
@@ -117,7 +123,7 @@ const getAttachmentUrl = (uuid: string) => {
           {{ error }}
         </li>
       </ul>
-    </div>
+    </Alert>
     <div class="ui field">
       <span id="avatarLabel">
         <slot />
@@ -144,7 +150,7 @@ const getAttachmentUrl = (uuid: string) => {
         <div class="eleven wide column">
           <div class="file-input">
             <label :for="attachmentId">
-              {{ $t('components.common.AttachmentInput.label.upload') }}
+              {{ t('components.common.AttachmentInput.label.upload') }}
             </label>
             <input
               :id="attachmentId"
@@ -159,21 +165,22 @@ const getAttachmentUrl = (uuid: string) => {
           </div>
           <div class="ui very small hidden divider" />
           <p>
-            {{ $t('components.common.AttachmentInput.help.upload') }}
+            {{ t('components.common.AttachmentInput.help.upload') }}
           </p>
-          <button
+          <Button
             v-if="value"
-            class="ui basic tiny button"
+            destructive
+            icon="bi-trash"
             @click.stop.prevent="remove(value as string)"
           >
-            {{ $t('components.common.AttachmentInput.button.remove') }}
-          </button>
+            {{ t('components.common.AttachmentInput.button.remove') }}
+          </Button>
           <div
             v-if="isLoading"
             class="ui active inverted dimmer"
           >
             <div class="ui indeterminate text loader">
-              {{ $t('components.common.AttachmentInput.loader.uploading') }}
+              {{ t('components.common.AttachmentInput.loader.uploading') }}
             </div>
           </div>
         </div>

@@ -8,6 +8,11 @@ import { useStore } from '~/store'
 
 import axios from 'axios'
 
+import Layout from '~/components/ui/Layout.vue'
+import Button from '~/components/ui/Button.vue'
+import Input from '~/components/ui/Input.vue'
+import Alert from '~/components/ui/Alert.vue'
+
 import updateQueryString from '~/composables/updateQueryString'
 import useLogger from '~/composables/useLogger'
 
@@ -165,85 +170,85 @@ watch(() => props.initialId, () => {
 </script>
 
 <template>
-  <div
+  <Layout
     v-if="type === 'both'"
-    class="two ui buttons"
+    stack
   >
-    <button
-      class="ui left floated labeled icon button"
+    <Button
+      secondary
+      raised
+      split
+      round
+      icon="bi-rss-fill"
+      split-icon="bi-globe"
+      style="align-self: center;"
+      :split-title="t('components.RemoteSearchForm.button.fediverse')"
       @click.prevent="type = 'rss'"
+      @split-click.prevent="type = 'artists'"
     >
-      <i class="feed icon" />
-      {{ $t('components.RemoteSearchForm.button.rss') }}
-    </button>
-    <div class="or" />
-    <button
-      class="ui right floated right labeled icon button"
-      @click.prevent="type = 'artists'"
-    >
-      <i class="globe icon" />
-      {{ $t('components.RemoteSearchForm.button.fediverse') }}
-    </button>
-  </div>
-  <div v-else>
-    <form
-      id="remote-search"
-      :class="['ui', {loading: isLoading}, 'form']"
-      @submit.stop.prevent="submit"
-    >
-      <div
-        v-if="errors.length > 0"
-        role="alert"
-        class="ui negative message"
-      >
-        <h3 class="header">
-          {{ $t('components.RemoteSearchForm.header.fetchFailed') }}
-        </h3>
-        <ul class="list">
-          <li
-            v-for="(error, key) in errors"
-            :key="key"
-          >
-            {{ error }}
-          </li>
-        </ul>
-      </div>
-      <div class="ui required field">
-        <label for="object-id">
-          {{ labels.fieldLabel }}
-        </label>
-        <p v-if="type === 'rss'">
-          {{ $t('components.RemoteSearchForm.description.rss') }}
-        </p>
-        <p v-else-if="type === 'artists'">
-          {{ $t('components.RemoteSearchForm.description.fediverse') }}
-        </p>
-        <input
-          id="object-id"
-          v-model="id"
-          type="text"
-          name="object-id"
-          :placeholder="labels.fieldPlaceholder"
-          required
-        >
-      </div>
-      <button
-        v-if="showSubmit"
-        type="submit"
-        :class="['ui', 'primary', {loading: isLoading}, 'button']"
-        :disabled="isLoading || !id || id.length === 0"
-      >
-        {{ $t('components.RemoteSearchForm.button.search') }}
-      </button>
-    </form>
-    <div
-      v-if="!isLoading && obj?.status === 'finished' && !redirectRoute"
+      {{ t('components.RemoteSearchForm.button.rss') }}
+    </Button>
+  </Layout>
+  <Layout
+    v-else
+    id="remote-search"
+    form
+    :class="['ui', {loading: isLoading}, 'form']"
+    @submit.stop.prevent="submit"
+  >
+    <Alert
+      v-if="errors.length > 0"
+      red
       role="alert"
-      class="ui warning message"
+      title="t('components.RemoteSearchForm.header.fetchFailed')"
     >
-      <p>
-        {{ $t('components.RemoteSearchForm.warning.unsupported') }}
+      <ul
+        v-if="errors.length > 1"
+        class="list"
+      >
+        <li
+          v-for="(error, key) in errors"
+          :key="key"
+        >
+          {{ error }}
+        </li>
+      </ul>
+      <p v-else>
+        {{ errors[0] }}
       </p>
-    </div>
-  </div>
+    </Alert>
+    <p v-if="type === 'rss'">
+      {{ t('components.RemoteSearchForm.description.rss') }}
+    </p>
+    <p v-else-if="type === 'artists'">
+      {{ t('components.RemoteSearchForm.description.fediverse') }}
+    </p>
+
+    <Input
+      id="object-id"
+      v-model="id"
+      type="text"
+      name="object-id"
+      :label="labels.fieldLabel"
+      :placeholder="labels.fieldPlaceholder"
+      style="width: 100%;"
+      required
+    />
+
+    <Button
+      v-if="showSubmit"
+      primary
+      type="submit"
+      :class="{loading: isLoading}"
+      :disabled="isLoading || !id || id.length === 0"
+    >
+      {{ t('components.RemoteSearchForm.button.search') }}
+    </Button>
+  </Layout>
+  <Alert
+    v-if="!isLoading && obj?.status === 'finished' && !redirectRoute"
+    red
+  >
+    {{ t('components.RemoteSearchForm.warning.unsupported') }}
+  </Alert>
 </template>

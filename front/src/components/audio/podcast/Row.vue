@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import type { Track, Album, Playlist, Library, Channel, Actor, Cover, ArtistCredit } from '~/types'
 import type { PlayOptionsProps } from '~/composables/audio/usePlayOptions'
+import { getArtistCoverUrl } from '~/utils/utils'
 
 import { ref } from 'vue'
 
 import { useQueue } from '~/composables/audio/queue'
+import { useStore } from '~/store'
 
 import axios from 'axios'
 
@@ -48,6 +50,8 @@ const props = withDefaults(defineProps<Props>(), {
   account: null
 })
 
+const store = useStore()
+
 const description = ref('')
 const renderedDescription = useMarkdown(description)
 
@@ -83,13 +87,25 @@ await fetchData()
     >
       <img
         v-if="track.cover?.urls.original"
-        v-lazy="$store.getters['instance/absoluteUrl'](track.cover.urls.medium_square_crop)"
+        v-lazy="store.getters['instance/absoluteUrl'](track.cover.urls.small_square_crop)"
+        alt=""
+        class="ui artist-track mini image"
+      >
+      <img
+        v-if="track.album?.cover?.urls.original"
+        v-lazy="store.getters['instance/absoluteUrl'](track.album.cover.urls.small_square_crop)"
+        alt=""
+        class="ui artist-track mini image"
+      >
+      <img
+        v-else-if="track.artist_credit.length && track.artist_credit[0].artist.cover"
+        v-lazy="getArtistCoverUrl(track.artist_credit)"
         alt=""
         class="ui artist-track mini image"
       >
       <img
         v-else-if="defaultCover"
-        v-lazy="$store.getters['instance/absoluteUrl'](defaultCover.urls.medium_square_crop)"
+        v-lazy="store.getters['instance/absoluteUrl'](defaultCover.urls.small_square_crop)"
         alt=""
         class="ui artist-track mini image"
       >
@@ -120,10 +136,10 @@ await fetchData()
       class="meta right floated column"
     >
       <play-button
-        id="playmenu"
         class="play-button basic icon"
         :dropdown-only="true"
         :is-playable="track.is_playable"
+        discrete
         :dropdown-icon-classes="[
           'ellipsis',
           'vertical',

@@ -9,7 +9,5 @@ defineProps<Props>()
 </script>
 
 <template>
-  <section class="ui vertical aligned stripe segment">
-    <library-files-table :default-query="query" />
-  </section>
+  <library-files-table :default-query="query" />
 </template>

@@ -2,6 +2,12 @@
 import type { FileSystem, FSEntry } from '~/types'
 
 import { useVModel } from '@vueuse/core'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import Layout from '~/components/ui/Layout.vue'
+import Button from '~/components/ui/Button.vue'
+import Input from '~/components/ui/Input.vue'
 
 interface Events {
   (e: 'update:modelValue', value: string[]): void
@@ -13,6 +19,8 @@ interface Props {
   loading: boolean
   modelValue: string[]
 }
+
+const { t } = useI18n()
 
 const emit = defineEmits<Events>()
 const props = defineProps<Props>()
@@ -28,23 +36,22 @@ const handleClick = (entry: FSEntry) => {
 
   value.value.push(entry.name)
 }
+const path = computed(() => props.data.root + '/' + value.value.join('/'))
 </script>
 
 <template>
-  <div :class="['ui', { loading }, 'segment']">
-    <div class="ui fluid action input">
-      <input
-        class="ui disabled"
-        disabled
-        :value="props.data.root + '/' + value.join('/')"
-      >
-      <button
-        class="ui button"
+  <div :class="['ui', { loading }]">
+    <Layout flex>
+      <Input
+        v-model="path"
+      />
+      <Button
+        primary
         @click.prevent="emit('import')"
       >
-        {{ $t('components.library.FsBrowser.button.import') }}
-      </button>
-    </div>
+        {{ t('components.library.FsBrowser.button.import') }}
+      </Button>
+    </Layout>
     <div class="ui list component-fs-browser">
       <a
         v-if="value.length > 0"
@@ -52,7 +59,7 @@ const handleClick = (entry: FSEntry) => {
         href=""
         @click.prevent="handleClick({ name: '..', dir: true })"
       >
-        <i class="folder icon" />
+        <i class="bi bi-folder" />
         <div class="content">
           <div class="header doubledot symbol" />
         </div>
@@ -66,11 +73,11 @@ const handleClick = (entry: FSEntry) => {
       >
         <i
           v-if="e.dir"
-          class="folder icon"
+          class="bi bi-folder"
         />
         <i
           v-else
-          class="file icon"
+          class="bi bi-file-earmark-music-fill"
         />
         <div class="content">
           <div class="header">{{ e.name }}</div>

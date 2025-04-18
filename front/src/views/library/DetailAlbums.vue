@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import type { Library } from '~/types'
 
-import AlbumWidget from '~/components/audio/album/Widget.vue'
+import AlbumWidget from '~/components/album/Widget.vue'
+
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 interface Props {
   object: Library
@@ -14,6 +18,7 @@ defineProps<Props>()
 <template>
   <section>
     <album-widget
+      v-if="object.uuid"
       :key="String(object.uploads_count)"
       :header="false"
       :search="true"
@@ -26,12 +31,12 @@ defineProps<Props>()
             <span
               v-if="isOwner"
             >
-              {{ $t('views.library.DetailAlbums.empty.upload') }}
+              {{ t('views.library.DetailAlbums.empty.upload') }}
             </span>
             <span
               v-else
             >
-              {{ $t('views.library.DetailAlbums.empty.follow') }}
+              {{ t('views.library.DetailAlbums.empty.follow') }}
             </span>
           </p>
         </empty-state>

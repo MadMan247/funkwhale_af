@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useToggle } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
 
 interface Props {
   content: string
@@ -10,6 +11,8 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   length: 150
 })
+
+const { t } = useI18n()
 
 const [expanded, toggleExpanded] = useToggle(false)
 const truncated = computed(() => props.content.slice(0, props.length))
@@ -27,10 +30,10 @@ const truncated = computed(() => props.content.slice(0, props.length))
     >
       <br>
       <span v-if="expanded">
-        {{ $t('components.common.ExpandableDiv.button.less') }}
+        {{ t('components.common.ExpandableDiv.button.less') }}
       </span>
       <span v-else>
-        {{ $t('components.common.ExpandableDiv.button.more') }}
+        {{ t('components.common.ExpandableDiv.button.more') }}
       </span>
     </a>
   </div>

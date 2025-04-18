@@ -10,16 +10,19 @@ import axios from 'axios'
 
 import PlaylistCardList from '~/components/playlists/CardList.vue'
 import RemoteSearchForm from '~/components/RemoteSearchForm.vue'
-import ArtistCard from '~/components/audio/artist/Card.vue'
+import ArtistCard from '~/components/artist/Card.vue'
 import TrackTable from '~/components/audio/track/Table.vue'
-import AlbumCard from '~/components/audio/album/Card.vue'
+import AlbumCard from '~/components/album/Card.vue'
 import Pagination from '~/components/vui/Pagination.vue'
 import RadioButton from '~/components/radios/Button.vue'
 import RadioCard from '~/components/radios/Card.vue'
 import TagsList from '~/components/tags/List.vue'
+import Button from '~/components/ui/Button.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 import useLogger from '~/composables/useLogger'
+
+// TODO: Depreciate & refactor essential functionality to new ui/modals/Search.vue
 
 type QueryType = 'artists' | 'albums' | 'tracks' | 'playlists' | 'tags' | 'radios' | 'podcasts' | 'series' | 'rss'
 
@@ -222,7 +225,7 @@ const radioConfig = computed(() => {
 <template>
   <main
     v-title="labels.title"
-    class="main pusher"
+    class="main"
   >
     <section class="ui vertical stripe segment">
       <div
@@ -241,7 +244,7 @@ const radioConfig = computed(() => {
       >
         <h2>
           <label for="query">
-            {{ $t('views.Search.header.search') }}
+            {{ t('views.Search.header.search') }}
           </label>
         </h2>
         <div class="ui two column doubling stackable grid container">
@@ -259,13 +262,11 @@ const radioConfig = computed(() => {
                     name="query"
                     type="text"
                   >
-                  <button
+                  <Button
                     :aria-label="labels.submitSearch"
                     type="submit"
-                    class="ui icon button"
-                  >
-                    <i class="search icon" />
-                  </button>
+                    icon="bi-search"
+                  />
                 </div>
               </div>
             </form>
@@ -351,7 +352,7 @@ const radioConfig = computed(() => {
             :custom-radio="radio"
           />
         </div>
-        <tags-list
+        <TagsList
           v-else-if="type === 'tags'"
           :truncate-size="200"
           :limit="paginateBy"

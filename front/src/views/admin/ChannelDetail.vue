@@ -3,11 +3,23 @@ import { humanSize, truncate } from '~/utils/filters'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { computed, ref } from 'vue'
+import { useStore } from '~/store'
 
 import axios from 'axios'
 
 import FetchButton from '~/components/federation/FetchButton.vue'
 import TagsList from '~/components/tags/List.vue'
+import DangerousButton from '~/components/common/DangerousButton.vue'
+import Header from '~/components/ui/Header.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import HumanDate from '~/components/common/HumanDate.vue'
+import Link from '~/components/ui/Link.vue'
+import Heading from '~/components/ui/Heading.vue'
+import OptionsButton from '~/components/ui/button/Options.vue'
+import Popover from '~/components/ui/Popover.vue'
+import PopoverItem from '~/components/ui/popover/PopoverItem.vue'
+import Loader from '~/components/ui/Loader.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 
@@ -17,21 +29,26 @@ interface Props {
 
 const props = defineProps<Props>()
 
+const store = useStore()
 const { t } = useI18n()
 const router = useRouter()
+
+const channel = ref()
+const isLoading = ref(false)
+const stats = ref()
+const isLoadingStats = ref(false)
+const open = ref(false)
 
 const labels = computed(() => ({
   statsWarning: t('views.admin.ChannelDetail.warning.stats')
 }))
 
-const isLoading = ref(false)
-const object = ref()
 const fetchData = async () => {
   isLoading.value = true
 
   try {
     const response = await axios.get(`manage/channels/${props.id}/`)
-    object.value = response.data
+    channel.value = response.data
   } catch (error) {
     useErrorHandler(error as Error)
   }
@@ -39,8 +56,6 @@ const fetchData = async () => {
   isLoading.value = false
 }
 
-const isLoadingStats = ref(false)
-const stats = ref()
 const fetchStats = async () => {
   isLoadingStats.value = true
 
@@ -54,8 +69,8 @@ const fetchStats = async () => {
   isLoadingStats.value = false
 }
 
-fetchStats()
 fetchData()
+fetchStats()
 
 const remove = async () => {
   isLoading.value = true
@@ -74,371 +89,399 @@ const getQuery = (field: string, value: string) => `${field}:"${value}"`
 </script>
 
 <template>
-  <main>
-    <div
-      v-if="isLoading"
-      class="ui vertical segment"
-    >
-      <div :class="['ui', 'centered', 'active', 'inline', 'loader']" />
-    </div>
-    <template v-if="object">
-      <section
-        v-title="object.artist.name"
-        :class="['ui', 'head', 'vertical', 'stripe', 'segment']"
+  <Loader v-if="isLoading" />
+  <Header
+    v-if="channel"
+    v-title="channel?.artist?.name"
+    :h1="truncate(channel?.artist?.name)"
+    page-heading
+  >
+    <template #image>
+      <img
+        v-if="channel?.artist?.cover?.urls.medium_square_crop"
+        v-lazy="store.getters['instance/absoluteUrl'](channel?.artist?.cover?.urls.medium_square_crop)"
+        alt=""
       >
-        <div class="ui stackable one column grid">
-          <div class="ui column">
-            <div class="segment-content">
-              <h2 class="ui header">
-                <img
-                  v-if="object.artist.cover && object.artist.cover.urls.medium_square_crop"
-                  v-lazy="$store.getters['instance/absoluteUrl'](object.artist.cover.urls.medium_square_crop)"
-                  alt=""
-                >
-                <img
-                  v-else
-                  alt=""
-                  src="../../assets/audio/default-cover.png"
-                >
-                <div class="content">
-                  {{ truncate(object.artist.name) }}
-                  <div class="sub header">
-                    <template v-if="object.artist.is_local">
-                      <span class="ui tiny accent label">
-                        <i class="home icon" />
-                        {{ $t('views.admin.ChannelDetail.label.local') }}
-                      </span>
-                      &nbsp;
-                    </template>
-                  </div>
-                </div>
-              </h2>
-              <template v-if="object.artist.tags && object.artist.tags.length > 0">
-                <tags-list
-                  :limit="5"
-                  detail-route="manage.library.tags.detail"
-                  :tags="object.artist.tags"
-                />
-                <div class="ui hidden divider" />
-              </template>
-
-              <div class="header-buttons">
-                <div class="ui icon buttons">
-                  <router-link
-                    class="ui labeled icon button"
-                    :to="{name: 'channels.detail', params: {id: object.uuid }}"
-                  >
-                    <i class="info icon" />
-                    {{ $t('views.admin.ChannelDetail.link.localProfile') }}
-                  </router-link>
-                  <button
-                    v-dropdown
-                    class="ui floating dropdown icon button"
-                  >
-                    <i class="dropdown icon" />
-                    <div class="menu">
-                      <a
-                        v-if="$store.state.auth.profile && $store.state.auth.profile.is_superuser"
-                        class="basic item"
-                        :href="$store.getters['instance/absoluteUrl'](`/api/admin/audio/channel/${object.id}`)"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <i class="wrench icon" />
-                        {{ $t('views.admin.ChannelDetail.link.django') }}
-                      </a>
-                      <fetch-button
-                        v-if="!object.actor.is_local"
-                        class="basic item"
-                        :url="`channels/${object.uuid}/fetches/`"
-                        @refresh="fetchData"
-                      >
-                        <i class="refresh icon" />&nbsp;
-                        {{ $t('views.admin.ChannelDetail.button.refresh') }}
-                      </fetch-button>
-                      <a
-                        class="basic item"
-                        :href="object.actor.url || object.actor.fid"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <i class="external icon" />
-                        {{ $t('views.admin.ChannelDetail.button.openRemote') }}
-                      </a>
-                    </div>
-                  </button>
-                </div>
-                <div class="ui buttons">
-                  <dangerous-button
-                    :class="['ui', {loading: isLoading}, 'basic danger button']"
-                    :action="remove"
-                  >
-                    {{ $t('views.admin.ChannelDetail.button.delete') }}
-                    <template #modal-header>
-                      <p>
-                        {{ $t('views.admin.ChannelDetail.modal.delete.header') }}
-                      </p>
-                    </template>
-                    <template #modal-content>
-                      <div>
-                        <p>
-                          {{ $t('views.admin.ChannelDetail.modal.delete.content.warning') }}
-                        </p>
-                      </div>
-                    </template>
-                    <template #modal-confirm>
-                      <p>
-                        {{ $t('views.admin.ChannelDetail.button.delete') }}
-                      </p>
-                    </template>
-                  </dangerous-button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <div class="ui vertical stripe segment">
-        <div class="ui stackable three column grid">
-          <div class="column">
-            <section>
-              <h3 class="ui header">
-                <i class="info icon" />
-                <div class="content">
-                  {{ $t('views.admin.ChannelDetail.header.channelData') }}
-                </div>
-              </h3>
-              <table class="ui very basic table">
-                <tbody>
-                  <tr>
-                    <td>
-                      {{ $t('views.admin.ChannelDetail.table.channelData.name') }}
-                    </td>
-                    <td>
-                      {{ object.artist.name }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <router-link :to="{name: 'manage.channels', query: {q: getQuery('category', object.artist.content_category) }}">
-                        {{ $t('views.admin.ChannelDetail.table.channelData.category') }}
-                      </router-link>
-                    </td>
-                    <td>
-                      {{ object.artist.content_category }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <router-link :to="{name: 'manage.moderation.accounts.detail', params: {id: object.attributed_to.full_username }}">
-                        {{ $t('views.admin.ChannelDetail.table.channelData.account') }}
-                      </router-link>
-                    </td>
-                    <td>
-                      {{ object.attributed_to.preferred_username }}
-                    </td>
-                  </tr>
-                  <tr v-if="!object.actor.is_local">
-                    <td>
-                      <router-link :to="{name: 'manage.moderation.domains.detail', params: {id: object.actor.domain }}">
-                        {{ $t('views.admin.ChannelDetail.table.channelData.domain') }}
-                      </router-link>
-                    </td>
-                    <td>
-                      {{ object.actor.domain }}
-                    </td>
-                  </tr>
-                  <tr v-if="object.artist.description">
-                    <td>
-                      {{ $t('views.admin.ChannelDetail.table.channelData.description') }}
-                    </td>
-                    <sanitized-html
-                      tag="td"
-                      :html="object.artist.description.html"
-                    />
-                  </tr>
-                  <tr v-if="object.actor.url">
-                    <td>
-                      {{ $t('views.admin.ChannelDetail.table.channelData.url') }}
-                    </td>
-                    <td>
-                      <a
-                        :href="object.actor.url"
-                        rel="noreferrer noopener"
-                        target="_blank"
-                      >{{ object.actor.url }}</a>
-                    </td>
-                  </tr>
-                  <tr v-if="object.rss_url">
-                    <td>
-                      {{ $t('views.admin.ChannelDetail.table.channelData.rss') }}
-                    </td>
-                    <td>
-                      <a
-                        :href="object.rss_url"
-                        rel="noreferrer noopener"
-                        target="_blank"
-                      >{{ object.rss_url }}</a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </section>
-          </div>
-          <div class="column">
-            <section>
-              <h3 class="ui header">
-                <i class="feed icon" />
-                <div class="content">
-                  {{ $t('views.admin.ChannelDetail.header.activity') }}&nbsp;
-                  <span :data-tooltip="labels.statsWarning"><i class="question circle icon" /></span>
-                </div>
-              </h3>
-              <div
-                v-if="isLoadingStats"
-                class="ui placeholder"
-              >
-                <div class="full line" />
-                <div class="short line" />
-                <div class="medium line" />
-                <div class="long line" />
-              </div>
-              <table
-                v-else
-                class="ui very basic table"
-              >
-                <tbody>
-                  <tr>
-                    <td>
-                      {{ $t('views.admin.ChannelDetail.table.activity.firstSeen') }}
-                    </td>
-                    <td>
-                      <human-date :date="object.creation_date" />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {{ $t('views.admin.ChannelDetail.table.activity.listenings') }}
-                    </td>
-                    <td>
-                      {{ stats.listenings }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {{ $t('views.admin.ChannelDetail.table.activity.favorited') }}
-                    </td>
-                    <td>
-                      {{ stats.track_favorites }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {{ $t('views.admin.ChannelDetail.table.activity.playlists') }}
-                    </td>
-                    <td>
-                      {{ stats.playlists }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <router-link :to="{name: 'manage.moderation.reports.list', query: {q: getQuery('target', `channel:${object.uuid}`) }}">
-                        {{ $t('views.admin.ChannelDetail.table.activity.linkedReports') }}
-                      </router-link>
-                    </td>
-                    <td>
-                      {{ stats.reports }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <router-link :to="{name: 'manage.library.edits', query: {q: getQuery('target', 'artist ' + object.artist.id)}}">
-                        {{ $t('views.admin.ChannelDetail.table.activity.edits') }}
-                      </router-link>
-                    </td>
-                    <td>
-                      {{ stats.mutations }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </section>
-          </div>
-          <div class="column">
-            <section>
-              <h3 class="ui header">
-                <i class="music icon" />
-                <div class="content">
-                  {{ $t('views.admin.ChannelDetail.header.audioContent') }}&nbsp;
-                  <span :data-tooltip="labels.statsWarning"><i class="question circle icon" /></span>
-                </div>
-              </h3>
-              <div
-                v-if="isLoadingStats"
-                class="ui placeholder"
-              >
-                <div class="full line" />
-                <div class="short line" />
-                <div class="medium line" />
-                <div class="long line" />
-              </div>
-              <table
-                v-else
-                class="ui very basic table"
-              >
-                <tbody>
-                  <tr>
-                    <td>
-                      {{ $t('views.admin.ChannelDetail.table.audioContent.cachedSize') }}
-                    </td>
-                    <td>
-                      {{ humanSize(stats.media_downloaded_size) }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {{ $t('views.admin.ChannelDetail.table.audioContent.totalSize') }}
-                    </td>
-                    <td>
-                      {{ humanSize(stats.media_total_size) }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <router-link :to="{name: 'manage.library.uploads', query: {q: getQuery('channel_id', object.uuid) }}">
-                        {{ $t('views.admin.ChannelDetail.table.audioContent.uploads') }}
-                      </router-link>
-                    </td>
-                    <td>
-                      {{ stats.uploads }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <router-link :to="{name: 'manage.library.albums', query: {q: getQuery('channel_id', object.uuid) }}">
-                        {{ $t('views.admin.ChannelDetail.table.audioContent.albums') }}
-                      </router-link>
-                    </td>
-                    <td>
-                      {{ object.artist.albums_count }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <router-link :to="{name: 'manage.library.tracks', query: {q: getQuery('channel_id', object.uuid) }}">
-                        {{ $t('views.admin.ChannelDetail.table.audioContent.tracks') }}
-                      </router-link>
-                    </td>
-                    <td>
-                      {{ object.artist.tracks_count }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </section>
-          </div>
-        </div>
-      </div>
+      <img
+        v-else
+        alt=""
+        src="../../assets/audio/default-cover.png"
+      >
     </template>
-  </main>
+    <div class="sub header">
+      <template v-if="channel?.artist?.is_local">
+        <Pill>
+          <i class="bi bi-house-fill" />
+          {{ t('views.admin.ChannelDetail.label.local') }}
+        </Pill>
+      </template>
+      <template v-else>
+        <Pill>
+          <i class="bi bi-box-arrow-up-right" />
+          {{ t('views.admin.ChannelDetail.label.federated') }}
+        </Pill>
+      </template>
+    </div>
+
+    <TagsList
+      v-if="channel?.artist?.tags && channel?.artist?.tags.length > 0"
+      :limit="5"
+      detail-route="manage.library.tags.detail"
+      :tags="channel?.artist?.tags"
+    />
+    <Spacer />
+    <Layout
+      flex
+      class="header-buttons"
+    >
+      <Link
+        solid
+        primary
+        low-height
+        icon="bi-info-circle"
+        :to="{ name: 'channels.detail', params: { id: channel?.uuid } }"
+      >
+        {{ t('views.admin.ChannelDetail.link.localProfile') }}
+      </Link>
+      <fetch-button
+        v-if="!channel?.actor?.is_local"
+        class="basic item"
+        :url="`channels/${channel?.uuid}/fetches/`"
+        @refresh="fetchData"
+      >
+        <i class="refresh icon" />&nbsp;
+        {{ t('views.admin.ChannelDetail.button.refresh') }}
+      </fetch-button>
+      <dangerous-button
+        :is-loading="isLoading"
+        low-height
+        icon="bi-trash"
+        :action="remove"
+        :title="t('views.admin.ChannelDetail.modal.delete.header')"
+      >
+        {{ t('views.admin.ChannelDetail.button.delete') }}
+        <template #modal-content>
+          {{ t('views.admin.ChannelDetail.modal.delete.content.warning') }}
+        </template>
+        <template #modal-confirm>
+          {{ t('views.admin.ChannelDetail.button.delete') }}
+        </template>
+      </dangerous-button>
+      <Spacer grow />
+      <Popover v-model="open">
+        <template #default="{ toggleOpen }">
+          <OptionsButton
+            is-square-small
+            @click="toggleOpen()"
+          />
+        </template>
+
+        <template #items>
+          <PopoverItem
+            v-if="store.state.auth.profile?.is_superuser"
+            :to="store.getters['instance/absoluteUrl'](`/api/admin/audio/channel/${channel?.id}`)"
+            icon="bi-wrench"
+            target="_blank"
+          >
+            {{ t('views.admin.ChannelDetail.link.django') }}
+          </PopoverItem>
+          <PopoverItem
+            v-if="channel?.rss_url"
+            :to="channel?.rss_url"
+            icon="bi-box-arrow-up-right"
+            target="_blank"
+          >
+            {{ t('views.admin.ChannelDetail.link.rss') }}
+          </PopoverItem>
+          <PopoverItem
+            v-if="!channel?.artist?.is_local"
+            :to="channel?.actor?.url || channel?.actor?.fid"
+            icon="bi-box-arrow-up-right"
+            target="_blank"
+          >
+            {{ t('views.admin.ChannelDetail.button.openRemote') }}
+          </PopoverItem>
+        </template>
+      </Popover>
+    </Layout>
+  </Header>
+
+  <Layout
+    flex
+    gap-64
+  >
+    <Layout
+      stack
+      style="flex: 1; gap: 0;"
+    >
+      <Heading
+        :h3="t('views.admin.ChannelDetail.header.channelData')"
+        class="category"
+      />
+      <Layout
+        flex
+        class="details"
+      >
+        <span class="label">
+          {{ t('views.admin.ChannelDetail.table.channelData.name') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">{{ channel?.artist?.name }}</span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <Link
+          class="label"
+          :to="{ name: 'manage.channels', query: { q: getQuery('category', channel?.artist?.content_category) } }"
+        >
+          {{ t('views.admin.ChannelDetail.table.channelData.category') }}
+        </Link>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">{{ channel?.artist?.content_category }}</span>
+      </Layout>
+      <Layout
+        v-if="!channel?.actor?.is_local"
+        flex
+        class="details"
+      >
+        <Link
+          class="label"
+          :to="{ name: 'manage.moderation.domains.detail', params: { id: channel?.actor?.domain } }"
+        >
+          {{ t('views.admin.ChannelDetail.table.channelData.domain') }}
+        </Link>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">{{ channel?.actor?.domain }}</span>
+      </Layout>
+      <Layout
+        v-if="channel?.artist?.description"
+        flex
+        class="details"
+      >
+        <span class="label">
+          {{ t('views.admin.ChannelDetail.table.channelData.description') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <sanitized-html
+          tag="span"
+          class="value"
+          :html="channel?.artist?.description?.html"
+        />
+      </Layout>
+    </Layout>
+    <Layout
+      stack
+      style="flex: 1; gap: 0;"
+    >
+      <!-- TODO: Fix tooltips and replace Heading with Header -->
+      <Heading
+        :h3="t('views.admin.ChannelDetail.header.activity')"
+        class="category"
+      >
+        <template #action>
+          <span :data-tooltip="labels.statsWarning"><i class="question circle icon" /></span>
+        </template>
+      </Heading>
+      <Layout
+        flex
+        class="details"
+      >
+        <span class="label">
+          {{ t('views.admin.ChannelDetail.table.activity.firstSeen') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <human-date :date="channel?.creation_date" />
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <span class="label">
+          {{ t('views.admin.ChannelDetail.table.activity.listenings') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">{{ stats?.listenings }}</span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <span class="label">
+          {{ t('views.admin.ChannelDetail.table.activity.favorited') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">{{ stats?.track_favorites }}</span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <Link
+          class="label"
+          :to="{ name: 'manage.moderation.reports.list', query: { q: getQuery('target', `channel:${channel?.uuid}`) } }"
+        >
+          {{ t('views.admin.ChannelDetail.table.activity.linkedReports') }}
+        </Link>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">{{ stats?.reports }}</span>
+      </Layout>
+    </Layout>
+    <Layout
+      stack
+      style="flex: 1; gap: 0;"
+    >
+      <Heading
+        :h3="t('views.admin.ChannelDetail.header.audioContent')"
+        class="category"
+      />
+      <Layout
+        flex
+        class="details"
+      >
+        <span class="label">
+          {{ t('views.admin.ChannelDetail.table.audioContent.cachedSize') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">{{ humanSize(stats?.media_downloaded_size) }}</span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <span class="label">
+          {{ t('views.admin.ChannelDetail.table.audioContent.totalSize') }}
+        </span>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">{{ humanSize(stats?.media_total_size) }}</span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <Link
+          class="label"
+          :to="{ name: 'manage.library.uploads', query: { q: getQuery('channel_id', channel?.uuid) } }"
+        >
+          {{ t('views.admin.ChannelDetail.table.audioContent.uploads') }}
+        </Link>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">{{ stats?.uploads }}</span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <Link
+          class="label"
+          :to="{ name: 'manage.library.albums', query: { q: getQuery('channel_id', channel?.uuid) } }"
+        >
+          {{ t('views.admin.ChannelDetail.table.audioContent.albums') }}
+        </Link>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">{{ channel?.artist?.albums_count }}</span>
+      </Layout>
+      <Layout
+        flex
+        class="details"
+      >
+        <Link
+          class="label"
+          :to="{ name: 'manage.library.tracks', query: { q: getQuery('channel_id', channel?.uuid) } }"
+        >
+          {{ t('views.admin.ChannelDetail.table.audioContent.tracks') }}
+        </Link>
+        <Spacer
+          h
+          grow
+        />
+        <span class="value">{{ channel?.artist?.tracks_count }}</span>
+      </Layout>
+    </Layout>
+  </Layout>
 </template>
+
+<style scoped lang="scss">
+.channel-image {
+  width: 200px;
+  height: 200px;
+  border: none;
+}
+
+h3.category {
+  margin-bottom: 16px;
+}
+
+.details {
+  padding: 0 16px;
+  height: 72px;
+  align-items: center;
+  border-top: 1px solid;
+  min-width: 280px;
+
+  @include light-theme {
+    border-color: var(--fw-gray-300);
+  }
+  @include dark-theme {
+    border-color: var(--fw-gray-800);
+  }
+
+  .label {
+    font-weight: 800;
+
+    @include light-theme {
+      color: var(--fw-gray-600);
+    }
+
+    @include dark-theme {
+      color: var(--fw-gray-500);
+    }
+  }
+
+  a.label,
+  a.value {
+    text-decoration: underline;
+  }
+
+  &:last-child {
+    border-bottom: 1px solid;
+  }
+}
+</style>
