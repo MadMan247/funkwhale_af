@@ -3,7 +3,7 @@ http:
     test-funkwhale-mailpit:
       loadbalancer:
         servers:
-          - url: "http://172.17.0.1:8025"
+          - url: 'http://172.17.0.1:8025'
         passhostheader: true
   routers:
     test-funkwhale-mailpit-web:

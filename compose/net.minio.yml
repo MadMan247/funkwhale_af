@@ -3,13 +3,13 @@ services:
     image: minio/minio
     command: server /data
     volumes:
-      - "../.state/${COMPOSE_PROJECT_NAME:-funkwhale}/minio:/data"
+      - '../.state/${COMPOSE_PROJECT_NAME:-funkwhale}/minio:/data'
     environment:
-      - "MINIO_ACCESS_KEY=${AWS_ACCESS_KEY_ID:-access_key}"
-      - "MINIO_SECRET_KEY=${AWS_SECRET_ACCESS_KEY:-secret_key}"
-      - "MINIO_HTTP_TRACE: /dev/stdout"
+      - 'MINIO_ACCESS_KEY=${AWS_ACCESS_KEY_ID:-access_key}'
+      - 'MINIO_SECRET_KEY=${AWS_SECRET_ACCESS_KEY:-secret_key}'
+      - 'MINIO_HTTP_TRACE: /dev/stdout'
     ports:
-      - "9000:9000"
+      - '9000:9000'
     networks:
       - web
       - internal

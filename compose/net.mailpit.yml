@@ -9,5 +9,5 @@ services:
       MP_SMTP_BIND_ADDR: 172.17.0.1:1025
       MP_MAX_MESSAGES: 5000
       MP_DATABASE: /data/mailpit.db
-      MP_SMTP_AUTH_ACCEPT_ANY: "true"
-      MP_SMTP_AUTH_ALLOW_INSECURE: "true"
+      MP_SMTP_AUTH_ACCEPT_ANY: 'true'
+      MP_SMTP_AUTH_ALLOW_INSECURE: 'true'

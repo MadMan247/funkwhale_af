@@ -8,50 +8,56 @@ include:
     file: /templates/ssh-agent.yml
 
 variables:
-  PYTHONDONTWRITEBYTECODE: "true"
+  PYTHONDONTWRITEBYTECODE: 'true'
 
   PIP_CACHE_DIR: $CI_PROJECT_DIR/.cache/pip
   YARN_CACHE_FOLDER: $CI_PROJECT_DIR/.cache/yarn
-  POETRY_VIRTUALENVS_IN_PROJECT: "true"
+  POETRY_VIRTUALENVS_IN_PROJECT: 'true'
 
 .shared_variables:
   # Keep the git files permissions during job setup
   keep_git_files_permissions: &keep_git_files_permissions
     GIT_STRATEGY: clone
-    GIT_DEPTH: "5"
-    FF_DISABLE_UMASK_FOR_DOCKER_EXECUTOR: "true"
+    GIT_DEPTH: '5'
+    FF_DISABLE_UMASK_FOR_DOCKER_EXECUTOR: 'true'
 
 .shared_caches:
   # Cache for front related jobs
-  front_cache: &front_cache
-    - key: front-yarn
-      paths: [$YARN_CACHE_FOLDER]
-    - key:
-        prefix: front-node_modules
-        files: [front/yarn.lock]
-      paths: [front/node_modules]
-    - key:
-        prefix: front-lint
-        files:
-          - front/.eslintcache
-          - front/tsconfig.tsbuildinfo
+  yarn_cache: &yarn_cache
+    key: front-yarn-$CI_COMMIT_REF_SLUG
+    paths: [$YARN_CACHE_FOLDER]
+  node_cache: &node_cache
+    key:
+      prefix: front-node_modules-$CI_COMMIT_REF_SLUG
+      files: [front/yarn.lock]
+    paths: [front/node_modules]
+  lint_cache: &lint_cache
+    key:
+      prefix: front-lint-$CI_COMMIT_REF_SLUG
+      files:
+        - front/.eslintcache
+        - front/tsconfig.tsbuildinfo
+  cypress_cache: &cypress_cache
+    key: cypress-cache-$CI_COMMIT_REF_SLUG
+    paths:
+      - /root/.cache/Cypress
 
   # Cache for api related jobs
   # Include the python version to prevent loosing caches in the test matrix
   api_cache: &api_cache
-    - key: api-pip-$PYTHON_VERSION
+    - key: api-pip-$CI_COMMIT_REF_SLUG
       paths: [$PIP_CACHE_DIR]
     - key:
-        prefix: api-venv-$PYTHON_VERSION
+        prefix: api-venv-$CI_COMMIT_REF_SLUG
         files: [api/poetry.lock]
       paths: [api/.venv]
 
   # Cache for docs related jobs
   docs_cache: &docs_cache
-    - key: docs-pip
+    - key: docs-pip-$CI_COMMIT_REF_SLUG
       paths: [$PIP_CACHE_DIR]
     - key:
-        prefix: docs-venv
+        prefix: docs-venv-$CI_COMMIT_REF_SLUG
         files: [docs/poetry.lock]
       paths: [docs/.venv]
 
@@ -97,7 +103,10 @@ review_front:
   environment:
     name: review/front/$CI_COMMIT_REF_NAME
     url: http://$CI_PROJECT_NAMESPACE.pages.funkwhale.audio/-/$CI_PROJECT_NAME/-/jobs/$CI_JOB_ID/artifacts/front-review/index.html
-  cache: *front_cache
+  cache:
+    - *yarn_cache
+    - *node_cache
+    - *lint_cache
   before_script:
     - mkdir front-review
     - cd front
@@ -143,6 +152,7 @@ find_broken_links:
       lychee
       --cache
       --no-progress
+      --include-fragments
       --exclude-all-private
       --exclude 'demo\.funkwhale\.audio'
       --exclude 'nginx\.com'
@@ -191,13 +201,15 @@ lint_front:
     - changes: [front/**/*]
 
   image: $CI_REGISTRY/funkwhale/ci/node-python:18
-  cache: *front_cache
+  cache:
+    - *yarn_cache
+    - *node_cache
+    - *lint_cache
   before_script:
     - cd front
     - yarn install --frozen-lockfile
   script:
-    - yarn lint --max-warnings 0
-    - yarn lint:tsc
+    - yarn lint
 
 test_scripts:
   stage: test
@@ -232,7 +244,7 @@ test_api:
   image: $CI_REGISTRY/funkwhale/ci/python-funkwhale-api:$PYTHON_VERSION
   parallel:
     matrix:
-      - PYTHON_VERSION: ["3.10", "3.11", "3.12", "3.13"]
+      - PYTHON_VERSION: ['3.10', '3.11', '3.12', '3.13']
   services:
     - name: postgres:15-alpine
       command:
@@ -242,11 +254,11 @@ test_api:
     - name: redis:7-alpine
   cache: *api_cache
   variables:
-    DATABASE_URL: "postgresql://postgres@postgres/postgres"
-    FUNKWHALE_URL: "https://funkwhale.ci"
+    DATABASE_URL: 'postgresql://postgres@postgres/postgres'
+    FUNKWHALE_URL: 'https://funkwhale.ci'
     DJANGO_SETTINGS_MODULE: config.settings.local
     POSTGRES_HOST_AUTH_METHOD: trust
-    CACHE_URL: "redis://redis:6379/0"
+    CACHE_URL: 'redis://redis:6379/0'
   before_script:
     - cd api
     - make install
@@ -277,7 +289,10 @@ test_front:
     - changes: [front/**/*]
 
   image: $CI_REGISTRY/funkwhale/ci/node-python:18
-  cache: *front_cache
+  cache:
+    - *yarn_cache
+    - *node_cache
+    - *lint_cache
   before_script:
     - cd front
     - yarn install --frozen-lockfile
@@ -316,12 +331,13 @@ test_integration:
 
   image:
     name: cypress/included:13.6.4
-    entrypoint: [""]
+    entrypoint: ['']
   cache:
-    - *front_cache
-    - key:
-      paths:
-        - /root/.cache/Cypress
+    - *yarn_cache
+    - *node_cache
+    - *lint_cache
+    - *cypress_cache
+
   before_script:
     - cd front
     - yarn install
@@ -345,12 +361,12 @@ build_api_schema:
     - redis:7-alpine
   cache: *api_cache
   variables:
-    DATABASE_URL: "postgresql://postgres@postgres/postgres"
-    FUNKWHALE_URL: "https://funkwhale.ci"
+    DATABASE_URL: 'postgresql://postgres@postgres/postgres'
+    FUNKWHALE_URL: 'https://funkwhale.ci'
     DJANGO_SETTINGS_MODULE: config.settings.local
     POSTGRES_HOST_AUTH_METHOD: trust
-    CACHE_URL: "redis://redis:6379/0"
-    API_TYPE: "v1"
+    CACHE_URL: 'redis://redis:6379/0'
+    API_TYPE: 'v1'
   before_script:
     - cd api
     - make install
@@ -403,7 +419,10 @@ build_front:
   variables:
     <<: *keep_git_files_permissions
     NODE_OPTIONS: --max-old-space-size=4096
-  cache: *front_cache
+  cache:
+    - *yarn_cache
+    - *node_cache
+    - *lint_cache
   before_script:
     - cd front
     - yarn install --frozen-lockfile
@@ -513,7 +532,7 @@ docker:
     <<: *keep_git_files_permissions
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: ""
+    DOCKER_TLS_CERTDIR: ''
     BUILDKIT_PROGRESS: plain
 
     DOCKER_CACHE_IMAGE: $CI_REGISTRY/funkwhale/funkwhale/cache

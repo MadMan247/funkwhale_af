@@ -1,14 +1,19 @@
-FROM node:18-alpine
+FROM node:22-alpine
 
 # needed to compile translations
-RUN apk add --no-cache jq bash coreutils python3
+RUN apk add --no-cache jq bash coreutils git python3
 
-EXPOSE 8080
 WORKDIR /app/
-COPY scripts/ ./scripts/
+
+# Create node_modules directory to prevent it from being hidden by volume mounts
+RUN mkdir -p node_modules
+
+ADD scripts/ ./scripts/
 ADD package.json yarn.lock  ./
-RUN yarn install
+RUN yarn
 
-COPY . .
+VOLUME /app
+VOLUME /app/node_modules
+EXPOSE 8080
 
-CMD ["yarn", "serve"]
+CMD ["yarn", "dev", "--host"]

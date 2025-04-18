@@ -2,18 +2,18 @@ services:
   openapi:
     image: swaggerapi/swagger-ui
     environment:
-      - "URL=/openapi.yml"
+      - 'URL=/openapi.yml'
     ports:
-      - "8002:8080"
+      - '8002:8080'
     volumes:
-      - "../docs/specs/nodeinfo21/schema.yml:/usr/share/nginx/html/openapi.yml"
+      - '../docs/specs/nodeinfo21/schema.yml:/usr/share/nginx/html/openapi.yml'
     #  - "../docs/api:/usr/share/nginx/html/api"
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.test-funkwhale-openapi-web.rule=Host(`openapi.funkwhale.test`)"
-      - "traefik.http.routers.test-funkwhale-openapi-web.entrypoints=web"
-      - "traefik.http.services.test-funkwhale-openapi.loadbalancer.server.port=8080"
-      - "traefik.http.routers.test-funkwhale-openapi-webs.rule=Host(`openapi.funkwhale.test`)"
-      - "traefik.http.routers.test-funkwhale-openapi-webs.entrypoints=webs"
-      - "traefik.http.routers.test-funkwhale-openapi-webs.tls=true"
-    networks: ["web"]
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.test-funkwhale-openapi-web.rule=Host(`openapi.funkwhale.test`)'
+      - 'traefik.http.routers.test-funkwhale-openapi-web.entrypoints=web'
+      - 'traefik.http.services.test-funkwhale-openapi.loadbalancer.server.port=8080'
+      - 'traefik.http.routers.test-funkwhale-openapi-webs.rule=Host(`openapi.funkwhale.test`)'
+      - 'traefik.http.routers.test-funkwhale-openapi-webs.entrypoints=webs'
+      - 'traefik.http.routers.test-funkwhale-openapi-webs.tls=true'
+    networks: ['web']

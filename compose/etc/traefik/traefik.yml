@@ -13,8 +13,8 @@ api:
 
 entryPoints:
   traefik:
-    address: "172.17.0.1:8008"
+    address: '172.17.0.1:8008'
   web:
-    address: "172.17.0.1:80"
+    address: '172.17.0.1:80'
   webs:
-    address: "172.17.0.1:443"
+    address: '172.17.0.1:443'

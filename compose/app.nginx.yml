@@ -5,7 +5,7 @@ services:
       - api
       - front
     volumes:
-      - "${MUSIC_DIRECTORY_SERVE_PATH:-../.state/music}:${MUSIC_DIRECTORY_PATH:-/music}:ro"
+      - '${MUSIC_DIRECTORY_SERVE_PATH:-../.state/music}:${MUSIC_DIRECTORY_PATH:-/music}:ro'
 
       - ./etc/nginx/conf.dev:/etc/nginx/templates/default.conf.template:ro
       - ../deploy/funkwhale_proxy.conf:/etc/nginx/funkwhale_proxy.conf:ro

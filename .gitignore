@@ -34,6 +34,8 @@ pip-log.txt
 .tox
 nosetests.xml
 htmlcov
+coverage.xml
+report.xml
 
 # Translations
 *.mo
@@ -75,11 +77,13 @@ api/staticfiles
 api/static
 api/.pytest_cache
 api/celerybeat-*
+
 # Front
 oldfront/node_modules/
 front/static/translations
 front/node_modules/
 front/dist/
+front/dev-dist/
 front/npm-debug.log*
 front/yarn-debug.log*
 front/yarn-error.log*
@@ -88,7 +92,16 @@ front/tests/e2e/reports
 front/test_results.xml
 front/coverage/
 front/selenium-debug.log
+
+# Vitepress
+front/ui-docs/.vitepress/.vite
+front/ui-docs/.vitepress/cache
+front/ui-docs/.vitepress/dist
+front/ui-docs/public
+
+# Docs
 docs/_build
+
 #Tauri
 front/tauri/gen
 
@@ -116,8 +129,14 @@ tsconfig.tsbuildinfo
 flake.nix
 flake.lock
 
-# Vscode
+# VS Code
 .vscode/
 
 # Zed
 .zed/
+
+# Node version (asdf)
+.tool-versions
+
+# Lychee link checker
+.lycheecache

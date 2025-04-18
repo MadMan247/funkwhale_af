@@ -1,6 +1,6 @@
 x-busybox: &busybox
   init: true
-  image: "busybox"
+  image: 'busybox'
   network_mode: bridge
   dns: 172.17.0.1
   dns_search: funkwhale.test
@@ -11,18 +11,18 @@ networks:
 
 services:
   whoami:
-    image: "traefik/whoami"
+    image: 'traefik/whoami'
     networks:
       - web
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.whoami-web.rule=Host(`whoami.funkwhale.test`)"
-      - "traefik.http.routers.whoami-web.entrypoints=web"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.whoami-web.rule=Host(`whoami.funkwhale.test`)'
+      - 'traefik.http.routers.whoami-web.entrypoints=web'
 
-      - "traefik.http.routers.whoami-webs.rule=Host(`whoami.funkwhale.test`)"
-      - "traefik.http.routers.whoami-webs.entrypoints=webs"
-      - "traefik.http.routers.whoami-webs.tls=true"
-      - "traefik.http.routers.whoami.tls.domains[0].main=whoami.funkwhale.test"
+      - 'traefik.http.routers.whoami-webs.rule=Host(`whoami.funkwhale.test`)'
+      - 'traefik.http.routers.whoami-webs.entrypoints=webs'
+      - 'traefik.http.routers.whoami-webs.tls=true'
+      - 'traefik.http.routers.whoami.tls.domains[0].main=whoami.funkwhale.test'
 
   shell:
     <<: *busybox

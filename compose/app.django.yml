@@ -3,11 +3,11 @@ x-django: &django
   volumes:
     - ../api:/app
     - ../.env:/app/.env
-    - "${MUSIC_DIRECTORY_SERVE_PATH:-../.state/music}:/music:ro"
-    - "../.state/plugins:/srv/funkwhale/plugins"
-    - "../.state/staticfiles:/staticfiles"
-    - "../.state/media:/protected/media"
-    - "../.state/${COMPOSE_PROJECT_NAME:-funkwhale}/media:/data/media"
+    - '${MUSIC_DIRECTORY_SERVE_PATH:-../.state/music}:/music:ro'
+    - '../.state/plugins:/srv/funkwhale/plugins'
+    - '../.state/staticfiles:/staticfiles'
+    - '../.state/media:/protected/media'
+    - '../.state/${COMPOSE_PROJECT_NAME:-funkwhale}/media:/data/media'
   depends_on:
     postgres:
       condition: service_healthy
@@ -23,11 +23,7 @@ services:
       context: ../api
       dockerfile: Dockerfile.debian
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          'docker compose logs api | grep -q "Uvicorn running on" || exit 0',
-        ]
+      test: ['CMD-SHELL', 'docker compose logs api | grep -q "Uvicorn running on" || exit 0']
       interval: 3s
       timeout: 5s
       retries: 3
