@@ -6,8 +6,7 @@ module.exports = {
   extends: [
     'plugin:@intlify/vue-i18n/recommended',
     'plugin:vue/vue3-recommended',
-    '@vue/typescript/recommended',
-    '@vue/standard'
+    '@vue/typescript/recommended'
   ],
   globals: {
     SharedArrayBuffer: 'readonly',
@@ -20,7 +19,13 @@ module.exports = {
     ecmaVersion: 2020
   },
   plugins: [
+    'html',
     'vue'
+  ],
+  ignorePatterns: [
+    'src/locales/*.json',
+    'dist/',
+    'stats.html'
   ],
   rules: {
     // NOTE: Nicer for the eye
@@ -55,7 +60,10 @@ module.exports = {
     '@typescript-eslint/no-this-alias': 'off',
 
     // TODO (wvffle): Remove after API Client
-    '@typescript-eslint/no-explicit-any': 'off'
+    '@typescript-eslint/no-explicit-any': 'off',
+
+    // Configure TypeScript style
+    'comma-dangle': ['error', 'never']
   },
   overrides: [
     {

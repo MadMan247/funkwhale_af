@@ -4,12 +4,12 @@
     "baseUrl": ".",
     "sourceMap": true,
     "noUnusedLocals": true,
+    "noImplicitAny": true,
     "experimentalDecorators": true,
     "typeRoots": ["node_modules", "node_modules/@types"],
     "types": [
       "vitest/globals",
       "vite/client",
-      "vue/ref-macros",
       "vite-plugin-pwa/client",
       "unplugin-vue-macros/macros-global"
     ],
@@ -19,8 +19,18 @@
       "~/*": ["src/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.vue", "vite.config.ts", "test/**/*.ts"],
+  "include": [
+    "**/*.md",
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "vite.config.ts",
+    "test/**/*.ts",
+    "src/docs/vite.config.ts",
+    "src/docs/**/*.ts",
+    "ui-docs/**/*.md"
+  ],
   "vueCompilerOptions": {
+    "vitePressExtensions": [".md"],
     "plugins": [
       "@vue-macros/volar/define-options",
       "@vue-macros/volar/define-models",

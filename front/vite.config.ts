@@ -1,15 +1,23 @@
 import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig, type PluginOption } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
-import { resolve } from 'path'
+import { fileURLToPath, URL } from 'node:url'
+import UnoCSS from 'unocss/vite'
 
 import manifest from './pwa-manifest.json'
 
 import VueI18n from '@intlify/unplugin-vue-i18n/vite'
 import Vue from '@vitejs/plugin-vue'
 import VueMacros from 'unplugin-vue-macros/vite'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
+import vueDevTools from 'vite-plugin-vue-devtools'
 
+
+// We don't use port but, magically, it is necessary to set it here.
 const port = +(process.env.VUE_PORT ?? 8080)
+
+// To prevent a linter warning, here is a partial Haiku:
+export const exPort = port
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -25,7 +33,7 @@ export default defineConfig(({ mode }) => ({
 
     // https://github.com/intlify/bundle-tools/tree/main/packages/vite-plugin-vue-i18n
     VueI18n({
-      include: resolve(__dirname, './src/locales/**')
+      include: fileURLToPath(new URL('./src/locales/**', import.meta.url))
     }),
 
     // https://github.com/btd/rollup-plugin-visualizer
@@ -43,16 +51,39 @@ export default defineConfig(({ mode }) => ({
         navigateFallback: 'index.html'
       },
       manifest
-    })
+    }),
+
+    // https://github.com/davidmyersdev/vite-plugin-node-polyfills
+    // see: https://github.com/Borewit/music-metadata-browser/issues/836
+    nodePolyfills(),
+
+    // https://unocss.dev/
+    UnoCSS(),
+    vueDevTools()
   ],
   server: {
-    port
+    port: +(process.env.VUE_PORT ?? 8080),
+    watch: {
+      usePolling: true
+    }
   },
   resolve: {
-    alias: {
-      '#': resolve(__dirname, './src/worker'),
-      '?': resolve(__dirname, './test'),
-      '~': resolve(__dirname, './src')
+    alias: [
+      { find: '#', replacement: fileURLToPath(new URL('./src/ui/workers', import.meta.url)) },
+      { find: '?', replacement: fileURLToPath(new URL('./test', import.meta.url)) },
+      { find: '~', replacement: fileURLToPath(new URL('./src', import.meta.url)) }
+    ]
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `
+          $docs: ${!!process.env.VP_DOCS};
+          @use "~/style/_vars" as *;
+          @import "~/style/inc/theme";
+          @import "~/style/funkwhale";
+        `
+      }
     }
   },
   build: {
