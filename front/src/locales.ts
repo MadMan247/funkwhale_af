@@ -1,6 +1,6 @@
 import type { VueI18nOptions } from 'vue-i18n'
 
-export type SupportedLanguages = 'ar' | 'ca' | 'cs' | 'de' | 'en_GB' | 'en_US' | 'eo' | 'es' | 'eu' | 'fr_FR'
+export type SupportedLanguages = 'ar' | 'ca' | 'ca@valencia' | 'cs' | 'de' | 'en_GB' | 'en_US' | 'eo' | 'es' | 'eu' | 'fr_FR'
   | 'gl' | 'hu' | 'it' | 'ja_JP' | 'kab_DZ' | 'ko_KR' | 'nb_NO' | 'nl' | 'oc' | 'pl' | 'pt_BR' | 'pt_PT'
   | 'ru' | 'sq' | 'zh_Hans' | 'zh_Hant' | 'fa_IR' | 'ml' | 'sv' | 'el' | 'nn_NO'
 
@@ -15,6 +15,9 @@ export const locales: Record<SupportedLanguages, Locale> = {
   },
   ca: {
     label: 'Català'
+  },
+  'ca@valencia': {
+    label: 'Català (Valencia)'
   },
   cs: {
     label: 'Čeština'

@@ -1,7 +1,7 @@
 import type { Track, Artist, Album, Playlist, Library, Channel, Actor } from '~/types'
+import type { components } from '~/generated/types'
 import type { ContentFilter } from '~/store/moderation'
 
-import { useCurrentElement } from '@vueuse/core'
 import { computed, markRaw, ref } from 'vue'
 import { i18n } from '~/init/locale'
 import { useStore } from '~/store'
@@ -9,19 +9,18 @@ import { useStore } from '~/store'
 import { usePlayer } from '~/composables/audio/player'
 import { useQueue } from '~/composables/audio/queue'
 
-import jQuery from 'jquery'
 import axios from 'axios'
 
 export interface PlayOptionsProps {
   isPlayable?: boolean
   tracks?: Track[]
   track?: Track | null
-  artist?: Artist | null
+  artist?: Artist | components["schemas"]["SimpleChannelArtist"] | components['schemas']['ArtistWithAlbums'] | null
   album?: Album | null
   playlist?: Playlist | null
   library?: Library | null
   channel?: Channel | null
-  account?: Actor | null
+  account?: Actor | components['schemas']['APIActor'] | null
 }
 
 export default (props: PlayOptionsProps) => {
@@ -37,8 +36,12 @@ export default (props: PlayOptionsProps) => {
     if (props.track) {
       return props.track.uploads?.length > 0
     } else if (props.artist) {
+      // TODO: Find out how to get tracks, album from Artist
+
+      /*
       return props.artist.tracks_count > 0
         || props.artist?.albums?.some((album) => album.is_playable === true)
+      */
     } else if (props.tracks) {
       return props.tracks?.some((track) => (track.uploads?.length ?? 0) > 0)
     }
@@ -150,18 +153,15 @@ export default (props: PlayOptionsProps) => {
     return tracks.filter(track => track.uploads?.length).map(markRaw)
   }
 
-  const el = useCurrentElement()
-  const enqueue = async () => {
-    jQuery(el.value).find('.ui.dropdown').dropdown('hide')
+  // const el = useCurrentElement()
 
+  const enqueue = async () => {
     const tracks = await getPlayableTracks()
     await addToQueue(...tracks)
     addMessage(tracks)
   }
 
   const enqueueNext = async (next = false) => {
-    jQuery(el.value).find('.ui.dropdown').dropdown('hide')
-
     const tracks = await getPlayableTracks()
 
     const wasEmpty = queue.value.length === 0
@@ -177,9 +177,6 @@ export default (props: PlayOptionsProps) => {
 
   const replacePlay = async (index?: number) => {
     await clear()
-
-    jQuery(el.value).find('.ui.dropdown').dropdown('hide')
-
     const tracksToPlay = await getPlayableTracks()
     await addToQueue(...tracksToPlay)
 

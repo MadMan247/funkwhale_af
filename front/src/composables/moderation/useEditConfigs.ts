@@ -16,7 +16,7 @@ export interface EditableConfigField extends ConfigField {
   id: EditObjectType
 }
 
-export type EditObject = (Partial<Artist> | Partial<Album> | Partial<Track>) & { attributed_to: Actor }
+export type EditObject = (Partial<Artist> | Partial<Album> | Partial<Track>) & { attributed_to?: Actor }
 export type EditObjectType = 'artist' | 'album' | 'track'
 type Configs = Record<EditObjectType, { fields: (EditableConfigField|ConfigField)[] }>
 
@@ -79,6 +79,7 @@ export default (): Configs => {
         description,
         {
           id: 'release_date',
+          // TODO: Change type to date and offer date select input in form
           type: 'text',
           required: false,
           label: t('composables.moderation.useEditConfigs.album.releaseDate'),

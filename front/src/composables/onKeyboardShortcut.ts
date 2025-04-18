@@ -20,7 +20,7 @@ useEventListener(window, 'keydown', (event) => {
   if (!event.key) return
 
   const target = event.target as HTMLElement
-  if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return
+  if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return
 
   current.add(event.key.toLowerCase())
 

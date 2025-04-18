@@ -1508,7 +1508,7 @@ export function getGetAlbums200Response() {
       artist: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         name: faker.person.fullName(),
         creation_date: faker.date.past(),
         modification_date: faker.date.past(),
@@ -1528,7 +1528,7 @@ export function getGetAlbums200Response() {
           html: faker.lorem.slug(1),
         },
         attachment_cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -1536,10 +1536,10 @@ export function getGetAlbums200Response() {
             .map((_) => ({ [faker.lorem.word()]: null }))
             .reduce((acc, next) => Object.assign(acc, next), {}),
         },
-        channel: faker.datatype.uuid(),
+        channel: faker.string.uuid(),
       },
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -1577,7 +1577,7 @@ export function getGetAlbums200Response() {
       },
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       title: faker.lorem.slug(1),
       release_date: faker.date.past(),
       creation_date: faker.date.past(),
@@ -1612,7 +1612,7 @@ export function getGetAlbum200Response() {
     artist: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       name: faker.person.fullName(),
       creation_date: faker.date.past(),
       modification_date: faker.date.past(),
@@ -1632,7 +1632,7 @@ export function getGetAlbum200Response() {
         html: faker.lorem.slug(1),
       },
       attachment_cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -1640,10 +1640,10 @@ export function getGetAlbum200Response() {
           .map((_) => ({ [faker.lorem.word()]: null }))
           .reduce((acc, next) => Object.assign(acc, next), {}),
       },
-      channel: faker.datatype.uuid(),
+      channel: faker.string.uuid(),
     },
     cover: {
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       size: faker.number.int({ min: undefined, max: undefined }),
       mimetype: faker.lorem.slug(1),
       creation_date: faker.date.past(),
@@ -1679,7 +1679,7 @@ export function getGetAlbum200Response() {
     },
     id: faker.number.int({ min: undefined, max: undefined }),
     fid: faker.internet.url(),
-    mbid: faker.datatype.uuid(),
+    mbid: faker.string.uuid(),
     title: faker.lorem.slug(1),
     release_date: faker.date.past(),
     creation_date: faker.date.past(),
@@ -1782,7 +1782,7 @@ export function getGetAlbumLibraries200Response() {
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
       fid: faker.internet.url(),
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       actor: {
         fid: faker.internet.url(),
         url: faker.internet.url(),
@@ -1811,7 +1811,7 @@ export function getGetAlbumLibraries200Response() {
       privacy_level: faker.helpers.arrayElement(["me", "instance", "everyone"]),
       follow: {
         creation_date: faker.date.past(),
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         fid: faker.internet.url(),
         approved: faker.datatype.boolean(),
         modification_date: faker.date.past(),
@@ -1837,7 +1837,7 @@ export function getGetAlbumMutations200Response() {
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
       fid: faker.internet.url(),
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       type: faker.lorem.slug(1),
       creation_date: faker.date.past(),
       applied_date: faker.date.past(),
@@ -1882,7 +1882,7 @@ export function getGetAlbumMutations200Response() {
 export function getCreateAlbumMutation200Response() {
   return {
     fid: faker.internet.url(),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     type: faker.lorem.slug(1),
     creation_date: faker.date.past(),
     applied_date: faker.date.past(),
@@ -1938,7 +1938,7 @@ export function getGetArtists200Response() {
       ].map((_) => ({
         tracks_count: faker.number.int({ min: undefined, max: undefined }),
         cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -1950,7 +1950,7 @@ export function getGetArtists200Response() {
         is_local: faker.datatype.boolean(),
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         title: faker.lorem.slug(1),
         artist: faker.number.int({ min: undefined, max: undefined }),
         release_date: faker.date.past(),
@@ -1993,13 +1993,13 @@ export function getGetArtists200Response() {
       tracks_count: faker.number.int({ min: undefined, max: undefined }),
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       name: faker.person.fullName(),
       content_category: faker.lorem.slug(1),
       creation_date: faker.date.past(),
       is_local: faker.datatype.boolean(),
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -2018,7 +2018,7 @@ export function getGetArtist200Response() {
     ].map((_) => ({
       tracks_count: faker.number.int({ min: undefined, max: undefined }),
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -2030,7 +2030,7 @@ export function getGetArtist200Response() {
       is_local: faker.datatype.boolean(),
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       title: faker.lorem.slug(1),
       artist: faker.number.int({ min: undefined, max: undefined }),
       release_date: faker.date.past(),
@@ -2071,13 +2071,13 @@ export function getGetArtist200Response() {
     tracks_count: faker.number.int({ min: undefined, max: undefined }),
     id: faker.number.int({ min: undefined, max: undefined }),
     fid: faker.internet.url(),
-    mbid: faker.datatype.uuid(),
+    mbid: faker.string.uuid(),
     name: faker.person.fullName(),
     content_category: faker.lorem.slug(1),
     creation_date: faker.date.past(),
     is_local: faker.datatype.boolean(),
     cover: {
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       size: faker.number.int({ min: undefined, max: undefined }),
       mimetype: faker.lorem.slug(1),
       creation_date: faker.date.past(),
@@ -2182,7 +2182,7 @@ export function getGetArtistLibraries200Response() {
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
       fid: faker.internet.url(),
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       actor: {
         fid: faker.internet.url(),
         url: faker.internet.url(),
@@ -2211,7 +2211,7 @@ export function getGetArtistLibraries200Response() {
       privacy_level: faker.helpers.arrayElement(["me", "instance", "everyone"]),
       follow: {
         creation_date: faker.date.past(),
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         fid: faker.internet.url(),
         approved: faker.datatype.boolean(),
         modification_date: faker.date.past(),
@@ -2237,7 +2237,7 @@ export function getGetArtistMutations200Response() {
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
       fid: faker.internet.url(),
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       type: faker.lorem.slug(1),
       creation_date: faker.date.past(),
       applied_date: faker.date.past(),
@@ -2282,7 +2282,7 @@ export function getGetArtistMutations200Response() {
 export function getCreateArtistMutation200Response() {
   return {
     fid: faker.internet.url(),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     type: faker.lorem.slug(1),
     creation_date: faker.date.past(),
     applied_date: faker.date.past(),
@@ -2325,7 +2325,7 @@ export function getCreateArtistMutation200Response() {
 
 export function getCreateAttachment201Response() {
   return {
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     size: faker.number.int({ min: undefined, max: undefined }),
     mimetype: faker.lorem.slug(1),
     creation_date: faker.date.past(),
@@ -2337,7 +2337,7 @@ export function getCreateAttachment201Response() {
 
 export function getGetAttachment200Response() {
   return {
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     size: faker.number.int({ min: undefined, max: undefined }),
     mimetype: faker.lorem.slug(1),
     creation_date: faker.date.past(),
@@ -2349,7 +2349,7 @@ export function getGetAttachment200Response() {
 
 export function getGetAttachmentProxy200Response() {
   return {
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     size: faker.number.int({ min: undefined, max: undefined }),
     mimetype: faker.lorem.slug(1),
     creation_date: faker.date.past(),
@@ -2434,7 +2434,7 @@ export function getGetChannels200Response() {
     results: [
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       artist: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
@@ -2454,7 +2454,7 @@ export function getGetChannels200Response() {
           html: faker.lorem.slug(1),
         },
         cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -2462,7 +2462,7 @@ export function getGetChannels200Response() {
             .map((_) => ({ [faker.lorem.word()]: null }))
             .reduce((acc, next) => Object.assign(acc, next), {}),
         },
-        channel: faker.datatype.uuid(),
+        channel: faker.string.uuid(),
         tracks_count: faker.number.int({ min: undefined, max: undefined }),
         tags: [
           ...new Array(
@@ -2548,7 +2548,7 @@ export function getCreateChannel201Response() {
 
 export function getGetChannel200Response() {
   return {
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     artist: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
@@ -2568,7 +2568,7 @@ export function getGetChannel200Response() {
         html: faker.lorem.slug(1),
       },
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -2576,7 +2576,7 @@ export function getGetChannel200Response() {
           .map((_) => ({ [faker.lorem.word()]: null }))
           .reduce((acc, next) => Object.assign(acc, next), {}),
       },
-      channel: faker.datatype.uuid(),
+      channel: faker.string.uuid(),
       tracks_count: faker.number.int({ min: undefined, max: undefined }),
       tags: [
         ...new Array(
@@ -2682,7 +2682,7 @@ export function getPartialUpdateChannel200Response() {
 
 export function getGetChannelRss200Response() {
   return {
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     artist: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
@@ -2702,7 +2702,7 @@ export function getGetChannelRss200Response() {
         html: faker.lorem.slug(1),
       },
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -2710,7 +2710,7 @@ export function getGetChannelRss200Response() {
           .map((_) => ({ [faker.lorem.word()]: null }))
           .reduce((acc, next) => Object.assign(acc, next), {}),
       },
-      channel: faker.datatype.uuid(),
+      channel: faker.string.uuid(),
       tracks_count: faker.number.int({ min: undefined, max: undefined }),
       tags: [
         ...new Array(
@@ -2772,7 +2772,7 @@ export function getGetChannelRss200Response() {
 
 export function getSubscribeChannel200Response() {
   return {
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     artist: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
@@ -2792,7 +2792,7 @@ export function getSubscribeChannel200Response() {
         html: faker.lorem.slug(1),
       },
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -2800,7 +2800,7 @@ export function getSubscribeChannel200Response() {
           .map((_) => ({ [faker.lorem.word()]: null }))
           .reduce((acc, next) => Object.assign(acc, next), {}),
       },
-      channel: faker.datatype.uuid(),
+      channel: faker.string.uuid(),
       tracks_count: faker.number.int({ min: undefined, max: undefined }),
       tags: [
         ...new Array(
@@ -2862,7 +2862,7 @@ export function getSubscribeChannel200Response() {
 
 export function getGetChannelMetadataChoices200Response() {
   return {
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     artist: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
@@ -2882,7 +2882,7 @@ export function getGetChannelMetadataChoices200Response() {
         html: faker.lorem.slug(1),
       },
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -2890,7 +2890,7 @@ export function getGetChannelMetadataChoices200Response() {
           .map((_) => ({ [faker.lorem.word()]: null }))
           .reduce((acc, next) => Object.assign(acc, next), {}),
       },
-      channel: faker.datatype.uuid(),
+      channel: faker.string.uuid(),
       tracks_count: faker.number.int({ min: undefined, max: undefined }),
       tags: [
         ...new Array(
@@ -2952,7 +2952,7 @@ export function getGetChannelMetadataChoices200Response() {
 
 export function getSubscribeChannelRss200Response() {
   return {
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     artist: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
@@ -2972,7 +2972,7 @@ export function getSubscribeChannelRss200Response() {
         html: faker.lorem.slug(1),
       },
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -2980,7 +2980,7 @@ export function getSubscribeChannelRss200Response() {
           .map((_) => ({ [faker.lorem.word()]: null }))
           .reduce((acc, next) => Object.assign(acc, next), {}),
       },
-      channel: faker.datatype.uuid(),
+      channel: faker.string.uuid(),
       tracks_count: faker.number.int({ min: undefined, max: undefined }),
       tags: [
         ...new Array(
@@ -3055,7 +3055,7 @@ export function getGetFavoriteTracks200Response() {
         name: faker.person.fullName(),
         date_joined: faker.date.past(),
         avatar: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -3068,7 +3068,7 @@ export function getGetFavoriteTracks200Response() {
         artist: {
           id: faker.number.int({ min: undefined, max: undefined }),
           fid: faker.internet.url(),
-          mbid: faker.datatype.uuid(),
+          mbid: faker.string.uuid(),
           name: faker.person.fullName(),
           creation_date: faker.date.past(),
           modification_date: faker.date.past(),
@@ -3088,7 +3088,7 @@ export function getGetFavoriteTracks200Response() {
             html: faker.lorem.slug(1),
           },
           attachment_cover: {
-            uuid: faker.datatype.uuid(),
+            uuid: faker.string.uuid(),
             size: faker.number.int({ min: undefined, max: undefined }),
             mimetype: faker.lorem.slug(1),
             creation_date: faker.date.past(),
@@ -3096,17 +3096,17 @@ export function getGetFavoriteTracks200Response() {
               .map((_) => ({ [faker.lorem.word()]: null }))
               .reduce((acc, next) => Object.assign(acc, next), {}),
           },
-          channel: faker.datatype.uuid(),
+          channel: faker.string.uuid(),
         },
         album: {
           id: faker.number.int({ min: undefined, max: undefined }),
           fid: faker.internet.url(),
-          mbid: faker.datatype.uuid(),
+          mbid: faker.string.uuid(),
           title: faker.lorem.slug(1),
           artist: {
             id: faker.number.int({ min: undefined, max: undefined }),
             fid: faker.internet.url(),
-            mbid: faker.datatype.uuid(),
+            mbid: faker.string.uuid(),
             name: faker.person.fullName(),
             creation_date: faker.date.past(),
             modification_date: faker.date.past(),
@@ -3126,7 +3126,7 @@ export function getGetFavoriteTracks200Response() {
               html: faker.lorem.slug(1),
             },
             attachment_cover: {
-              uuid: faker.datatype.uuid(),
+              uuid: faker.string.uuid(),
               size: faker.number.int({ min: undefined, max: undefined }),
               mimetype: faker.lorem.slug(1),
               creation_date: faker.date.past(),
@@ -3134,11 +3134,11 @@ export function getGetFavoriteTracks200Response() {
                 .map((_) => ({ [faker.lorem.word()]: null }))
                 .reduce((acc, next) => Object.assign(acc, next), {}),
             },
-            channel: faker.datatype.uuid(),
+            channel: faker.string.uuid(),
           },
           release_date: faker.date.past(),
           cover: {
-            uuid: faker.datatype.uuid(),
+            uuid: faker.string.uuid(),
             size: faker.number.int({ min: undefined, max: undefined }),
             mimetype: faker.lorem.slug(1),
             creation_date: faker.date.past(),
@@ -3155,7 +3155,7 @@ export function getGetFavoriteTracks200Response() {
             faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH }),
           ).keys(),
         ].map((_) => ({
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           listen_url: faker.internet.url(),
           size: faker.number.int({ min: undefined, max: undefined }),
           duration: faker.number.int({ min: undefined, max: undefined }),
@@ -3193,7 +3193,7 @@ export function getGetFavoriteTracks200Response() {
         },
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         title: faker.lorem.slug(1),
         creation_date: faker.date.past(),
         is_local: faker.datatype.boolean(),
@@ -3203,7 +3203,7 @@ export function getGetFavoriteTracks200Response() {
         copyright: faker.lorem.slug(1),
         license: faker.lorem.slug(1),
         cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -3287,7 +3287,7 @@ export function getGetFederationActor200Response() {
       name: faker.person.fullName(),
       date_joined: faker.date.past(),
       avatar: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -3306,7 +3306,7 @@ export function getGetFederationActor200Response() {
       html: faker.lorem.slug(1),
     },
     icon: {
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       size: faker.number.int({ min: undefined, max: undefined }),
       mimetype: faker.lorem.slug(1),
       creation_date: faker.date.past(),
@@ -3319,7 +3319,7 @@ export function getGetFederationActor200Response() {
 
 export function getGetFederationActorLibrary200Response() {
   return {
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     fid: faker.internet.url(),
     name: faker.person.fullName(),
     description: faker.lorem.slug(1),
@@ -3478,7 +3478,7 @@ export function getGetFederationLibraryFollows200Response() {
         full_username: faker.person.fullName(),
         is_local: faker.datatype.boolean(),
       },
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       target: faker.lorem.slug(1),
       approved: faker.datatype.boolean(),
     })),
@@ -3509,7 +3509,7 @@ export function getCreateFederationLibraryFollow201Response() {
       full_username: faker.person.fullName(),
       is_local: faker.datatype.boolean(),
     },
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     target: faker.lorem.slug(1),
     approved: faker.datatype.boolean(),
   };
@@ -3539,7 +3539,7 @@ export function getGetFederationLibraryFollow200Response() {
       full_username: faker.person.fullName(),
       is_local: faker.datatype.boolean(),
     },
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     target: faker.lorem.slug(1),
     approved: faker.datatype.boolean(),
   };
@@ -3569,7 +3569,7 @@ export function getRejectFederationLibraryFollow200Response() {
       full_username: faker.person.fullName(),
       is_local: faker.datatype.boolean(),
     },
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     target: faker.lorem.slug(1),
     approved: faker.datatype.boolean(),
   };
@@ -3599,7 +3599,7 @@ export function getGetAllFederationLibraryFollows200Response() {
       full_username: faker.person.fullName(),
       is_local: faker.datatype.boolean(),
     },
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     target: faker.lorem.slug(1),
     approved: faker.datatype.boolean(),
   };
@@ -3616,7 +3616,7 @@ export function getGetFederationInboxes200Response() {
       id: faker.number.int({ min: undefined, max: undefined }),
       type: faker.helpers.arrayElement(["to", "cc"]),
       activity: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         fid: faker.internet.url(),
         actor: {
           fid: faker.internet.url(),
@@ -3664,7 +3664,7 @@ export function getGetFederationInbox200Response() {
     id: faker.number.int({ min: undefined, max: undefined }),
     type: faker.helpers.arrayElement(["to", "cc"]),
     activity: {
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       fid: faker.internet.url(),
       actor: {
         fid: faker.internet.url(),
@@ -3711,7 +3711,7 @@ export function getUpdateFederationInbox200Response() {
     id: faker.number.int({ min: undefined, max: undefined }),
     type: faker.helpers.arrayElement(["to", "cc"]),
     activity: {
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       fid: faker.internet.url(),
       actor: {
         fid: faker.internet.url(),
@@ -3758,7 +3758,7 @@ export function getPartialUpdateFederationInbox200Response() {
     id: faker.number.int({ min: undefined, max: undefined }),
     type: faker.helpers.arrayElement(["to", "cc"]),
     activity: {
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       fid: faker.internet.url(),
       actor: {
         fid: faker.internet.url(),
@@ -3805,7 +3805,7 @@ export function getCreateFederationInboxAction200Response() {
     id: faker.number.int({ min: undefined, max: undefined }),
     type: faker.helpers.arrayElement(["to", "cc"]),
     activity: {
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       fid: faker.internet.url(),
       actor: {
         fid: faker.internet.url(),
@@ -3850,7 +3850,7 @@ export function getCreateFederationInboxAction200Response() {
 export function getGetFederationLibrary200Response() {
   return {
     fid: faker.internet.url(),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     actor: {
       fid: faker.internet.url(),
       url: faker.internet.url(),
@@ -3879,7 +3879,7 @@ export function getGetFederationLibrary200Response() {
     privacy_level: faker.helpers.arrayElement(["me", "instance", "everyone"]),
     follow: {
       creation_date: faker.date.past(),
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       fid: faker.internet.url(),
       approved: faker.datatype.boolean(),
       modification_date: faker.date.past(),
@@ -3898,7 +3898,7 @@ export function getGetFederationLibrary200Response() {
 export function getCreateFederationLibraryScan200Response() {
   return {
     fid: faker.internet.url(),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     actor: {
       fid: faker.internet.url(),
       url: faker.internet.url(),
@@ -3927,7 +3927,7 @@ export function getCreateFederationLibraryScan200Response() {
     privacy_level: faker.helpers.arrayElement(["me", "instance", "everyone"]),
     follow: {
       creation_date: faker.date.past(),
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       fid: faker.internet.url(),
       approved: faker.datatype.boolean(),
       modification_date: faker.date.past(),
@@ -3946,7 +3946,7 @@ export function getCreateFederationLibraryScan200Response() {
 export function getCreateFederationLibraryFetch200Response() {
   return {
     fid: faker.internet.url(),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     actor: {
       fid: faker.internet.url(),
       url: faker.internet.url(),
@@ -3975,7 +3975,7 @@ export function getCreateFederationLibraryFetch200Response() {
     privacy_level: faker.helpers.arrayElement(["me", "instance", "everyone"]),
     follow: {
       creation_date: faker.date.past(),
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       fid: faker.internet.url(),
       approved: faker.datatype.boolean(),
       modification_date: faker.date.past(),
@@ -4006,7 +4006,7 @@ export function getGetHistoryListenings200Response() {
         name: faker.person.fullName(),
         date_joined: faker.date.past(),
         avatar: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -4019,7 +4019,7 @@ export function getGetHistoryListenings200Response() {
         artist: {
           id: faker.number.int({ min: undefined, max: undefined }),
           fid: faker.internet.url(),
-          mbid: faker.datatype.uuid(),
+          mbid: faker.string.uuid(),
           name: faker.person.fullName(),
           creation_date: faker.date.past(),
           modification_date: faker.date.past(),
@@ -4039,7 +4039,7 @@ export function getGetHistoryListenings200Response() {
             html: faker.lorem.slug(1),
           },
           attachment_cover: {
-            uuid: faker.datatype.uuid(),
+            uuid: faker.string.uuid(),
             size: faker.number.int({ min: undefined, max: undefined }),
             mimetype: faker.lorem.slug(1),
             creation_date: faker.date.past(),
@@ -4047,17 +4047,17 @@ export function getGetHistoryListenings200Response() {
               .map((_) => ({ [faker.lorem.word()]: null }))
               .reduce((acc, next) => Object.assign(acc, next), {}),
           },
-          channel: faker.datatype.uuid(),
+          channel: faker.string.uuid(),
         },
         album: {
           id: faker.number.int({ min: undefined, max: undefined }),
           fid: faker.internet.url(),
-          mbid: faker.datatype.uuid(),
+          mbid: faker.string.uuid(),
           title: faker.lorem.slug(1),
           artist: {
             id: faker.number.int({ min: undefined, max: undefined }),
             fid: faker.internet.url(),
-            mbid: faker.datatype.uuid(),
+            mbid: faker.string.uuid(),
             name: faker.person.fullName(),
             creation_date: faker.date.past(),
             modification_date: faker.date.past(),
@@ -4077,7 +4077,7 @@ export function getGetHistoryListenings200Response() {
               html: faker.lorem.slug(1),
             },
             attachment_cover: {
-              uuid: faker.datatype.uuid(),
+              uuid: faker.string.uuid(),
               size: faker.number.int({ min: undefined, max: undefined }),
               mimetype: faker.lorem.slug(1),
               creation_date: faker.date.past(),
@@ -4085,11 +4085,11 @@ export function getGetHistoryListenings200Response() {
                 .map((_) => ({ [faker.lorem.word()]: null }))
                 .reduce((acc, next) => Object.assign(acc, next), {}),
             },
-            channel: faker.datatype.uuid(),
+            channel: faker.string.uuid(),
           },
           release_date: faker.date.past(),
           cover: {
-            uuid: faker.datatype.uuid(),
+            uuid: faker.string.uuid(),
             size: faker.number.int({ min: undefined, max: undefined }),
             mimetype: faker.lorem.slug(1),
             creation_date: faker.date.past(),
@@ -4106,7 +4106,7 @@ export function getGetHistoryListenings200Response() {
             faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH }),
           ).keys(),
         ].map((_) => ({
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           listen_url: faker.internet.url(),
           size: faker.number.int({ min: undefined, max: undefined }),
           duration: faker.number.int({ min: undefined, max: undefined }),
@@ -4144,7 +4144,7 @@ export function getGetHistoryListenings200Response() {
         },
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         title: faker.lorem.slug(1),
         creation_date: faker.date.past(),
         is_local: faker.datatype.boolean(),
@@ -4154,7 +4154,7 @@ export function getGetHistoryListenings200Response() {
         copyright: faker.lorem.slug(1),
         license: faker.lorem.slug(1),
         cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -4208,7 +4208,7 @@ export function getGetHistoryListening200Response() {
       name: faker.person.fullName(),
       date_joined: faker.date.past(),
       avatar: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -4221,7 +4221,7 @@ export function getGetHistoryListening200Response() {
       artist: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         name: faker.person.fullName(),
         creation_date: faker.date.past(),
         modification_date: faker.date.past(),
@@ -4241,7 +4241,7 @@ export function getGetHistoryListening200Response() {
           html: faker.lorem.slug(1),
         },
         attachment_cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -4249,17 +4249,17 @@ export function getGetHistoryListening200Response() {
             .map((_) => ({ [faker.lorem.word()]: null }))
             .reduce((acc, next) => Object.assign(acc, next), {}),
         },
-        channel: faker.datatype.uuid(),
+        channel: faker.string.uuid(),
       },
       album: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         title: faker.lorem.slug(1),
         artist: {
           id: faker.number.int({ min: undefined, max: undefined }),
           fid: faker.internet.url(),
-          mbid: faker.datatype.uuid(),
+          mbid: faker.string.uuid(),
           name: faker.person.fullName(),
           creation_date: faker.date.past(),
           modification_date: faker.date.past(),
@@ -4279,7 +4279,7 @@ export function getGetHistoryListening200Response() {
             html: faker.lorem.slug(1),
           },
           attachment_cover: {
-            uuid: faker.datatype.uuid(),
+            uuid: faker.string.uuid(),
             size: faker.number.int({ min: undefined, max: undefined }),
             mimetype: faker.lorem.slug(1),
             creation_date: faker.date.past(),
@@ -4287,11 +4287,11 @@ export function getGetHistoryListening200Response() {
               .map((_) => ({ [faker.lorem.word()]: null }))
               .reduce((acc, next) => Object.assign(acc, next), {}),
           },
-          channel: faker.datatype.uuid(),
+          channel: faker.string.uuid(),
         },
         release_date: faker.date.past(),
         cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -4308,7 +4308,7 @@ export function getGetHistoryListening200Response() {
           faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH }),
         ).keys(),
       ].map((_) => ({
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         listen_url: faker.internet.url(),
         size: faker.number.int({ min: undefined, max: undefined }),
         duration: faker.number.int({ min: undefined, max: undefined }),
@@ -4346,7 +4346,7 @@ export function getGetHistoryListening200Response() {
       },
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       title: faker.lorem.slug(1),
       creation_date: faker.date.past(),
       is_local: faker.datatype.boolean(),
@@ -4356,7 +4356,7 @@ export function getGetHistoryListening200Response() {
       copyright: faker.lorem.slug(1),
       license: faker.lorem.slug(1),
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -4594,7 +4594,7 @@ export function getGetLibraries200Response() {
     results: [
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       fid: faker.internet.url(),
       name: faker.person.fullName(),
       description: faker.lorem.slug(1),
@@ -4629,7 +4629,7 @@ export function getGetLibraries200Response() {
 
 export function getCreateLibrary201Response() {
   return {
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     fid: faker.internet.url(),
     name: faker.person.fullName(),
     description: faker.lorem.slug(1),
@@ -4663,7 +4663,7 @@ export function getCreateLibrary201Response() {
 
 export function getGetLibrary200Response() {
   return {
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     fid: faker.internet.url(),
     name: faker.person.fullName(),
     description: faker.lorem.slug(1),
@@ -4697,7 +4697,7 @@ export function getGetLibrary200Response() {
 
 export function getUpdateLibrary200Response() {
   return {
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     fid: faker.internet.url(),
     name: faker.person.fullName(),
     description: faker.lorem.slug(1),
@@ -4731,7 +4731,7 @@ export function getUpdateLibrary200Response() {
 
 export function getPartialUpdateLibrary200Response() {
   return {
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     fid: faker.internet.url(),
     name: faker.person.fullName(),
     description: faker.lorem.slug(1),
@@ -4793,7 +4793,7 @@ export function getGetLibraryFollows200Response() {
         full_username: faker.person.fullName(),
         is_local: faker.datatype.boolean(),
       },
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       target: faker.lorem.slug(1),
       approved: faker.datatype.boolean(),
     })),
@@ -5063,12 +5063,12 @@ export function getAdminGetChannels200Response() {
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
       id: faker.number.int({ min: undefined, max: undefined }),
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       creation_date: faker.date.past(),
       artist: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         name: faker.person.fullName(),
         creation_date: faker.date.past(),
         domain: faker.lorem.slug(1),
@@ -5106,7 +5106,7 @@ export function getAdminGetChannels200Response() {
           ).keys(),
         ].map((_) => faker.lorem.slug(1)),
         cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -5182,12 +5182,12 @@ export function getAdminGetChannels200Response() {
 export function getAdminGetChannel200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     creation_date: faker.date.past(),
     artist: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       name: faker.person.fullName(),
       creation_date: faker.date.past(),
       domain: faker.lorem.slug(1),
@@ -5225,7 +5225,7 @@ export function getAdminGetChannel200Response() {
         ).keys(),
       ].map((_) => faker.lorem.slug(1)),
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -5300,12 +5300,12 @@ export function getAdminGetChannel200Response() {
 export function getAdminGetChannelStats200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     creation_date: faker.date.past(),
     artist: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       name: faker.person.fullName(),
       creation_date: faker.date.past(),
       domain: faker.lorem.slug(1),
@@ -5343,7 +5343,7 @@ export function getAdminGetChannelStats200Response() {
         ).keys(),
       ].map((_) => faker.lorem.slug(1)),
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -5576,12 +5576,12 @@ export function getAdminGetAlbums200Response() {
     ].map((_) => ({
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       title: faker.lorem.slug(1),
       creation_date: faker.date.past(),
       release_date: faker.date.past(),
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -5595,7 +5595,7 @@ export function getAdminGetAlbums200Response() {
       artist: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         name: faker.person.fullName(),
         creation_date: faker.date.past(),
         domain: faker.lorem.slug(1),
@@ -5639,12 +5639,12 @@ export function getAdminGetAlbum200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
     fid: faker.internet.url(),
-    mbid: faker.datatype.uuid(),
+    mbid: faker.string.uuid(),
     title: faker.lorem.slug(1),
     creation_date: faker.date.past(),
     release_date: faker.date.past(),
     cover: {
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       size: faker.number.int({ min: undefined, max: undefined }),
       mimetype: faker.lorem.slug(1),
       creation_date: faker.date.past(),
@@ -5658,7 +5658,7 @@ export function getAdminGetAlbum200Response() {
     artist: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       name: faker.person.fullName(),
       creation_date: faker.date.past(),
       domain: faker.lorem.slug(1),
@@ -5699,12 +5699,12 @@ export function getAdminGetLibraryAlbumStats200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
     fid: faker.internet.url(),
-    mbid: faker.datatype.uuid(),
+    mbid: faker.string.uuid(),
     title: faker.lorem.slug(1),
     creation_date: faker.date.past(),
     release_date: faker.date.past(),
     cover: {
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       size: faker.number.int({ min: undefined, max: undefined }),
       mimetype: faker.lorem.slug(1),
       creation_date: faker.date.past(),
@@ -5718,7 +5718,7 @@ export function getAdminGetLibraryAlbumStats200Response() {
     artist: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       name: faker.person.fullName(),
       creation_date: faker.date.past(),
       domain: faker.lorem.slug(1),
@@ -5759,12 +5759,12 @@ export function getAdminCreateAlbumAction200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
     fid: faker.internet.url(),
-    mbid: faker.datatype.uuid(),
+    mbid: faker.string.uuid(),
     title: faker.lorem.slug(1),
     creation_date: faker.date.past(),
     release_date: faker.date.past(),
     cover: {
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       size: faker.number.int({ min: undefined, max: undefined }),
       mimetype: faker.lorem.slug(1),
       creation_date: faker.date.past(),
@@ -5778,7 +5778,7 @@ export function getAdminCreateAlbumAction200Response() {
     artist: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       name: faker.person.fullName(),
       creation_date: faker.date.past(),
       domain: faker.lorem.slug(1),
@@ -5825,7 +5825,7 @@ export function getAdminGetArtists200Response() {
     ].map((_) => ({
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       name: faker.person.fullName(),
       creation_date: faker.date.past(),
       domain: faker.lorem.slug(1),
@@ -5863,7 +5863,7 @@ export function getAdminGetArtists200Response() {
         ).keys(),
       ].map((_) => faker.lorem.slug(1)),
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -5885,7 +5885,7 @@ export function getAdminGetArtist200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
     fid: faker.internet.url(),
-    mbid: faker.datatype.uuid(),
+    mbid: faker.string.uuid(),
     name: faker.person.fullName(),
     creation_date: faker.date.past(),
     domain: faker.lorem.slug(1),
@@ -5921,7 +5921,7 @@ export function getAdminGetArtist200Response() {
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => faker.lorem.slug(1)),
     cover: {
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       size: faker.number.int({ min: undefined, max: undefined }),
       mimetype: faker.lorem.slug(1),
       creation_date: faker.date.past(),
@@ -5938,7 +5938,7 @@ export function getAdminGetLibraryArtistStats200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
     fid: faker.internet.url(),
-    mbid: faker.datatype.uuid(),
+    mbid: faker.string.uuid(),
     name: faker.person.fullName(),
     creation_date: faker.date.past(),
     domain: faker.lorem.slug(1),
@@ -5974,7 +5974,7 @@ export function getAdminGetLibraryArtistStats200Response() {
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => faker.lorem.slug(1)),
     cover: {
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       size: faker.number.int({ min: undefined, max: undefined }),
       mimetype: faker.lorem.slug(1),
       creation_date: faker.date.past(),
@@ -5991,7 +5991,7 @@ export function getAdminCreateArtistAction200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
     fid: faker.internet.url(),
-    mbid: faker.datatype.uuid(),
+    mbid: faker.string.uuid(),
     name: faker.person.fullName(),
     creation_date: faker.date.past(),
     domain: faker.lorem.slug(1),
@@ -6027,7 +6027,7 @@ export function getAdminCreateArtistAction200Response() {
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => faker.lorem.slug(1)),
     cover: {
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       size: faker.number.int({ min: undefined, max: undefined }),
       mimetype: faker.lorem.slug(1),
       creation_date: faker.date.past(),
@@ -6049,7 +6049,7 @@ export function getAdminGetLibraries200Response() {
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
       id: faker.number.int({ min: undefined, max: undefined }),
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       fid: faker.internet.url(),
       url: faker.internet.url(),
       name: faker.person.fullName(),
@@ -6093,7 +6093,7 @@ export function getAdminGetLibraries200Response() {
 export function getAdminGetLibrary200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     fid: faker.internet.url(),
     url: faker.internet.url(),
     name: faker.person.fullName(),
@@ -6136,7 +6136,7 @@ export function getAdminGetLibrary200Response() {
 export function getAdminUpdateLibrary200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     fid: faker.internet.url(),
     url: faker.internet.url(),
     name: faker.person.fullName(),
@@ -6179,7 +6179,7 @@ export function getAdminUpdateLibrary200Response() {
 export function getAdminPartialUpdateLibrary200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     fid: faker.internet.url(),
     url: faker.internet.url(),
     name: faker.person.fullName(),
@@ -6222,7 +6222,7 @@ export function getAdminPartialUpdateLibrary200Response() {
 export function getAdminGetLibraryStats200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     fid: faker.internet.url(),
     url: faker.internet.url(),
     name: faker.person.fullName(),
@@ -6265,7 +6265,7 @@ export function getAdminGetLibraryStats200Response() {
 export function getAdminCreateLibraryAction200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     fid: faker.internet.url(),
     url: faker.internet.url(),
     name: faker.person.fullName(),
@@ -6315,7 +6315,7 @@ export function getAdminGetTracks200Response() {
     ].map((_) => ({
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       title: faker.lorem.slug(1),
       creation_date: faker.date.past(),
       position: faker.number.int({ min: 0, max: 2147483647 }),
@@ -6327,7 +6327,7 @@ export function getAdminGetTracks200Response() {
       artist: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         name: faker.person.fullName(),
         creation_date: faker.date.past(),
         domain: faker.lorem.slug(1),
@@ -6336,12 +6336,12 @@ export function getAdminGetTracks200Response() {
       album: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         title: faker.lorem.slug(1),
         creation_date: faker.date.past(),
         release_date: faker.date.past(),
         cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -6355,7 +6355,7 @@ export function getAdminGetTracks200Response() {
         artist: {
           id: faker.number.int({ min: undefined, max: undefined }),
           fid: faker.internet.url(),
-          mbid: faker.datatype.uuid(),
+          mbid: faker.string.uuid(),
           name: faker.person.fullName(),
           creation_date: faker.date.past(),
           domain: faker.lorem.slug(1),
@@ -6394,7 +6394,7 @@ export function getAdminGetTracks200Response() {
         ).keys(),
       ].map((_) => faker.lorem.slug(1)),
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -6410,7 +6410,7 @@ export function getAdminGetTrack200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
     fid: faker.internet.url(),
-    mbid: faker.datatype.uuid(),
+    mbid: faker.string.uuid(),
     title: faker.lorem.slug(1),
     creation_date: faker.date.past(),
     position: faker.number.int({ min: 0, max: 2147483647 }),
@@ -6422,7 +6422,7 @@ export function getAdminGetTrack200Response() {
     artist: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       name: faker.person.fullName(),
       creation_date: faker.date.past(),
       domain: faker.lorem.slug(1),
@@ -6431,12 +6431,12 @@ export function getAdminGetTrack200Response() {
     album: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       title: faker.lorem.slug(1),
       creation_date: faker.date.past(),
       release_date: faker.date.past(),
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -6450,7 +6450,7 @@ export function getAdminGetTrack200Response() {
       artist: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         name: faker.person.fullName(),
         creation_date: faker.date.past(),
         domain: faker.lorem.slug(1),
@@ -6487,7 +6487,7 @@ export function getAdminGetTrack200Response() {
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => faker.lorem.slug(1)),
     cover: {
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       size: faker.number.int({ min: undefined, max: undefined }),
       mimetype: faker.lorem.slug(1),
       creation_date: faker.date.past(),
@@ -6502,7 +6502,7 @@ export function getAdminGetTrackStats200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
     fid: faker.internet.url(),
-    mbid: faker.datatype.uuid(),
+    mbid: faker.string.uuid(),
     title: faker.lorem.slug(1),
     creation_date: faker.date.past(),
     position: faker.number.int({ min: 0, max: 2147483647 }),
@@ -6514,7 +6514,7 @@ export function getAdminGetTrackStats200Response() {
     artist: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       name: faker.person.fullName(),
       creation_date: faker.date.past(),
       domain: faker.lorem.slug(1),
@@ -6523,12 +6523,12 @@ export function getAdminGetTrackStats200Response() {
     album: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       title: faker.lorem.slug(1),
       creation_date: faker.date.past(),
       release_date: faker.date.past(),
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -6542,7 +6542,7 @@ export function getAdminGetTrackStats200Response() {
       artist: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         name: faker.person.fullName(),
         creation_date: faker.date.past(),
         domain: faker.lorem.slug(1),
@@ -6579,7 +6579,7 @@ export function getAdminGetTrackStats200Response() {
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => faker.lorem.slug(1)),
     cover: {
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       size: faker.number.int({ min: undefined, max: undefined }),
       mimetype: faker.lorem.slug(1),
       creation_date: faker.date.past(),
@@ -6594,7 +6594,7 @@ export function getAdminCreateTrackAction200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
     fid: faker.internet.url(),
-    mbid: faker.datatype.uuid(),
+    mbid: faker.string.uuid(),
     title: faker.lorem.slug(1),
     creation_date: faker.date.past(),
     position: faker.number.int({ min: 0, max: 2147483647 }),
@@ -6606,7 +6606,7 @@ export function getAdminCreateTrackAction200Response() {
     artist: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       name: faker.person.fullName(),
       creation_date: faker.date.past(),
       domain: faker.lorem.slug(1),
@@ -6615,12 +6615,12 @@ export function getAdminCreateTrackAction200Response() {
     album: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       title: faker.lorem.slug(1),
       creation_date: faker.date.past(),
       release_date: faker.date.past(),
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -6634,7 +6634,7 @@ export function getAdminCreateTrackAction200Response() {
       artist: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         name: faker.person.fullName(),
         creation_date: faker.date.past(),
         domain: faker.lorem.slug(1),
@@ -6671,7 +6671,7 @@ export function getAdminCreateTrackAction200Response() {
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => faker.lorem.slug(1)),
     cover: {
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       size: faker.number.int({ min: undefined, max: undefined }),
       mimetype: faker.lorem.slug(1),
       creation_date: faker.date.past(),
@@ -6691,7 +6691,7 @@ export function getAdminGetUploads200Response() {
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
       id: faker.number.int({ min: undefined, max: undefined }),
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       fid: faker.internet.url(),
       domain: faker.lorem.slug(1),
       is_local: faker.datatype.boolean(),
@@ -6727,7 +6727,7 @@ export function getAdminGetUploads200Response() {
       track: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         title: faker.lorem.slug(1),
         creation_date: faker.date.past(),
         position: faker.number.int({ min: 0, max: 2147483647 }),
@@ -6739,7 +6739,7 @@ export function getAdminGetUploads200Response() {
       },
       library: {
         id: faker.number.int({ min: undefined, max: undefined }),
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         fid: faker.internet.url(),
         url: faker.internet.url(),
         name: faker.person.fullName(),
@@ -6786,7 +6786,7 @@ export function getAdminGetUploads200Response() {
 export function getAdminGetUpload200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     fid: faker.internet.url(),
     domain: faker.lorem.slug(1),
     is_local: faker.datatype.boolean(),
@@ -6822,7 +6822,7 @@ export function getAdminGetUpload200Response() {
     track: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       title: faker.lorem.slug(1),
       creation_date: faker.date.past(),
       position: faker.number.int({ min: 0, max: 2147483647 }),
@@ -6834,7 +6834,7 @@ export function getAdminGetUpload200Response() {
     },
     library: {
       id: faker.number.int({ min: undefined, max: undefined }),
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       fid: faker.internet.url(),
       url: faker.internet.url(),
       name: faker.person.fullName(),
@@ -6876,7 +6876,7 @@ export function getAdminGetUpload200Response() {
 export function getAdminCreateUploadAction200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     fid: faker.internet.url(),
     domain: faker.lorem.slug(1),
     is_local: faker.datatype.boolean(),
@@ -6912,7 +6912,7 @@ export function getAdminCreateUploadAction200Response() {
     track: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       title: faker.lorem.slug(1),
       creation_date: faker.date.past(),
       position: faker.number.int({ min: 0, max: 2147483647 }),
@@ -6924,7 +6924,7 @@ export function getAdminCreateUploadAction200Response() {
     },
     library: {
       id: faker.number.int({ min: undefined, max: undefined }),
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       fid: faker.internet.url(),
       url: faker.internet.url(),
       name: faker.person.fullName(),
@@ -6972,7 +6972,7 @@ export function getModerationGetInstancePolicies200Response() {
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
       id: faker.number.int({ min: undefined, max: undefined }),
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       target: {
         type: faker.helpers.arrayElement(["domain", "actor"]),
         id: faker.lorem.slug(1),
@@ -6992,7 +6992,7 @@ export function getModerationGetInstancePolicies200Response() {
 export function getModerationCreateInstancePolicy201Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     target: {
       type: faker.helpers.arrayElement(["domain", "actor"]),
       id: faker.lorem.slug(1),
@@ -7011,7 +7011,7 @@ export function getModerationCreateInstancePolicy201Response() {
 export function getModerationGetInstancePolicy200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     target: {
       type: faker.helpers.arrayElement(["domain", "actor"]),
       id: faker.lorem.slug(1),
@@ -7030,7 +7030,7 @@ export function getModerationGetInstancePolicy200Response() {
 export function getModerationUpdateInstancePolicy200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     target: {
       type: faker.helpers.arrayElement(["domain", "actor"]),
       id: faker.lorem.slug(1),
@@ -7049,7 +7049,7 @@ export function getModerationUpdateInstancePolicy200Response() {
 export function getModerationPartialUpdateInstancePolicy200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     target: {
       type: faker.helpers.arrayElement(["domain", "actor"]),
       id: faker.lorem.slug(1),
@@ -7074,7 +7074,7 @@ export function getModerationGetNotes200Response() {
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
       id: faker.number.int({ min: undefined, max: undefined }),
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       creation_date: faker.date.past(),
       summary: faker.lorem.slug(1),
       author: {
@@ -7112,7 +7112,7 @@ export function getModerationGetNotes200Response() {
 export function getModerationCreateNote201Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     creation_date: faker.date.past(),
     summary: faker.lorem.slug(1),
     author: {
@@ -7149,7 +7149,7 @@ export function getModerationCreateNote201Response() {
 export function getModerationGetNote200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     creation_date: faker.date.past(),
     summary: faker.lorem.slug(1),
     author: {
@@ -7192,7 +7192,7 @@ export function getModerationGetReports200Response() {
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
       id: faker.number.int({ min: undefined, max: undefined }),
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       fid: faker.internet.url(),
       creation_date: faker.date.past(),
       handled_date: faker.date.past(),
@@ -7293,7 +7293,7 @@ export function getModerationGetReports200Response() {
         ).keys(),
       ].map((_) => ({
         id: faker.number.int({ min: undefined, max: undefined }),
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         creation_date: faker.date.past(),
         summary: faker.lorem.slug(1),
         author: {
@@ -7329,7 +7329,7 @@ export function getModerationGetReports200Response() {
 export function getModerationGetReport200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     fid: faker.internet.url(),
     creation_date: faker.date.past(),
     handled_date: faker.date.past(),
@@ -7428,7 +7428,7 @@ export function getModerationGetReport200Response() {
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
       id: faker.number.int({ min: undefined, max: undefined }),
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       creation_date: faker.date.past(),
       summary: faker.lorem.slug(1),
       author: {
@@ -7463,7 +7463,7 @@ export function getModerationGetReport200Response() {
 export function getModerationUpdateReport200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     fid: faker.internet.url(),
     creation_date: faker.date.past(),
     handled_date: faker.date.past(),
@@ -7562,7 +7562,7 @@ export function getModerationUpdateReport200Response() {
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
       id: faker.number.int({ min: undefined, max: undefined }),
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       creation_date: faker.date.past(),
       summary: faker.lorem.slug(1),
       author: {
@@ -7597,7 +7597,7 @@ export function getModerationUpdateReport200Response() {
 export function getModerationPartialUpdateReport200Response() {
   return {
     id: faker.number.int({ min: undefined, max: undefined }),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     fid: faker.internet.url(),
     creation_date: faker.date.past(),
     handled_date: faker.date.past(),
@@ -7696,7 +7696,7 @@ export function getModerationPartialUpdateReport200Response() {
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
       id: faker.number.int({ min: undefined, max: undefined }),
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       creation_date: faker.date.past(),
       summary: faker.lorem.slug(1),
       author: {
@@ -8340,7 +8340,7 @@ export function getGetModerationContentFilters200Response() {
     results: [
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       target: {
         type: faker.helpers.arrayElement(["artist"]),
         id: faker.lorem.slug(1),
@@ -8352,7 +8352,7 @@ export function getGetModerationContentFilters200Response() {
 
 export function getCreateModerationContentFilter201Response() {
   return {
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     target: {
       type: faker.helpers.arrayElement(["artist"]),
       id: faker.lorem.slug(1),
@@ -8363,7 +8363,7 @@ export function getCreateModerationContentFilter201Response() {
 
 export function getGetModerationContentFilter200Response() {
   return {
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     target: {
       type: faker.helpers.arrayElement(["artist"]),
       id: faker.lorem.slug(1),
@@ -8374,7 +8374,7 @@ export function getGetModerationContentFilter200Response() {
 
 export function getCreateModerationReport201Response() {
   return {
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     summary: faker.lorem.slug(1),
     creation_date: faker.date.past(),
     handled_date: faker.date.past(),
@@ -8402,7 +8402,7 @@ export function getGetMutations200Response() {
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
       fid: faker.internet.url(),
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       type: faker.lorem.slug(1),
       creation_date: faker.date.past(),
       applied_date: faker.date.past(),
@@ -8447,7 +8447,7 @@ export function getGetMutations200Response() {
 export function getGetMutation200Response() {
   return {
     fid: faker.internet.url(),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     type: faker.lorem.slug(1),
     creation_date: faker.date.past(),
     applied_date: faker.date.past(),
@@ -8491,7 +8491,7 @@ export function getGetMutation200Response() {
 export function getApproveMutation200Response() {
   return {
     fid: faker.internet.url(),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     type: faker.lorem.slug(1),
     creation_date: faker.date.past(),
     applied_date: faker.date.past(),
@@ -8535,7 +8535,7 @@ export function getApproveMutation200Response() {
 export function getRejectMutation200Response() {
   return {
     fid: faker.internet.url(),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     type: faker.lorem.slug(1),
     creation_date: faker.date.past(),
     applied_date: faker.date.past(),
@@ -8694,7 +8694,7 @@ export function getGetPlaylists200Response() {
         name: faker.person.fullName(),
         date_joined: faker.date.past(),
         avatar: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -8754,7 +8754,7 @@ export function getCreatePlaylist201Response() {
       name: faker.person.fullName(),
       date_joined: faker.date.past(),
       avatar: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -8811,7 +8811,7 @@ export function getGetPlaylist200Response() {
       name: faker.person.fullName(),
       date_joined: faker.date.past(),
       avatar: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -8868,7 +8868,7 @@ export function getUpdatePlaylist200Response() {
       name: faker.person.fullName(),
       date_joined: faker.date.past(),
       avatar: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -8925,7 +8925,7 @@ export function getPartialUpdatePlaylist200Response() {
       name: faker.person.fullName(),
       date_joined: faker.date.past(),
       avatar: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -8982,7 +8982,7 @@ export function getAddToPlaylist200Response() {
       name: faker.person.fullName(),
       date_joined: faker.date.past(),
       avatar: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -9039,7 +9039,7 @@ export function getReorderTrackInPlaylist200Response() {
       name: faker.person.fullName(),
       date_joined: faker.date.past(),
       avatar: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -9096,7 +9096,7 @@ export function getRemoveFromPlaylist2200Response() {
       name: faker.person.fullName(),
       date_joined: faker.date.past(),
       avatar: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -9176,7 +9176,7 @@ export function getGetRadios200Response() {
         name: faker.person.fullName(),
         date_joined: faker.date.past(),
         avatar: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -9205,7 +9205,7 @@ export function getCreateRadio201Response() {
       name: faker.person.fullName(),
       date_joined: faker.date.past(),
       avatar: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -9233,7 +9233,7 @@ export function getGetRadio200Response() {
       name: faker.person.fullName(),
       date_joined: faker.date.past(),
       avatar: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -9261,7 +9261,7 @@ export function getUpdateRadio200Response() {
       name: faker.person.fullName(),
       date_joined: faker.date.past(),
       avatar: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -9289,7 +9289,7 @@ export function getPartialUpdateRadio200Response() {
       name: faker.person.fullName(),
       date_joined: faker.date.past(),
       avatar: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -9310,7 +9310,7 @@ export function getGetRadioTrack200Response() {
     artist: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       name: faker.person.fullName(),
       creation_date: faker.date.past(),
       modification_date: faker.date.past(),
@@ -9330,7 +9330,7 @@ export function getGetRadioTrack200Response() {
         html: faker.lorem.slug(1),
       },
       attachment_cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -9338,17 +9338,17 @@ export function getGetRadioTrack200Response() {
           .map((_) => ({ [faker.lorem.word()]: null }))
           .reduce((acc, next) => Object.assign(acc, next), {}),
       },
-      channel: faker.datatype.uuid(),
+      channel: faker.string.uuid(),
     },
     album: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       title: faker.lorem.slug(1),
       artist: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         name: faker.person.fullName(),
         creation_date: faker.date.past(),
         modification_date: faker.date.past(),
@@ -9368,7 +9368,7 @@ export function getGetRadioTrack200Response() {
           html: faker.lorem.slug(1),
         },
         attachment_cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -9376,11 +9376,11 @@ export function getGetRadioTrack200Response() {
             .map((_) => ({ [faker.lorem.word()]: null }))
             .reduce((acc, next) => Object.assign(acc, next), {}),
         },
-        channel: faker.datatype.uuid(),
+        channel: faker.string.uuid(),
       },
       release_date: faker.date.past(),
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -9395,7 +9395,7 @@ export function getGetRadioTrack200Response() {
     uploads: [
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       listen_url: faker.internet.url(),
       size: faker.number.int({ min: undefined, max: undefined }),
       duration: faker.number.int({ min: undefined, max: undefined }),
@@ -9431,7 +9431,7 @@ export function getGetRadioTrack200Response() {
     },
     id: faker.number.int({ min: undefined, max: undefined }),
     fid: faker.internet.url(),
-    mbid: faker.datatype.uuid(),
+    mbid: faker.string.uuid(),
     title: faker.lorem.slug(1),
     creation_date: faker.date.past(),
     is_local: faker.datatype.boolean(),
@@ -9441,7 +9441,7 @@ export function getGetRadioTrack200Response() {
     copyright: faker.lorem.slug(1),
     license: faker.lorem.slug(1),
     cover: {
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       size: faker.number.int({ min: undefined, max: undefined }),
       mimetype: faker.lorem.slug(1),
       creation_date: faker.date.past(),
@@ -9474,7 +9474,7 @@ export function getValidateRadio200Response() {
       name: faker.person.fullName(),
       date_joined: faker.date.past(),
       avatar: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -9561,7 +9561,7 @@ export function getGetSearchResults200Response() {
       ].map((_) => ({
         tracks_count: faker.number.int({ min: undefined, max: undefined }),
         cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -9573,7 +9573,7 @@ export function getGetSearchResults200Response() {
         is_local: faker.datatype.boolean(),
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         title: faker.lorem.slug(1),
         artist: faker.number.int({ min: undefined, max: undefined }),
         release_date: faker.date.past(),
@@ -9616,13 +9616,13 @@ export function getGetSearchResults200Response() {
       tracks_count: faker.number.int({ min: undefined, max: undefined }),
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       name: faker.person.fullName(),
       content_category: faker.lorem.slug(1),
       creation_date: faker.date.past(),
       is_local: faker.datatype.boolean(),
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -9637,7 +9637,7 @@ export function getGetSearchResults200Response() {
       artist: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         name: faker.person.fullName(),
         creation_date: faker.date.past(),
         modification_date: faker.date.past(),
@@ -9657,7 +9657,7 @@ export function getGetSearchResults200Response() {
           html: faker.lorem.slug(1),
         },
         attachment_cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -9665,17 +9665,17 @@ export function getGetSearchResults200Response() {
             .map((_) => ({ [faker.lorem.word()]: null }))
             .reduce((acc, next) => Object.assign(acc, next), {}),
         },
-        channel: faker.datatype.uuid(),
+        channel: faker.string.uuid(),
       },
       album: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         title: faker.lorem.slug(1),
         artist: {
           id: faker.number.int({ min: undefined, max: undefined }),
           fid: faker.internet.url(),
-          mbid: faker.datatype.uuid(),
+          mbid: faker.string.uuid(),
           name: faker.person.fullName(),
           creation_date: faker.date.past(),
           modification_date: faker.date.past(),
@@ -9695,7 +9695,7 @@ export function getGetSearchResults200Response() {
             html: faker.lorem.slug(1),
           },
           attachment_cover: {
-            uuid: faker.datatype.uuid(),
+            uuid: faker.string.uuid(),
             size: faker.number.int({ min: undefined, max: undefined }),
             mimetype: faker.lorem.slug(1),
             creation_date: faker.date.past(),
@@ -9703,11 +9703,11 @@ export function getGetSearchResults200Response() {
               .map((_) => ({ [faker.lorem.word()]: null }))
               .reduce((acc, next) => Object.assign(acc, next), {}),
           },
-          channel: faker.datatype.uuid(),
+          channel: faker.string.uuid(),
         },
         release_date: faker.date.past(),
         cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -9724,7 +9724,7 @@ export function getGetSearchResults200Response() {
           faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH }),
         ).keys(),
       ].map((_) => ({
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         listen_url: faker.internet.url(),
         size: faker.number.int({ min: undefined, max: undefined }),
         duration: faker.number.int({ min: undefined, max: undefined }),
@@ -9762,7 +9762,7 @@ export function getGetSearchResults200Response() {
       },
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       title: faker.lorem.slug(1),
       creation_date: faker.date.past(),
       is_local: faker.datatype.boolean(),
@@ -9772,7 +9772,7 @@ export function getGetSearchResults200Response() {
       copyright: faker.lorem.slug(1),
       license: faker.lorem.slug(1),
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -9788,7 +9788,7 @@ export function getGetSearchResults200Response() {
       artist: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         name: faker.person.fullName(),
         creation_date: faker.date.past(),
         modification_date: faker.date.past(),
@@ -9808,7 +9808,7 @@ export function getGetSearchResults200Response() {
           html: faker.lorem.slug(1),
         },
         attachment_cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -9816,10 +9816,10 @@ export function getGetSearchResults200Response() {
             .map((_) => ({ [faker.lorem.word()]: null }))
             .reduce((acc, next) => Object.assign(acc, next), {}),
         },
-        channel: faker.datatype.uuid(),
+        channel: faker.string.uuid(),
       },
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -9857,7 +9857,7 @@ export function getGetSearchResults200Response() {
       },
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       title: faker.lorem.slug(1),
       release_date: faker.date.past(),
       creation_date: faker.date.past(),
@@ -9887,7 +9887,7 @@ export function getGetSubscriptions200Response() {
     ].map((_) => ({
       approved: faker.datatype.boolean(),
       fid: faker.internet.url(),
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       creation_date: faker.date.past(),
     })),
   };
@@ -9897,7 +9897,7 @@ export function getGetSubscription200Response() {
   return {
     approved: faker.datatype.boolean(),
     fid: faker.internet.url(),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     creation_date: faker.date.past(),
   };
 }
@@ -9907,8 +9907,8 @@ export function getGetAllSubscriptions200Response() {
     results: [
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
-      uuid: faker.datatype.uuid(),
-      channel: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
+      channel: faker.string.uuid(),
     })),
     count: faker.number.int({ min: undefined, max: undefined }),
   };
@@ -9958,7 +9958,7 @@ export function getGetTracks200Response() {
       artist: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         name: faker.person.fullName(),
         creation_date: faker.date.past(),
         modification_date: faker.date.past(),
@@ -9978,7 +9978,7 @@ export function getGetTracks200Response() {
           html: faker.lorem.slug(1),
         },
         attachment_cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -9986,17 +9986,17 @@ export function getGetTracks200Response() {
             .map((_) => ({ [faker.lorem.word()]: null }))
             .reduce((acc, next) => Object.assign(acc, next), {}),
         },
-        channel: faker.datatype.uuid(),
+        channel: faker.string.uuid(),
       },
       album: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         title: faker.lorem.slug(1),
         artist: {
           id: faker.number.int({ min: undefined, max: undefined }),
           fid: faker.internet.url(),
-          mbid: faker.datatype.uuid(),
+          mbid: faker.string.uuid(),
           name: faker.person.fullName(),
           creation_date: faker.date.past(),
           modification_date: faker.date.past(),
@@ -10016,7 +10016,7 @@ export function getGetTracks200Response() {
             html: faker.lorem.slug(1),
           },
           attachment_cover: {
-            uuid: faker.datatype.uuid(),
+            uuid: faker.string.uuid(),
             size: faker.number.int({ min: undefined, max: undefined }),
             mimetype: faker.lorem.slug(1),
             creation_date: faker.date.past(),
@@ -10024,11 +10024,11 @@ export function getGetTracks200Response() {
               .map((_) => ({ [faker.lorem.word()]: null }))
               .reduce((acc, next) => Object.assign(acc, next), {}),
           },
-          channel: faker.datatype.uuid(),
+          channel: faker.string.uuid(),
         },
         release_date: faker.date.past(),
         cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -10045,7 +10045,7 @@ export function getGetTracks200Response() {
           faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH }),
         ).keys(),
       ].map((_) => ({
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         listen_url: faker.internet.url(),
         size: faker.number.int({ min: undefined, max: undefined }),
         duration: faker.number.int({ min: undefined, max: undefined }),
@@ -10083,7 +10083,7 @@ export function getGetTracks200Response() {
       },
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       title: faker.lorem.slug(1),
       creation_date: faker.date.past(),
       is_local: faker.datatype.boolean(),
@@ -10093,7 +10093,7 @@ export function getGetTracks200Response() {
       copyright: faker.lorem.slug(1),
       license: faker.lorem.slug(1),
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -10111,7 +10111,7 @@ export function getGetTrack200Response() {
     artist: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       name: faker.person.fullName(),
       creation_date: faker.date.past(),
       modification_date: faker.date.past(),
@@ -10131,7 +10131,7 @@ export function getGetTrack200Response() {
         html: faker.lorem.slug(1),
       },
       attachment_cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -10139,17 +10139,17 @@ export function getGetTrack200Response() {
           .map((_) => ({ [faker.lorem.word()]: null }))
           .reduce((acc, next) => Object.assign(acc, next), {}),
       },
-      channel: faker.datatype.uuid(),
+      channel: faker.string.uuid(),
     },
     album: {
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       title: faker.lorem.slug(1),
       artist: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         name: faker.person.fullName(),
         creation_date: faker.date.past(),
         modification_date: faker.date.past(),
@@ -10169,7 +10169,7 @@ export function getGetTrack200Response() {
           html: faker.lorem.slug(1),
         },
         attachment_cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -10177,11 +10177,11 @@ export function getGetTrack200Response() {
             .map((_) => ({ [faker.lorem.word()]: null }))
             .reduce((acc, next) => Object.assign(acc, next), {}),
         },
-        channel: faker.datatype.uuid(),
+        channel: faker.string.uuid(),
       },
       release_date: faker.date.past(),
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -10196,7 +10196,7 @@ export function getGetTrack200Response() {
     uploads: [
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       listen_url: faker.internet.url(),
       size: faker.number.int({ min: undefined, max: undefined }),
       duration: faker.number.int({ min: undefined, max: undefined }),
@@ -10232,7 +10232,7 @@ export function getGetTrack200Response() {
     },
     id: faker.number.int({ min: undefined, max: undefined }),
     fid: faker.internet.url(),
-    mbid: faker.datatype.uuid(),
+    mbid: faker.string.uuid(),
     title: faker.lorem.slug(1),
     creation_date: faker.date.past(),
     is_local: faker.datatype.boolean(),
@@ -10242,7 +10242,7 @@ export function getGetTrack200Response() {
     copyright: faker.lorem.slug(1),
     license: faker.lorem.slug(1),
     cover: {
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       size: faker.number.int({ min: undefined, max: undefined }),
       mimetype: faker.lorem.slug(1),
       creation_date: faker.date.past(),
@@ -10348,7 +10348,7 @@ export function getGetTrackLibraries200Response() {
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
       fid: faker.internet.url(),
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       actor: {
         fid: faker.internet.url(),
         url: faker.internet.url(),
@@ -10377,7 +10377,7 @@ export function getGetTrackLibraries200Response() {
       privacy_level: faker.helpers.arrayElement(["me", "instance", "everyone"]),
       follow: {
         creation_date: faker.date.past(),
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         fid: faker.internet.url(),
         approved: faker.datatype.boolean(),
         modification_date: faker.date.past(),
@@ -10403,7 +10403,7 @@ export function getGetTrackMutations200Response() {
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
       fid: faker.internet.url(),
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       type: faker.lorem.slug(1),
       creation_date: faker.date.past(),
       applied_date: faker.date.past(),
@@ -10448,7 +10448,7 @@ export function getGetTrackMutations200Response() {
 export function getCreateTrackMutation200Response() {
   return {
     fid: faker.internet.url(),
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     type: faker.lorem.slug(1),
     creation_date: faker.date.past(),
     applied_date: faker.date.past(),
@@ -10497,7 +10497,7 @@ export function getGetUploads200Response() {
     results: [
       ...new Array(faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH })).keys(),
     ].map((_) => ({
-      uuid: faker.datatype.uuid(),
+      uuid: faker.string.uuid(),
       filename: faker.person.fullName(),
       creation_date: faker.date.past(),
       mimetype: faker.lorem.slug(1),
@@ -10505,7 +10505,7 @@ export function getGetUploads200Response() {
         artist: {
           id: faker.number.int({ min: undefined, max: undefined }),
           fid: faker.internet.url(),
-          mbid: faker.datatype.uuid(),
+          mbid: faker.string.uuid(),
           name: faker.person.fullName(),
           creation_date: faker.date.past(),
           modification_date: faker.date.past(),
@@ -10525,7 +10525,7 @@ export function getGetUploads200Response() {
             html: faker.lorem.slug(1),
           },
           attachment_cover: {
-            uuid: faker.datatype.uuid(),
+            uuid: faker.string.uuid(),
             size: faker.number.int({ min: undefined, max: undefined }),
             mimetype: faker.lorem.slug(1),
             creation_date: faker.date.past(),
@@ -10533,17 +10533,17 @@ export function getGetUploads200Response() {
               .map((_) => ({ [faker.lorem.word()]: null }))
               .reduce((acc, next) => Object.assign(acc, next), {}),
           },
-          channel: faker.datatype.uuid(),
+          channel: faker.string.uuid(),
         },
         album: {
           id: faker.number.int({ min: undefined, max: undefined }),
           fid: faker.internet.url(),
-          mbid: faker.datatype.uuid(),
+          mbid: faker.string.uuid(),
           title: faker.lorem.slug(1),
           artist: {
             id: faker.number.int({ min: undefined, max: undefined }),
             fid: faker.internet.url(),
-            mbid: faker.datatype.uuid(),
+            mbid: faker.string.uuid(),
             name: faker.person.fullName(),
             creation_date: faker.date.past(),
             modification_date: faker.date.past(),
@@ -10563,7 +10563,7 @@ export function getGetUploads200Response() {
               html: faker.lorem.slug(1),
             },
             attachment_cover: {
-              uuid: faker.datatype.uuid(),
+              uuid: faker.string.uuid(),
               size: faker.number.int({ min: undefined, max: undefined }),
               mimetype: faker.lorem.slug(1),
               creation_date: faker.date.past(),
@@ -10571,11 +10571,11 @@ export function getGetUploads200Response() {
                 .map((_) => ({ [faker.lorem.word()]: null }))
                 .reduce((acc, next) => Object.assign(acc, next), {}),
             },
-            channel: faker.datatype.uuid(),
+            channel: faker.string.uuid(),
           },
           release_date: faker.date.past(),
           cover: {
-            uuid: faker.datatype.uuid(),
+            uuid: faker.string.uuid(),
             size: faker.number.int({ min: undefined, max: undefined }),
             mimetype: faker.lorem.slug(1),
             creation_date: faker.date.past(),
@@ -10592,7 +10592,7 @@ export function getGetUploads200Response() {
             faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH }),
           ).keys(),
         ].map((_) => ({
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           listen_url: faker.internet.url(),
           size: faker.number.int({ min: undefined, max: undefined }),
           duration: faker.number.int({ min: undefined, max: undefined }),
@@ -10630,7 +10630,7 @@ export function getGetUploads200Response() {
         },
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         title: faker.lorem.slug(1),
         creation_date: faker.date.past(),
         is_local: faker.datatype.boolean(),
@@ -10640,7 +10640,7 @@ export function getGetUploads200Response() {
         copyright: faker.lorem.slug(1),
         license: faker.lorem.slug(1),
         cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -10680,7 +10680,7 @@ export function getGetUploads200Response() {
 
 export function getCreateUpload201Response() {
   return {
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     filename: faker.person.fullName(),
     creation_date: faker.date.past(),
     mimetype: faker.lorem.slug(1),
@@ -10688,7 +10688,7 @@ export function getCreateUpload201Response() {
       artist: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         name: faker.person.fullName(),
         creation_date: faker.date.past(),
         modification_date: faker.date.past(),
@@ -10708,7 +10708,7 @@ export function getCreateUpload201Response() {
           html: faker.lorem.slug(1),
         },
         attachment_cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -10716,17 +10716,17 @@ export function getCreateUpload201Response() {
             .map((_) => ({ [faker.lorem.word()]: null }))
             .reduce((acc, next) => Object.assign(acc, next), {}),
         },
-        channel: faker.datatype.uuid(),
+        channel: faker.string.uuid(),
       },
       album: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         title: faker.lorem.slug(1),
         artist: {
           id: faker.number.int({ min: undefined, max: undefined }),
           fid: faker.internet.url(),
-          mbid: faker.datatype.uuid(),
+          mbid: faker.string.uuid(),
           name: faker.person.fullName(),
           creation_date: faker.date.past(),
           modification_date: faker.date.past(),
@@ -10746,7 +10746,7 @@ export function getCreateUpload201Response() {
             html: faker.lorem.slug(1),
           },
           attachment_cover: {
-            uuid: faker.datatype.uuid(),
+            uuid: faker.string.uuid(),
             size: faker.number.int({ min: undefined, max: undefined }),
             mimetype: faker.lorem.slug(1),
             creation_date: faker.date.past(),
@@ -10754,11 +10754,11 @@ export function getCreateUpload201Response() {
               .map((_) => ({ [faker.lorem.word()]: null }))
               .reduce((acc, next) => Object.assign(acc, next), {}),
           },
-          channel: faker.datatype.uuid(),
+          channel: faker.string.uuid(),
         },
         release_date: faker.date.past(),
         cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -10775,7 +10775,7 @@ export function getCreateUpload201Response() {
           faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH }),
         ).keys(),
       ].map((_) => ({
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         listen_url: faker.internet.url(),
         size: faker.number.int({ min: undefined, max: undefined }),
         duration: faker.number.int({ min: undefined, max: undefined }),
@@ -10813,7 +10813,7 @@ export function getCreateUpload201Response() {
       },
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       title: faker.lorem.slug(1),
       creation_date: faker.date.past(),
       is_local: faker.datatype.boolean(),
@@ -10823,7 +10823,7 @@ export function getCreateUpload201Response() {
       copyright: faker.lorem.slug(1),
       license: faker.lorem.slug(1),
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -10862,7 +10862,7 @@ export function getCreateUpload201Response() {
 
 export function getGetUpload200Response() {
   return {
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     filename: faker.person.fullName(),
     creation_date: faker.date.past(),
     mimetype: faker.lorem.slug(1),
@@ -10870,7 +10870,7 @@ export function getGetUpload200Response() {
       artist: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         name: faker.person.fullName(),
         creation_date: faker.date.past(),
         modification_date: faker.date.past(),
@@ -10890,7 +10890,7 @@ export function getGetUpload200Response() {
           html: faker.lorem.slug(1),
         },
         attachment_cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -10898,17 +10898,17 @@ export function getGetUpload200Response() {
             .map((_) => ({ [faker.lorem.word()]: null }))
             .reduce((acc, next) => Object.assign(acc, next), {}),
         },
-        channel: faker.datatype.uuid(),
+        channel: faker.string.uuid(),
       },
       album: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         title: faker.lorem.slug(1),
         artist: {
           id: faker.number.int({ min: undefined, max: undefined }),
           fid: faker.internet.url(),
-          mbid: faker.datatype.uuid(),
+          mbid: faker.string.uuid(),
           name: faker.person.fullName(),
           creation_date: faker.date.past(),
           modification_date: faker.date.past(),
@@ -10928,7 +10928,7 @@ export function getGetUpload200Response() {
             html: faker.lorem.slug(1),
           },
           attachment_cover: {
-            uuid: faker.datatype.uuid(),
+            uuid: faker.string.uuid(),
             size: faker.number.int({ min: undefined, max: undefined }),
             mimetype: faker.lorem.slug(1),
             creation_date: faker.date.past(),
@@ -10936,11 +10936,11 @@ export function getGetUpload200Response() {
               .map((_) => ({ [faker.lorem.word()]: null }))
               .reduce((acc, next) => Object.assign(acc, next), {}),
           },
-          channel: faker.datatype.uuid(),
+          channel: faker.string.uuid(),
         },
         release_date: faker.date.past(),
         cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -10957,7 +10957,7 @@ export function getGetUpload200Response() {
           faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH }),
         ).keys(),
       ].map((_) => ({
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         listen_url: faker.internet.url(),
         size: faker.number.int({ min: undefined, max: undefined }),
         duration: faker.number.int({ min: undefined, max: undefined }),
@@ -10995,7 +10995,7 @@ export function getGetUpload200Response() {
       },
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       title: faker.lorem.slug(1),
       creation_date: faker.date.past(),
       is_local: faker.datatype.boolean(),
@@ -11005,7 +11005,7 @@ export function getGetUpload200Response() {
       copyright: faker.lorem.slug(1),
       license: faker.lorem.slug(1),
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -11044,7 +11044,7 @@ export function getGetUpload200Response() {
 
 export function getUpdateUpload200Response() {
   return {
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     filename: faker.person.fullName(),
     creation_date: faker.date.past(),
     mimetype: faker.lorem.slug(1),
@@ -11052,7 +11052,7 @@ export function getUpdateUpload200Response() {
       artist: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         name: faker.person.fullName(),
         creation_date: faker.date.past(),
         modification_date: faker.date.past(),
@@ -11072,7 +11072,7 @@ export function getUpdateUpload200Response() {
           html: faker.lorem.slug(1),
         },
         attachment_cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -11080,17 +11080,17 @@ export function getUpdateUpload200Response() {
             .map((_) => ({ [faker.lorem.word()]: null }))
             .reduce((acc, next) => Object.assign(acc, next), {}),
         },
-        channel: faker.datatype.uuid(),
+        channel: faker.string.uuid(),
       },
       album: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         title: faker.lorem.slug(1),
         artist: {
           id: faker.number.int({ min: undefined, max: undefined }),
           fid: faker.internet.url(),
-          mbid: faker.datatype.uuid(),
+          mbid: faker.string.uuid(),
           name: faker.person.fullName(),
           creation_date: faker.date.past(),
           modification_date: faker.date.past(),
@@ -11110,7 +11110,7 @@ export function getUpdateUpload200Response() {
             html: faker.lorem.slug(1),
           },
           attachment_cover: {
-            uuid: faker.datatype.uuid(),
+            uuid: faker.string.uuid(),
             size: faker.number.int({ min: undefined, max: undefined }),
             mimetype: faker.lorem.slug(1),
             creation_date: faker.date.past(),
@@ -11118,11 +11118,11 @@ export function getUpdateUpload200Response() {
               .map((_) => ({ [faker.lorem.word()]: null }))
               .reduce((acc, next) => Object.assign(acc, next), {}),
           },
-          channel: faker.datatype.uuid(),
+          channel: faker.string.uuid(),
         },
         release_date: faker.date.past(),
         cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -11139,7 +11139,7 @@ export function getUpdateUpload200Response() {
           faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH }),
         ).keys(),
       ].map((_) => ({
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         listen_url: faker.internet.url(),
         size: faker.number.int({ min: undefined, max: undefined }),
         duration: faker.number.int({ min: undefined, max: undefined }),
@@ -11177,7 +11177,7 @@ export function getUpdateUpload200Response() {
       },
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       title: faker.lorem.slug(1),
       creation_date: faker.date.past(),
       is_local: faker.datatype.boolean(),
@@ -11187,7 +11187,7 @@ export function getUpdateUpload200Response() {
       copyright: faker.lorem.slug(1),
       license: faker.lorem.slug(1),
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -11226,7 +11226,7 @@ export function getUpdateUpload200Response() {
 
 export function getPartialUpdateUpload200Response() {
   return {
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     filename: faker.person.fullName(),
     creation_date: faker.date.past(),
     mimetype: faker.lorem.slug(1),
@@ -11234,7 +11234,7 @@ export function getPartialUpdateUpload200Response() {
       artist: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         name: faker.person.fullName(),
         creation_date: faker.date.past(),
         modification_date: faker.date.past(),
@@ -11254,7 +11254,7 @@ export function getPartialUpdateUpload200Response() {
           html: faker.lorem.slug(1),
         },
         attachment_cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -11262,17 +11262,17 @@ export function getPartialUpdateUpload200Response() {
             .map((_) => ({ [faker.lorem.word()]: null }))
             .reduce((acc, next) => Object.assign(acc, next), {}),
         },
-        channel: faker.datatype.uuid(),
+        channel: faker.string.uuid(),
       },
       album: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         title: faker.lorem.slug(1),
         artist: {
           id: faker.number.int({ min: undefined, max: undefined }),
           fid: faker.internet.url(),
-          mbid: faker.datatype.uuid(),
+          mbid: faker.string.uuid(),
           name: faker.person.fullName(),
           creation_date: faker.date.past(),
           modification_date: faker.date.past(),
@@ -11292,7 +11292,7 @@ export function getPartialUpdateUpload200Response() {
             html: faker.lorem.slug(1),
           },
           attachment_cover: {
-            uuid: faker.datatype.uuid(),
+            uuid: faker.string.uuid(),
             size: faker.number.int({ min: undefined, max: undefined }),
             mimetype: faker.lorem.slug(1),
             creation_date: faker.date.past(),
@@ -11300,11 +11300,11 @@ export function getPartialUpdateUpload200Response() {
               .map((_) => ({ [faker.lorem.word()]: null }))
               .reduce((acc, next) => Object.assign(acc, next), {}),
           },
-          channel: faker.datatype.uuid(),
+          channel: faker.string.uuid(),
         },
         release_date: faker.date.past(),
         cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -11321,7 +11321,7 @@ export function getPartialUpdateUpload200Response() {
           faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH }),
         ).keys(),
       ].map((_) => ({
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         listen_url: faker.internet.url(),
         size: faker.number.int({ min: undefined, max: undefined }),
         duration: faker.number.int({ min: undefined, max: undefined }),
@@ -11359,7 +11359,7 @@ export function getPartialUpdateUpload200Response() {
       },
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       title: faker.lorem.slug(1),
       creation_date: faker.date.past(),
       is_local: faker.datatype.boolean(),
@@ -11369,7 +11369,7 @@ export function getPartialUpdateUpload200Response() {
       copyright: faker.lorem.slug(1),
       license: faker.lorem.slug(1),
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),
@@ -11413,7 +11413,7 @@ export function getGetUploadMetadata200Response() {
     disc_number: faker.lorem.slug(1),
     copyright: faker.lorem.slug(1),
     license: faker.lorem.slug(1),
-    mbid: faker.datatype.uuid(),
+    mbid: faker.string.uuid(),
     tags: faker.lorem.slug(1),
     description: faker.lorem.slug(1),
     album: faker.lorem.slug(1),
@@ -11424,7 +11424,7 @@ export function getGetUploadMetadata200Response() {
 
 export function getCreateUploadAction200Response() {
   return {
-    uuid: faker.datatype.uuid(),
+    uuid: faker.string.uuid(),
     filename: faker.person.fullName(),
     creation_date: faker.date.past(),
     mimetype: faker.lorem.slug(1),
@@ -11432,7 +11432,7 @@ export function getCreateUploadAction200Response() {
       artist: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         name: faker.person.fullName(),
         creation_date: faker.date.past(),
         modification_date: faker.date.past(),
@@ -11452,7 +11452,7 @@ export function getCreateUploadAction200Response() {
           html: faker.lorem.slug(1),
         },
         attachment_cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -11460,17 +11460,17 @@ export function getCreateUploadAction200Response() {
             .map((_) => ({ [faker.lorem.word()]: null }))
             .reduce((acc, next) => Object.assign(acc, next), {}),
         },
-        channel: faker.datatype.uuid(),
+        channel: faker.string.uuid(),
       },
       album: {
         id: faker.number.int({ min: undefined, max: undefined }),
         fid: faker.internet.url(),
-        mbid: faker.datatype.uuid(),
+        mbid: faker.string.uuid(),
         title: faker.lorem.slug(1),
         artist: {
           id: faker.number.int({ min: undefined, max: undefined }),
           fid: faker.internet.url(),
-          mbid: faker.datatype.uuid(),
+          mbid: faker.string.uuid(),
           name: faker.person.fullName(),
           creation_date: faker.date.past(),
           modification_date: faker.date.past(),
@@ -11490,7 +11490,7 @@ export function getCreateUploadAction200Response() {
             html: faker.lorem.slug(1),
           },
           attachment_cover: {
-            uuid: faker.datatype.uuid(),
+            uuid: faker.string.uuid(),
             size: faker.number.int({ min: undefined, max: undefined }),
             mimetype: faker.lorem.slug(1),
             creation_date: faker.date.past(),
@@ -11498,11 +11498,11 @@ export function getCreateUploadAction200Response() {
               .map((_) => ({ [faker.lorem.word()]: null }))
               .reduce((acc, next) => Object.assign(acc, next), {}),
           },
-          channel: faker.datatype.uuid(),
+          channel: faker.string.uuid(),
         },
         release_date: faker.date.past(),
         cover: {
-          uuid: faker.datatype.uuid(),
+          uuid: faker.string.uuid(),
           size: faker.number.int({ min: undefined, max: undefined }),
           mimetype: faker.lorem.slug(1),
           creation_date: faker.date.past(),
@@ -11519,7 +11519,7 @@ export function getCreateUploadAction200Response() {
           faker.number.int({ min: 1, max: MAX_ARRAY_LENGTH }),
         ).keys(),
       ].map((_) => ({
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         listen_url: faker.internet.url(),
         size: faker.number.int({ min: undefined, max: undefined }),
         duration: faker.number.int({ min: undefined, max: undefined }),
@@ -11557,7 +11557,7 @@ export function getCreateUploadAction200Response() {
       },
       id: faker.number.int({ min: undefined, max: undefined }),
       fid: faker.internet.url(),
-      mbid: faker.datatype.uuid(),
+      mbid: faker.string.uuid(),
       title: faker.lorem.slug(1),
       creation_date: faker.date.past(),
       is_local: faker.datatype.boolean(),
@@ -11567,7 +11567,7 @@ export function getCreateUploadAction200Response() {
       copyright: faker.lorem.slug(1),
       license: faker.lorem.slug(1),
       cover: {
-        uuid: faker.datatype.uuid(),
+        uuid: faker.string.uuid(),
         size: faker.number.int({ min: undefined, max: undefined }),
         mimetype: faker.lorem.slug(1),
         creation_date: faker.date.past(),

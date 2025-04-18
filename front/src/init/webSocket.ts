@@ -70,6 +70,8 @@ export const install: InitModule = ({ store }) => {
       const { current } = store.state.radios
 
       if (current.clientOnly) {
+        // TODO: Type this event
+        // @ts-expect-error untyped event
         await CLIENT_RADIOS[current.type].handleListen(current, event)
       }
     }

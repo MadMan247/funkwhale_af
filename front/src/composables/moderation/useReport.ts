@@ -1,4 +1,5 @@
 import type { Track, Artist, Album, Playlist, Library, Channel, Actor, ArtistCredit } from '~/types'
+import type { components } from '~/generated/types'
 
 import { i18n } from '~/init/locale'
 
@@ -8,11 +9,11 @@ const { t } = i18n.global
 
 interface Objects {
   track?: Track | null
-  album?: Album | null
-  artist?: Artist | null
+  album?: Album | components['schemas']['TrackAlbum'] | null
+  artist?: Artist | components['schemas']['ArtistWithAlbums'] | components["schemas"]["SimpleChannelArtist"] | null
   artistCredit?: ArtistCredit[] | null
   playlist?: Playlist | null
-  account?: Actor | null
+  account?: Actor | components['schemas']['APIActor'] | null
   library?: Library | null
   channel?: Channel | null
 }

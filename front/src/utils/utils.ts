@@ -1,4 +1,5 @@
 import type { Track, Album, ArtistCredit, QueueItemSource } from '~/types'
+import type { components } from '~/generated/types'
 import { useStore } from '~/store'
 import type { QueueTrack } from '~/composables/audio/queue'
 
@@ -30,8 +31,7 @@ export function generateTrackCreditStringFromQueue (track: QueueTrack | QueueIte
 
 export function getArtistCoverUrl (artistCredits: ArtistCredit[]): string | undefined {
   for (const artistCredit of artistCredits) {
-    const cover = artistCredit.artist.cover
-    const mediumSquareCrop = cover?.urls?.medium_square_crop
+    const mediumSquareCrop = getSimpleArtistCoverUrl(artistCredit.artist, 'medium_square_crop')
 
     if (mediumSquareCrop) {
       return store.getters['instance/absoluteUrl'](mediumSquareCrop)
@@ -39,3 +39,17 @@ export function getArtistCoverUrl (artistCredits: ArtistCredit[]): string | unde
   }
   return undefined
 }
+
+const getSimpleArtistCover = (artist: components['schemas']['SimpleChannelArtist'] | components['schemas']['Artist'] | components['schemas']['ArtistWithAlbums']) =>
+  (field: 'original' | 'small_square_crop' | 'medium_square_crop' | 'large_square_crop') =>
+    artist.cover
+      ? (field in artist.cover ? artist.cover.urls[field] : null)
+      : null
+
+/** Returns the absolute Url of this artist's cover on this instance
+ *
+ * @param artist: a simple artist
+ * @param field: the size you want
+*/
+export const getSimpleArtistCoverUrl = (artist: components['schemas']['SimpleChannelArtist'] | components['schemas']['Artist'] | components['schemas']['ArtistWithAlbums'], field: 'original' | 'small_square_crop' | 'medium_square_crop' | 'large_square_crop') =>
+  store.getters['instance/absoluteUrl'](getSimpleArtistCover(artist)(field))

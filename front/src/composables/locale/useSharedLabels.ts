@@ -1,4 +1,5 @@
-import type { PrivacyLevel, ImportStatus } from '~/types'
+import type { ImportStatus } from '~/types'
+import type { components } from '~/generated/types'
 import type { ScopeId } from '~/composables/auth/useScopes'
 
 import { i18n } from '~/init/locale'
@@ -13,13 +14,15 @@ export default () => ({
       choices: {
         me: t('composables.locale.useSharedLabels.fields.privacyLevel.choices.private'),
         instance: t('composables.locale.useSharedLabels.fields.privacyLevel.choices.instance'),
+        followers: t('composables.locale.useSharedLabels.fields.privacyLevel.choices.followers'),
         everyone: t('composables.locale.useSharedLabels.fields.privacyLevel.choices.public')
-      } as Record<PrivacyLevel, string>,
+      } satisfies Record<components['schemas']['PrivacyLevelEnum'], string>,
       shortChoices: {
         me: t('composables.locale.useSharedLabels.fields.privacyLevel.shortChoices.private'),
         instance: t('composables.locale.useSharedLabels.fields.privacyLevel.shortChoices.instance'),
+        followers: t('composables.locale.useSharedLabels.fields.privacyLevel.choices.followers'),
         everyone: t('composables.locale.useSharedLabels.fields.privacyLevel.shortChoices.public')
-      } as Record<PrivacyLevel, string>
+      } satisfies Record<components['schemas']['PrivacyLevelEnum'], string>
     },
     import_status: {
       label: t('composables.locale.useSharedLabels.fields.importStatus.label'),

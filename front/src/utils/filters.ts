@@ -24,7 +24,7 @@ export function humanSize (bytes: number, isSI = true) {
   const threshold = isSI ? 1000 : 1024
 
   if (Math.abs(bytes) < threshold) {
-    return `${bytes} B`
+    return `${Math.floor(bytes)}`
   }
 
   const units = HUMAN_UNITS[isSI ? 'SI' : 'powerOf2']
