@@ -1,5 +1,6 @@
 import type { Module } from 'vuex'
 import type { RootState } from '~/store/index'
+import type { components } from '~/generated/types'
 
 import axios from 'axios'
 import { merge } from 'lodash-es'
@@ -11,84 +12,80 @@ export interface State {
   frontSettings: FrontendSettings
   instanceUrl?: string
   knownInstances: string[]
-  nodeinfo: NodeInfo | null
+  nodeinfo: components['schemas']['NodeInfo21'] | null
   settings: Settings
 }
 
-type TotalCount = {
-  total: number
-}
-
-export interface NodeInfo {
-  version: string;
-  software: {
-    name: string;
-    version: string;
-  }
-  protocols: any[];
-  services?: {
-    inbound?: string[];
-    outbound?: string[];
-  }
-  openRegistrations: boolean;
-  usage: {
-    users: {
-      total: number;
-      activeHalfyear: number;
-      activeMonth: number;
-    }
-  }
-  metadata: {
-    actorId: string
-    'private': boolean
-    shortDescription: string
-    longDescription: string
-    rules: string
-    contactEmail: string
-    terms: string
-    nodeName: string
-    banner: string
-    defaultUploadQuota: number
-    content: {
-      federationEnabled: boolean
-      anonymousCanListen: boolean
-      local: {
-        tracks?: TotalCount
-        artists?: TotalCount
-        albums?: TotalCount
-        hoursOfContent?: number }
-    }
-    topMusicCategories: []
-    topPodcastCategories: []
-    federation: {
-      followedInstances: number
-      followingInstances: number
-    }
-    supportedUploadExtensions: string[]
-    allowList: {
-      enabled: boolean
-      domains: string[]
-    }
-    reportTypes: {
-      'type': string
-      label: string
-      anonymous: boolean
-    }[]
-    funkwhaleSupportMessageEnabled: boolean
-    instanceSupportMessage: string
-    endpoints: {
-      knownNodes?: string
-      channels?: string
-      libraries?: string
-    }
-    usage: {
-      favorites: { tracks: TotalCount }
-      listenings: TotalCount
-      downloads: TotalCount
-    }
-    features:[]
-  }
-}
+// export interface NodeInfo {
+//   version: string;
+//   software: {
+//     name: string;
+//     version: string;
+//   }
+//   protocols: any[];
+//   services?: {
+//     inbound?: string[];
+//     outbound?: string[];
+//   }
+//   openRegistrations: boolean;
+//   usage: {
+//     users: {
+//       total: number;
+//       activeHalfyear: number;
+//       activeMonth: number;
+//     }
+//   }
+//   metadata: {
+//     actorId: string
+//     'private': boolean
+//     shortDescription: string
+//     longDescription: string
+//     rules: string
+//     contactEmail: string
+//     terms: string
+//     nodeName: string
+//     banner: string
+//     defaultUploadQuota: number
+//     content: {
+//       federationEnabled: boolean
+//       anonymousCanListen: boolean
+//       local: {
+//         tracks?: TotalCount
+//         artists?: TotalCount
+//         albums?: TotalCount
+//         hoursOfContent?: number }
+//     }
+//     topMusicCategories: []
+//     topPodcastCategories: []
+//     federation: {
+//       followedInstances: number
+//       followingInstances: number
+//     }
+//     supportedUploadExtensions: string[]
+//     allowList: {
+//       enabled: boolean
+//       domains: string[]
+//     }
+//     reportTypes: {
+//       'type': string
+//       label: string
+//       anonymous: boolean
+//     }[]
+//     funkwhaleSupportMessageEnabled: boolean
+//     instanceSupportMessage: string
+//     endpoints: {
+//       knownNodes?: string
+//       channels?: string
+//       libraries?: string
+//     }
+//     usage: {
+//       favorites: { tracks: TotalCount }
+//       listenings: TotalCount
+//       downloads: TotalCount
+//     }
+//     features:[]
+//   }
+// }
 
 interface FrontendSettings {
   defaultServerUrl: string

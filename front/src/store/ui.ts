@@ -1,6 +1,8 @@
 import type { Module } from 'vuex'
 import type { RootState } from '~/store/index'
 import type { SUPPORTED_LOCALES } from '~/init/locale'
+import type { Channel } from '~/types'
+import type { components } from '~/generated/types'
 
 import axios from 'axios'
 import moment from 'moment'
@@ -32,6 +34,8 @@ interface Message {
 
 type NotificationsKey = 'inbox' | 'pendingReviewEdits' | 'pendingReviewReports' | 'pendingReviewRequests'
 
+type IsOpen = 'true' | 'undefined'
+
 export interface State {
   currentLanguage: 'en_US' | keyof typeof SUPPORTED_LOCALES
   selectedLanguage: boolean
@@ -47,9 +51,13 @@ export interface State {
     width: number
   }
   pageTitle: null
+  modalsOpen: Set<string>
 
   notifications: Record<NotificationsKey, number>
   websocketEventsHandlers: Record<WebSocketEventName, WebSocketHandlers>
+  preselectedChannelForUpload: null | [Channel, 'podcast' | 'music']
+
+  tags: null | components['schemas']['Tag'][]
 }
 
 const logger = useLogger()
@@ -85,7 +93,11 @@ const store: Module<State, RootState> = {
       'user_request.created': {},
       Listen: {}
     },
-    pageTitle: null
+    pageTitle: null,
+    modalsOpen: new Set([]),
+    preselectedChannelForUpload: null,
+
+    tags: null
   },
   getters: {
     showInstanceSupportMessage: (state, getters, rootState) => {
@@ -149,7 +161,9 @@ const store: Module<State, RootState> = {
       } else {
         return 'large'
       }
-    }
+    },
+    modalIsOpen: (state, key) =>
+      state.modalsOpen.has(key)
   },
   mutations: {
     addWebsocketEventHandler: (state, { eventName, id, handler }: { eventName: WebSocketEventName, id: string, handler: (event: any) => void}) => {
@@ -190,6 +204,20 @@ const store: Module<State, RootState> = {
     removeMessage (state, key) {
       state.messages.splice(state.messages.findIndex(message => message.key === key), 1)
     },
+
+    addModal (state, key) {
+      state.modalsOpen.add(key)
+    },
+    removeModal (state, key) {
+      state.modalsOpen.delete(key)
+    },
+    toggleModal (state, key) {
+      state.modalsOpen.has(key) ? state.modalsOpen.delete(key) : state.modalsOpen.add(key)
+    },
+    setModal (state, [key, isOpen]:[string, IsOpen]) {
+      isOpen ? state.modalsOpen.add(key) : state.modalsOpen.delete(key)
+    },
+
     notifications (state, { type, count }: { type: NotificationsKey, count: number }) {
       state.notifications[type] = count
     },
@@ -205,6 +233,9 @@ const store: Module<State, RootState> = {
     },
     window: (state, value) => {
       state.window = value
+    },
+    tags: (state, value) => {
+      state.tags = value
     }
   },
   actions: {
