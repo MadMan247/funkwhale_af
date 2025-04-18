@@ -129,7 +129,12 @@ def test_downgrade_not_superuser_skips_email(factories, mocker):
     mocked_notify.assert_not_called()
 ```
 
+<!-- prettier-ignore-start -->
+
+(runtests)=
 ## Run tests
+
+<!-- prettier-ignore-end -->
 
 You can run all tests in the pytest suite with the following command:
 

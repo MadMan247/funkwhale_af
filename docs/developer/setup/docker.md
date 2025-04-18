@@ -264,8 +264,7 @@ You can create local data to mimic a live environment.
 Add some fake data to populate the database. The following command creates 25 artists with random albums, tracks, and metadata.
 
 ```sh
-command="from funkwhale_api.music import fake_data; fake_data.create_data()"
-echo $command | docker compose run --rm -T api funkwhale-manage shell -i python
+docker compose exec -T api funkwhale-manage shell -i python <<< "from funkwhale_api.music import fake_data; fake_data.create_data(super_user_name='YOURNAMEHERE')"
 ```
 
 This will launch a development funkwhale instance with a super user having `COMPOSE_PROJECT_NAME` as username and `funkwhale` as password. Libraries, listenings and music data will be associated with the superuser :
@@ -416,11 +415,43 @@ To build the documentation locally run:
 docker compose -f compose.docs.yml up -d
 ```
 
-The documentation is then accessible at [https://docs.funkwhale.test](https://docs.funkwhale.test). The OpenAPI schema is available at [https://openapi.funkwhale.test](https://openapi.funkwhale.test).
+The documentation is then accessible at [https://docs.funkwhale.test](https://docs.funkwhale.test). The OpenAPI schema is available at [https://openapi.funkwhale.test](https://openapi.funkwhale.test). The UI component library is available at [https://ui.funkwhale.test](https://ui.funkwhale.test).
 
 Fallback ports are available for the documentation at
-[http://localhost:8001/](http://localhost:8001/) and for the OpenAPI schema at
-[http://localhost:8002/](http://localhost:8002/).
+[http://localhost:8001/](http://localhost:8001/), for the OpenAPI schema at
+[http://localhost:8002/](http://localhost:8002/) and for the UI component library at [http://localhost:8003/](http://localhost:8003/).
 
 Maintain their life cycle with similar commands to those used to
 [set up auxiliary services (point 2.)](#set-up-auxiliary-services).
+
+## Running the test suites
+
+Run the App test suite:
+
+```sh
+docker compose run --rm front yarn test
+```
+
+Run the App tests with coverage:
+
+```sh
+docker compose run --rm front yarn test:unit
+```
+
+<!-- prettier-ignore -->
+Please also see the [Testing](<#testing>) in the App contributing guidelines.
+
+Run the API test suite:
+
+```sh
+docker compose run --rm api pytest
+```
+
+Run a single test:
+
+```sh
+docker compose run --rm api pytest tests/music/test_models.py
+```
+
+<!-- prettier-ignore -->
+Please also see [Run tests](<#runtests>) in the API contributing guidelines.

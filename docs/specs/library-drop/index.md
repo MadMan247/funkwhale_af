@@ -2,7 +2,7 @@
 
 ## Issue
 
-We now have playlist, use complained about library not being clearly defined.
+We now have playlists for sorting music and sharing, users complained about library not being clearly defined.
 
 ## Proposed solution
 
@@ -14,7 +14,7 @@ A new endpoint to move upload from one library to another : `PATCH` on `api/v2/u
 
 New `description` field on playlist, to inherit from the `description` field of Library
 
-Library Follows will be transformed to user follow.
+Library Follows will be transformed to user follows.
 The schedule_scan function of the library still exist and allow federation of audio content
 
 During user creation, built-in libraries are generated automatically by `create_user_libraries`

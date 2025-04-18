@@ -2,24 +2,71 @@
 
 The Funkwhale frontend is a {abbr}`SPA (Single Page Application)` written in [Typescript](https://typescriptlang.org) and [Vue.js](https://vuejs.org).
 
+## Troubleshooting
+
+### Network errors (405 and 404) in the console
+
+If you are using Google Chrome, you may have to disable the network cache:
+
+- Go to the Dev Tools
+- Select the Network tab
+- In the toolbar under the Network tab, activate the checkmark "Disable Cache"
+
+### Edits don't appear when I check them in the browser
+
+Reload the page with `Ctrl+Shift+R` (Mac: `Cmd+Shift+R`)
+
+Make sure you have no add-ons in your browser that mess with the DOM. The best way to check is to open a private window/tab with `Ctrl/Cmd+Shift+P` (Firefox)
+
 ## Styles
 
-We currently use [Fomantic UI](https://fomantic-ui.com) as our UI framework. We customize this with our own SCSS files located in `front/src/styles/_main.scss`.
+<--! TODO: Mermaid diagrams -->
 
-We apply changes to the Fomantic CSS files before we import them:
+### UI styles
 
-1. We replace hardcoded color values with CSS variables to make themin easier. For example: `color: orange` is replaced by `color: var(--vibrant-color)`
-2. We remove unused values from the CSS files to keep the size down
+```mermaid
+graph TD
+  /node_modules/bootstrap-icons/font/bootstrap-icons.css --> src/styles/font.scss
+  src/styles/base/generic.scss --> src/styles/base/index.scss
+  src/styles/base/index.scss --> src/styles/funkwhale.scss
+  src/styles/font.scss --> src/styles/funkwhale.scss
+  src/styles/colors.scss --> src/styles/funkwhale.scss
+  src/styles/funkwhale.scss --> src/main.ts
+```
 
-These changes are applied when you run `yarn install` through a `postinstall` hook. If you want to modify these changes, check the `front/scripts/fix-fomantic-css.py` script.
+### App styles
 
-We plan to replace Fomantic with our own UI framework in the near future. Check our [Penpot](https://design.funkwhale.audio) to see what we've got planned.
+```mermaid
+graph TD
+  _css_vars --> /themes/_...
+  vendor/_media.scss --> _main.scss
+  /globals/_... --> _main.scss
+  /components/_... --> _main.scss
+  /pages/_... --> _main.scss
+  /themes/_... --> _main.scss
+  _vars.scss --> /themes/_...
+```
 
 ## Components
 
-Our [component library](https://ui.funkwhale.audio) contains reusable Vue components that you can add to the Funkwhale frontend. If you want to add a new component, check out [the repository](https://dev.funkwhale.audio/funkwhale/vui).
+Start the **UI Live Docs** (vitepress) and follow the link:
 
+```sh
+yarn dev:docs
+```
+
+- Example: [Button component in the live docs](http://localhost:5173/components/ui/button)
+
+- Find more details about the UI library and [how to contributein the live docs](http://localhost:5173/contributing)
+
+<!-- prettier-ignore-start -->
+
+(testing)=
 ## Testing
+
+<!-- prettier-ignore-end -->
+
+### Unit tests
 
 The Funkwhale frontend contains some tests to catch errors before changes go live. The coverage is still fairly low, so we welcome any contributions.
 
@@ -34,3 +81,7 @@ To run tests as you make changes, launch the test suite with the `-w` flag:
 ```sh
 docker compose run --rm front yarn test:unit -w
 ```
+
+### End-to-end testing and User testing
+
+In addition, there are End-to-end tests (cyprus), and we are planning to do User tests in 2025.

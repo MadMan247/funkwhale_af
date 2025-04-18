@@ -19,6 +19,12 @@ maxdepth: 1
 objects
 ```
 
+## How to use federation in the user interface
+
+If you have the fediverse handle of a user ('xx@xx.xx'), displayed in their profile, you can paste this address in the global search field. Funkwhale will then clone the profile onto your instance and you will be able to see their profile locally and follow their activities. You are not automatically subscribed to their channels or have access to their public libraries. We still have to implement this in a [viable way] (https://dev.funkwhale.audio/funkwhale/funkwhale/-/issues/2422)
+
+The same works for rss feeds that are outside of the fediverse. Just enter the RSS feed URI into the search field and you can add it as a podcast or music channel.
+
 ## Technologies and standards
 
 Funkwhale's federation is built on top of the following technologies:

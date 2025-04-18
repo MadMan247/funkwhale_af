@@ -47,8 +47,8 @@ const labels = computed(() => ({
 :::{tab-item} Template
 
 ```html
-<h2>{{ $t('components.About.header.funkwhale') }}</h2>
-<button>{{ $t('components.About.button.cancel') }}</button>
+<h2>{{ t('components.About.header.funkwhale') }}</h2>
+<button>{{ t('components.About.button.cancel') }}</button>
 ```
 
 :::
@@ -84,11 +84,11 @@ Some strings change depending on whether they are plural or not. You can create 
     v-if="object.artist?.content_category === 'podcast'"
     class="meta ellipsis"
   >
-    {{ $t('components.audio.ChannelCard.meta.episodes', {episode_count:
+    {{ t('components.audio.ChannelCard.meta.episodes', {episode_count:
     object.artist.tracks_count}) }}
   </span>
   <span v-else>
-    {{ $t('components.audio.ChannelCard.meta.tracks', {tracks_count:
+    {{ t('components.audio.ChannelCard.meta.tracks', {tracks_count:
     object.artist?.tracks_count}) }}
   </span>
   <tags-list
