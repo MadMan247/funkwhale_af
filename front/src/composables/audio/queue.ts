@@ -111,6 +111,9 @@ export const useQueue = createGlobalState(() => {
       const { uploads } = await axios.get(`tracks/${track.id}/`)
         .then(response => response.data as Track, () => ({ uploads: [] as Upload[] }))
 
+      // TODO: Either make `track` a writable ref or implement the client/cache model
+      // See Issue: https://dev.funkwhale.audio/funkwhale/funkwhale/-/issues/2437
+      // @ts-expect-error `track` is read-only
       track.uploads = uploads
     }
 
@@ -123,11 +126,11 @@ export const useQueue = createGlobalState(() => {
       artistId: (track.artist_credit && track.artist_credit[0] && track.artist_credit[0].artist.id) ?? -1,
       albumId: track.album?.id ?? -1,
       coverUrl: (
-        (track.cover?.urls)
-        || (track.album?.cover?.urls)
-        || ((track.artist_credit && track.artist_credit[0] && track.artist_credit[0].artist && track.artist_credit[0].artist.cover?.urls))
-        || {}
-      )?.original ?? new URL('../../assets/audio/default-cover.png', import.meta.url).href,
+        track.cover?.urls.original
+        || track.album?.cover?.urls.original
+        || track.artist_credit?.[0]?.artist.cover?.urls.original
+        || new URL('../../assets/audio/default-cover.png', import.meta.url).href
+      ).toString(),
       sources: track.uploads.map(upload => ({
         uuid: upload.uuid,
         duration: upload.duration,
