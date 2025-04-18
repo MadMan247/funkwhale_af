@@ -1,9 +1,12 @@
 import type { InitModule, InitModuleContext } from '~/types'
 
+import VueDOMPurifyHTML from 'vue-dompurify-html'
+
 import store, { key } from '~/store'
 import router from '~/router'
 
 import { createApp, defineAsyncComponent, h } from 'vue'
+import { createPinia } from 'pinia'
 
 import useLogger from '~/composables/useLogger'
 import useTheme from '~/composables/useTheme'
@@ -11,6 +14,8 @@ import useTheme from '~/composables/useTheme'
 import '~/style/_main.scss'
 
 import '~/api'
+
+import 'virtual:uno.css'
 
 // NOTE: Set the theme as fast as possible
 useTheme()
@@ -35,8 +40,12 @@ const app = createApp({
   }
 })
 
+const pinia = createPinia()
+
 app.use(router)
+app.use(pinia)
 app.use(store, key)
+app.use(VueDOMPurifyHTML)
 
 const modules: Record<string | 'axios', { install?: InitModule }> = import.meta.glob('./init/*.ts', { eager: true })
 const moduleContext: InitModuleContext = {
