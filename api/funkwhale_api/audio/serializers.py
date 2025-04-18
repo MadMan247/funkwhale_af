@@ -263,6 +263,7 @@ class ChannelSerializer(serializers.ModelSerializer):
     attributed_to = federation_serializers.APIActorSerializer()
     rss_url = serializers.CharField(source="get_rss_url")
     url = serializers.SerializerMethodField()
+    subscriptions_count = serializers.SerializerMethodField()
 
     class Meta:
         model = models.Channel
@@ -276,6 +277,7 @@ class ChannelSerializer(serializers.ModelSerializer):
             "rss_url",
             "url",
             "downloads_count",
+            "subscriptions_count",
         ]
 
     def to_representation(self, obj):
@@ -284,6 +286,7 @@ class ChannelSerializer(serializers.ModelSerializer):
             data["subscriptions_count"] = self.get_subscriptions_count(obj)
         return data
 
+    @extend_schema_field(OpenApiTypes.INT)
     def get_subscriptions_count(self, obj) -> int:
         return obj.actor.received_follows.exclude(approved=False).count()
 

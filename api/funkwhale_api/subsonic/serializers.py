@@ -111,6 +111,9 @@ class GetArtistInfo2Serializer(serializers.Serializer):
         if artist.mbid:
             payload["musicBrainzId"] = TagValue(artist.mbid)
         if artist.attachment_cover:
+            payload["smallImageUrl"] = TagValue(
+                artist.attachment_cover.download_url_small_square_crop
+            )
             payload["mediumImageUrl"] = TagValue(
                 artist.attachment_cover.download_url_medium_square_crop
             )

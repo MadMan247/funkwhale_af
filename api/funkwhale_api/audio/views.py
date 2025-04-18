@@ -2,10 +2,12 @@ from django import http
 from django.db import transaction
 from django.db.models import Count, Prefetch, Q, Sum
 from django.utils import timezone
-from drf_spectacular.utils import extend_schema, extend_schema_view
+from drf_spectacular.utils import extend_schema, extend_schema_view, inline_serializer
 from rest_framework import decorators, exceptions, mixins
 from rest_framework import permissions as rest_permissions
-from rest_framework import response, viewsets
+from rest_framework import response
+from rest_framework import serializers as rest_serializers
+from rest_framework import viewsets
 
 from funkwhale_api.common import locales, permissions, preferences
 from funkwhale_api.common import utils as common_utils
@@ -210,6 +212,32 @@ class ChannelViewSet(
         data = serializers.rss_serialize_channel_full(channel=object, uploads=uploads)
         return response.Response(data, status=200)
 
+    @extend_schema(
+        responses=inline_serializer(
+            name="MetedataChoicesSerializer",
+            fields={
+                "language": rest_serializers.ListField(
+                    child=inline_serializer(
+                        name="LanguageItem",
+                        fields={
+                            "value": rest_serializers.CharField(),
+                            "label": rest_serializers.CharField(),
+                        },
+                    )
+                ),
+                "itunes_category": rest_serializers.ListField(
+                    child=inline_serializer(
+                        name="iTunesCategoryItem",
+                        fields={
+                            "value": rest_serializers.CharField(),
+                            "label": rest_serializers.CharField(),
+                            "children": rest_serializers.CharField(),
+                        },
+                    )
+                ),
+            },
+        )
+    )
     @decorators.action(
         methods=["get"],
         detail=False,

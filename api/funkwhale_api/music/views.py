@@ -798,6 +798,9 @@ class UploadViewSet(
             cover_data["content"] = base64.b64encode(cover_data["content"])
         return Response(payload, status=200)
 
+    @extend_schema(
+        request=serializers.UploadBulkUpdateSerializer(many=True),
+    )
     @action(detail=False, methods=["patch"])
     def bulk_update(self, request, *args, **kwargs):
         """
@@ -811,7 +814,9 @@ class UploadViewSet(
         models.Upload.objects.bulk_update(serializer.validated_data, ["library"])
 
         return Response(
-            serializers.UploadForOwnerSerializer(serializer.validated_data).data,
+            serializers.UploadForOwnerSerializer(
+                serializer.validated_data, many=True
+            ).data,
             status=200,
         )
 

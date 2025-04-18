@@ -372,6 +372,9 @@ class UploadSerializer(serializers.ModelSerializer):
         required=False,
         filters=lambda context: {"actor": context["user"].actor},
     )
+    privacy_level = serializers.ChoiceField(
+        choices=models.LIBRARY_PRIVACY_LEVEL_CHOICES, required=False
+    )
     channel = common_serializers.RelatedField(
         "uuid",
         ChannelSerializer(),
@@ -395,6 +398,7 @@ class UploadSerializer(serializers.ModelSerializer):
             "size",
             "import_date",
             "import_status",
+            "privacy_level",
         ]
 
         read_only_fields = [
@@ -495,6 +499,7 @@ class UploadForOwnerSerializer(UploadSerializer):
         r = super().to_representation(obj)
         if "audio_file" in r:
             del r["audio_file"]
+        r["privacy_level"] = obj.library.privacy_level
         return r
 
     def validate(self, validated_data):

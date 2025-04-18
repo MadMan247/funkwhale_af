@@ -129,7 +129,7 @@ class Format(types.MultipleChoicePreference):
         ("aac", "aac"),
         ("mp3", "mp3"),
     ]
-    help_text = "Witch audio format to allow"
+    help_text = "Which audio format to allow"
 
 
 @global_preferences_registry.register

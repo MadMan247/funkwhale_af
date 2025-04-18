@@ -49,6 +49,7 @@ class PlaylistSerializer(serializers.ModelSerializer):
             "duration",
             "is_playable",
             "actor",
+            "description",
         )
         read_only_fields = ["id", "modification_date", "creation_date"]
 

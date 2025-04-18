@@ -1398,6 +1398,7 @@ VERSATILEIMAGEFIELD_RENDITION_KEY_SETS = {
     ],
     "attachment_square": [
         ("original", "url"),
+        ("small_square_crop", "crop__50x50"),
         ("medium_square_crop", "crop__200x200"),
         ("large_square_crop", "crop__600x600"),
     ],

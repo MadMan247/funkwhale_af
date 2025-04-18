@@ -156,6 +156,9 @@ def test_get_artist_info_2_serializer(factories):
 
     expected = {
         "musicBrainzId": artist.mbid,
+        "smallImageUrl": renderers.TagValue(
+            artist.attachment_cover.download_url_small_square_crop
+        ),
         "mediumImageUrl": renderers.TagValue(
             artist.attachment_cover.download_url_medium_square_crop
         ),

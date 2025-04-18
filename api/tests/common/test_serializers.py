@@ -195,6 +195,9 @@ def test_attachment_serializer_existing_file(factories, to_api_date):
         "urls": {
             "source": attachment.url,
             "original": federation_utils.full_url(attachment.file.url),
+            "small_square_crop": federation_utils.full_url(
+                attachment.file.crop["50x50"].url
+            ),
             "medium_square_crop": federation_utils.full_url(
                 attachment.file.crop["200x200"].url
             ),
@@ -225,6 +228,9 @@ def test_attachment_serializer_remote_file(factories, to_api_date):
         "urls": {
             "source": attachment.url,
             "original": federation_utils.full_url(proxy_url + "?next=original"),
+            "small_square_crop": federation_utils.full_url(
+                proxy_url + "?next=small_square_crop"
+            ),
             "medium_square_crop": federation_utils.full_url(
                 proxy_url + "?next=medium_square_crop"
             ),

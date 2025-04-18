@@ -126,7 +126,7 @@ class NodeInfo21(NodeInfo20):
     serializer_class = serializers.NodeInfo21Serializer
 
     @extend_schema(
-        responses=serializers.NodeInfo20Serializer, operation_id="getNodeInfo20"
+        responses=serializers.NodeInfo21Serializer, operation_id="getNodeInfo21"
     )
     def get(self, request):
         pref = preferences.all()

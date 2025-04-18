@@ -169,6 +169,7 @@ def test_upload_owner_serializer(factories, to_api_date):
         "import_details": {"hello": "world"},
         "source": "upload://test",
         "import_reference": "ref",
+        "privacy_level": upload.library.privacy_level,
     }
     serializer = serializers.UploadForOwnerSerializer(upload)
     assert serializer.data == expected

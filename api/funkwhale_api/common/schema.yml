@@ -2152,7 +2152,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Channel'
+                $ref: '#/components/schemas/MetedataChoices'
           description: ''
   /api/v1/channels/rss-subscribe/:
     post:
@@ -9291,16 +9291,25 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedUploadForOwnerRequest'
+              type: array
+              items:
+                $ref: '#/components/schemas/UploadBulkUpdateRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedUploadForOwnerRequest'
+              type: array
+              items:
+                $ref: '#/components/schemas/UploadBulkUpdateRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedUploadForOwnerRequest'
+              type: array
+              items:
+                $ref: '#/components/schemas/UploadBulkUpdateRequest'
           application/activity+json:
             schema:
-              $ref: '#/components/schemas/PatchedUploadForOwnerRequest'
+              type: array
+              items:
+                $ref: '#/components/schemas/UploadBulkUpdateRequest'
+        required: true
       security:
       - oauth2: []
       - ApplicationToken: []
@@ -11653,7 +11662,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Channel'
+                $ref: '#/components/schemas/MetedataChoices'
           description: ''
   /api/v2/channels/rss-subscribe/:
     post:
@@ -12927,7 +12936,7 @@ paths:
           description: ''
   /api/v2/instance/nodeinfo/2.1/:
     get:
-      operationId: getNodeInfo20_2
+      operationId: getNodeInfo21
       tags:
       - instance
       responses:
@@ -12935,7 +12944,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NodeInfo20'
+                $ref: '#/components/schemas/NodeInfo21'
           description: ''
   /api/v2/instance/settings/:
     get:
@@ -18957,16 +18966,25 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedUploadForOwnerRequest'
+              type: array
+              items:
+                $ref: '#/components/schemas/UploadBulkUpdateRequest'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedUploadForOwnerRequest'
+              type: array
+              items:
+                $ref: '#/components/schemas/UploadBulkUpdateRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedUploadForOwnerRequest'
+              type: array
+              items:
+                $ref: '#/components/schemas/UploadBulkUpdateRequest'
           application/activity+json:
             schema:
-              $ref: '#/components/schemas/PatchedUploadForOwnerRequest'
+              type: array
+              items:
+                $ref: '#/components/schemas/UploadBulkUpdateRequest'
+        required: true
       security:
       - oauth2: []
       - ApplicationToken: []
@@ -20270,12 +20288,16 @@ components:
         downloads_count:
           type: integer
           readOnly: true
+        subscriptions_count:
+          type: integer
+          readOnly: true
       required:
       - actor
       - artist
       - attributed_to
       - downloads_count
       - rss_url
+      - subscriptions_count
       - url
     ChannelCreate:
       type: object
@@ -20926,6 +20948,16 @@ components:
       required:
       - channel
       - uuid
+    LanguageItem:
+      type: object
+      properties:
+        value:
+          type: string
+        label:
+          type: string
+      required:
+      - label
+      - value
     Library:
       type: object
       properties:
@@ -23124,6 +23156,124 @@ components:
       - shortDescription
       - supportedUploadExtensions
       - terms
+    Metadata21:
+      type: object
+      properties:
+        actorId:
+          type: string
+        private:
+          type: boolean
+          readOnly: true
+        shortDescription:
+          type: string
+          readOnly: true
+        longDescription:
+          type: string
+          readOnly: true
+        contactEmail:
+          type: string
+          readOnly: true
+        nodeName:
+          type: string
+          readOnly: true
+        banner:
+          type: string
+          readOnly: true
+        defaultUploadQuota:
+          type: integer
+          readOnly: true
+        supportedUploadExtensions:
+          type: array
+          items:
+            type: string
+        allowList:
+          allOf:
+          - $ref: '#/components/schemas/AllowListStat'
+          readOnly: true
+        funkwhaleSupportMessageEnabled:
+          type: boolean
+          readOnly: true
+        instanceSupportMessage:
+          type: string
+          readOnly: true
+        usage:
+          $ref: '#/components/schemas/MetadataUsage'
+        languages:
+          type: array
+          items:
+            type: string
+        location:
+          type: string
+        content:
+          $ref: '#/components/schemas/MetadataContent'
+        features:
+          type: array
+          items:
+            type: string
+        codeOfConduct:
+          type: string
+          readOnly: true
+      required:
+      - actorId
+      - allowList
+      - banner
+      - codeOfConduct
+      - contactEmail
+      - content
+      - defaultUploadQuota
+      - features
+      - funkwhaleSupportMessageEnabled
+      - instanceSupportMessage
+      - languages
+      - location
+      - longDescription
+      - nodeName
+      - private
+      - shortDescription
+      - supportedUploadExtensions
+    MetadataContent:
+      type: object
+      properties:
+        local:
+          $ref: '#/components/schemas/MetadataContentLocal'
+        topMusicCategories:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataContentCategory'
+        topPodcastCategories:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataContentCategory'
+      required:
+      - local
+      - topMusicCategories
+      - topPodcastCategories
+    MetadataContentCategory:
+      type: object
+      properties:
+        name:
+          type: string
+        count:
+          type: integer
+      required:
+      - count
+      - name
+    MetadataContentLocal:
+      type: object
+      properties:
+        artists:
+          type: integer
+        releases:
+          type: integer
+        recordings:
+          type: integer
+        hoursOfContent:
+          type: integer
+      required:
+      - artists
+      - hoursOfContent
+      - recordings
+      - releases
     MetadataUsage:
       type: object
       properties:
@@ -23146,6 +23296,20 @@ components:
           readOnly: true
       required:
       - tracks
+    MetedataChoices:
+      type: object
+      properties:
+        language:
+          type: array
+          items:
+            $ref: '#/components/schemas/LanguageItem'
+        itunes_category:
+          type: array
+          items:
+            $ref: '#/components/schemas/iTunesCategoryItem'
+      required:
+      - itunes_category
+      - language
     ModerationTarget:
       type: object
       properties:
@@ -23240,6 +23404,42 @@ components:
         metadata:
           allOf:
           - $ref: '#/components/schemas/Metadata20'
+          readOnly: true
+      required:
+      - metadata
+      - openRegistrations
+      - protocols
+      - software
+      - usage
+      - version
+    NodeInfo21:
+      type: object
+      properties:
+        version:
+          type: string
+          readOnly: true
+        software:
+          $ref: '#/components/schemas/SoftwareSerializer_v2'
+        protocols:
+          type: array
+          items: {}
+          readOnly: true
+        services:
+          allOf:
+          - $ref: '#/components/schemas/Services'
+          default:
+            inbound: []
+            outbound: []
+        openRegistrations:
+          type: boolean
+          readOnly: true
+        usage:
+          allOf:
+          - $ref: '#/components/schemas/Usage'
+          readOnly: true
+        metadata:
+          allOf:
+          - $ref: '#/components/schemas/Metadata21'
           readOnly: true
       required:
       - metadata
@@ -24425,6 +24625,10 @@ components:
           maxLength: 100
         privacy_level:
           $ref: '#/components/schemas/PrivacyLevelEnum'
+        description:
+          type: string
+          nullable: true
+          maxLength: 5000
     PatchedRadioRequest:
       type: object
       properties:
@@ -24455,6 +24659,8 @@ components:
           allOf:
           - $ref: '#/components/schemas/ImportStatusEnum'
           default: pending
+        privacy_level:
+          $ref: '#/components/schemas/LibraryPrivacyLevelEnum'
         import_metadata: {}
         import_reference:
           type: string
@@ -24546,6 +24752,10 @@ components:
         is_playable:
           type: boolean
           readOnly: true
+        description:
+          type: string
+          nullable: true
+          maxLength: 5000
       required:
       - actor
       - album_covers
@@ -24576,6 +24786,10 @@ components:
           maxLength: 100
         privacy_level:
           $ref: '#/components/schemas/PrivacyLevelEnum'
+        description:
+          type: string
+          nullable: true
+          maxLength: 5000
       required:
       - name
     PlaylistTrack:
@@ -25056,6 +25270,25 @@ components:
       required:
       - name
       - version
+    SoftwareSerializer_v2:
+      type: object
+      properties:
+        name:
+          type: string
+          readOnly: true
+        version:
+          type: string
+        repository:
+          type: string
+          readOnly: true
+        homepage:
+          type: string
+          readOnly: true
+      required:
+      - homepage
+      - name
+      - repository
+      - version
     SpaManifest:
       type: object
       properties:
@@ -25494,6 +25727,17 @@ components:
       - mimetype
       - size
       - uuid
+    UploadBulkUpdateRequest:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        privacy_level:
+          $ref: '#/components/schemas/LibraryPrivacyLevelEnum'
+      required:
+      - privacy_level
+      - uuid
     UploadForOwner:
       type: object
       properties:
@@ -25540,6 +25784,8 @@ components:
           allOf:
           - $ref: '#/components/schemas/ImportStatusEnum'
           default: pending
+        privacy_level:
+          $ref: '#/components/schemas/LibraryPrivacyLevelEnum'
         import_details:
           readOnly: true
         import_metadata: {}
@@ -25580,6 +25826,8 @@ components:
           allOf:
           - $ref: '#/components/schemas/ImportStatusEnum'
           default: pending
+        privacy_level:
+          $ref: '#/components/schemas/LibraryPrivacyLevelEnum'
         import_metadata: {}
         import_reference:
           type: string
@@ -25845,6 +26093,19 @@ components:
           minLength: 1
       required:
       - key
+    iTunesCategoryItem:
+      type: object
+      properties:
+        value:
+          type: string
+        label:
+          type: string
+        children:
+          type: string
+      required:
+      - children
+      - label
+      - value
   securitySchemes:
     ApplicationToken:
       type: http

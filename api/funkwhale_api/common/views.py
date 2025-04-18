@@ -176,7 +176,12 @@ class AttachmentViewSet(
             return r
 
         size = request.GET.get("next", "original").lower()
-        if size not in ["original", "medium_square_crop", "large_square_crop"]:
+        if size not in [
+            "original",
+            "small_square_crop",
+            "medium_square_crop",
+            "large_square_crop",
+        ]:
             size = "original"
 
         try:

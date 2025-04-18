@@ -308,6 +308,7 @@ class AttachmentSerializer(serializers.Serializer):
         urls = {}
         urls["source"] = o.url
         urls["original"] = o.download_url_original
+        urls["small_square_crop"] = o.download_url_small_square_crop
         urls["medium_square_crop"] = o.download_url_medium_square_crop
         urls["large_square_crop"] = o.download_url_large_square_crop
         return urls
