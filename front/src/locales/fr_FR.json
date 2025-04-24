@@ -2,27 +2,6 @@
   "App": {
     "loading": "Chargement…"
   },
-  "vui": {
-    "tracks": "{n} piste | {n} pistes",
-    "go-to": "Aller à",
-    "pagination": {
-      "previous": "Précédent",
-      "next": "Suivant"
-    },
-    "aria": {
-      "pagination": {
-        "currentPage": "Page Actuelle, Page {n}",
-        "gotoPage": "Aller à la Page {n}",
-        "gotoPrevious": "Aller à la Page Précédente",
-        "gotoNext": "Aller à la Page Suivante",
-        "nav": "Navigation par Pagination"
-      }
-    },
-    "radio": "Radio",
-    "albums": "{n} album | {n} albums",
-    "episodes": "{n} épisode | {n} épisodes",
-    "by-user": "par {'@'}{username}"
-  },
   "components": {
     "About": {
       "description": {
@@ -4650,5 +4629,26 @@
         "title": "Radio"
       }
     }
+  },
+  "vui": {
+    "albums": "{n} album | {n} albums",
+    "aria": {
+      "pagination": {
+        "currentPage": "Page Actuelle, Page {n}",
+        "gotoNext": "Aller à la Page Suivante",
+        "gotoPage": "Aller à la Page {n}",
+        "gotoPrevious": "Aller à la Page Précédente",
+        "nav": "Navigation par Pagination"
+      }
+    },
+    "by-user": "par {'@'}{username}",
+    "episodes": "{n} épisode | {n} épisodes",
+    "go-to": "Aller à",
+    "pagination": {
+      "next": "Suivant",
+      "previous": "Précédent"
+    },
+    "radio": "Radio",
+    "tracks": "{n} piste | {n} pistes"
   }
 }
