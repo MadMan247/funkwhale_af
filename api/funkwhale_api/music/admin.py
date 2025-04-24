@@ -26,6 +26,15 @@ class AlbumAdmin(admin.ModelAdmin):
     search_fields = ["title", "mbid"]
     list_select_related = True
 
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "artist_credit":
+            object_id = request.resolver_match.kwargs.get("object_id")
+            kwargs["queryset"] = models.ArtistCredit.objects.filter(
+                albums__id=object_id
+            )
+
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 @admin.register(models.Track)
 class TrackAdmin(admin.ModelAdmin):
@@ -34,6 +43,14 @@ class TrackAdmin(admin.ModelAdmin):
 
     def artist(self, obj):
         return obj.get_artist_credit_string
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "artist_credit":
+            object_id = request.resolver_match.kwargs.get("object_id")
+            kwargs["queryset"] = models.ArtistCredit.objects.filter(
+                tracks__id=object_id
+            )
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 @admin.register(models.TrackActor)
