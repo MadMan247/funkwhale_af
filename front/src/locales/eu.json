@@ -2,27 +2,6 @@
   "App": {
     "loading": "Kargatzen…"
   },
-  "vui": {
-    "tracks": "Pista {n} | {n} pista",
-    "episodes": "Atal {n} | {n} atal",
-    "by-user": "honen eskutik: {'@'}{username}",
-    "go-to": "Joan hona:",
-    "pagination": {
-      "previous": "Aurrekoa",
-      "next": "Hurrengoa"
-    },
-    "aria": {
-      "pagination": {
-        "nav": "Orrikatzearen nabigazioa",
-        "gotoPage": "Joan orri honetara: {n}",
-        "gotoPrevious": "Joan aurreko orrira",
-        "gotoNext": "Joan hurrengo orrira",
-        "currentPage": "Uneko orria: {n}"
-      }
-    },
-    "albums": "Album {n} | {n} album",
-    "radio": "Irratia"
-  },
   "components": {
     "About": {
       "description": {
@@ -4632,5 +4611,26 @@
         "title": "Irratia"
       }
     }
+  },
+  "vui": {
+    "albums": "Album {n} | {n} album",
+    "aria": {
+      "pagination": {
+        "currentPage": "Uneko orria: {n}",
+        "gotoNext": "Joan hurrengo orrira",
+        "gotoPage": "Joan orri honetara: {n}",
+        "gotoPrevious": "Joan aurreko orrira",
+        "nav": "Orrikatzearen nabigazioa"
+      }
+    },
+    "by-user": "honen eskutik: {'@'}{username}",
+    "episodes": "Atal {n} | {n} atal",
+    "go-to": "Joan hona:",
+    "pagination": {
+      "next": "Hurrengoa",
+      "previous": "Aurrekoa"
+    },
+    "radio": "Irratia",
+    "tracks": "Pista {n} | {n} pista"
   }
 }
