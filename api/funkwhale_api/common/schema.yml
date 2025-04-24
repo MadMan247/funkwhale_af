@@ -20858,6 +20858,82 @@ components:
       required:
       - id
       - type
+    ImportMetadata:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 500
+        description:
+          type: string
+          nullable: true
+          maxLength: 5000
+        mbid:
+          type: string
+          format: uuid
+          nullable: true
+        copyright:
+          type: string
+          nullable: true
+          maxLength: 500
+        position:
+          type: integer
+          minimum: 1
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+          minItems: 0
+        license:
+          type: string
+          nullable: true
+      required:
+      - title
+    ImportMetadataRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 500
+        description:
+          type: string
+          nullable: true
+          minLength: 1
+          maxLength: 5000
+        mbid:
+          type: string
+          format: uuid
+          nullable: true
+        copyright:
+          type: string
+          nullable: true
+          minLength: 1
+          maxLength: 500
+        position:
+          type: integer
+          minimum: 1
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          minItems: 0
+        license:
+          type: string
+          nullable: true
+        cover:
+          type: string
+          writeOnly: true
+          nullable: true
+        album:
+          type: string
+          writeOnly: true
+          nullable: true
+      required:
+      - title
     ImportStatusEnum:
       enum:
       - draft
@@ -22769,7 +22845,8 @@ components:
         import_details: {}
         import_status:
           $ref: '#/components/schemas/ImportStatusEnum'
-        import_metadata: {}
+        import_metadata:
+          $ref: '#/components/schemas/ImportMetadata'
         import_reference:
           type: string
           maxLength: 50
@@ -22782,6 +22859,7 @@ components:
       - domain
       - filename
       - id
+      - import_metadata
       - is_local
       - library
       - listen_url
@@ -22845,7 +22923,8 @@ components:
         import_details: {}
         import_status:
           $ref: '#/components/schemas/ImportStatusEnum'
-        import_metadata: {}
+        import_metadata:
+          $ref: '#/components/schemas/ImportMetadataRequest'
         import_reference:
           type: string
           minLength: 1
@@ -22857,6 +22936,7 @@ components:
       required:
       - audio_file
       - domain
+      - import_metadata
       - library
       - track
     ManageUser:
@@ -24661,7 +24741,8 @@ components:
           default: pending
         privacy_level:
           $ref: '#/components/schemas/LibraryPrivacyLevelEnum'
-        import_metadata: {}
+        import_metadata:
+          $ref: '#/components/schemas/ImportMetadataRequest'
         import_reference:
           type: string
           minLength: 1
@@ -25788,7 +25869,8 @@ components:
           $ref: '#/components/schemas/LibraryPrivacyLevelEnum'
         import_details:
           readOnly: true
-        import_metadata: {}
+        import_metadata:
+          $ref: '#/components/schemas/ImportMetadata'
         import_reference:
           type: string
           maxLength: 50
@@ -25828,7 +25910,8 @@ components:
           default: pending
         privacy_level:
           $ref: '#/components/schemas/LibraryPrivacyLevelEnum'
-        import_metadata: {}
+        import_metadata:
+          $ref: '#/components/schemas/ImportMetadataRequest'
         import_reference:
           type: string
           minLength: 1

@@ -463,6 +463,7 @@ class ImportMetadataSerializer(serializers.Serializer):
     )
 
 
+@extend_schema_field(ImportMetadataSerializer)
 class ImportMetadataField(serializers.JSONField):
     def to_internal_value(self, v):
         v = super().to_internal_value(v)

@@ -626,6 +626,7 @@ class ManageUploadSerializer(serializers.ModelSerializer):
     track = ManageNestedTrackSerializer()
     library = ManageNestedLibrarySerializer()
     domain = serializers.CharField(source="domain_name")
+    import_metadata = music_serializers.ImportMetadataField()
 
     class Meta:
         model = music_models.Upload
