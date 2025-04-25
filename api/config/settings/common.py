@@ -916,7 +916,7 @@ Example:
 
 # Your common stuff: Below this line define 3rd party library settings
 CELERY_TASK_DEFAULT_RATE_LIMIT = 1
-CELERY_TASK_TIME_LIMIT = 300
+CELERY_TASK_TIME_LIMIT = env.int("CELERY_TASK_TIME_LIMIT", default=300)
 CELERY_BEAT_SCHEDULE = {
     "audio.fetch_rss_feeds": {
         "task": "audio.fetch_rss_feeds",

@@ -1,0 +1,1 @@
+Support setting CELERY_TASK_TIME_LIMIT from environment
