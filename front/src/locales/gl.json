@@ -4629,5 +4629,8 @@
         "title": "Radio"
       }
     }
+  },
+  "vui": {
+    "radio": "Radio"
   }
 }
