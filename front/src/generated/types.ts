@@ -6638,9 +6638,11 @@ export interface components {
             readonly creation_date: string;
             /** Format: date-time */
             readonly fetch_date: string | null;
+            readonly type: string;
+            readonly object: components["schemas"]["Artist"] | components["schemas"]["Album"] | components["schemas"]["Track"] | components["schemas"]["APIActor"] | components["schemas"]["Channel"] | components["schemas"]["Playlist"];
         };
         FetchRequest: {
-            object: string;
+            object_uri: string;
             /** @default false */
             force: boolean;
         };

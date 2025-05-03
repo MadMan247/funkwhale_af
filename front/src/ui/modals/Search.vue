@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { paths } from '~/generated/types.ts'
+import type { paths, components } from '~/generated/types.ts'
 import type { RadioConfig } from '~/store/radios'
 import axios from 'axios'
 import { ref, watch, computed } from 'vue'
@@ -9,9 +9,12 @@ import { trim, uniqBy } from 'lodash-es'
 import useErrorHandler from '~/composables/useErrorHandler'
 import { useI18n } from 'vue-i18n'
 import { useModal } from '~/ui/composables/useModal.ts'
+import { useStore } from '~/store'
 
 import ArtistCard from '~/components/artist/Card.vue'
 import PlaylistCard from '~/components/playlists/Card.vue'
+import ChannelCard from '~/components/audio/ChannelCard.vue'
+import ActorLink from '~/components/common/ActorLink.vue'
 import TrackTable from '~/components/audio/track/Table.vue'
 import AlbumCard from '~/components/album/Card.vue'
 import RadioCard from '~/components/radios/Card.vue'
@@ -98,7 +101,8 @@ type Results = {
   podcasts: Response['podcasts']['results'],
   series: Response['series']['results'],
   rss: [Response['rss']],
-  federation: [Response['federation']]
+  federation: [Response['federation']],
+  type: Category
 }
 
 const responses = ref<Partial<Response>>({})
@@ -201,7 +205,7 @@ const categories = computed(() => [
     endpoint: '/federation/fetches/',
     post: true,
     params: {
-      object: trimmedQuery.value
+      object_uri: trimmedQuery.value
     }
   }
 ] as const satisfies {
@@ -222,7 +226,8 @@ const availableCategories = computed(() =>
     isFetch.value ? type === 'federation'
       : isRss.value ? type === 'rss'
         : type !== 'federation' && type !== 'rss'
-))
+  )
+)
 
 // Whenever available categories change, if there is exactly one, open it
 watch(availableCategories, () => {
@@ -245,7 +250,7 @@ const resultsPerCategory = <C extends Category>(category: { type: C }) =>
  */
 const count = <C extends Category>(category: { type: C }) => (
   response => response && 'count' in response ? response.count : resultsPerCategory(category).length
-) (responses.value[category.type])
+)(responses.value[category.type])
 
 /**
  * Find out whether a category has been queried before
@@ -277,6 +282,26 @@ watch(results, () => {
 
   openSections.value = new Set(categoriesWithResults.map(({ type }) => type))
 })
+
+// Subscribe to an RSS feed
+
+const store = useStore()
+
+/**
+ * Subscribe to an RSS feed and return the route for the subscribed channel
+ * @param url The RSS feed URL
+ * @returns The route object for the subscribed channel
+ */
+const rssSubscribe = async (url: string) => {
+  try {
+    const response = await axios.post('channels/rss-subscribe/', { url })
+    store.commit('channels/subscriptions', { uuid: response.data.channel.uuid, value: true })
+    return response.data.channel
+  } catch (error) {
+    useErrorHandler(error as Error)
+    return null
+  }
+}
 
 // Search
 
@@ -321,18 +346,18 @@ const search = async () => {
         }
         responses.value[category.type] = response.data
       } else {
+        // TODO: add (@)type key to Response type
         if (category.type === 'rss') {
-          const response = await axios.post<Response['rss']>(
-            category.endpoint,
-            { url: trimmedQuery.value }
-          )
-          results.value.rss = [response.data]
-          responses.value[category.type] = response.data
+          const channel = await rssSubscribe(trimmedQuery.value)
+          if (channel) {
+            results.value.rss = [channel] // Store the subscribed channel
+          }
         } else if (category.type === 'federation') {
           const response = await axios.post<Response['federation']>(
             category.endpoint,
-            { params }
+            { object_uri: trimmedQuery.value }
           )
+          results.value.type = category.type
           results.value.federation = [response.data]
           responses.value[category.type] = response.data
         } else if (category.type === 'playlists') {
@@ -340,6 +365,7 @@ const search = async () => {
             category.endpoint,
             { params }
           )
+          results.value.type = category.type
           results.value.playlists = response.data.results
           responses.value[category.type] = response.data
         } else if (category.type === 'podcasts') {
@@ -347,6 +373,7 @@ const search = async () => {
             category.endpoint,
             { params }
           )
+          results.value.type = category.type
           results.value.podcasts = response.data.results
           responses.value[category.type] = response.data
         } else if (category.type === 'radios') {
@@ -354,6 +381,7 @@ const search = async () => {
             category.endpoint,
             { params }
           )
+          results.value.type = category.type
           results.value.radios = response.data.results
           responses.value[category.type] = response.data
         } else if (category.type === 'series') {
@@ -361,6 +389,7 @@ const search = async () => {
             category.endpoint,
             { params }
           )
+          results.value.type = category.type
           results.value.series = response.data.results
           responses.value[category.type] = response.data
         }
@@ -378,20 +407,20 @@ const search = async () => {
 const radioConfig = computed<RadioConfig | null>(() =>
   count({ type: 'tags' }) > 0
     ? ({
-        type: 'tag',
-        names: resultsPerCategory({ type: 'tags' })
-          .map((({ name }) => name))
-      })
+      type: 'tag',
+      names: resultsPerCategory({ type: 'tags' })
+        .map((({ name }) => name))
+    })
     : count({ type: 'playlists' }) > 0
       ? ({
-          type: 'playlist',
-          ids: resultsPerCategory({ type: 'playlists' }).map(({ id }) => id.toString())
-        })
+        type: 'playlist',
+        ids: resultsPerCategory({ type: 'playlists' }).map(({ id }) => id.toString())
+      })
       : count({ type: 'artists' }) > 0
         ? ({
-            type: 'artist',
-            ids: resultsPerCategory({ type: 'artists' }).map(({ id }) => id.toString())
-          })
+          type: 'artist',
+          ids: resultsPerCategory({ type: 'artists' }).map(({ id }) => id.toString())
+        })
         : null
 )
 
@@ -489,23 +518,50 @@ watch(queryDebounced, search, { immediate: true })
           />
         </template>
 
-        <!-- If response has "url": "webfinger://node1@node1.funkwhale.test" -> Link to go directly to the federation page -->
-
-        <span v-if="category.type === 'rss' && count(category) > 0">
-          <Alert>{{ t('modals.search.tryAgain') }}</Alert>
-          <Link
-            v-for="channel in resultsPerCategory(category)"
-            :key="channel.artist.fid"
-            :to="channel.artist.fid"
-            autofocus
+        <template v-if="category.type === 'rss' && count(category) > 0">
+          <Alert
+            blue
+            style="grid-column: 1 / -1"
           >
-            {{ channel.artist.name }}
-          </Link>
-        </span>
+            {{ t('modals.search.tryAgain') }}
+          </Alert>
+          <channel-card
+            v-if="results.rss && results.rss[0]"
+            :key="results.rss[0].uuid"
+            :object="results.rss[0]"
+          />
+        </template>
 
-        <span v-else-if="category.type === 'federation'">
-          <!-- TODO: Federation search: backend adapter + display, fix results_per_category query -->
-          <!-- {{ resultsPerCategory(category) }} -->
+        <span v-else-if="category.type === 'federation' && count(category) > 0">
+          <template
+            v-for="result in resultsPerCategory(category)"
+            :key="result.id"
+          >
+            <ActorLink
+              v-if="result.object && result.type === 'account'"
+              :actor="result.object as components['schemas']['APIActor']"
+            />
+            <ChannelCard
+              v-else-if="result.object && result.type === 'channel'"
+              :object="result.object as components['schemas']['Channel']"
+            />
+            <ArtistCard
+              v-else-if="result.object && result.type === 'artist'"
+              :artist="result.object as components['schemas']['Artist']"
+            />
+            <AlbumCard
+              v-else-if="result.object && result.type === 'album'"
+              :album="result.object as components['schemas']['Album']"
+            />
+            <PlaylistCard
+              v-else-if="result.object && result.type === 'playlist'"
+              :playlist="result.object as components['schemas']['Playlist']"
+            />
+            <TrackTable
+              v-else-if="result.object && result.type === 'track'"
+              :tracks="[result.object] as components['schemas']['Track'][]"
+            />
+          </template>
         </span>
 
         <EmptyState

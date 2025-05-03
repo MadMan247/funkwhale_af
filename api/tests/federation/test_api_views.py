@@ -243,7 +243,7 @@ def test_can_fetch_using_url_synchronous(
     fetch_task = mocker.patch.object(tasks, "fetch", side_effect=fake_task)
 
     url = reverse("api:v1:federation:fetches-list")
-    data = {"object": object_id}
+    data = {"object_uri": object_id}
     response = logged_in_api_client.post(url, data)
     assert response.status_code == 201
 
@@ -266,7 +266,7 @@ def test_fetch_duplicate(factories, logged_in_api_client, settings, now):
         creation_date=now - datetime.timedelta(seconds=59),
     )
     url = reverse("api:v1:federation:fetches-list")
-    data = {"object": object_id}
+    data = {"object_uri": object_id}
     response = logged_in_api_client.post(url, data)
     assert response.status_code == 201
     assert response.data == api_serializers.FetchSerializer(duplicate).data
@@ -286,7 +286,7 @@ def test_fetch_duplicate_bypass_with_force(
         creation_date=now - datetime.timedelta(seconds=59),
     )
     url = reverse("api:v1:federation:fetches-list")
-    data = {"object": object_id, "force": True}
+    data = {"object_uri": object_id, "force": True}
     response = logged_in_api_client.post(url, data)
 
     fetch = actor.fetches.latest("id")

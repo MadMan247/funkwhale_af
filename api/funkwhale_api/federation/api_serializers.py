@@ -10,9 +10,10 @@ from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from funkwhale_api.audio import models as audio_models
-from funkwhale_api.common import fields as common_fields
+from funkwhale_api.audio import serializers as audio_serializers
 from funkwhale_api.common import serializers as common_serializers
 from funkwhale_api.music import models as music_models
+from funkwhale_api.playlists import models as playlists_models
 from funkwhale_api.users import serializers as users_serializers
 
 from . import filters, models
@@ -192,19 +193,17 @@ class InboxItemActionSerializer(common_serializers.ActionSerializer):
         return objects.update(is_read=True)
 
 
-FETCH_OBJECT_CONFIG = {
-    "artist": {"queryset": music_models.Artist.objects.all()},
-    "album": {"queryset": music_models.Album.objects.all()},
-    "track": {"queryset": music_models.Track.objects.all()},
-    "library": {"queryset": music_models.Library.objects.all(), "id_attr": "uuid"},
-    "upload": {"queryset": music_models.Upload.objects.all(), "id_attr": "uuid"},
-    "account": {"queryset": models.Actor.objects.all(), "id_attr": "full_username"},
-    "channel": {"queryset": audio_models.Channel.objects.all(), "id_attr": "uuid"},
+OBJECT_SERIALIZER_MAPPING = {
+    music_models.Artist: federation_serializers.ArtistSerializer,
+    music_models.Album: federation_serializers.AlbumSerializer,
+    music_models.Track: federation_serializers.TrackSerializer,
+    models.Actor: federation_serializers.APIActorSerializer,
+    audio_models.Channel: audio_serializers.ChannelSerializer,
+    playlists_models.Playlist: federation_serializers.PlaylistSerializer,
 }
-FETCH_OBJECT_FIELD = common_fields.GenericRelation(FETCH_OBJECT_CONFIG)
 
 
-def convert_url_to_webginfer(url):
+def convert_url_to_webfinger(url):
     parsed_url = urlparse(url)
     domain = parsed_url.netloc  # e.g., "node1.funkwhale.test"
     path_parts = parsed_url.path.strip("/").split("/")
@@ -217,7 +216,9 @@ def convert_url_to_webginfer(url):
 
 class FetchSerializer(serializers.ModelSerializer):
     actor = federation_serializers.APIActorSerializer(read_only=True)
-    object = serializers.CharField(write_only=True)
+    object_uri = serializers.CharField(required=True, write_only=True)
+    object = serializers.SerializerMethodField(read_only=True)
+    type = serializers.SerializerMethodField(read_only=True)
     force = serializers.BooleanField(default=False, required=False, write_only=True)
 
     class Meta:
@@ -230,8 +231,10 @@ class FetchSerializer(serializers.ModelSerializer):
             "detail",
             "creation_date",
             "fetch_date",
-            "object",
+            "object_uri",
             "force",
+            "type",
+            "object",
         ]
         read_only_fields = [
             "id",
@@ -241,14 +244,36 @@ class FetchSerializer(serializers.ModelSerializer):
             "detail",
             "creation_date",
             "fetch_date",
+            "type",
+            "object",
         ]
 
-    def validate_object(self, value):
+    def get_type(self, fetch):
+        obj = fetch.object
+        if obj is None:
+            return None
+
+        # Return the type as a string
+        if isinstance(obj, music_models.Artist):
+            return "artist"
+        elif isinstance(obj, music_models.Album):
+            return "album"
+        elif isinstance(obj, music_models.Track):
+            return "track"
+        elif isinstance(obj, models.Actor):
+            return "account"
+        elif isinstance(obj, audio_models.Channel):
+            return "channel"
+        elif isinstance(obj, playlists_models.Playlist):
+            return "playlist"
+        else:
+            return None
+
+    def validate_object_uri(self, value):
         if value.startswith("https://"):
-            converted = convert_url_to_webginfer(value)
+            converted = convert_url_to_webfinger(value)
             if converted:
                 value = converted
-        # if value is a webginfer lookup, we craft a special url
         if value.startswith("@"):
             value = value.lstrip("@")
         validator = validators.EmailValidator()
@@ -256,8 +281,29 @@ class FetchSerializer(serializers.ModelSerializer):
             validator(value)
         except validators.ValidationError:
             return value
-
         return f"webfinger://{value}"
+
+    @extend_schema_field(
+        {
+            "oneOf": [
+                {"$ref": "#/components/schemas/Artist"},
+                {"$ref": "#/components/schemas/Album"},
+                {"$ref": "#/components/schemas/Track"},
+                {"$ref": "#/components/schemas/APIActor"},
+                {"$ref": "#/components/schemas/Channel"},
+                {"$ref": "#/components/schemas/Playlist"},
+            ]
+        }
+    )
+    def get_object(self, fetch):
+        obj = fetch.object
+        if obj is None:
+            return None
+
+        serializer_class = OBJECT_SERIALIZER_MAPPING.get(type(obj))
+        if serializer_class:
+            return serializer_class(obj).data
+        return None
 
     def create(self, validated_data):
         check_duplicates = not validated_data.get("force", False)
@@ -267,7 +313,7 @@ class FetchSerializer(serializers.ModelSerializer):
                 validated_data["actor"]
                 .fetches.filter(
                     status="finished",
-                    url=validated_data["object"],
+                    url=validated_data["object_uri"],
                     creation_date__gte=timezone.now()
                     - datetime.timedelta(
                         seconds=settings.FEDERATION_DUPLICATE_FETCH_DELAY
@@ -280,17 +326,9 @@ class FetchSerializer(serializers.ModelSerializer):
                 return duplicate
 
         fetch = models.Fetch.objects.create(
-            actor=validated_data["actor"], url=validated_data["object"]
+            actor=validated_data["actor"], url=validated_data["object_uri"]
         )
         return fetch
-
-    def to_representation(self, obj):
-        repr = super().to_representation(obj)
-        object_data = None
-        if obj.object:
-            object_data = FETCH_OBJECT_FIELD.to_representation(obj.object)
-        repr["object"] = object_data
-        return repr
 
 
 class FullActorSerializer(serializers.Serializer):

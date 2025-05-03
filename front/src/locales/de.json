@@ -4623,7 +4623,7 @@
         "nav": "Nummerierte Navigation"
       }
     },
-    "by-user": "von {'@'}{username}",
+    "by-user": "von {username}",
     "episodes": "{n} Episode | {n} Episoden",
     "go-to": "Gehe zu",
     "pagination": {

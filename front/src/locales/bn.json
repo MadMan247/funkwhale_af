@@ -4,7 +4,7 @@
   },
   "vui": {
     "tracks": "{n}টি গান | {n}টি গান",
-    "by-user": "{'@'}{username} থেকে",
+    "by-user": "{username} থেকে",
     "aria": {
       "pagination": {
         "gotoPage": "{n} পৃষ্ঠায় যাও",

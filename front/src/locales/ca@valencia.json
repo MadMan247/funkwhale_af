@@ -6,7 +6,7 @@
     "radio": "Ràdio",
     "albums": "{n} àlbum | {n} àlbums",
     "episodes": "{n} episodi | {n} episodis",
-    "by-user": "per {'@'}{username}",
+    "by-user": "per {username}",
     "aria": {
       "pagination": {
         "gotoPrevious": "Retornar a la pàgina anterior",

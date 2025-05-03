@@ -7,7 +7,7 @@
     "albums": "{n} album | {n} albums",
     "tracks": "{n} track | {n} tracks",
     "episodes": "{n} episode | {n} episodes",
-    "by-user": "by {'@'}{username}",
+    "by-user": "by {username}",
     "go-to": "Go to",
     "pagination": {
       "previous": "Previous",

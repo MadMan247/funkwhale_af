@@ -1,5 +1,6 @@
 import pytest
 
+from funkwhale_api.audio.serializers import ChannelSerializer
 from funkwhale_api.common import serializers as common_serializers
 from funkwhale_api.federation import api_serializers, serializers
 from funkwhale_api.users import serializers as users_serializers
@@ -128,6 +129,7 @@ def test_fetch_serializer_no_obj(factories, to_api_date):
         "status": fetch.status,
         "detail": fetch.detail,
         "object": None,
+        "type": None,
         "actor": serializers.APIActorSerializer(fetch.actor).data,
     }
 
@@ -135,22 +137,28 @@ def test_fetch_serializer_no_obj(factories, to_api_date):
 
 
 @pytest.mark.parametrize(
-    "object_factory, expected_type, expected_id",
+    "object_factory, expected_type, serializer_class",
     [
-        ("music.Album", "album", "id"),
-        ("music.Artist", "artist", "id"),
-        ("music.Track", "track", "id"),
-        ("music.Library", "library", "uuid"),
-        ("music.Upload", "upload", "uuid"),
-        ("audio.Channel", "channel", "uuid"),
-        ("federation.Actor", "account", "full_username"),
+        ("music.Album", "album", serializers.AlbumSerializer),
+        ("music.Artist", "artist", serializers.ArtistSerializer),
+        ("music.Track", "track", serializers.TrackSerializer),
+        ("audio.Channel", "channel", ChannelSerializer),
+        ("federation.Actor", "account", serializers.APIActorSerializer),
+        ("playlists.Playlist", "playlist", serializers.PlaylistSerializer),
     ],
 )
 def test_fetch_serializer_with_object(
-    object_factory, expected_type, expected_id, factories, to_api_date
+    object_factory, expected_type, serializer_class, factories, to_api_date
 ):
     obj = factories[object_factory]()
     fetch = factories["federation.Fetch"](object=obj)
+
+    # Serialize the object
+    if serializer_class:
+        object_data = serializer_class(obj).data
+    else:
+        object_data = {"uuid": getattr(obj, "uuid", None)}
+
     expected = {
         "id": fetch.pk,
         "url": fetch.url,
@@ -158,7 +166,10 @@ def test_fetch_serializer_with_object(
         "fetch_date": None,
         "status": fetch.status,
         "detail": fetch.detail,
-        "object": {"type": expected_type, expected_id: getattr(obj, expected_id)},
+        "object": {
+            **object_data,
+        },
+        "type": expected_type,
         "actor": serializers.APIActorSerializer(fetch.actor).data,
     }
 
@@ -175,6 +186,7 @@ def test_fetch_serializer_unhandled_obj(factories, to_api_date):
         "status": fetch.status,
         "detail": fetch.detail,
         "object": None,
+        "type": None,
         "actor": serializers.APIActorSerializer(fetch.actor).data,
     }
 

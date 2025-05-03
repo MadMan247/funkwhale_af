@@ -20659,18 +20659,32 @@ components:
           format: date-time
           readOnly: true
           nullable: true
+        type:
+          type: string
+          readOnly: true
+        object:
+          oneOf:
+          - $ref: '#/components/schemas/Artist'
+          - $ref: '#/components/schemas/Album'
+          - $ref: '#/components/schemas/Track'
+          - $ref: '#/components/schemas/APIActor'
+          - $ref: '#/components/schemas/Channel'
+          - $ref: '#/components/schemas/Playlist'
+          readOnly: true
       required:
       - actor
       - creation_date
       - detail
       - fetch_date
       - id
+      - object
       - status
+      - type
       - url
     FetchRequest:
       type: object
       properties:
-        object:
+        object_uri:
           type: string
           writeOnly: true
           minLength: 1
@@ -20679,7 +20693,7 @@ components:
           writeOnly: true
           default: false
       required:
-      - object
+      - object_uri
     FetchStatusEnum:
       enum:
       - pending
