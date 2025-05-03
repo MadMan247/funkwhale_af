@@ -281,7 +281,7 @@ const uploadedFilesById = computed(() => uploadedFiles.value.reduce((acc: Record
 //
 
 const baseImportMetadata = computed(() => ({
-  channel: selectedChannel,
+  channel: selectedChannel.value?.uuid ?? null,
   import_status: 'draft',
   import_metadata: { license: values.license, album: values.album }
 }))
@@ -291,9 +291,13 @@ const uploadImportData = reactive({} as Record<string, Metadata>)
 const audioMetadata = reactive({} as Record<string, Record<string, string>>)
 const uploadData = reactive({} as Record<string, { import_metadata: Metadata }>)
 const patchUpload = async (id: string, data: Record<string, Metadata>) => {
-  const response = await axios.patch(`uploads/${id}/`, data)
-  uploadData[id] = response.data
-  uploadImportData[id] = response.data.import_metadata
+  try {
+    const response = await axios.patch(`uploads/${id}/`, data)
+    uploadData[id] = response.data
+    uploadImportData[id] = response.data.import_metadata
+  } catch (error) {
+    useErrorHandler(error as Error)
+  }
 }
 
 const fetchAudioMetadata = async (uuid: string) => {
@@ -572,49 +576,57 @@ defineExpose({
             </div>
             <Loader v-else-if="file.active && !file.response" />
           </div>
-          <h4 class="ui header">
-            <template v-if="file.metadata.title">
-              {{ file.metadata.title }}
-            </template>
-            <template v-else>
-              {{ file.name }}
-            </template>
-            <div class="sub header">
-              <template v-if="file.response?.uuid">
-                {{ humanSize(file.size ?? 0) }}
-                <template v-if="file.response.duration">
-                  <span class="middle middledot symbol" />
-                  <human-duration :duration="file.response.duration" />
-                </template>
+          <Layout
+            stack
+            gap-8
+          >
+            <span v-if="file.error">
+              {{ file.error?.toString() }}
+            </span>
+            <h4 class="ui header">
+              <template v-if="file.metadata.title">
+                {{ file.metadata.title }}
               </template>
               <template v-else>
-                <span v-if="file.active">
-                  {{ t('components.channels.UploadForm.status.uploading') }}
-                </span>
-                <span v-else-if="file.error">
-                  {{ t('components.channels.UploadForm.status.errored') }}
-                </span>
-                <span v-else>
-                  {{ t('components.channels.UploadForm.status.pending') }}
-                </span>
-                <span class="middle middledot symbol" />
-                {{ humanSize(file.size ?? 0) }}
-                <span class="middle middledot symbol" />
-                {{ parseFloat(file.progress ?? '0') }}
-                <span class="percent symbol" />
+                {{ file.name }}
               </template>
-              <span class="middle middledot symbol" />
-              <a @click.stop.prevent="remove(file)">
-                {{ t('components.channels.UploadForm.button.remove') }}
-              </a>
-              <template v-if="file.error">
+              <div class="sub header">
+                <template v-if="file.response?.uuid">
+                  {{ humanSize(file.size ?? 0) }}
+                  <template v-if="file.response.duration">
+                    <span class="middle middledot symbol" />
+                    <human-duration :duration="file.response.duration" />
+                  </template>
+                </template>
+                <template v-else>
+                  <span v-if="file.active">
+                    {{ t('components.channels.UploadForm.status.uploading') }}
+                  </span>
+                  <span v-else-if="file.error">
+                    {{ t('components.channels.UploadForm.status.errored') }}
+                  </span>
+                  <span v-else>
+                    {{ t('components.channels.UploadForm.status.pending') }}
+                  </span>
+                  <span class="middle middledot symbol" />
+                  {{ humanSize(file.size ?? 0) }}
+                  <span class="middle middledot symbol" />
+                  {{ parseFloat(file.progress ?? '0') }}
+                  <span class="percent symbol" />
+                </template>
                 <span class="middle middledot symbol" />
-                <a @click.stop.prevent="retry(file)">
-                  {{ t('components.channels.UploadForm.button.retry') }}
+                <a @click.stop.prevent="remove(file)">
+                  {{ t('components.channels.UploadForm.button.remove') }}
                 </a>
-              </template>
-            </div>
-          </h4>
+                <template v-if="file.error">
+                  <span class="middle middledot symbol" />
+                  <a @click.stop.prevent="retry(file)">
+                    {{ t('components.channels.UploadForm.button.retry') }}
+                  </a>
+                </template>
+              </div>
+            </h4>
+          </Layout>
         </div>
       </Alert>
     </template>
