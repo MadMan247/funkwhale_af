@@ -120,7 +120,7 @@ const createFetch = async () => {
   isLoading.value = true
 
   try {
-    const response = await axios.post('federation/fetches/', { object: id.value })
+    const response = await axios.post('federation/fetches/', { object_uri: id.value })
     obj.value = response.data
 
     if (response.data.status === 'errored' || response.data.status === 'skipped') {
