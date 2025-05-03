@@ -81,7 +81,7 @@ watch(() => props.channel, fetchData, { immediate: true })
       :value="album.id"
     >
       {{ album.title }}
-      {{ t('components.channels.AlbumSelect.meta.tracks', album.tracks_count) }}
+      {{ `(${t('components.channels.AlbumSelect.meta.tracks', album.tracks_count)})` }}
     </option>
   </select>
   <Spacer :size="4" />
