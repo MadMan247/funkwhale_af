@@ -205,6 +205,7 @@ const labels = computed(() => ({
       </td>
       <td>
         <Link
+          v-if="scope.obj.artist_credit && scope.obj.artist_credit.length > 0 && scope.obj.artist_credit[0].artist"
           icon="bi-wrench"
           solid
           square-small
@@ -213,6 +214,7 @@ const labels = computed(() => ({
           <span class="visually-hidden">{{ labels.openModeration }}</span>
         </Link>
         <a
+          v-if="scope.obj.artist_credit && scope.obj.artist_credit.length > 0 && scope.obj.artist_credit[0].artist"
           href=""
           class="discrete link"
           :title="scope.obj.artist_credit[0].artist.name"
