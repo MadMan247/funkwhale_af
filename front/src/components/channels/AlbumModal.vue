@@ -44,6 +44,7 @@ const submit = async () => {
   } finally {
     isLoading.value = false
     emit('created')
+    isOpen.value = false
   }
 }
 
