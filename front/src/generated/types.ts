@@ -6716,6 +6716,28 @@ export interface components {
             type: string;
             id: string;
         };
+        ImportMetadata: {
+            title: string;
+            description?: string | null;
+            /** Format: uuid */
+            mbid?: string | null;
+            copyright?: string | null;
+            position?: number | null;
+            tags?: string[];
+            license?: string | null;
+        };
+        ImportMetadataRequest: {
+            title: string;
+            description?: string | null;
+            /** Format: uuid */
+            mbid?: string | null;
+            copyright?: string | null;
+            position?: number | null;
+            tags?: string[];
+            license?: string | null;
+            cover?: string | null;
+            album?: string | null;
+        };
         /**
          * @description * `draft` - Draft
          *     * `pending` - Pending
@@ -7420,7 +7442,7 @@ export interface components {
             import_date?: string | null;
             import_details?: unknown;
             import_status?: components["schemas"]["ImportStatusEnum"];
-            import_metadata?: unknown;
+            import_metadata: components["schemas"]["ImportMetadata"];
             import_reference?: string;
             track: components["schemas"]["ManageNestedTrack"];
             library: components["schemas"]["ManageNestedLibrary"];
@@ -7449,7 +7471,7 @@ export interface components {
             import_date?: string | null;
             import_details?: unknown;
             import_status?: components["schemas"]["ImportStatusEnum"];
-            import_metadata?: unknown;
+            import_metadata: components["schemas"]["ImportMetadataRequest"];
             import_reference?: string;
             track: components["schemas"]["ManageNestedTrackRequest"];
             library: components["schemas"]["ManageNestedLibraryRequest"];
@@ -8450,7 +8472,7 @@ export interface components {
             /** @default pending */
             import_status: components["schemas"]["ImportStatusEnum"];
             privacy_level?: components["schemas"]["LibraryPrivacyLevelEnum"];
-            import_metadata?: unknown;
+            import_metadata?: components["schemas"]["ImportMetadataRequest"];
             import_reference?: string;
             source?: string | null;
             /** Format: binary */
@@ -8866,7 +8888,7 @@ export interface components {
             import_status: components["schemas"]["ImportStatusEnum"];
             privacy_level?: components["schemas"]["LibraryPrivacyLevelEnum"];
             readonly import_details: unknown;
-            import_metadata?: unknown;
+            import_metadata?: components["schemas"]["ImportMetadata"];
             import_reference?: string;
             readonly metadata: unknown;
             source?: string | null;
@@ -8879,7 +8901,7 @@ export interface components {
             /** @default pending */
             import_status: components["schemas"]["ImportStatusEnum"];
             privacy_level?: components["schemas"]["LibraryPrivacyLevelEnum"];
-            import_metadata?: unknown;
+            import_metadata?: components["schemas"]["ImportMetadataRequest"];
             import_reference?: string;
             source?: string | null;
             /** Format: binary */
