@@ -146,7 +146,7 @@ const getQuery = (field: string, value: string) => `${field}:"${value}"`
       <fetch-button
         v-if="!channel?.actor?.is_local"
         class="basic item"
-        :url="`channels/${channel?.uuid}/fetches/`"
+        :url="`federation/fetches/${channel?.id}/`"
         @refresh="fetchData"
       >
         <i class="refresh icon" />&nbsp;

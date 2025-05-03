@@ -9,6 +9,8 @@ import { useI18n } from 'vue-i18n'
 
 import Modal from '~/components/ui/Modal.vue'
 import Button from '~/components/ui/Button.vue'
+import Alert from '~/components/ui/Alert.vue'
+import Loader from '~/components/ui/Loader.vue'
 
 
 const { t } = useI18n()
@@ -43,14 +45,14 @@ const fetch = async () => {
   data.value = undefined
 
   try {
-    const response = await axios.post(props.url)
+    const response = await axios.get(props.url)
     data.value = response.data
     startPolling()
   } catch (error) {
     errors.value = (error as BackendError).backendErrors
+  } finally {
+    isLoading.value = false
   }
-
-  isLoading.value = false
 }
 
 const poll = async () => {
@@ -104,9 +106,9 @@ const { start: startPolling } = useTimeoutFn(poll, 1000, { immediate: false })
               {{ t('components.federation.FetchButton.description.skipped') }}
             </p>
           </div>
-          <div
+          <Alert
             v-else-if="data.status === 'finished'"
-            class="ui success message"
+            green
           >
             <h4 class="header">
               {{ t('components.federation.FetchButton.header.success') }}
@@ -114,10 +116,10 @@ const { start: startPolling } = useTimeoutFn(poll, 1000, { immediate: false })
             <p>
               {{ t('components.federation.FetchButton.description.success') }}
             </p>
-          </div>
-          <div
+          </Alert>
+          <Alert
             v-else-if="data.status === 'errored'"
-            class="ui error message"
+            red
           >
             <h4 class="header">
               {{ t('components.federation.FetchButton.header.failure') }}
@@ -168,28 +170,14 @@ const { start: startPolling } = useTimeoutFn(poll, 1000, { immediate: false })
                 </tr>
               </tbody>
             </table>
-          </div>
+          </Alert>
         </template>
-        <div
-          v-else-if="isLoading"
-          class="ui active inverted dimmer"
-        >
-          <div class="ui text loader">
-            {{ t('components.federation.FetchButton.loader.fetchRequest') }}
-          </div>
-        </div>
-        <div
-          v-else-if="isPolling"
-          class="ui active inverted dimmer"
-        >
-          <div class="ui text loader">
-            {{ t('components.federation.FetchButton.loader.awaitingResult') }}
-          </div>
-        </div>
-        <div
+        <Loader
+          v-else-if="isLoading || isPolling"
+        />
+        <Alert
           v-if="errors.length > 0"
-          role="alert"
-          class="ui negative message"
+          red
         >
           <h4 class="header">
             {{ t('components.federation.FetchButton.header.saveFailure') }}
@@ -202,11 +190,10 @@ const { start: startPolling } = useTimeoutFn(poll, 1000, { immediate: false })
               {{ error }}
             </li>
           </ul>
-        </div>
-        <div
+        </Alert>
+        <Alert
           v-else-if="data && data.status === 'pending' && pollsCount >= MAX_POLLS"
-          role="alert"
-          class="ui warning message"
+          yellow
         >
           <h4 class="header">
             {{ t('components.federation.FetchButton.header.pending') }}
@@ -214,16 +201,17 @@ const { start: startPolling } = useTimeoutFn(poll, 1000, { immediate: false })
           <p>
             {{ t('components.federation.FetchButton.description.pending') }}
           </p>
-        </div>
+        </Alert>
       </div>
-      <div class="actions">
+      <template #actions>
         <Button
           v-if="data && data.status === 'finished'"
+          primary
           @click.prevent="showModal = false; emit('refresh')"
         >
           {{ t('components.federation.FetchButton.button.reload') }}
         </Button>
-      </div>
+      </template>
     </Modal>
   </Button>
 </template>
