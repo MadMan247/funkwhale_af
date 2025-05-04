@@ -5,6 +5,7 @@ import os
 import tempfile
 import urllib.parse
 import uuid
+from random import randint
 
 import arrow
 import slugify
@@ -16,7 +17,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.base import ContentFile
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models, transaction
-from django.db.models import Count, JSONField, Prefetch
+from django.db.models import Count, JSONField, Max, Min, Prefetch
 from django.db.models.expressions import OuterRef, Subquery
 from django.db.models.query_utils import Q
 from django.db.models.signals import post_save, pre_save
@@ -541,6 +542,26 @@ class TrackQuerySet(common_models.LocalFromFidQuerySet, models.QuerySet):
         Order by disc number then position
         """
         return self.order_by("disc_number", "position", "title")
+
+    def random(self, batch_size):
+        bounds = self.aggregate(min_id=Min("id"), max_id=Max("id"))
+        min_id, max_id = bounds["min_id"], bounds["max_id"]
+
+        if min_id is None or max_id is None:
+            return self.none()
+
+        tries = 0
+        max_tries = 10
+        found_ids = set()
+
+        while len(found_ids) < batch_size and tries < max_tries:
+            candidate_ids = [randint(min_id, max_id) for _ in range(batch_size * 2)]
+            found_ids.update(
+                self.filter(id__in=candidate_ids).values_list("id", flat=True)
+            )
+            tries += 1
+
+        return self.filter(id__in=list(found_ids)[:batch_size]).order_by("?")
 
 
 def get_artist(release_list):

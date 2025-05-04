@@ -109,7 +109,7 @@ class SessionRadio(SimpleRadio):
         queryset = self.filter_queryset(queryset)
 
         # select a random batch of the qs
-        sliced_queryset = queryset.order_by("?")[:BATCH_SIZE]
+        sliced_queryset = queryset.random(BATCH_SIZE)
         if len(sliced_queryset) <= 0 and not cached_evaluated_radio_tracks:
             raise ValueError("No more radio candidates")
 
@@ -166,7 +166,7 @@ class SessionRadio(SimpleRadio):
 class RandomRadio(SessionRadio):
     def get_queryset(self, **kwargs):
         qs = super().get_queryset(**kwargs)
-        return qs.filter(artist_credit__artist__content_category="music").order_by("?")
+        return qs.filter(artist_credit__artist__content_category="music").random(100)
 
 
 @registry.register(name="random_library")
@@ -179,7 +179,7 @@ class RandomLibraryRadio(SessionRadio):
         query = Q(artist_credit__artist__content_category="music") & Q(
             pk__in=tracks_ids
         )
-        return qs.filter(query).order_by("?")
+        return qs.filter(query).random(100)
 
 
 @registry.register(name="favorites")
@@ -390,7 +390,7 @@ class LessListenedRadio(SessionRadio):
         return (
             qs.filter(artist_credit__artist__content_category="music")
             .exclude(pk__in=listened)
-            .order_by("?")
+            .random(100)
         )
 
 
@@ -411,7 +411,7 @@ class LessListenedLibraryRadio(SessionRadio):
         query = Q(artist_credit__artist__content_category="music") & Q(
             pk__in=tracks_ids
         )
-        return qs.filter(query).exclude(pk__in=listened).order_by("?")
+        return qs.filter(query).exclude(pk__in=listened).random(100)
 
 
 @registry.register(name="actor-content")
