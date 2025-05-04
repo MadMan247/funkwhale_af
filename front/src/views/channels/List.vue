@@ -142,6 +142,7 @@ const showCreateModal = ref(false)
     <!-- TODO: `yarn lint:tsc` doesn't understand the `Prop` type for `Header` while the language server does. It may be a question of typescript version... Investigate and fix! https://dev.funkwhale.audio/funkwhale/funkwhale/-/issues/2437 -->
     <!-- @vue-ignore -->
     <Header
+      v-if="store.state.auth.authenticated"
       :h1="t('views.channels.SubscriptionsList.title')"
       :action="{
         text: t('views.channels.SubscriptionsList.link.addNew'),
@@ -189,11 +190,13 @@ const showCreateModal = ref(false)
     </Modal>
 
     <inline-search-bar
+      v-if="store.state.auth.authenticated"
       v-model="subscribedQuery"
       :placeholder="labels.searchPlaceholder"
       @search="reloadWidget"
     />
     <channels-widget
+      v-if="store.state.auth.authenticated"
       :key="widgetKey"
       :limit="4"
       :show-modification-date="true"
