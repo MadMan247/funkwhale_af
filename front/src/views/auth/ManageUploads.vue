@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ImportStatus, PrivacyLevel, Upload } from '~/types'
+import type { PrivacyLevel, Upload } from '~/types'
 import type { SmartSearchProps } from '~/composables/navigation/useSmartSearch'
 import type { OrderingProps } from '~/composables/navigation/useOrdering'
 import type { RouteRecordName } from 'vue-router'
@@ -14,7 +14,6 @@ import { useI18n } from 'vue-i18n'
 import axios from 'axios'
 
 import ImportStatusModal from '~/components/library/ImportStatusModal.vue'
-import ActionTable from '~/components/common/ActionTable.vue'
 
 import useSmartSearch from '~/composables/navigation/useSmartSearch'
 import useSharedLabels from '~/composables/locale/useSharedLabels'
@@ -153,19 +152,6 @@ const orderingOptions: [OrderingField, keyof typeof sharedLabels.filters][] = [
 ]
 
 const { t } = useI18n()
-const actionFilters = computed(() => ({ q: query.value, ...props.filters }))
-const actions = computed(() => [
-  {
-    name: 'delete',
-    label: t('components.manage.library.UploadsTable.action.delete.label'),
-    confirmationMessage: t('components.manage.library.UploadsTable.action.delete.warning'),
-    isDangerous: true,
-    allowAll: false,
-    confirmColor: 'danger' as const
-  }
-])
-
-// .delete<api/v2/uploads/{uid}>(...)
 
 const isLoading = ref(false)
 const fetchData = async () => {
@@ -204,14 +190,6 @@ const displayName = (item: Item): string => {
 
 const detailedUpload = ref<Item>()
 const showUploadDetailModal = ref(false)
-
-const getImportStatusChoice = (importStatus: ImportStatus) => {
-  return sharedLabels.fields.import_status.choices[importStatus]
-}
-
-const getPrivacyLevelChoice = (privacyLevel: PrivacyLevel) => {
-  return sharedLabels.fields.privacy_level.shortChoices[privacyLevel]
-}
 </script>
 
 <template>
@@ -372,7 +350,7 @@ const getPrivacyLevelChoice = (privacyLevel: PrivacyLevel) => {
       </b>
       <!-- 5. date of upload (not creation) -->
       <b>
-        {{ t('components.manage.library.UploadsTable.table.upload.header.accessedDate') }}
+        {{ t('components.manage.library.UploadsTable.table.upload.header.creationDate') }}
       </b>
     </template>
     <template
@@ -459,141 +437,6 @@ const getPrivacyLevelChoice = (privacyLevel: PrivacyLevel) => {
     </template>
   </Table>
 
-  <!-- Yes -->
-
-  <action-table
-    v-if="result"
-    :objects-data="result"
-    :actions="actions"
-    action-url="manage/library/uploads/action/"
-    :filters="actionFilters"
-    @action-launched="fetchData"
-  >
-    <template #header-cells>
-      <th>
-        {{ t('components.manage.library.UploadsTable.table.upload.header.name') }}
-      </th>
-      <th>
-        {{ t('components.manage.library.UploadsTable.table.upload.header.library') }}
-      </th>
-      <th>
-        {{ t('components.manage.library.UploadsTable.table.upload.header.account') }}
-      </th>
-      <th>
-        {{ t('components.manage.library.UploadsTable.table.upload.header.domain') }}
-      </th>
-      <th>
-        {{ t('components.manage.library.UploadsTable.table.upload.header.visibility') }}
-      </th>
-      <th>
-        {{ t('components.manage.library.UploadsTable.table.upload.header.importStatus') }}
-      </th>
-      <th>
-        {{ t('components.manage.library.UploadsTable.table.upload.header.size') }}
-      </th>
-      <th>
-        {{ t('components.manage.library.UploadsTable.table.upload.header.creationDate') }}
-      </th>
-      <th>
-        {{ t('components.manage.library.UploadsTable.table.upload.header.accessedDate') }}
-      </th>
-    </template>
-    <template #row-cells="scope">
-      <td>
-        <router-link :to="{name: 'manage.library.uploads.detail', params: {id: scope.obj.uuid }}">
-          {{ truncate(displayName(scope.obj), 30, undefined, true) }}
-        </router-link>
-      </td>
-      <td>
-        <!-- <router-link :to="{name: 'manage.library.libraries.detail', params: {id: scope.obj.library.uuid }}">
-          <i class="wrench icon" />
-        </router-link>
-        <a
-          href=""
-          class="discrete link"
-          :title="scope.obj.library.name"
-          @click.prevent="addSearchToken('library_id', scope.obj.library.id)"
-        >
-          {{ truncate(scope.obj.library.name, 20) }}
-        </a> -->
-      </td>
-      <td>
-        <!-- <router-link :to="{name: 'manage.moderation.accounts.detail', params: {id: scope.obj.library.actor.full_username }}" />
-        <a
-          href=""
-          class="discrete link"
-          :title="scope.obj.library.actor.full_username"
-          @click.prevent="addSearchToken('account', scope.obj.library.actor.full_username)"
-        >{{ scope.obj.library.actor.preferred_username }}</a> -->
-      </td>
-      <td>
-        <!-- <template v-if="!scope.obj.is_local">
-          <router-link :to="{name: 'manage.moderation.domains.detail', params: {id: scope.obj.domain }}">
-            <i class="wrench icon" />
-          </router-link>
-          <a
-            href=""
-            class="discrete link"
-            :title="scope.obj.domain"
-            @click.prevent="addSearchToken('domain', scope.obj.domain)"
-          >{{ scope.obj.domain }}</a>
-        </template>
-        <a
-          v-else
-          href=""
-          class="ui tiny accent icon link label"
-          @click.prevent="addSearchToken('domain', scope.obj.domain)"
-        >
-          <i class="home icon" />
-          {{ t('components.manage.library.UploadsTable.link.local') }}
-        </a> -->
-      </td>
-      <td>
-        <a
-          href=""
-          class="discrete link"
-          :title="getPrivacyLevelChoice(scope.obj.library.privacy_level)"
-          @click.prevent="addSearchToken('privacy_level', scope.obj.library.privacy_level)"
-        >
-          {{ getPrivacyLevelChoice(scope.obj.library.privacy_level) }}
-        </a>
-      </td>
-      <td>
-        <a
-          href=""
-          class="discrete link"
-          :title="getImportStatusChoice(scope.obj.import_status).help"
-          @click.prevent="addSearchToken('status', scope.obj.import_status)"
-        >
-          {{ getImportStatusChoice(scope.obj.import_status).label }}
-        </a>
-        <Button
-          class="tiny"
-          icon="bi-question-circle"
-          :title="sharedLabels.fields.import_status.label"
-          @click="detailedUpload = scope.obj; showUploadDetailModal = true"
-        />
-      </td>
-      <td>
-        <span v-if="scope.obj.size">{{ humanSize(scope.obj.size) }}</span>
-        <span v-else>
-          {{ t('components.manage.library.UploadsTable.notApplicable') }}
-        </span>
-      </td>
-      <td>
-        <human-date :date="scope.obj.creation_date" />
-      </td>
-      <td>
-        <human-date
-          v-if="scope.obj.accessed_date"
-          :date="scope.obj.accessed_date"
-        />
-        <span v-else>
-          {{ t('components.manage.library.UploadsTable.notApplicable') }}
-        </span>
-      </td>
-    </template>
-  </action-table>
   <Pagination
     v-if="page && result && result.count > paginateBy"
     v-model:page="page"
