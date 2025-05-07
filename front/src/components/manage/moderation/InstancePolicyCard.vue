@@ -4,6 +4,8 @@ import { useI18n } from 'vue-i18n'
 
 import useMarkdown from '~/composables/useMarkdown'
 
+import Button from '~/components/ui/Button.vue'
+
 interface Events {
   (e: 'update'): void
 }
@@ -24,21 +26,21 @@ const summary = useMarkdown(() => props.object.summary)
   <div>
     <slot />
     <p>
-      <i class="clock outline icon" /><human-date :date="object.creation_date" /> &nbsp;
-      <i class="user icon" />{{ object.actor }}  &nbsp;
+      <i class="bi bi-clock" /><human-date :date="object.creation_date" /> &nbsp;
+      <i class="bi bi-person" />{{ object.actor }}  &nbsp;
       <template v-if="object.is_active">
-        <i class="play icon" />
+        <i class="bi bi-play" />
         {{ t('components.manage.moderation.InstancePolicyCard.status.enabled') }}
       </template>
       <template v-if="!object.is_active">
-        <i class="pause icon" />
+        <i class="bi bi-pause" />
         {{ t('components.manage.moderation.InstancePolicyCard.status.paused') }}
       </template>
     </p>
     <div>
       <p><strong>{{ t('components.manage.moderation.InstancePolicyCard.header.rule') }}</strong></p>
       <p v-if="object.block_all">
-        <i class="ban icon" />
+        <i class="bi bi-ban" />
         {{ t('components.manage.moderation.InstancePolicyCard.label.blockAll') }}
       </p>
       <div
@@ -49,7 +51,7 @@ const summary = useMarkdown(() => props.object.summary)
           v-if="object.silence_activity"
           class="ui item"
         >
-          <i class="feed icon" />
+          <i class="bi bi-rss-fill" />
           <div class="content">
             {{ t('components.manage.moderation.InstancePolicyCard.label.muteActivity') }}
           </div>
@@ -58,7 +60,7 @@ const summary = useMarkdown(() => props.object.summary)
           v-if="object.silence_notifications"
           class="ui item"
         >
-          <i class="bell icon" />
+          <i class="bi bi-bell-fill" />
           <div class="content">
             {{ t('components.manage.moderation.InstancePolicyCard.label.muteNotifications') }}
           </div>
@@ -67,7 +69,7 @@ const summary = useMarkdown(() => props.object.summary)
           v-if="object.reject_media"
           class="ui item"
         >
-          <i class="file icon" />
+          <i class="bi bi-file-earmark-fill" />
           <div class="content">
             {{ t('components.manage.moderation.InstancePolicyCard.label.rejectMedia') }}
           </div>
@@ -80,12 +82,12 @@ const summary = useMarkdown(() => props.object.summary)
       <sanitized-html :html="summary" />
     </div>
     <div class="ui hidden divider" />
-    <button
-      class="ui right floated labeled icon button"
+    <Button
+      destructive
+      icon="bi-pencil"
       @click="emit('update')"
     >
-      <i class="edit icon" />
       {{ t('components.manage.moderation.InstancePolicyCard.button.edit') }}
-    </button>
+    </Button>
   </div>
 </template>

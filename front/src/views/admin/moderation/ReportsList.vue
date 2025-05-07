@@ -26,6 +26,7 @@ import useOrdering from '~/composables/navigation/useOrdering'
 import useErrorHandler from '~/composables/useErrorHandler'
 import usePage from '~/composables/navigation/usePage'
 import useLogger from '~/composables/useLogger'
+import Loader from '~/components/ui/Loader.vue'
 
 interface Props extends SmartSearchProps, OrderingProps {
   mode?: 'card'
@@ -194,12 +195,9 @@ const labels = computed(() => ({
         </Layout>
       </div>
     </div>
-    <div
+    <Loader
       v-if="isLoading"
-      class="ui active inverted dimmer"
-    >
-      <div class="ui loader" />
-    </div>
+    />
     <div v-else-if="!result || result.count === 0">
       <empty-state
         :refresh="true"

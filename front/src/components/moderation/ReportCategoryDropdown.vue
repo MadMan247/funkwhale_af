@@ -58,11 +58,11 @@ const allCategories = computed(() => {
 </script>
 
 <template>
-  <div>
+  <div class="ui form">
     <label v-if="label">{{ t('components.moderation.ReportCategoryDropdown.label.category') }}</label>
     <select
       v-model="value"
-      class="ui dropdown"
+      class="dropdown"
       :required="required || undefined"
     >
       <option

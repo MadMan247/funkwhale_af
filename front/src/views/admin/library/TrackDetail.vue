@@ -337,7 +337,7 @@ const getQuery = (field: string, value: string) => `${field}:"${value}"`
         </router-link>
       </Layout>
       <Layout
-        v-if="!track.is_local"
+        v-if="!track?.is_local"
         flex
         class="details"
       >
@@ -345,7 +345,7 @@ const getQuery = (field: string, value: string) => `${field}:"${value}"`
           class="label"
           :to="{
             name: 'manage.moderation.domains.detail',
-            params: { id: track.domain }
+            params: { id: track?.domain }
           }"
         >
           {{ t('views.admin.library.TrackDetail.link.domain') }}
@@ -354,7 +354,7 @@ const getQuery = (field: string, value: string) => `${field}:"${value}"`
           h
           grow
         />
-        <span class="value">{{ track.domain }}</span>
+        <span class="value">{{ track?.domain }}</span>
       </Layout>
       <Layout
         v-if="track?.description"
@@ -428,7 +428,10 @@ const getQuery = (field: string, value: string) => `${field}:"${value}"`
         <span class="value">{{ stats?.track_favorites }}</span>
       </Layout>
     </Layout>
-    <Layout stack>
+    <Layout
+      stack
+      style="flex: 1; gap: 0;"
+    >
       <Heading
         :h3="t('views.admin.library.TrackDetail.header.trackData')"
         class="category"
@@ -444,7 +447,7 @@ const getQuery = (field: string, value: string) => `${field}:"${value}"`
           h
           grow
         />
-        <span class="value">{{ humanSize(stats.media_downloaded_size) }}</span>
+        <span class="value">{{ humanSize(stats?.media_downloaded_size) }}</span>
       </Layout>
       <Layout
         flex
@@ -457,7 +460,7 @@ const getQuery = (field: string, value: string) => `${field}:"${value}"`
           h
           grow
         />
-        <span class="value">{{ humanSize(stats.media_total_size) }}</span>
+        <span class="value">{{ humanSize(stats?.media_total_size) }}</span>
       </Layout>
       <Layout
         flex
@@ -465,7 +468,7 @@ const getQuery = (field: string, value: string) => `${field}:"${value}"`
       >
         <Link
           class="label"
-          :to="{ name: 'manage.library.libraries', query: { q: getQuery('track_id', track.id) } }"
+          :to="{ name: 'manage.library.libraries', query: { q: getQuery('track_id', track?.id) } }"
         >
           {{ t('views.admin.library.TrackDetail.link.libraries') }}
         </Link>
@@ -473,7 +476,7 @@ const getQuery = (field: string, value: string) => `${field}:"${value}"`
           h
           grow
         />
-        <span class="value">{{ stats.libraries }}</span>
+        <span class="value">{{ stats?.libraries }}</span>
       </Layout>
       <Layout
         flex
@@ -481,7 +484,7 @@ const getQuery = (field: string, value: string) => `${field}:"${value}"`
       >
         <Link
           class="label"
-          :to="{ name: 'manage.library.uploads', query: { q: getQuery('track_id', track.id) } }"
+          :to="{ name: 'manage.library.uploads', query: { q: getQuery('track_id', track?.id) } }"
         >
           {{ t('views.admin.library.TrackDetail.link.uploads') }}
         </Link>
@@ -489,7 +492,7 @@ const getQuery = (field: string, value: string) => `${field}:"${value}"`
           h
           grow
         />
-        <span class="value">{{ stats.uploads }}</span>
+        <span class="value">{{ stats?.uploads }}</span>
       </Layout>
     </Layout>
   </Layout>

@@ -11,6 +11,7 @@ import useLogger from '~/composables/useLogger'
 
 import Modal from '~/components/ui/Modal.vue'
 import Alert from '~/components/ui/Alert.vue'
+import Button from '~/components/ui/Button.vue'
 
 const logger = useLogger()
 const { t } = useI18n()
@@ -62,6 +63,7 @@ const hide = async () => {
 <template>
   <Modal
     v-model="show"
+    destructive
     :title="type==='artist' ? t('components.moderation.FilterModal.header.modal', {name: target?.name}) : errors.length > 0 ? t('components.moderation.FilterModal.header.failure') : ''"
     :cancel="t('components.moderation.FilterModal.button.cancel')"
   >
@@ -104,13 +106,14 @@ const hide = async () => {
         </template>
       </div>
     </div>
-    <div class="actions">
-      <button
-        :class="['ui', 'success', {loading: isLoading}, 'button']"
+    <template #actions>
+      <Button
+        destructive
+        :class="[{loading: isLoading}]"
         @click="hide"
       >
         {{ t('components.moderation.FilterModal.button.hide') }}
-      </button>
-    </div>
+      </Button>
+    </template>
   </Modal>
 </template>

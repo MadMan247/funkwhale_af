@@ -36,31 +36,29 @@ const labels = computed(() => ({
 
 const isLoading = ref(false)
 const object = ref()
+
 const fetchData = async () => {
   isLoading.value = true
-
   try {
     const response = await axios.get(`manage/library/libraries/${props.id}/`)
     object.value = response.data
   } catch (error) {
     useErrorHandler(error as Error)
   }
-
   isLoading.value = false
 }
 
 const isLoadingStats = ref(false)
 const stats = ref()
+
 const fetchStats = async () => {
   isLoadingStats.value = true
-
   try {
     const response = await axios.get(`manage/library/libraries/${props.id}/stats/`)
     stats.value = response.data
   } catch (error) {
     useErrorHandler(error as Error)
   }
-
   isLoadingStats.value = false
 }
 
@@ -69,14 +67,12 @@ fetchData()
 
 const remove = async () => {
   isLoading.value = true
-
   try {
     await axios.delete(`manage/library/libraries/${props.id}/`)
     router.push({ name: 'manage.library.libraries' })
   } catch (error) {
     useErrorHandler(error as Error)
   }
-
   isLoading.value = false
 }
 
@@ -86,7 +82,6 @@ const updateObj = async (attr: string) => {
   const params = {
     [attr]: object.value[attr]
   }
-
   try {
     await axios.patch(`manage/library/libraries/${props.id}/`, params)
     logger.info(`${attr} was updated successfully to ${params[attr]}`)

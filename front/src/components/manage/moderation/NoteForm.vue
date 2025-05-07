@@ -5,6 +5,8 @@ import axios from 'axios'
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import Button from '~/components/ui/Button.vue'
+
 interface Events {
   (e: 'created', note: Note): void
 }
@@ -76,12 +78,13 @@ const submit = async () => {
         :placeholder="labels.summaryPlaceholder"
       />
     </div>
-    <button
-      :class="['ui', {'loading': isLoading}, 'right', 'floated', 'button']"
+    <Button
+      primary
+      :class="[{'loading': isLoading}, 'right', 'floated']"
       type="submit"
       :disabled="isLoading"
     >
       {{ t('components.manage.moderation.NoteForm.button.add') }}
-    </button>
+    </Button>
   </form>
 </template>

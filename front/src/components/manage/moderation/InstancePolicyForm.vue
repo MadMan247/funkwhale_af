@@ -9,6 +9,9 @@ import axios from 'axios'
 
 import DangerousButton from '~/components/common/DangerousButton.vue'
 
+import Layout from '~/components/ui/Layout.vue'
+import Button from '~/components/ui/Button.vue'
+
 interface Events {
   (e: 'save', data: InstancePolicy): void
   (e: 'delete'): void
@@ -119,8 +122,8 @@ const remove = async () => {
 </script>
 
 <template>
-  <form
-    class="ui form"
+  <Layout
+    form
     @submit.prevent="createOrUpdate"
   >
     <h3 class="ui header">
@@ -135,10 +138,9 @@ const remove = async () => {
         {{ t('components.manage.moderation.InstancePolicyForm.header.addRule') }}
       </span>
     </h3>
-    <div
+    <Alert
       v-if="errors && errors.length > 0"
-      role="alert"
-      class="ui negative message"
+      red
     >
       <h4 class="header">
         {{ t('components.manage.moderation.InstancePolicyForm.header.failure') }}
@@ -151,7 +153,7 @@ const remove = async () => {
           {{ error }}
         </li>
       </ul>
-    </div>
+    </Alert>
 
     <div
       v-if="object"
@@ -220,37 +222,39 @@ const remove = async () => {
         </label>
       </div>
     </div>
-    <div class="ui hidden divider" />
-    <button
-      class="ui basic left floated button"
-      @click.prevent="emit('cancel')"
-    >
-      {{ t('components.manage.moderation.InstancePolicyForm.button.cancel') }}
-    </button>
-    <button
-      :class="['ui', 'right', 'floated', 'success', {'disabled loading': isLoading}, 'button']"
-      :disabled="isLoading"
-    >
-      <span v-if="object">
-        {{ t('components.manage.moderation.InstancePolicyForm.button.update') }}
-      </span>
-      <span v-else>
-        {{ t('components.manage.moderation.InstancePolicyForm.button.create') }}
-      </span>
-    </button>
-    <dangerous-button
-      v-if="object"
-      style="float: right;"
-      :title="t('components.manage.moderation.InstancePolicyForm.modal.delete.header')"
-      @confirm="remove"
-    >
-      {{ t('components.manage.moderation.InstancePolicyForm.button.delete') }}
-      <template #modal-content>
-        {{ t('components.manage.moderation.InstancePolicyForm.modal.delete.content.warning') }}
-      </template>
-      <template #modal-confirm>
-        {{ t('components.manage.moderation.InstancePolicyForm.button.confirm') }}
-      </template>
-    </dangerous-button>
-  </form>
+    <Layout flex>
+      <Button
+        primary
+        @click.prevent="emit('cancel')"
+      >
+        {{ t('components.manage.moderation.InstancePolicyForm.button.cancel') }}
+      </Button>
+      <Button
+        primary
+        :class="{'disabled loading': isLoading}"
+        :disabled="isLoading"
+      >
+        <span v-if="object">
+          {{ t('components.manage.moderation.InstancePolicyForm.button.update') }}
+        </span>
+        <span v-else>
+          {{ t('components.manage.moderation.InstancePolicyForm.button.create') }}
+        </span>
+      </Button>
+      <dangerous-button
+        v-if="object"
+        style="float: right;"
+        :title="t('components.manage.moderation.InstancePolicyForm.modal.delete.header')"
+        @confirm="remove"
+      >
+        {{ t('components.manage.moderation.InstancePolicyForm.button.delete') }}
+        <template #modal-content>
+          {{ t('components.manage.moderation.InstancePolicyForm.modal.delete.content.warning') }}
+        </template>
+        <template #modal-confirm>
+          {{ t('components.manage.moderation.InstancePolicyForm.button.confirm') }}
+        </template>
+      </dangerous-button>
+    </Layout>
+  </Layout>
 </template>

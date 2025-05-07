@@ -97,6 +97,7 @@ const labels = computed(() => ({
             color: var(--fw-gray-800);
             padding: 2px 7px;
             border-radius: 10px;
+            font-size: 12px;
           "
         >
           {{ store.state.ui.notifications.inbox }}

@@ -18,6 +18,11 @@ import useErrorHandler from '~/composables/useErrorHandler'
 import useMarkdown from '~/composables/useMarkdown'
 import useLogger from '~/composables/useLogger'
 
+import Card from '~/components/ui/Card.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Button from '~/components/ui/Button.vue'
+import Link from '~/components/ui/Link.vue'
+
 interface Events {
   (e: 'updated', updating: { type: string }): void
   (e: 'handled', isHandled: boolean): void
@@ -110,7 +115,7 @@ const update = async (type: string) => {
 }
 
 const store = useStore()
-const isCollapsed = ref(false)
+const isCollapsed = ref(true)
 const resolveReport = async (isHandled: boolean) => {
   isLoading.value = true
 
@@ -140,136 +145,124 @@ const handleRemovedNote = (uuid: string) => {
 </script>
 
 <template>
-  <div class="ui fluid report card">
-    <div class="content">
-      <h4 class="header">
-        <router-link :to="{name: 'manage.moderation.reports.detail', params: {id: obj.uuid}}">
-          {{ t('components.manage.moderation.ReportCard.link.report', {id: obj.uuid.substring(0, 8)}) }}
-        </router-link>
-        <collapse-link
-          v-model="isCollapsed"
-          class="right floated"
-        />
-      </h4>
-      <div class="content">
-        <div class="ui hidden divider" />
-        <div class="ui stackable two column grid">
-          <div class="column">
-            <table class="ui very basic unstackable table">
-              <tbody>
-                <tr>
-                  <td>
-                    {{ t('components.manage.moderation.ReportCard.table.report.submittedBy') }}
-                  </td>
-                  <td>
-                    <div v-if="obj.submitter">
-                      <actor-link
-                        :admin="true"
-                        :actor="obj.submitter"
-                      />
-                    </div>
-                    <div v-else-if="obj.submitter_email">
-                      {{ obj.submitter_email }}
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    {{ t('components.manage.moderation.ReportCard.table.report.category') }}
-                  </td>
-                  <td>
-                    <report-category-dropdown
-                      v-model="obj.type"
-                      @update:model-value="update($event)"
-                    >
-                      &#32;
-                      <action-feedback :is-loading="updating.type" />
-                    </report-category-dropdown>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    {{ t('components.manage.moderation.ReportCard.table.report.creationDate') }}
-                  </td>
-                  <td>
-                    <human-date
-                      :date="obj.creation_date"
-                      :icon="true"
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="column">
-            <table class="ui very basic unstackable table">
-              <tbody>
-                <tr>
-                  <td>
-                    {{ t('components.manage.moderation.ReportCard.table.status.status') }}
-                  </td>
-                  <td v-if="obj.is_handled">
-                    <span v-if="obj.is_handled">
-                      <i class="success check icon" />
-                      {{ t('components.manage.moderation.ReportCard.table.status.resolved') }}
-                    </span>
-                  </td>
-                  <td v-else>
-                    <i class="danger x icon" />
-                    {{ t('components.manage.moderation.ReportCard.table.status.unresolved') }}
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    {{ t('components.manage.moderation.ReportCard.table.status.assignedTo') }}
-                  </td>
-                  <td>
-                    <div v-if="obj.assigned_to">
-                      <actor-link
-                        :admin="true"
-                        :actor="obj.assigned_to"
-                      />
-                    </div>
-                    <span v-else>
-                      {{ t('components.manage.moderation.ReportCard.notApplicable') }}
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    {{ t('components.manage.moderation.ReportCard.table.status.resolutionDate') }}
-                  </td>
-                  <td>
-                    <human-date
-                      v-if="obj.handled_date"
-                      :date="obj.handled_date"
-                      :icon="true"
-                    />
-                    <span v-else>
-                      {{ t('components.manage.moderation.ReportCard.notApplicable') }}
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    {{ t('components.manage.moderation.ReportCard.table.status.internalNotes') }}
-                  </td>
-                  <td>
-                    <i class="comment icon" />
-                    {{ obj.notes.length }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
+  <Card
+    :title="t('components.manage.moderation.ReportCard.link.report', {id: obj.uuid.substring(0, 8)})"
+    :width="isCollapsed ? '350px' : ''"
+    :full="!isCollapsed"
+    solid
+    :red="!obj.is_handled && isCollapsed"
+    :green="obj.is_handled && isCollapsed"
+  >
+    <template #topright>
+      <collapse-link
+        v-model="isCollapsed"
+        class="right floated"
+      />
+    </template>
+    <table class="ui very basic unstackable table">
+      <tbody>
+        <tr>
+          <td>
+            {{ t('components.manage.moderation.ReportCard.table.report.submittedBy') }}
+          </td>
+          <td>
+            <div v-if="obj.submitter">
+              <actor-link
+                :admin="true"
+                :actor="obj.submitter"
+              />
+            </div>
+            <div v-else-if="obj.submitter_email">
+              {{ obj.submitter_email }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{ t('components.manage.moderation.ReportCard.table.report.category') }}
+          </td>
+          <td>
+            <report-category-dropdown
+              v-model="obj.type"
+              @update:model-value="update($event)"
+            >
+              &#32;
+              <action-feedback :is-loading="updating.type" />
+            </report-category-dropdown>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{ t('components.manage.moderation.ReportCard.table.report.creationDate') }}
+          </td>
+          <td>
+            <human-date
+              :date="obj.creation_date"
+              :icon="true"
+            />
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{ t('components.manage.moderation.ReportCard.table.status.status') }}
+          </td>
+          <td v-if="obj.is_handled">
+            <span v-if="obj.is_handled">
+              <i class="success check icon" />
+              {{ t('components.manage.moderation.ReportCard.table.status.resolved') }}
+            </span>
+          </td>
+          <td v-else>
+            <i class="danger x icon" />
+            {{ t('components.manage.moderation.ReportCard.table.status.unresolved') }}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{ t('components.manage.moderation.ReportCard.table.status.assignedTo') }}
+          </td>
+          <td>
+            <div v-if="obj.assigned_to">
+              <actor-link
+                :admin="true"
+                :actor="obj.assigned_to"
+              />
+            </div>
+            <span v-else>
+              {{ t('components.manage.moderation.ReportCard.notApplicable') }}
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{ t('components.manage.moderation.ReportCard.table.status.resolutionDate') }}
+          </td>
+          <td>
+            <human-date
+              v-if="obj.handled_date"
+              :date="obj.handled_date"
+              :icon="true"
+            />
+            <span v-else>
+              {{ t('components.manage.moderation.ReportCard.notApplicable') }}
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {{ t('components.manage.moderation.ReportCard.table.status.internalNotes') }}
+          </td>
+          <td>
+            <i class="comment icon" />
+            {{ obj.notes.length }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <template
       v-if="!isCollapsed"
-      class="main content"
     >
-      <div class="ui stackable two column grid">
+      <Layout flex>
         <div class="column">
           <h3>
             {{ t('components.manage.moderation.ReportCard.header.message') }}
@@ -286,29 +279,34 @@ const handleRemovedNote = (uuid: string) => {
           <h3>
             {{ t('components.manage.moderation.ReportCard.header.reportedObject') }}
           </h3>
-          <div
+          <Alert
             v-if="!obj.target"
-            role="alert"
-            class="ui warning message"
+            red
           >
             {{ t('components.manage.moderation.ReportCard.warning.objectDeleted') }}
-          </div>
-          <router-link
-            v-if="target && configs[target.type].urls.getDetail"
-            class="ui basic button"
-            :to="configs[target.type].urls.getDetail?.(obj.target_state) ?? '/'"
-          >
-            <i class="eye icon" />
-            {{ t('components.manage.moderation.ReportCard.link.publicPage') }}
-          </router-link>
-          <router-link
-            v-if="target && configs[target.type].urls.getAdminDetail"
-            class="ui basic button"
-            :to="configs[target.type].urls.getAdminDetail?.(obj.target_state) ?? '/'"
-          >
-            <i class="wrench icon" />
-            {{ t('components.manage.moderation.ReportCard.link.moderation') }}
-          </router-link>
+          </Alert>
+          <Layout flex>
+            <Link
+              v-if="target && configs[target.type].urls.getDetail"
+              solid
+              secondary
+              icon="bi-eye"
+              low-height
+              :to="configs[target.type].urls.getDetail?.(obj.target_state) ?? '/'"
+            >
+              {{ t('components.manage.moderation.ReportCard.link.publicPage') }}
+            </Link>
+            <Link
+              v-if="target && configs[target.type].urls.getAdminDetail"
+              solid
+              secondary
+              icon="bi-wrench"
+              low-height
+              :to="configs[target.type].urls.getAdminDetail?.(obj.target_state) ?? '/'"
+            >
+              {{ t('components.manage.moderation.ReportCard.link.moderation') }}
+            </Link>
+          </Layout>
           <table class="ui very basic unstackable table">
             <tbody>
               <tr v-if="target">
@@ -369,9 +367,9 @@ const handleRemovedNote = (uuid: string) => {
               </tr>
               <tr v-else-if="obj.target_state.domain">
                 <td>
-                  <router-link :to="{name: 'manage.moderation.domains.detail', params: { id: obj.target_state.domain }}">
+                  <Link :to="{name: 'manage.moderation.domains.detail', params: { id: obj.target_state.domain }}">
                     {{ t('components.manage.moderation.ReportCard.table.object.domain') }}
-                  </router-link>
+                  </Link>
                 </td>
                 <td>
                   {{ obj.target_state.domain }}
@@ -405,65 +403,61 @@ const handleRemovedNote = (uuid: string) => {
             </tbody>
           </table>
         </aside>
-      </div>
-      <div class="ui stackable two column grid">
-        <div class="column">
-          <h3>
-            {{ t('components.manage.moderation.ReportCard.header.notes') }}
-          </h3>
-          <notes-thread
-            :notes="obj.notes"
-            @deleted="handleRemovedNote($event)"
-          />
-          <note-form
-            :target="{type: 'report', uuid: obj.uuid}"
-            @created="obj.notes.push($event)"
-          />
-        </div>
-        <div class="column">
-          <h3>
-            {{ t('components.manage.moderation.ReportCard.header.actions') }}
-          </h3>
-          <div class="ui labelled icon basic buttons">
-            <button
-              v-if="obj.is_handled === false"
-              :class="['ui', {loading: isLoading}, 'button']"
-              @click="resolveReport(true)"
-            >
-              <i class="success check icon" />&nbsp;
-              {{ t('components.manage.moderation.ReportCard.button.resolve') }}
-            </button>
-            <button
-              v-if="obj.is_handled === true"
-              :class="['ui', {loading: isLoading}, 'button']"
-              @click="resolveReport(false)"
-            >
-              <i class="warning redo icon" />&nbsp;
-              {{ t('components.manage.moderation.ReportCard.button.unresolve') }}
-            </button>
-            <template
-              v-for="action in actions"
-              :key="action.label"
-            >
-              <dangerous-button
-                v-if="action.dangerous && action.show(obj)"
-                :is-loading="isLoading"
-                :action="action.handler"
-                :title="action.modalHeader"
-                :icon="`${action.iconColor} ${action.icon}`"
-              >
-                {{ action.label }}
-                <template #modal-content>
-                  {{ action.modalContent }}
-                </template>
-                <template #modal-confirm>
-                  {{ action.modalConfirmLabel }}
-                </template>
-              </dangerous-button>
+      </Layout>
+      <h3>
+        {{ t('components.manage.moderation.ReportCard.header.notes') }}
+      </h3>
+      <notes-thread
+        :notes="obj.notes"
+        @deleted="handleRemovedNote($event)"
+      />
+      <note-form
+        :target="{type: 'report', uuid: obj.uuid}"
+        @created="obj.notes.push($event)"
+      />
+      <h3>
+        {{ t('components.manage.moderation.ReportCard.header.actions') }}
+      </h3>
+      <Layout flex>
+        <Button
+          v-if="obj.is_handled === false"
+          :class="{loading: isLoading}"
+          primary
+          icon="bi-check"
+          @click="resolveReport(true)"
+        >
+          {{ t('components.manage.moderation.ReportCard.button.resolve') }}
+        </Button>
+        <Button
+          v-if="obj.is_handled === true"
+          :class="{loading: isLoading}"
+          secondary
+          icon="bi-arrow-counterclockwise"
+          @click="resolveReport(false)"
+        >
+          {{ t('components.manage.moderation.ReportCard.button.unresolve') }}
+        </Button>
+        <template
+          v-for="action in actions"
+          :key="action.label"
+        >
+          <dangerous-button
+            v-if="action.dangerous && action.show(obj)"
+            :is-loading="isLoading"
+            :action="action.handler"
+            :title="action.modalHeader"
+            :icon="`${action.iconColor} ${action.icon}`"
+          >
+            {{ action.label }}
+            <template #modal-content>
+              {{ action.modalContent }}
             </template>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+            <template #modal-confirm>
+              {{ action.modalConfirmLabel }}
+            </template>
+          </dangerous-button>
+        </template>
+      </Layout>
+    </template>
+  </Card>
 </template>

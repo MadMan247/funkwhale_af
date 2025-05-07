@@ -133,10 +133,17 @@ const moderationNotifications = computed(() =>
               icon="bi-megaphone-fill"
             >
               {{ t('components.Sidebar.link.moderation') }}
+              <Spacer grow />
               <div
                 v-if="store.state.ui.notifications.pendingReviewReports + store.state.ui.notifications.pendingReviewRequests > 0"
                 :title="t('components.Sidebar.label.reports')"
-                :class="['ui', 'circular', 'mini', 'right floated', 'accent', 'label']"
+                style="
+                  background: var(--fw-gray-400);
+                  color: var(--fw-gray-800);
+                  padding: 2px 7px;
+                  border-radius: 10px;
+                  font-size: 12px;
+                "
               >
                 {{ store.state.ui.notifications.pendingReviewReports + store.state.ui.notifications.pendingReviewRequests }}
               </div>

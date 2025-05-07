@@ -5,6 +5,8 @@ import { ref } from 'vue'
 
 import axios from 'axios'
 
+import Button from '~/components/ui/Button.vue'
+
 interface Events {
   (e: 'action-done', data: any): void
   (e: 'action-error', error: BackendError): void
@@ -34,10 +36,13 @@ const ajaxCall = async () => {
 </script>
 
 <template>
-  <button
-    :class="['ui', {loading: isLoading}, 'button']"
+  <Button
+    secondary
+    low-height
+    :class="{loading: isLoading}"
+    icon="bi-arrow-clockwise"
     @click="ajaxCall"
   >
     <slot />
-  </button>
+  </Button>
 </template>
