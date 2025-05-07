@@ -2,27 +2,6 @@
   "App": {
     "loading": "Yükleniyor…"
   },
-  "vui": {
-    "radio": "Radyo",
-    "albums": "{n} albüm | {n} albümler",
-    "tracks": "{n} parça | {n} parçalar",
-    "episodes": "{n} bölüm | {n} bölümler",
-    "by-user": "by {username}",
-    "go-to": "Git",
-    "pagination": {
-      "previous": "Önceki",
-      "next": "Sonraki"
-    },
-    "aria": {
-      "pagination": {
-        "nav": "Sayfalandırma Navigasyonu",
-        "gotoPage": "Sayfaya Git {n}",
-        "gotoPrevious": "Önceki Sayfaya Git",
-        "gotoNext": "Sonraki Sayfaya Git",
-        "currentPage": "Geçerli Sayfa, Sayfa {n}"
-      }
-    }
-  },
   "components": {
     "About": {
       "description": {
@@ -2257,5 +2236,26 @@
         }
       }
     }
+  },
+  "vui": {
+    "albums": "{n} albüm | {n} albümler",
+    "aria": {
+      "pagination": {
+        "currentPage": "Geçerli Sayfa, Sayfa {n}",
+        "gotoNext": "Sonraki Sayfaya Git",
+        "gotoPage": "Sayfaya Git {n}",
+        "gotoPrevious": "Önceki Sayfaya Git",
+        "nav": "Sayfalandırma Navigasyonu"
+      }
+    },
+    "by-user": "by {username}",
+    "episodes": "{n} bölüm | {n} bölümler",
+    "go-to": "Git",
+    "pagination": {
+      "next": "Sonraki",
+      "previous": "Önceki"
+    },
+    "radio": "Radyo",
+    "tracks": "{n} parça | {n} parçalar"
   }
 }
