@@ -934,7 +934,7 @@
         },
         "title": "Account Settings",
         "warning": {
-          "deleteAccount": "Your account will be deleted from our servers within a few minutes. We will also notify other servers who may have a copy of some of your data so they can proceed to deletion. Please note that some of these servers may be offline or unwilling to comply though."
+          "deleteAccount": "Your account will be deleted from our servers within a few minutes. We will also notify other servers who may have a copy of some of your data so they can proceed to deletion. Please note that some of these servers may be offline or unwilling to comply though. Also note that the username of this account cannot be used anymore to avoid impersonation."
         }
       },
       "SignupForm": {
