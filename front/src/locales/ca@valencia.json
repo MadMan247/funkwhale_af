@@ -2,34 +2,13 @@
   "App": {
     "loading": "Carregant…"
   },
-  "vui": {
-    "radio": "Ràdio",
-    "albums": "{n} àlbum | {n} àlbums",
-    "episodes": "{n} episodi | {n} episodis",
-    "by-user": "per {username}",
-    "aria": {
-      "pagination": {
-        "gotoPrevious": "Retornar a la pàgina anterior",
-        "currentPage": "Pàgina actual, Pàgina {n}",
-        "gotoPage": "Anar a la pàgina {n}",
-        "gotoNext": "Anar a la pàgina següent",
-        "nav": "Paginació de navegació"
-      }
-    },
-    "pagination": {
-      "next": "Següent",
-      "previous": "Anerior"
-    },
-    "go-to": "Anar a",
-    "tracks": "{n} canço | {n} cançons"
-  },
   "aria": {
     "pagination": {
-      "nav": "Navegació per Paginació",
+      "currentPage": "Pàgina actual, Pàgina {n}",
+      "gotoNext": "Anar a la Pàgina Següent",
       "gotoPage": "Anar a Pàgina {n}",
       "gotoPrevious": "Anar a la Pàgina Prèvia",
-      "gotoNext": "Anar a la Pàgina Següent",
-      "currentPage": "Pàgina actual, Pàgina {n}"
+      "nav": "Navegació per Paginació"
     }
   },
   "components": {
@@ -4641,5 +4620,26 @@
         "title": "Ràdio"
       }
     }
+  },
+  "vui": {
+    "albums": "{n} àlbum | {n} àlbums",
+    "aria": {
+      "pagination": {
+        "currentPage": "Pàgina actual, Pàgina {n}",
+        "gotoNext": "Anar a la pàgina següent",
+        "gotoPage": "Anar a la pàgina {n}",
+        "gotoPrevious": "Retornar a la pàgina anterior",
+        "nav": "Paginació de navegació"
+      }
+    },
+    "by-user": "per {username}",
+    "episodes": "{n} episodi | {n} episodis",
+    "go-to": "Anar a",
+    "pagination": {
+      "next": "Següent",
+      "previous": "Anerior"
+    },
+    "radio": "Ràdio",
+    "tracks": "{n} canço | {n} cançons"
   }
 }
