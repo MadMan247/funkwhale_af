@@ -154,4 +154,4 @@ REST_FRAMEWORK.update(
 )
 
 # allows makemigrations and superuser creation
-FORCE = env("FORCE", default=1)
+FORCE = env("FORCE", default=True)

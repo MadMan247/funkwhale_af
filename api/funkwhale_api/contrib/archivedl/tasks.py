@@ -3,7 +3,9 @@ import hashlib
 import logging
 import os
 import tempfile
+import time
 import urllib.parse
+from datetime import timedelta
 
 import requests
 from django.core.files import File
@@ -14,6 +16,41 @@ from funkwhale_api.music import models, utils
 from funkwhale_api.taskapp import celery
 
 logger = logging.getLogger(__name__)
+
+
+class TooManyQueriesError(Exception):
+    pass
+
+
+def check_existing_download_task(track):
+    if models.Upload.objects.filter(
+        track=track,
+        import_status__in=["pending", "finished"],
+        third_party_provider="archive-dl",
+    ).exists():
+        raise TooManyQueriesError(
+            "Upload for this track already exist or is pending. Stopping task."
+        )
+
+
+def check_last_third_party_queries(track, count):
+    # 15 per minutes according to their doc = one each 4 seconds
+    time_threshold = timezone.now() - timedelta(seconds=5)
+    if models.Upload.objects.filter(
+        third_party_provider="archive-dl",
+        import_status__in=["pending", "finished"],
+        creation_date__gte=time_threshold,
+    ).exists():
+        logger.info(
+            "Last archive.org query was too recent. Trying to wait 2 seconds..."
+        )
+        time.sleep(2)
+        count += 1
+        if count > 3:
+            raise TooManyQueriesError(
+                "Probably too many archivedl tasks are queue, stopping this task"
+            )
+        check_last_third_party_queries(track, count)
 
 
 def create_upload(url, track, files_data):
@@ -38,13 +75,19 @@ def create_upload(url, track, files_data):
         bitrate=bitrate,
         library=service_library,
         from_activity=None,
-        import_status="finished",
+        import_status="pending",
     )
 
 
 @celery.app.task(name="archivedl.archive_download")
 @celery.require_instance(models.Track.objects.select_related(), "track")
 def archive_download(track, conf):
+    try:
+        check_existing_download_task(track)
+        check_last_third_party_queries(track, 0)
+    except TooManyQueriesError as e:
+        logger.error(e)
+        return
     artist_name = utils.get_artist_credit_string(track)
     query = f"mediatype:audio AND title:{track.title} AND creator:{artist_name}"
     with requests.Session() as session:
@@ -145,4 +188,5 @@ def filter_files(files, allowed_extensions):
 
 def get_search_url(query, page_size, page):
     q = urllib.parse.urlencode({"q": query})
-    return f"https://archive.org/advancedsearch.php?{q}&sort[]=addeddate+desc&rows={page_size}&page={page}&output=json"
+    return f"https://archive.org/advancedsearch.php?{q}&sort[]=addeddate+desc&rows={page_size}\
+        &page={page}&output=json&mediatype=audio"

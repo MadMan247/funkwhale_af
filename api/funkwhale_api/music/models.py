@@ -25,7 +25,6 @@ from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import timezone
 
-from config import plugins
 from funkwhale_api import musicbrainz
 from funkwhale_api.common import fields
 from funkwhale_api.common import models as common_models
@@ -524,18 +523,9 @@ class TrackQuerySet(common_models.LocalFromFidQuerySet, models.QuerySet):
 
     def with_playable_uploads(self, actor):
         uploads = Upload.objects.playable_by(actor)
-        queryset = self.prefetch_related(
+        return self.prefetch_related(
             models.Prefetch("uploads", queryset=uploads, to_attr="playable_uploads")
         )
-
-        if queryset and queryset[0].uploads.count() > 0:
-            return queryset
-        else:
-            plugins.trigger_hook(
-                plugins.TRIGGER_THIRD_PARTY_UPLOAD,
-                track=self.first(),
-            )
-            return queryset
 
     def order_for_album(self):
         """

@@ -1,6 +1,7 @@
 import logging
 from itertools import chain
 
+from django.conf import settings
 from django.db import transaction
 from django.db.models import Count
 from drf_spectacular.utils import extend_schema
@@ -10,6 +11,7 @@ from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
+from config import plugins
 from funkwhale_api.common import fields, permissions
 from funkwhale_api.federation import routes
 from funkwhale_api.music import models as music_models
@@ -130,6 +132,12 @@ class PlaylistViewSet(
         plts = playlist.playlist_tracks.all().for_nested_serialization(
             music_utils.get_actor_from_request(request)
         )
+        plts_without_upload = plts.filter(track__uploads__isnull=True)
+        for plt in plts_without_upload[: settings.THIRD_PARTY_UPLOAD_MAX_UPLOADS]:
+            plugins.trigger_hook(
+                plugins.TRIGGER_THIRD_PARTY_UPLOAD,
+                track=plt.track,
+            )
         serializer = serializers.PlaylistTrackSerializer(plts, many=True)
         data = {"count": len(plts), "results": serializer.data}
         return Response(data, status=200)

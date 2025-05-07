@@ -1535,3 +1535,10 @@ Typesense hostname. Defaults to `localhost` on non-Docker deployments and to `ty
 Docker deployments.
 """
 TYPESENSE_NUM_TYPO = env("TYPESENSE_NUM_TYPO", default=5)
+
+"""
+Max tracks to be downloaded when the THIRD_PARTY_UPLOAD plugin hook is triggered.
+Each api request to playlist tracks or radio tracks trigger the hook if tracks upload are missing.
+If your instance is big your ip might get rate limited.
+"""
+THIRD_PARTY_UPLOAD_MAX_UPLOADS = env.int("THIRD_PARTY_UPLOAD_MAX_UPLOADS", default=10)
