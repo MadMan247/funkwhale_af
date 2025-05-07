@@ -30,7 +30,7 @@ let navigate = (to: 'playlist' | 'user') => {}
 if (import.meta.env.PROD) {
   const router = useRouter()
   navigate = (to: 'playlist' | 'user') => to === 'playlist'
-    ? router.push({ name: 'library.playlists.detail', params: { id: playlist.id } })
+    ? router.push({ name: 'library.playlists.detail', params: { id: playlist.uuid } })
     : router.push({ name: 'profile.full', params: profileParams.value })
 }
 </script>

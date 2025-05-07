@@ -92,7 +92,7 @@ const responseHandlers = {
 
 const fetchTracks = async () => {
   // NOTE: This is handled by other functions and never used directly
-  const response = await axios.get(`playlists/${playlist.value?.id}/tracks/`)
+  const response = await axios.get(`playlists/${playlist.value?.uuid}/tracks/`)
   playlistTracks.value = response.data.results
 }
 
@@ -101,7 +101,7 @@ const reorder = async ({ oldIndex: from, newIndex: to }: { oldIndex: number, new
   isLoading.value = true
 
   try {
-    await axios.post(`playlists/${playlist.value?.id}/move/`, { from, to })
+    await axios.post(`playlists/${playlist.value?.uuid}/move/`, { from, to })
     await store.dispatch('playlists/fetchOwn')
     responseHandlers.success()
   } catch (error) {
@@ -116,7 +116,7 @@ const removePlaylistTrack = async (index: number) => {
 
   try {
     tracks.value.splice(index, 1)
-    await axios.post(`playlists/${playlist.value?.id}/remove/`, { index })
+    await axios.post(`playlists/${playlist.value?.uuid}/remove/`, { index })
     await Promise.all([
       store.dispatch('playlists/fetchOwn'),
       fetchTracks()
@@ -134,7 +134,7 @@ const clearPlaylist = async () => {
 
   try {
     tracks.value = []
-    await axios.delete(`playlists/${playlist.value?.id}/clear/`)
+    await axios.delete(`playlists/${playlist.value?.uuid}/clear/`)
     await store.dispatch('playlists/fetchOwn')
     responseHandlers.success()
   } catch (error) {
@@ -148,7 +148,7 @@ const insertMany = async (insertedTracks: number[], allowDuplicates: boolean) =>
   isLoading.value = true
 
   try {
-    const response = await axios.post(`playlists/${playlist.value?.id}/add/`, {
+    const response = await axios.post(`playlists/${playlist.value?.uuid}/add/`, {
       allow_duplicates: allowDuplicates,
       tracks: insertedTracks
     })

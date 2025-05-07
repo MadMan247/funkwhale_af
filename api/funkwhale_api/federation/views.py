@@ -365,6 +365,20 @@ def has_library_access(request, library):
     return library.received_follows.filter(actor=actor, approved=True).exists()
 
 
+def has_playlist_access(request, playlist):
+    if playlist.privacy_level == "everyone":
+        return True
+    if request.user.is_authenticated and request.user.is_superuser:
+        return True
+
+    try:
+        actor = request.actor
+    except AttributeError:
+        return False
+
+    return playlist.library.received_follows.filter(actor=actor, approved=True).exists()
+
+
 class MusicLibraryViewSet(
     FederationMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
 ):
@@ -383,13 +397,16 @@ class MusicLibraryViewSet(
         lb = self.get_object()
         if utils.should_redirect_ap_to_html(request.headers.get("accept")):
             return redirect_to_html(lb.get_absolute_url())
+        items_qs = (
+            lb.uploads.for_federation()
+            if not lb.playlist_uploads.all()
+            else lb.playlist_uploads.for_federation()
+        )
         conf = {
             "id": lb.get_federation_id(),
             "actor": lb.actor,
             "name": lb.name,
-            "items": lb.uploads.for_federation()
-            .order_by("-creation_date")
-            .prefetch_related(
+            "items": items_qs.order_by("-creation_date").prefetch_related(
                 Prefetch(
                     "track",
                     queryset=music_models.Track.objects.select_related(
@@ -413,8 +430,8 @@ class MusicLibraryViewSet(
                 )
             ),
             "item_serializer": serializers.UploadSerializer,
+            "library": lb,
         }
-
         return get_collection_response(
             conf=conf,
             querystring=request.GET,
@@ -709,7 +726,6 @@ class PlaylistViewSet(
     FederationMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
 ):
     authentication_classes = [authentication.SignatureAuthentication]
-    permission_classes = [common_permissions.PrivacyLevelPermission]
     renderer_classes = renderers.get_ap_renderers()
     queryset = playlists_models.Playlist.objects.local().select_related("actor")
     serializer_class = serializers.PlaylistCollectionSerializer
@@ -728,9 +744,31 @@ class PlaylistViewSet(
                 "track",
             ),
             "item_serializer": serializers.PlaylistTrackSerializer,
+            "library": playlist.library.fid,
         }
         return get_collection_response(
             conf=conf,
             querystring=request.GET,
             collection_serializer=serializers.PlaylistCollectionSerializer(playlist),
+            page_access_check=lambda: has_playlist_access(request, playlist),
         )
+
+
+class PlaylistTrackViewSet(
+    FederationMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
+):
+    authentication_classes = [authentication.SignatureAuthentication]
+    renderer_classes = renderers.get_ap_renderers()
+    queryset = playlists_models.PlaylistTrack.objects.local().select_related("actor")
+    serializer_class = serializers.PlaylistTrackSerializer
+    lookup_field = "uuid"
+
+    def retrieve(self, request, *args, **kwargs):
+        plt = self.get_object()
+        if not has_playlist_access(request, plt.playlist):
+            return response.Response(status=403)
+        if utils.should_redirect_ap_to_html(request.headers.get("accept")):
+            return redirect_to_html(plt.get_absolute_url())
+
+        serializer = self.get_serializer(plt)
+        return response.Response(serializer.data)

@@ -96,7 +96,7 @@ store.dispatch('playlists/fetchOwn')
       <h3 class="ui header">
         {{ t('components.playlists.PlaylistModal.header.addToPlaylist') }}
         <div class="ui sub header">
-          {{ t('components.playlists.PlaylistModal.header.track', {artist: trackCreditString, title: track.title}) }}
+          {{ t('components.playlists.PlaylistModal.header.track', { artist: trackCreditString, title: track.title }) }}
         </div>
       </h3>
     </template>
@@ -151,7 +151,10 @@ store.dispatch('playlists/fetchOwn')
       >
         <thead>
           <tr>
-            <th><span class="visually-hidden">{{ t('components.playlists.PlaylistModal.table.edit.header.edit') }}</span></th>
+            <th>
+              <span class="visually-hidden">{{ t('components.playlists.PlaylistModal.table.edit.header.edit')
+              }}</span>
+            </th>
             <th>
               {{ t('components.playlists.PlaylistModal.table.edit.header.name') }}
             </th>
@@ -173,7 +176,7 @@ store.dispatch('playlists/fetchOwn')
                 solid
                 secondary
                 square-small
-                :to="{name: 'library.playlists.detail', params: {id: playlist.id }, query: {mode: 'edit'}}"
+                :to="{ name: 'library.playlists.detail', params: { id: playlist.uuid }, query: { mode: 'edit' } }"
                 icon="bi-pencil-fill"
               >
                 <span class="visually-hidden">{{ t('components.playlists.PlaylistModal.button.edit') }}</span>
@@ -181,7 +184,7 @@ store.dispatch('playlists/fetchOwn')
             </td>
             <td>
               <router-link
-                :to="{name: 'library.playlists.detail', params: {id: playlist.id }}"
+                :to="{ name: 'library.playlists.detail', params: { id: playlist.uuid } }"
                 @click="store.state.playlists.showModal = false"
               >
                 {{ playlist.name }}
@@ -196,7 +199,7 @@ store.dispatch('playlists/fetchOwn')
                 primary
                 :title="labels.addToPlaylist"
                 icon="bi-plus"
-                @click.prevent="addToPlaylist(playlist.id, false)"
+                @click.prevent="addToPlaylist(playlist.uuid, false)"
               >
                 {{ t('components.playlists.PlaylistModal.button.addTrack') }}
               </Button>

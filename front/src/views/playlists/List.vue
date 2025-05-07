@@ -254,7 +254,7 @@ const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value]
       />
       <PlaylistsCard
         v-for="playlist in (result && result.results.length > 0 ? result.results : [])"
-        :key="playlist.id"
+        :key="playlist.uuid"
         :playlist="playlist"
       />
       <Spacer grow />

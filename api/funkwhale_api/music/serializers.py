@@ -555,10 +555,14 @@ class UploadBulkUpdateSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 f"Upload with uuid {data['uuid']} does not exist"
             )
+        lib = upload.library.actor.libraries.filter(
+            privacy_level=data["privacy_level"], name=data["privacy_level"]
+        ).exclude(playlist__isnull=False)
 
-        upload.library = upload.library.actor.libraries.get(
-            privacy_level=data["privacy_level"]
-        )
+        if len(lib) == 1:
+            upload.library = lib[0]
+        else:
+            raise serializers.ValidationError("Built-in library not found or too many")
         return upload
 
 

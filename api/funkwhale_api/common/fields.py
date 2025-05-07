@@ -31,6 +31,7 @@ def privacy_level_query(user, lookup_field="privacy_level", user_field="user"):
         }
     )
     # Federated TrackFavorite don't have an user associated with the trackfavorite.actor
+    # to do : if we implement the followers privacy_level this will become a problem
     no_user_query = models.Q(**{f"{user_field}__isnull": True})
 
     return (

@@ -483,6 +483,10 @@
           "playArtist": "Play artist",
           "playNext": "Play next",
           "playNow": "Play now",
+          "PlaylistUploadGranted": "The owner of the playlist granted you access to his playlist's files",
+          "PlaylistUploadTooltip": "This only applies to files owned by the playlist actor. If you want to get access to all the files, think to buy them to support your favorites artists",
+          "PlaylistUploadPending": "You've already requested access to the playlist files",
+          "PlaylistUploadNotRequest": "Request access to the files from this playlist",
           "playPlaylist": "Play playlist",
           "playTrack": "Play track",
           "playTracks": "Play tracks",
@@ -3216,7 +3220,7 @@
     },
     "useErrorHandler": {
       "errorReportMessage": "To help us understand why it happened, please attach a detailed description of what you did that has triggered the error.",
-      "errorReportTitle": "An unexpected error occured.",
+      "errorReportTitle": "An unexpected error occurred.",
       "leaveFeedback": "Leave feedback",
       "unexpectedError": "An unexpected error occurred."
     },
@@ -4279,7 +4283,7 @@
             "showStatus": "Show information about the upload status for this track"
           },
           "empty": {
-            "noTracks": "No tracks have been added to this libray yet"
+            "noTracks": "No tracks have been added to this library yet"
           },
           "label": {
             "importStatus": "Import status",

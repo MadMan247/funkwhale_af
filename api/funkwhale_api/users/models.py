@@ -471,7 +471,7 @@ def create_user_libraries(user):
             uuid=(new_uuid := uuid.uuid4()),
             fid=federation_utils.full_url(
                 reverse(
-                    "federation:music:playlists-detail",
+                    "federation:music:libraries-detail",
                     kwargs={"uuid": new_uuid},
                 )
             ),

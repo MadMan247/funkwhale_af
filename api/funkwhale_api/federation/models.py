@@ -405,6 +405,7 @@ class Fetch(models.Model):
                 serializers.ChannelUploadSerializer,
             ],
             contexts.FW.Library: [serializers.LibrarySerializer],
+            contexts.FW.Playlist: [serializers.PlaylistSerializer],
             contexts.AS.Group: [serializers.ActorSerializer],
             contexts.AS.Person: [serializers.ActorSerializer],
             contexts.AS.Organization: [serializers.ActorSerializer],

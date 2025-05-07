@@ -35,6 +35,29 @@ def test_user_can_fetch_library_using_url(mocker, factories, logged_in_api_clien
     assert response.data["results"] == [api_serializers.LibrarySerializer(library).data]
 
 
+def test_user_can_fetch_playlist_library_using_url(
+    mocker, factories, logged_in_api_client
+):
+    pl_library = factories["music.Library"]()
+    upload = factories["music.Upload"]()
+    upload.playlist_libraries.add(pl_library)
+
+    mocked_retrieve = mocker.patch(
+        "funkwhale_api.federation.utils.retrieve_ap_object", return_value=pl_library
+    )
+    url = reverse("api:v1:federation:libraries-fetch")
+    response = logged_in_api_client.post(url, {"fid": pl_library.fid})
+    assert mocked_retrieve.call_count == 1
+    args = mocked_retrieve.call_args
+    assert args[0] == (pl_library.fid,)
+    assert args[1]["queryset"].model == views.MusicLibraryViewSet.queryset.model
+    assert args[1]["serializer_class"] == serializers.LibrarySerializer
+    assert response.status_code == 200
+    assert response.data["results"] == [
+        api_serializers.LibrarySerializer(pl_library).data
+    ]
+
+
 def test_user_can_schedule_library_scan(mocker, factories, logged_in_api_client):
     actor = logged_in_api_client.user.create_actor()
     library = factories["music.Library"](privacy_level="everyone")

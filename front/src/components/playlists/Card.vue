@@ -68,7 +68,7 @@ const updatedAgo = computed(() => moment(props.playlist.modification_date).fromN
 <template>
   <Card
     :title="playlist.name"
-    :to="{ name: 'library.playlists.detail', params: { id: playlist.id } }"
+    :to="{ name: 'library.playlists.detail', params: { id: playlist.uuid } }"
     small
   >
     <template #topright>

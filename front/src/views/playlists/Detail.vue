@@ -44,16 +44,12 @@ const store = useStore()
 const edit = ref(props.defaultEdit)
 const playlist = ref<Playlist | null>(null)
 const playlistTracks = ref<PlaylistTrack[]>([])
-
 const showEmbedModal = ref(false)
 
-// TODO: Compute `tracks` with `track`. In the new types, `track` is just a string.
-// We probably have to load each track before loading it into `tracks`.
-// Original line: const tracks = computed(() => playlistTracks.value.map(({ track }, index) => ({ ...track, position: index + 1 })))
-const tracks = computed(() => playlistTracks.value.map(({ track }, index) => (
-  // @i-would-expect-ts-to-error because this typecasting is evil
-  { position: index + 1 } as Track
-)))
+type FullPlaylistTrack = Omit<PlaylistTrack, 'track'> & { track: Track }
+const fullPlaylistTracks = ref<FullPlaylistTrack[]>([])
+
+const tracks = computed(() => fullPlaylistTracks.value.map(({ track }, index) => ({ ...track as Track, position: index + 1 })))
 
 const { t } = useI18n()
 const labels = computed(() => ({
@@ -71,7 +67,7 @@ const fetchData = async () => {
     ])
 
     playlist.value = playlistResponse.data
-    playlistTracks.value = tracksResponse.data.results
+    fullPlaylistTracks.value = tracksResponse.data.results
   } catch (error) {
     useErrorHandler(error as Error)
   }
@@ -277,7 +273,7 @@ const shuffle = () => {}
     <div class="scrolling content">
       <div class="description">
         <embed-wizard
-          :id="playlist.id"
+          :uuid="playlist.uuid"
           type="playlist"
         />
       </div>

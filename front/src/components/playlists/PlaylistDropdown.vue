@@ -40,7 +40,7 @@ const labels = computed(() => ({
 
 }))
 
-const exportUrl = computed(() => store.getters['instance/absoluteUrl'](`/api/v2/playlists/${props.playlist.id}`))
+const exportUrl = computed(() => store.getters['instance/absoluteUrl'](`/api/v2/playlists/${props.playlist.uuid}`))
 const exportPlaylist = async () => {
   const url = exportUrl.value
   const authToken = store.state.auth.oauth.accessToken
@@ -67,9 +67,9 @@ const router = useRouter()
 
 const deletePlaylist = async () => {
   try {
-    await axios.delete(`playlists/${props.playlist.id}/`)
+    await axios.delete(`playlists/${props.playlist.uuid}/`)
     store.dispatch('playlists/fetchOwn')
-    return router.push({ path: '/library' })
+    await router.push({ path: '/library' })  // <-- await instead of return
   } catch (error) {
     useErrorHandler(error as Error)
   }
@@ -161,7 +161,7 @@ const showDeleteModal = ref(false)
     <div class="scrolling content">
       <div class="description">
         <embed-wizard
-          :id="playlist.id"
+          :uuid="playlist.uuid"
           type="playlist"
         />
       </div>

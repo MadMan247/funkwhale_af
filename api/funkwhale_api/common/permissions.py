@@ -76,11 +76,13 @@ class PrivacyLevelPermission(BasePermission):
             # to avoid leaking data (#2326)
             return True
 
-        privacy_level = (
-            obj.actor.user.privacy_level
-            if hasattr(obj, "actor")
-            else obj.user.privacy_level
-        )
+        if hasattr(obj, "privacy_level"):
+            privacy_level = obj.privacy_level
+        elif hasattr(obj, "actor") and obj.actor.user:
+            privacy_level = obj.actor.user.privacy_level
+        else:
+            privacy_level = obj.user.privacy_level
+
         obj_actor = obj.actor if hasattr(obj, "actor") else obj.user.actor
 
         if privacy_level == "everyone":
@@ -106,9 +108,7 @@ class PrivacyLevelPermission(BasePermission):
         elif privacy_level == "me" and obj_actor == request_actor:
             return True
 
-        elif privacy_level == "followers" and (
-            request_actor in obj.user.actor.get_approved_followers()
-        ):
+        elif request_actor in obj_actor.get_approved_followers():
             return True
         else:
             return False

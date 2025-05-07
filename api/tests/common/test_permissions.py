@@ -98,9 +98,10 @@ def test_privacylevel_permission_me(
     assert check is expected
 
 
+# "me" expects true since the object can be private but share with followers
 @pytest.mark.parametrize(
     "privacy_level,expected",
-    [("me", False), ("followers", True), ("instance", False), ("everyone", True)],
+    [("me", True), ("followers", True), ("instance", False), ("everyone", True)],
 )
 def test_privacylevel_permission_followers(
     factories, api_request, anonymous_user, privacy_level, expected, mocker

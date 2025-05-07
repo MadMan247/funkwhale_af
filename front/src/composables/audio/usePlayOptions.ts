@@ -129,7 +129,7 @@ export default (props: PlayOptionsProps) => {
         tracks.push(response.data as Track)
       }
     } else if (props.playlist) {
-      const response = await axios.get(`playlists/${props.playlist.id}/tracks/`)
+      const response = await axios.get(`playlists/${props.playlist.uuid}/tracks/`)
       const playlistTracks = (response.data.results as Array<{ track: Track }>).map(({ track }) => track as Track)
 
       const artistIds = store.getters['moderation/artistFilters']().map((filter: ContentFilter) => filter.target.id)
@@ -200,6 +200,29 @@ export default (props: PlayOptionsProps) => {
     return replacePlay(index)
   }
 
+  const requestPlaylistUploadsAccess = async (playlist: Playlist) => {
+    const libraryUrl = playlist.library;
+  if (!libraryUrl) {
+    throw new Error("Playlist library URL is missing.");
+  }
+  const libResponse = await axios.get(libraryUrl);
+  const id = libResponse.data?.id || libResponse.data?.results?.id;
+  if (!id) {
+    throw new Error("Library id not found in response.");
+  }
+  const fetchResponse = await axios.post('federation/fetches',
+    { object: id }
+  );
+
+  const response = await axios.post(
+    'federation/follows/library',
+    { target: fetchResponse.data.object.uuid }
+  );
+
+  return response;
+};
+
+
   return {
     playable,
     filterableArtist,
@@ -208,6 +231,7 @@ export default (props: PlayOptionsProps) => {
     enqueueNext,
     replacePlay,
     activateTrack,
-    isLoading
+    isLoading,
+    requestPlaylistUploadsAccess
   }
 }

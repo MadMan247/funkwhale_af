@@ -67,7 +67,7 @@ const submit = async () => {
   errors.value = []
 
   try {
-    const url = props.create ? 'playlists/' : `playlists/${playlist.value?.id}/`
+    const url = props.create ? 'playlists/' : `playlists/${playlist.value?.uuid}/`
     const method = props.create ? 'post' : 'patch'
 
     const data = {

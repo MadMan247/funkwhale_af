@@ -112,7 +112,7 @@ const getReportableObjects = ({ track, album, artist, artistCredit, playlist, ac
       label: t('composables.moderation.useReport.playlist.label'),
       target: {
         type: 'playlist',
-        id: playlist.id,
+        uuid: playlist.uuid,
         label: playlist.name,
         _obj: playlist,
         typeLabel: t('composables.moderation.useReport.playlist.typeLabel')

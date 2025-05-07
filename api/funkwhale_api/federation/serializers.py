@@ -940,9 +940,12 @@ OBJECT_SERIALIZERS = {t: ObjectSerializer for t in activity.OBJECT_TYPES}
 def get_additional_fields(data):
     UNSET = object()
     additional_fields = {}
-    for field in ["name", "summary"]:
+    for field in ["name", "summary", "library", "audience", "published"]:
         v = data.get(field, UNSET)
         if v == UNSET:
+            continue
+        # in some cases we use the serializer context to pass objects instances, we don't want to add them
+        if not isinstance(v, str) or isinstance(v, dict):
             continue
         additional_fields[field] = v
 
@@ -1037,7 +1040,11 @@ class LibrarySerializer(PaginatedCollectionSerializer):
             "page_size": 100,
             "attributedTo": library.actor,
             "actor": library.actor,
-            "items": library.uploads.for_federation(),
+            "items": (
+                library.uploads.for_federation()
+                if not library.playlist_uploads.all()
+                else library.playlist_uploads.for_federation()
+            ),
             "type": "Library",
         }
         r = super().to_representation(conf)
@@ -1129,7 +1136,12 @@ class CollectionPageSerializer(jsonld.JsonLdSerializer):
             "last": last,
             "items": [
                 conf["item_serializer"](
-                    i, context={"actor": conf["actor"], "include_ap_context": False}
+                    i,
+                    context={
+                        "actor": conf["actor"],
+                        "library": conf.get("library", None),
+                        "include_ap_context": False,
+                    },
                 ).data
                 for i in page.object_list
             ],
@@ -1670,8 +1682,9 @@ class UploadSerializer(jsonld.JsonLdSerializer):
     def validate_library(self, v):
         lb = self.context.get("library")
         if lb:
-            if lb.fid != v:
-                raise serializers.ValidationError("Invalid library")
+            # the upload can come from a playlist lib
+            if lb.fid != v and not lb.playlist.library and lb.playlist.library.fid != v:
+                raise serializers.ValidationError("Invalid library fid")
             return lb
 
         actor = self.context.get("actor")
@@ -1683,10 +1696,10 @@ class UploadSerializer(jsonld.JsonLdSerializer):
                 queryset=music_models.Library,
                 serializer_class=LibrarySerializer,
             )
-        except Exception:
-            raise serializers.ValidationError("Invalid library")
+        except Exception as e:
+            raise serializers.ValidationError(f"Invalid library : {e}")
         if actor and library.actor != actor:
-            raise serializers.ValidationError("Invalid library")
+            raise serializers.ValidationError("Invalid library, actor check fails")
         return library
 
     def update(self, instance, validated_data):
@@ -1737,11 +1750,12 @@ class UploadSerializer(jsonld.JsonLdSerializer):
             return music_models.Upload.objects.create(**data)
 
     def to_representation(self, instance):
+        lib = instance.library if instance.library else self.context.get("library")
         track = instance.track
         d = {
             "type": "Audio",
             "id": instance.get_federation_id(),
-            "library": instance.library.fid,
+            "library": lib.fid,
             "name": track.full_name,
             "published": instance.creation_date.isoformat(),
             "bitrate": instance.bitrate,
@@ -1760,12 +1774,8 @@ class UploadSerializer(jsonld.JsonLdSerializer):
                 },
             ],
             "track": TrackSerializer(track, context={"include_ap_context": False}).data,
-            "to": (
-                contexts.AS.Public
-                if instance.library.privacy_level == "everyone"
-                else ""
-            ),
-            "attributedTo": instance.library.actor.fid,
+            "to": (contexts.AS.Public if lib.privacy_level == "everyone" else ""),
+            "attributedTo": lib.actor.fid,
         }
         if instance.modification_date:
             d["updated"] = instance.modification_date.isoformat()
@@ -2325,7 +2335,7 @@ class PlaylistTrackSerializer(jsonld.JsonLdSerializer):
             validated_data["playlist"],
             actor=self.context.get("fetch_actor"),
             queryset=playlists_models.Playlist,
-            serializer_class=PlaylistTrackSerializer,
+            serializer_class=PlaylistSerializer,
         )
 
         defaults = {
@@ -2334,6 +2344,10 @@ class PlaylistTrackSerializer(jsonld.JsonLdSerializer):
             "creation_date": validated_data["creation_date"],
             "playlist": playlist,
         }
+        if existing_plt := playlists_models.PlaylistTrack.objects.filter(
+            playlist=playlist, index=validated_data["index"]
+        ):
+            existing_plt.delete()
 
         plt, created = playlists_models.PlaylistTrack.objects.update_or_create(
             defaults,
@@ -2342,7 +2356,6 @@ class PlaylistTrackSerializer(jsonld.JsonLdSerializer):
                 "fid": validated_data["id"],
             },
         )
-
         return plt
 
 
@@ -2364,6 +2377,7 @@ class PlaylistSerializer(jsonld.JsonLdSerializer):
         allow_null=True,
         allow_blank=True,
     )
+    library = serializers.URLField(max_length=500, required=True)
     updateable_fields = [
         ("name", "title"),
         ("attributedTo", "attributed_to"),
@@ -2377,6 +2391,7 @@ class PlaylistSerializer(jsonld.JsonLdSerializer):
                 "updated": jsonld.first_val(contexts.AS.published),
                 "audience": jsonld.first_id(contexts.AS.audience),
                 "attributedTo": jsonld.first_id(contexts.AS.attributedTo),
+                "library": jsonld.first_id(contexts.FW.library),
             },
         )
 
@@ -2388,6 +2403,7 @@ class PlaylistSerializer(jsonld.JsonLdSerializer):
             "attributedTo": playlist.actor.fid,
             "published": playlist.creation_date.isoformat(),
             "audience": playlist.privacy_level,
+            "library": playlist.library.fid,
         }
         payload["audience"] = (
             contexts.AS.Public if playlist.privacy_level == "everyone" else ""
@@ -2405,12 +2421,22 @@ class PlaylistSerializer(jsonld.JsonLdSerializer):
             queryset=models.Actor,
             serializer_class=ActorSerializer,
         )
+
+        library = utils.retrieve_ap_object(
+            validated_data["library"],
+            actor=self.context.get("fetch_actor"),
+            queryset=music_models.Library,
+            serializer_class=LibrarySerializer,
+        )
+
         ap_to_fw_data = {
             "actor": actor,
             "name": validated_data["name"],
             "creation_date": validated_data["published"],
             "privacy_level": validated_data["audience"],
+            "library": library,
         }
+
         playlist, created = playlists_models.Playlist.objects.update_or_create(
             defaults=ap_to_fw_data,
             **{
@@ -2420,18 +2446,22 @@ class PlaylistSerializer(jsonld.JsonLdSerializer):
                 ),
             },
         )
+
         return playlist
 
     def validate(self, data):
         validated_data = super().validate(data)
-        if validated_data["audience"] not in [
+        if validated_data["audience"] in [
             "https://www.w3.org/ns/activitystreams#Public",
             "everyone",
         ]:
-            raise serializers.ValidationError("Privacy_level must be everyone")
-
-        validated_data["audience"] = "everyone"
+            validated_data["audience"] = "everyone"
+        else:
+            validated_data.pop("audience")
         return validated_data
+
+    def update(self, instance, validated_data):
+        return self.create(validated_data)
 
 
 class PlaylistCollectionSerializer(PaginatedCollectionSerializer):
@@ -2451,6 +2481,8 @@ class PlaylistCollectionSerializer(PaginatedCollectionSerializer):
                 "tracks",
             ),
             "type": "Playlist",
+            "library": playlist.library.fid,
+            "published": playlist.creation_date.isoformat(),
         }
         r = super().to_representation(conf)
         return r

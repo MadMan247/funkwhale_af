@@ -1572,7 +1572,7 @@ def test_can_patch_upload_list(factories, logged_in_api_client):
     actor = logged_in_api_client.user.create_actor()
     upload = factories["music.Upload"](library__actor=actor)
     upload2 = factories["music.Upload"](library__actor=actor)
-    factories["music.Library"](actor=actor, privacy_level="everyone")
+    factories["music.Library"](actor=actor, privacy_level="everyone", name="everyone")
 
     response = logged_in_api_client.patch(
         url,
@@ -1587,3 +1587,30 @@ def test_can_patch_upload_list(factories, logged_in_api_client):
 
     assert response.status_code == 200
     assert upload.library.privacy_level == "everyone"
+
+
+def test_upload_list_wont_use_playlist_lib(factories, logged_in_api_client):
+    url = reverse("api:v1:uploads-bulk-update")
+    actor = logged_in_api_client.user.create_actor()
+    upload = factories["music.Upload"](library__actor=actor)
+    upload2 = factories["music.Upload"](library__actor=actor)
+    playlist = factories["playlists.Playlist"]()
+    lib = factories["music.Library"](
+        actor=actor,
+        privacy_level="everyone",
+        name="everyone",
+    )
+    playlist.library = lib
+    playlist.save()
+    response = logged_in_api_client.patch(
+        url,
+        [
+            {"uuid": upload.uuid, "privacy_level": "everyone"},
+            {"uuid": upload2.uuid, "privacy_level": "everyone"},
+        ],
+        format="json",
+    )
+    upload.refresh_from_db()
+    upload2.refresh_from_db()
+
+    assert response.status_code == 400

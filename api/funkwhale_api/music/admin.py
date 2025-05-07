@@ -98,6 +98,14 @@ class UploadAdmin(admin.ModelAdmin):
     ]
     list_filter = ["mimetype", "import_status", "library__privacy_level"]
 
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "playlist_libraries":
+            object_id = request.resolver_match.kwargs.get("object_id")
+            kwargs["queryset"] = models.Library.objects.filter(
+                playlist_uploads=object_id
+            ).distinct()
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 @admin.register(models.UploadVersion)
 class UploadVersionAdmin(admin.ModelAdmin):

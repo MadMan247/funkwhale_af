@@ -765,13 +765,14 @@ class UploadQuerySet(common_models.NullsLastQuerySet):
 
     def playable_by(self, actor, include=True):
         libraries = Library.objects.viewable_by(actor)
-
         if include:
             return self.filter(
-                library__in=libraries, import_status__in=["finished", "skipped"]
+                Q(library__in=libraries) | Q(playlist_libraries__in=libraries),
+                import_status__in=["finished", "skipped"],
             )
         return self.exclude(
-            library__in=libraries, import_status__in=["finished", "skipped"]
+            Q(library__in=libraries) | Q(playlist_libraries__in=libraries),
+            import_status__in=["finished", "skipped"],
         )
 
     def local(self, include=True):
@@ -846,6 +847,11 @@ class Upload(models.Model):
         blank=True,
         related_name="uploads",
         on_delete=models.CASCADE,
+    )
+    playlist_libraries = models.ManyToManyField(
+        "library",
+        blank=True,
+        related_name="playlist_uploads",
     )
 
     # metadata from federation

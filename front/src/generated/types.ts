@@ -2233,7 +2233,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/playlists/{id}/": {
+    "/api/v1/playlists/{uuid}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -2249,7 +2249,7 @@ export interface paths {
         patch: operations["partial_update_playlist"];
         trace?: never;
     };
-    "/api/v1/playlists/{id}/add/": {
+    "/api/v1/playlists/{uuid}/add/": {
         parameters: {
             query?: never;
             header?: never;
@@ -2265,7 +2265,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/playlists/{id}/albums/": {
+    "/api/v1/playlists/{uuid}/albums/": {
         parameters: {
             query?: never;
             header?: never;
@@ -2281,14 +2281,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/playlists/{id}/artists/": {
+    "/api/v1/playlists/{uuid}/artists/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["get_playlist_artits"];
+        get: operations["get_playlist_artists"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2297,7 +2297,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/playlists/{id}/clear/": {
+    "/api/v1/playlists/{uuid}/clear/": {
         parameters: {
             query?: never;
             header?: never;
@@ -2313,7 +2313,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/playlists/{id}/move/": {
+    "/api/v1/playlists/{uuid}/move/": {
         parameters: {
             query?: never;
             header?: never;
@@ -2329,7 +2329,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/playlists/{id}/remove/": {
+    "/api/v1/playlists/{uuid}/remove/": {
         parameters: {
             query?: never;
             header?: never;
@@ -2345,7 +2345,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/playlists/{id}/tracks/": {
+    "/api/v1/playlists/{uuid}/tracks/": {
         parameters: {
             query?: never;
             header?: never;
@@ -5226,7 +5226,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v2/playlists/{id}/": {
+    "/api/v2/playlists/{uuid}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -5242,7 +5242,7 @@ export interface paths {
         patch: operations["partial_update_playlist_2"];
         trace?: never;
     };
-    "/api/v2/playlists/{id}/add/": {
+    "/api/v2/playlists/{uuid}/add/": {
         parameters: {
             query?: never;
             header?: never;
@@ -5258,7 +5258,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v2/playlists/{id}/albums/": {
+    "/api/v2/playlists/{uuid}/albums/": {
         parameters: {
             query?: never;
             header?: never;
@@ -5274,14 +5274,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v2/playlists/{id}/artists/": {
+    "/api/v2/playlists/{uuid}/artists/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["get_playlist_artits_2"];
+        get: operations["get_playlist_artists_2"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5290,7 +5290,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v2/playlists/{id}/clear/": {
+    "/api/v2/playlists/{uuid}/clear/": {
         parameters: {
             query?: never;
             header?: never;
@@ -5306,7 +5306,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v2/playlists/{id}/move/": {
+    "/api/v2/playlists/{uuid}/move/": {
         parameters: {
             query?: never;
             header?: never;
@@ -5322,7 +5322,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v2/playlists/{id}/remove/": {
+    "/api/v2/playlists/{uuid}/remove/": {
         parameters: {
             query?: never;
             header?: never;
@@ -5338,7 +5338,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v2/playlists/{id}/tracks/": {
+    "/api/v2/playlists/{uuid}/tracks/": {
         parameters: {
             query?: never;
             header?: never;
@@ -8497,7 +8497,10 @@ export interface components {
             summary?: components["schemas"]["ContentRequest"] | null;
         };
         Playlist: {
-            readonly id: number;
+            /** Format: uuid */
+            readonly uuid: string;
+            /** Format: uri */
+            readonly fid: string;
             name: string;
             readonly actor: components["schemas"]["APIActor"];
             /** Format: date-time */
@@ -8510,6 +8513,9 @@ export interface components {
             readonly duration: number;
             readonly is_playable: boolean;
             description?: string | null;
+            /** Format: uri */
+            readonly library: string;
+            readonly library_followed: boolean;
         };
         PlaylistAddManyRequest: {
             tracks: number[];
@@ -14142,8 +14148,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -14167,8 +14172,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -14199,8 +14203,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -14222,8 +14225,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -14254,8 +14256,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -14286,8 +14287,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -14304,15 +14304,14 @@ export interface operations {
             };
         };
     };
-    get_playlist_artits: {
+    get_playlist_artists: {
         parameters: {
             query?: {
                 format?: "json" | "xspf";
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -14336,8 +14335,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -14359,8 +14357,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -14391,8 +14388,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -14423,8 +14419,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -14460,8 +14455,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -21155,8 +21149,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -21180,8 +21173,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -21212,8 +21204,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -21235,8 +21226,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -21267,8 +21257,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -21299,8 +21288,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -21317,15 +21305,14 @@ export interface operations {
             };
         };
     };
-    get_playlist_artits_2: {
+    get_playlist_artists_2: {
         parameters: {
             query?: {
                 format?: "json" | "xspf";
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -21349,8 +21336,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -21372,8 +21358,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -21404,8 +21389,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -21436,8 +21420,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };
@@ -21473,8 +21456,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                /** @description A unique integer value identifying this playlist. */
-                id: number;
+                uuid: string;
             };
             cookie?: never;
         };

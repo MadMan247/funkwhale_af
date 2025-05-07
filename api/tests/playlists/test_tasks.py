@@ -17,6 +17,8 @@ def test_scan_playlist_page_fetches_page_and_creates_tracks(
         for i in range(5)
     ]
 
+    for plt in tracks:
+        factories["music.Upload"](track=plt.track, library__actor=scan.playlist.actor)
     page_conf = {
         "actor": scan.playlist.actor,
         "id": scan.playlist.fid,
@@ -35,7 +37,8 @@ def test_scan_playlist_page_fetches_page_and_creates_tracks(
 
     assert len(plts) == 3
     for track in tracks[:3]:
-        scan.playlist.playlist_tracks.get(fid=track.fid)
+        plt = scan.playlist.playlist_tracks.get(fid=track.fid)
+        scan.playlist.library in plt.track.uploads.all()[0].playlist_libraries.all()
 
     assert scan.status == "scanning"
     assert scan.processed_files == 3

@@ -413,9 +413,9 @@ const radioConfig = computed<RadioConfig | null>(() =>
     })
     : count({ type: 'playlists' }) > 0
       ? ({
-        type: 'playlist',
-        ids: resultsPerCategory({ type: 'playlists' }).map(({ id }) => id.toString())
-      })
+          type: 'playlist',
+          ids: resultsPerCategory({ type: 'playlists' }).map(({ uuid }) => uuid.toString())
+        })
       : count({ type: 'artists' }) > 0
         ? ({
           type: 'artist',

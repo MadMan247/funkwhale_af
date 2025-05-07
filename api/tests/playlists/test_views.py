@@ -21,7 +21,7 @@ def test_serializer_includes_tracks_count(factories, logged_in_api_client):
     actor = logged_in_api_client.user.create_actor()
     playlist = factories["playlists.Playlist"](actor=actor)
     factories["playlists.PlaylistTrack"](playlist=playlist)
-    url = reverse("api:v1:playlists-detail", kwargs={"pk": playlist.pk})
+    url = reverse("api:v1:playlists-detail", kwargs={"uuid": playlist.uuid})
     response = logged_in_api_client.get(url, content_type="application/json")
 
     assert response.data["tracks_count"] == 1
@@ -34,7 +34,7 @@ def test_serializer_includes_tracks_count_986(factories, logged_in_api_client):
     factories["music.Upload"].create_batch(
         3, track=plt.track, library__privacy_level="everyone", import_status="finished"
     )
-    url = reverse("api:v1:playlists-detail", kwargs={"pk": playlist.pk})
+    url = reverse("api:v1:playlists-detail", kwargs={"uuid": playlist.uuid})
     response = logged_in_api_client.get(url, content_type="application/json")
 
     assert response.data["tracks_count"] == 1
@@ -45,7 +45,7 @@ def test_serializer_includes_is_playable(factories, logged_in_api_client):
     playlist = factories["playlists.Playlist"]()
     factories["playlists.PlaylistTrack"](playlist=playlist)
 
-    url = reverse("api:v1:playlists-detail", kwargs={"pk": playlist.pk})
+    url = reverse("api:v1:playlists-detail", kwargs={"uuid": playlist.uuid})
     response = logged_in_api_client.get(url, content_type="application/json")
 
     assert response.data["is_playable"] is False
@@ -81,7 +81,7 @@ def test_only_can_add_track_on_own_playlist_via_api(factories, logged_in_api_cli
     logged_in_api_client.user.create_actor()
     track = factories["music.Track"]()
     playlist = factories["playlists.Playlist"]()
-    url = reverse("api:v1:playlists-add", kwargs={"pk": playlist.pk})
+    url = reverse("api:v1:playlists-add", kwargs={"uuid": playlist.uuid})
     data = {"tracks": [track.pk]}
 
     response = logged_in_api_client.post(url, data, content_type="application/json")
@@ -96,7 +96,7 @@ def test_deleting_plt_updates_indexes(mocker, factories, logged_in_api_client):
     playlist = factories["playlists.Playlist"](actor=actor)
     plt0 = factories["playlists.PlaylistTrack"](index=0, playlist=playlist)
     plt1 = factories["playlists.PlaylistTrack"](index=1, playlist=playlist)
-    url = reverse("api:v1:playlists-remove", kwargs={"pk": playlist.pk})
+    url = reverse("api:v1:playlists-remove", kwargs={"uuid": playlist.uuid})
 
     response = logged_in_api_client.delete(url, {"index": 0})
 
@@ -106,6 +106,40 @@ def test_deleting_plt_updates_indexes(mocker, factories, logged_in_api_client):
         plt0.refresh_from_db()
     plt1.refresh_from_db()
     assert plt1.index == 0
+
+
+def test_deleting_plt_updates_pl_lib(mocker, factories, logged_in_api_client):
+    actor = logged_in_api_client.user.create_actor()
+    factories["music.Track"]()
+    playlist = factories["playlists.Playlist"](actor=actor)
+    # playlist.library.uploads.add(plt0.track.uploads.all()[0])
+    # playlist.library.uploads.add(plt1.track.uploads.all()[0])
+
+    tracks = factories["music.Track"].create_batch(size=5)
+    for track in tracks:
+        factories["music.Upload"](track=track, library__actor=actor)
+
+    not_user_actor = factories["federation.Actor"]()
+    not_user_upload = factories["music.Upload"](
+        track=tracks[0], library__actor=not_user_actor
+    )
+
+    track_ids = [t.id for t in tracks]
+    url = reverse("api:v1:playlists-add", kwargs={"uuid": playlist.uuid})
+    logged_in_api_client.post(url, {"tracks": track_ids})
+
+    assert not_user_upload not in playlist.library.uploads.all()
+    for plt in playlist.playlist_tracks.all():
+        for upload in playlist.library.uploads.all():
+            assert upload.tracks.filter(id=plt.track.id).exists()
+
+    url = reverse("api:v1:playlists-remove", kwargs={"uuid": playlist.uuid})
+    logged_in_api_client.delete(url, {"index": 0})
+    playlist.library.refresh_from_db()
+
+    for plt in playlist.playlist_tracks.all():
+        for upload in playlist.library.uploads.all():
+            assert not upload.tracks.filter(id=plt.track.id).exists()
 
 
 @pytest.mark.parametrize("level", ["instance", "me", "followers"])
@@ -124,7 +158,7 @@ def test_playlist_privacy_respected_in_list_anon(
 def test_only_owner_can_edit_playlist(method, factories, logged_in_api_client):
     logged_in_api_client.user.create_actor()
     playlist = factories["playlists.Playlist"]()
-    url = reverse("api:v1:playlists-detail", kwargs={"pk": playlist.pk})
+    url = reverse("api:v1:playlists-detail", kwargs={"uuid": playlist.uuid})
     response = getattr(logged_in_api_client, method.lower())(url)
 
     assert response.status_code == 404
@@ -138,7 +172,7 @@ def test_can_add_multiple_tracks_at_once_via_api(
     tracks = factories["music.Track"].create_batch(size=5)
     track_ids = [t.id for t in tracks]
     mocker.spy(playlist, "insert_many")
-    url = reverse("api:v1:playlists-add", kwargs={"pk": playlist.pk})
+    url = reverse("api:v1:playlists-add", kwargs={"uuid": playlist.uuid})
     response = logged_in_api_client.post(url, {"tracks": track_ids})
 
     assert response.status_code == 201
@@ -147,6 +181,43 @@ def test_can_add_multiple_tracks_at_once_via_api(
     for plt in playlist.playlist_tracks.order_by("index"):
         assert response.data["results"][plt.index]["index"] == plt.index
         assert plt.track == tracks[plt.index]
+
+
+def test_add_multiple_tracks_at_once_update_pl_library(
+    factories, mocker, logged_in_api_client
+):
+    actor = logged_in_api_client.user.create_actor()
+    playlist = factories["playlists.Playlist"](actor=actor)
+    tracks = factories["music.Track"].create_batch(size=5)
+    not_user_actor = factories["federation.Actor"]()
+    not_user_track = factories["music.Track"]()
+    not_user_upload = factories["music.Upload"](
+        size=5, track=not_user_track, library__actor=not_user_actor
+    )
+    for track in tracks:
+        factories["music.Upload"](track=track, library__actor=actor)
+
+    track_already_in_playlist = factories["music.Track"]()
+    upload_already_in_playlist = factories["music.Upload"](
+        track=track_already_in_playlist, library__actor=actor
+    )
+    upload_already_in_playlist.playlist_libraries.add(playlist.library)
+
+    track_ids = [t.id for t in tracks]
+    track_ids.append(not_user_track.id)
+    track_ids.append(track_already_in_playlist.id)
+    mocker.spy(playlist, "insert_many")
+    url = reverse("api:v1:playlists-add", kwargs={"uuid": playlist.uuid})
+    response = logged_in_api_client.post(url, {"tracks": track_ids})
+
+    assert response.status_code == 201
+    assert playlist.playlist_tracks.count() == len(track_ids)
+    assert playlist.playlist_tracks.filter(track=not_user_track).exists()
+    assert not_user_upload not in playlist.library.uploads.all()
+    for plt in playlist.playlist_tracks.all():
+        for upload in playlist.library.uploads.all():
+            assert upload.tracks.filter(id=plt.track.id).exists()
+            assert len(upload.playlist_libraries.all()) == 1
 
 
 def test_honor_max_playlist_size(factories, mocker, logged_in_api_client, preferences):
@@ -158,7 +229,7 @@ def test_honor_max_playlist_size(factories, mocker, logged_in_api_client, prefer
     )
     track_ids = [t.id for t in tracks]
     mocker.spy(playlist, "insert_many")
-    url = reverse("api:v1:playlists-add", kwargs={"pk": playlist.pk})
+    url = reverse("api:v1:playlists-add", kwargs={"uuid": playlist.uuid})
     response = logged_in_api_client.post(url, {"tracks": track_ids})
 
     assert response.status_code == 400
@@ -168,18 +239,34 @@ def test_can_clear_playlist_from_api(factories, mocker, logged_in_api_client):
     actor = logged_in_api_client.user.create_actor()
     playlist = factories["playlists.Playlist"](actor=actor)
     factories["playlists.PlaylistTrack"].create_batch(size=5, playlist=playlist)
-    url = reverse("api:v1:playlists-clear", kwargs={"pk": playlist.pk})
+    url = reverse("api:v1:playlists-clear", kwargs={"uuid": playlist.uuid})
     response = logged_in_api_client.delete(url)
 
     assert response.status_code == 204
     assert playlist.playlist_tracks.count() == 0
 
 
+def test_clear_playlist_from_api_remove_pl_lib_uploads(
+    factories, mocker, logged_in_api_client
+):
+    actor = logged_in_api_client.user.create_actor()
+    playlist = factories["playlists.Playlist"](actor=actor)
+    factories["playlists.PlaylistTrack"].create_batch(size=5, playlist=playlist)
+    for upload in playlist.library.uploads.all():
+        assert upload.playlist_libraries.filter(playlist=playlist).exists()
+        assert upload.playlist_libraries.get(playlist=playlist).actor == actor
+    url = reverse("api:v1:playlists-clear", kwargs={"uuid": playlist.uuid})
+    response = logged_in_api_client.delete(url)
+
+    assert response.status_code == 204
+    assert not playlist.library.uploads.all()
+
+
 def test_update_playlist_from_api(factories, mocker, logged_in_api_client):
     actor = logged_in_api_client.user.create_actor()
     playlist = factories["playlists.Playlist"](actor=actor)
     factories["playlists.PlaylistTrack"].create_batch(size=5, playlist=playlist)
-    url = reverse("api:v1:playlists-detail", kwargs={"pk": playlist.pk})
+    url = reverse("api:v1:playlists-detail", kwargs={"uuid": playlist.uuid})
     response = logged_in_api_client.patch(url, {"name": "test"})
     playlist.refresh_from_db()
 
@@ -192,7 +279,7 @@ def test_move_plt_updates_indexes(mocker, factories, logged_in_api_client):
     playlist = factories["playlists.Playlist"](actor=actor)
     plt0 = factories["playlists.PlaylistTrack"](index=0, playlist=playlist)
     plt1 = factories["playlists.PlaylistTrack"](index=1, playlist=playlist)
-    url = reverse("api:v1:playlists-move", kwargs={"pk": playlist.pk})
+    url = reverse("api:v1:playlists-move", kwargs={"uuid": playlist.uuid})
 
     response = logged_in_api_client.post(url, {"from": 1, "to": 0})
 

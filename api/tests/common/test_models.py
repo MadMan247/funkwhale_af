@@ -22,7 +22,7 @@ def test_mutation_fid_is_populated(factories, model, factory_args, namespace):
         ("music.Artist", "/library/artists/{obj.pk}"),
         ("music.Album", "/library/albums/{obj.pk}"),
         ("music.Track", "/library/tracks/{obj.pk}"),
-        ("playlists.Playlist", "/library/playlists/{obj.pk}"),
+        ("playlists.Playlist", "/library/playlists/{obj.uuid}"),
     ],
 )
 def test_get_absolute_url(factory_name, factories, expected):

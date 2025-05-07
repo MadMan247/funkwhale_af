@@ -3,7 +3,7 @@ from django.conf import settings
 
 from funkwhale_api.factories import NoUpdateOnCreate, registry
 from funkwhale_api.federation import models
-from funkwhale_api.federation.factories import ActorFactory
+from funkwhale_api.federation.factories import ActorFactory, MusicLibraryFactory
 from funkwhale_api.music.factories import TrackFactory
 
 
@@ -13,6 +13,7 @@ class PlaylistFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
     actor = factory.SubFactory(ActorFactory)
     fid = factory.Faker("federation_url")
     uuid = factory.Faker("uuid4")
+    library = factory.SubFactory(MusicLibraryFactory)
 
     class Meta:
         model = "playlists.Playlist"

@@ -34,11 +34,14 @@ class PlaylistSerializer(serializers.ModelSerializer):
     album_covers = serializers.SerializerMethodField(read_only=True)
     is_playable = serializers.SerializerMethodField()
     actor = APIActorSerializer(read_only=True)
+    library = serializers.SerializerMethodField()
+    library_followed = serializers.SerializerMethodField()
 
     class Meta:
         model = models.Playlist
         fields = (
-            "id",
+            "uuid",
+            "fid",
             "name",
             "actor",
             "modification_date",
@@ -50,8 +53,34 @@ class PlaylistSerializer(serializers.ModelSerializer):
             "is_playable",
             "actor",
             "description",
+            "library",
+            "library_followed",
         )
-        read_only_fields = ["id", "modification_date", "creation_date"]
+        read_only_fields = ["uuid", "fid", "modification_date", "creation_date"]
+
+    @extend_schema_field(OpenApiTypes.URI)
+    def get_library(self, obj):
+        if obj.library:
+            return obj.library.fid
+        else:
+            return None
+
+    @extend_schema_field(OpenApiTypes.BOOL)
+    def get_library_followed(self, obj):
+        if self.context.get("request", False) and hasattr(
+            self.context["request"], "user"
+        ):
+            actor = self.context["request"].user.actor
+            lib_qs = obj.library.received_follows.filter(actor=actor)
+
+            if lib_qs.exists():
+                if lib_qs[0].approved is None:
+                    return False
+                else:
+                    return lib_qs[0].approved
+            else:
+                return None
+        return None
 
     @extend_schema_field(OpenApiTypes.BOOL)
     def get_is_playable(self, obj):

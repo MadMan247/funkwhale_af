@@ -15,3 +15,22 @@ class PlaylistTrackAdmin(admin.ModelAdmin):
     list_display = ["playlist", "track", "index"]
     search_fields = ["track__name", "playlist__name"]
     list_select_related = True
+
+
+@admin.register(models.PlaylistScan)
+class LibraryScanAdmin(admin.ModelAdmin):
+    list_display = [
+        "id",
+        "playlist",
+        "actor",
+        "status",
+        "creation_date",
+        "modification_date",
+        "status",
+        "total_files",
+        "processed_files",
+        "errored_files",
+    ]
+    list_select_related = True
+    search_fields = ["actor__username", "playlist__name"]
+    list_filter = ["status"]

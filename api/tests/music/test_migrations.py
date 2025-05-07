@@ -1,6 +1,7 @@
 from uuid import uuid4
 
 import pytest
+from django.conf import settings
 from django.utils.timezone import now
 
 # this test is commented since it's very slow, but it can be useful for future development
@@ -102,13 +103,13 @@ def test_migrate_libraries_to_playlist(migrator):
     Track = music_apps.get_model("music", "Track")
     Library = music_apps.get_model("music", "Library")
     Upload = music_apps.get_model("music", "Upload")
+    Playlist = music_apps.get_model("playlists", "Playlist")
 
     # Create data
+    d = settings.FEDERATION_HOSTNAME
     domain = Domain.objects.create()
     domain2 = Domain.objects.create(pk=2)
-    actor = Actor.objects.create(name="Test Actor", domain=domain)
-    existing_urls = Actor.objects.values_list("fid", flat=True)
-    print(existing_urls)
+    actor = Actor.objects.create(name="Test Actor", domain=domain, fid=f"http://{d}/")
     target_actor = Actor.objects.create(
         name="Test Actor 2",
         domain=domain2,
@@ -117,11 +118,30 @@ def test_migrate_libraries_to_playlist(migrator):
 
     library = Library.objects.create(
         name="This should becane playlist name",
-        actor=target_actor,
+        actor=actor,
         creation_date=now(),
         privacy_level="everyone",
         uuid=uuid4(),
         description="This is a description",
+    )
+    Library.objects.create(
+        name="me",
+        actor=actor,
+        creation_date=now(),
+        privacy_level="me",
+        uuid=uuid4(),
+        description="This is a description",
+        fid=f"http://{d}/mylocallob",
+    )
+
+    library_not_local = Library.objects.create(
+        name="This should not becane playlist name",
+        fid="https://asupernotlocal.acab/federation/music/libraries/8505207e-45da-449a-9ec8-ed12a848fcea",
+        actor=target_actor,
+        creation_date=now(),
+        privacy_level="everyone",
+        uuid=uuid4(),
+        description="This is a description recalling to eat the rich",
     )
 
     Track.objects.create()
@@ -135,6 +155,33 @@ def test_migrate_libraries_to_playlist(migrator):
         Upload.objects.create(library=library, track=track2),
         Upload.objects.create(library=library, track=track3),
     ]
+
+    Upload.objects.create(library=library_not_local, track=track),
+    Upload.objects.create(library=library_not_local, track=track2),
+    Upload.objects.create(library=library_not_local, track=track3),
+    # Plt = music_apps.get_model("playlists", "PlaylistTrack")
+    # playlist = Playlist.objects.create(
+    #     name="This should becane a library name",
+    #     fid="https://asupernotlocal.acab/federation/music/playlist/8505207e-45da-449a-9ec8-ed12a848fcea",
+    #     actor=actor,
+    #     creation_date=now(),
+    #     privacy_level="everyone",
+    #     uuid=uuid4(),
+    # )
+
+    # playlist_not_local = Playlist.objects.create(
+    #     name="This should not becane a library name",
+    #     actor=target_actor,
+    #     creation_date=now(),
+    #     privacy_level="everyone",
+    #     uuid=uuid4(),
+    # )
+    # Plt.objects.create(playlist=playlist, track=track)
+    # Plt.objects.create(
+    #     playlist=playlist_not_local,
+    #     track=track,
+    #     fid="https://asupernotlocal.acab/federation/music/playlistttrack/8505207e-",
+    # )
 
     library_follow = LibraryFollow.objects.create(
         uuid=uuid4(),
@@ -152,9 +199,8 @@ def test_migrate_libraries_to_playlist(migrator):
     new_apps = migrator.loader.project_state([music_final_migration]).apps
     Playlist = new_apps.get_model("playlists", "Playlist")
     PlaylistTrack = new_apps.get_model("playlists", "PlaylistTrack")
-    Follow = new_apps.get_model("federation", "Follow")
     LibraryFollow = new_apps.get_model("federation", "LibraryFollow")
-    Follow = new_apps.get_model("federation", "Follow")
+    Library = new_apps.get_model("music", "Library")
 
     # Assertions
 
@@ -166,21 +212,43 @@ def test_migrate_libraries_to_playlist(migrator):
     assert playlist.privacy_level == library.privacy_level
     assert playlist.description == library.description
 
+    # Verify Playlist me creation skipped
+    assert not Playlist.objects.filter(name="me")
+    assert playlist.actor.libraries.filter(name="me").count() == 1
+
     # Verify PlaylistTrack creation
     playlist_tracks = PlaylistTrack.objects.filter(playlist=playlist).order_by("index")
     assert playlist_tracks.count() == 3
     for i, playlist_track in enumerate(playlist_tracks):
         assert playlist_track.track.pk == uploads[i].track.pk
 
-    # Verify User Follow creation
-    follow = Follow.objects.get(target__pk=target_actor.pk)
+    # Verify playlist.library Follow creation
+    follow = LibraryFollow.objects.get(target__pk=playlist.library.pk)
     assert follow.actor.pk == actor.pk
     assert follow.approved == library_follow.approved
+    assert follow.target == playlist.library
 
-    # Verify LibraryFollow deletion and library creation
-    assert LibraryFollow.objects.count() == 0
+    # Verify uploads are migrated in lib.playlist_uploads
+    for upload in uploads:
+        assert upload.pk in [u.pk for u in playlist.library.playlist_uploads.all()]
+        assert upload.pk not in [u.pk for u in playlist.library.uploads.all()]
+        assert not playlist.library.uploads.all()
 
     # Test fail but works on real db I don't get why
     # no library are found in the new app
     # NewAppLibrary = new_apps.get_model("music", "Library")
     # assert NewAppLibrary.objects.count() == 3
+
+    # Playlist
+    # library = Playlist.objects.get(name="This should becane a library name").library
+    # assert library.name == "This should becane a library name"
+    # assert library.privacy_level == "me"
+
+    # # Not local
+    # library_not_local = Library.objects.get(fid=library_not_local.fid)
+    # assert not library_not_local.playlist_uploads.all()
+
+    # playlist_not_local = Playlist.objects.get(
+    #     name="This should not becane a library name"
+    # )
+    # assert not playlist_not_local.library

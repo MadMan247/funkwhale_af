@@ -286,3 +286,32 @@ def test_playlist_playable_by_anonymous(privacy_level, expected, factories):
     queryset = playlist.__class__.objects.playable_by(None).with_playable_plts(None)
     match = playlist in list(queryset)
     assert match is expected
+
+
+def test_playlist_playable_by_library_playlist_follower(factories):
+    plt = factories["playlists.PlaylistTrack"]()
+    playlist = plt.playlist
+    playlist.privacy_level = "everyone"
+    playlist.save()
+    track = plt.track
+    upload = factories["music.Upload"](
+        track=track, library__privacy_level="me", import_status="finished"
+    )
+    upload.playlist_libraries.add(playlist.library)
+    follow = factories["federation.LibraryFollow"](
+        target=playlist.library, approved=True
+    )
+
+    # skip actortrack denormalization
+    assert (
+        plt.track.uploads.all()
+        .first()
+        .__class__.objects.playable_by(follow.actor)
+        .exists()
+    )
+
+    # doesn't skip actortrack denormalization so will fail need the library scan to be triggered
+    # queryset = playlist.__class__.objects.playable_by(follow.actor).with_playable_plts(
+    #     None
+    # )
+    # assert playlist in list(queryset)

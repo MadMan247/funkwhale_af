@@ -1268,6 +1268,7 @@ def test_inbox_update_playlist(factories, mocker):
 
     playlist_data = serializers.PlaylistSerializer(playlist_updated).data
     playlist_data["id"] = str(playlist.fid)
+    playlist_updated.delete()
 
     routes.inbox_update_playlist(
         {"object": playlist_data},

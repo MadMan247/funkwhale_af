@@ -47,7 +47,7 @@ def create_data(super_user_name=None):
 
     library = federation_factories.MusicLibraryFactory(
         actor=(super_user.actor if super_user else federation_factories.ActorFactory()),
-        local=True,
+        local=True if super_user else False,
     )
     uploads = music_factories.UploadFactory.create_batch(
         size=random.randint(3, 18),
@@ -68,6 +68,7 @@ def create_data(super_user_name=None):
     playlist = playlist_factories.PlaylistFactory(
         name="playlist test public",
         privacy_level="everyone",
+        local=True if super_user else False,
         actor=(super_user.actor if super_user else federation_factories.ActorFactory()),
     )
     playlist_factories.PlaylistTrackFactory(playlist=playlist, track=upload.track)
@@ -112,7 +113,7 @@ def create_data(super_user_name=None):
     # my artist channel
     my_artist_library = federation_factories.MusicLibraryFactory(
         actor=(super_user.actor if super_user else federation_factories.ActorFactory()),
-        local=True,
+        local=True if super_user else False,
     )
     my_artist_channel = audio_factories.ChannelFactory(
         library=my_artist_library,

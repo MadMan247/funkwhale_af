@@ -72,7 +72,8 @@ const {
   enqueue,
   enqueueNext,
   replacePlay,
-  isLoading
+  isLoading,
+  requestPlaylistUploadsAccess
 } = usePlayOptions(props)
 
 const { report, getReportableObjects } = useReport()
@@ -98,10 +99,50 @@ const labels = computed(() => ({
         ? t('components.audio.PlayButton.button.playArtist')
         : props.playlist
           ? t('components.audio.PlayButton.button.playPlaylist')
-          : t('components.audio.PlayButton.button.playTracks')
-}))
+          : t('components.audio.PlayButton.button.playTracks'),
+  PlaylistUploadGranted: t('components.audio.PlayButton.button.PlaylistUploadGranted'),
+  PlaylistUploadPending:t('components.audio.PlayButton.button.PlaylistUploadPending'),
+  PlaylistUploadNotRequest: t('components.audio.PlayButton.button.PlaylistUploadNotRequest'),
+  PlaylistUploadTooltip: t('components.audio.PlayButton.button.PlaylistUploadTooltip')
+  }))
 
 const isOpen = ref(false)
+
+const playlistFollowInfo = computed(() => {
+  const playlist = props.playlist;
+  if (!playlist) return null;
+
+  const followed = playlist.library_followed;
+
+  if (followed === true) {
+    return {
+      label: labels.value.PlaylistUploadGranted,
+      tooltip: labels.value.PlaylistUploadTooltip,
+      icon: 'bi-check-circle',
+      disabled: true
+    };
+  }
+
+  if (followed === false) {
+    return {
+      label: labels.value.PlaylistUploadPending,
+      tooltip: labels.value.PlaylistUploadTooltip,
+      icon: 'bi-hourglass-split',
+      disabled: true
+    };
+  }
+
+  // Assume null/undefined means not yet requested
+  return {
+    label: labels.value.PlaylistUploadNotRequest,
+    tooltip: labels.value.PlaylistUploadTooltip,
+    icon: 'bi-eye-slash',
+    disabled: false,
+    action: requestPlaylistUploadsAccess
+  }
+});
+
+
 </script>
 
 <template>
@@ -225,6 +266,15 @@ const isOpen = ref(false)
         @click.stop.prevent="report(obj)"
       >
         {{ obj.label }}
+      </PopoverItem>
+      <PopoverItem
+        v-if="playlist && playlistFollowInfo"
+        :title="playlistFollowInfo.tooltip"
+        :icon="playlistFollowInfo.icon"
+        :disabled="playlistFollowInfo.disabled"
+        @click.stop.prevent="requestPlaylistUploadsAccess(playlist)"
+      >
+        {{ playlistFollowInfo.label }}
       </PopoverItem>
     </template>
   </Popover>

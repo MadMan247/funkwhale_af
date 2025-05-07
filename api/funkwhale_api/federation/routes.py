@@ -679,9 +679,6 @@ def inbox_delete_favorite(payload, context):
     favorite.delete()
 
 
-# to do : test listening routes and broadcast
-
-
 @outbox.register({"type": "Listen", "object.type": "Track"})
 def outbox_create_listening(context):
     track = context["track"]
@@ -807,18 +804,19 @@ def inbox_delete_playlist(payload, context):
 
 @inbox.register({"type": "Update", "object.type": "Playlist"})
 def inbox_update_playlist(payload, context):
-    actor = context["actor"]
-    playlist_id = payload["object"].get("id")
+    """If we receive an update on an unkwnown playlist, we create the playlist"""
 
-    if not actor.playlists.filter(fid=playlist_id).exists():
-        logger.debug("Discarding update of unkwnown playlist_id %s", playlist_id)
-        return
+    playlist_id = payload["object"].get("id")
 
     serializer = serializers.PlaylistSerializer(data=payload["object"])
     if serializer.is_valid(raise_exception=True):
         playlist = serializer.save()
+        # we update the playlist.library to get the plt.track.uploads locally
+        if follows := playlist.library.received_follows.filter(approved=True):
+            playlist.library.schedule_scan(follows[0].actor, force=True)
         # we trigger a scan since we use this activity to avoid sending many PlaylistTracks activities
-        playlist.schedule_scan(actors.get_service_actor())
+        playlist.schedule_scan(actors.get_service_actor(), force=True)
+
         return
     else:
         logger.debug(

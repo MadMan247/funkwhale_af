@@ -6929,7 +6929,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Playlist'
           description: ''
-  /api/v1/playlists/{id}/:
+  /api/v1/playlists/{uuid}/:
     get:
       operationId: get_playlist
       parameters:
@@ -6941,10 +6941,10 @@ paths:
           - json
           - xspf
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
+          type: string
+          format: uuid
         required: true
       tags:
       - playlists
@@ -6972,10 +6972,10 @@ paths:
           - json
           - xspf
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
+          type: string
+          format: uuid
         required: true
       tags:
       - playlists
@@ -7018,10 +7018,10 @@ paths:
           - json
           - xspf
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
+          type: string
+          format: uuid
         required: true
       tags:
       - playlists
@@ -7063,10 +7063,10 @@ paths:
           - json
           - xspf
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
+          type: string
+          format: uuid
         required: true
       tags:
       - playlists
@@ -7076,7 +7076,7 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/v1/playlists/{id}/add/:
+  /api/v1/playlists/{uuid}/add/:
     post:
       operationId: add_to_playlist
       parameters:
@@ -7088,10 +7088,10 @@ paths:
           - json
           - xspf
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
+          type: string
+          format: uuid
         required: true
       tags:
       - playlists
@@ -7123,7 +7123,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Playlist'
           description: ''
-  /api/v1/playlists/{id}/albums/:
+  /api/v1/playlists/{uuid}/albums/:
     get:
       operationId: get_playlist_albums
       parameters:
@@ -7135,10 +7135,10 @@ paths:
           - json
           - xspf
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
+          type: string
+          format: uuid
         required: true
       tags:
       - playlists
@@ -7155,9 +7155,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Playlist'
           description: ''
-  /api/v1/playlists/{id}/artists/:
+  /api/v1/playlists/{uuid}/artists/:
     get:
-      operationId: get_playlist_artits
+      operationId: get_playlist_artists
       parameters:
       - in: query
         name: format
@@ -7167,10 +7167,10 @@ paths:
           - json
           - xspf
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
+          type: string
+          format: uuid
         required: true
       tags:
       - playlists
@@ -7187,7 +7187,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Playlist'
           description: ''
-  /api/v1/playlists/{id}/clear/:
+  /api/v1/playlists/{uuid}/clear/:
     delete:
       operationId: clear_playlist
       parameters:
@@ -7199,10 +7199,10 @@ paths:
           - json
           - xspf
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
+          type: string
+          format: uuid
         required: true
       tags:
       - playlists
@@ -7212,7 +7212,7 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/v1/playlists/{id}/move/:
+  /api/v1/playlists/{uuid}/move/:
     post:
       operationId: reorder_track_in_playlist
       parameters:
@@ -7224,10 +7224,10 @@ paths:
           - json
           - xspf
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
+          type: string
+          format: uuid
         required: true
       tags:
       - playlists
@@ -7259,7 +7259,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Playlist'
           description: ''
-  /api/v1/playlists/{id}/remove/:
+  /api/v1/playlists/{uuid}/remove/:
     post:
       operationId: remove_from_playlist_2
       parameters:
@@ -7271,10 +7271,10 @@ paths:
           - json
           - xspf
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
+          type: string
+          format: uuid
         required: true
       tags:
       - playlists
@@ -7317,10 +7317,10 @@ paths:
           - json
           - xspf
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
+          type: string
+          format: uuid
         required: true
       tags:
       - playlists
@@ -7330,7 +7330,7 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/v1/playlists/{id}/tracks/:
+  /api/v1/playlists/{uuid}/tracks/:
     get:
       operationId: get_playlist_tracks
       parameters:
@@ -7349,12 +7349,6 @@ paths:
           enum:
           - json
           - xspf
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
-        required: true
       - in: query
         name: name
         schema:
@@ -7397,6 +7391,12 @@ paths:
         name: track
         schema:
           type: integer
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
       tags:
       - playlists
       security:
@@ -16474,7 +16474,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Playlist'
           description: ''
-  /api/v2/playlists/{id}/:
+  /api/v2/playlists/{uuid}/:
     get:
       operationId: get_playlist_2
       parameters:
@@ -16486,10 +16486,10 @@ paths:
           - json
           - xspf
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
+          type: string
+          format: uuid
         required: true
       tags:
       - playlists
@@ -16517,10 +16517,10 @@ paths:
           - json
           - xspf
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
+          type: string
+          format: uuid
         required: true
       tags:
       - playlists
@@ -16563,10 +16563,10 @@ paths:
           - json
           - xspf
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
+          type: string
+          format: uuid
         required: true
       tags:
       - playlists
@@ -16608,10 +16608,10 @@ paths:
           - json
           - xspf
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
+          type: string
+          format: uuid
         required: true
       tags:
       - playlists
@@ -16621,7 +16621,7 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/v2/playlists/{id}/add/:
+  /api/v2/playlists/{uuid}/add/:
     post:
       operationId: add_to_playlist_2
       parameters:
@@ -16633,10 +16633,10 @@ paths:
           - json
           - xspf
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
+          type: string
+          format: uuid
         required: true
       tags:
       - playlists
@@ -16668,7 +16668,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Playlist'
           description: ''
-  /api/v2/playlists/{id}/albums/:
+  /api/v2/playlists/{uuid}/albums/:
     get:
       operationId: get_playlist_albums_2
       parameters:
@@ -16680,10 +16680,10 @@ paths:
           - json
           - xspf
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
+          type: string
+          format: uuid
         required: true
       tags:
       - playlists
@@ -16700,9 +16700,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Playlist'
           description: ''
-  /api/v2/playlists/{id}/artists/:
+  /api/v2/playlists/{uuid}/artists/:
     get:
-      operationId: get_playlist_artits_2
+      operationId: get_playlist_artists_2
       parameters:
       - in: query
         name: format
@@ -16712,10 +16712,10 @@ paths:
           - json
           - xspf
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
+          type: string
+          format: uuid
         required: true
       tags:
       - playlists
@@ -16732,7 +16732,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Playlist'
           description: ''
-  /api/v2/playlists/{id}/clear/:
+  /api/v2/playlists/{uuid}/clear/:
     delete:
       operationId: clear_playlist_2
       parameters:
@@ -16744,10 +16744,10 @@ paths:
           - json
           - xspf
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
+          type: string
+          format: uuid
         required: true
       tags:
       - playlists
@@ -16757,7 +16757,7 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/v2/playlists/{id}/move/:
+  /api/v2/playlists/{uuid}/move/:
     post:
       operationId: reorder_track_in_playlist_2
       parameters:
@@ -16769,10 +16769,10 @@ paths:
           - json
           - xspf
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
+          type: string
+          format: uuid
         required: true
       tags:
       - playlists
@@ -16804,7 +16804,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Playlist'
           description: ''
-  /api/v2/playlists/{id}/remove/:
+  /api/v2/playlists/{uuid}/remove/:
     post:
       operationId: remove_from_playlist_4
       parameters:
@@ -16816,10 +16816,10 @@ paths:
           - json
           - xspf
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
+          type: string
+          format: uuid
         required: true
       tags:
       - playlists
@@ -16862,10 +16862,10 @@ paths:
           - json
           - xspf
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
+          type: string
+          format: uuid
         required: true
       tags:
       - playlists
@@ -16875,7 +16875,7 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/v2/playlists/{id}/tracks/:
+  /api/v2/playlists/{uuid}/tracks/:
     get:
       operationId: get_playlist_tracks_2
       parameters:
@@ -16894,12 +16894,6 @@ paths:
           enum:
           - json
           - xspf
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this playlist.
-        required: true
       - in: query
         name: name
         schema:
@@ -16942,6 +16936,12 @@ paths:
         name: track
         schema:
           type: integer
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
       tags:
       - playlists
       security:
@@ -24813,8 +24813,13 @@ components:
     Playlist:
       type: object
       properties:
-        id:
-          type: integer
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        fid:
+          type: string
+          format: uri
           readOnly: true
         name:
           type: string
@@ -24851,16 +24856,26 @@ components:
           type: string
           nullable: true
           maxLength: 5000
+        library:
+          type: string
+          format: uri
+          readOnly: true
+        library_followed:
+          type: boolean
+          readOnly: true
       required:
       - actor
       - album_covers
       - creation_date
       - duration
-      - id
+      - fid
       - is_playable
+      - library
+      - library_followed
       - modification_date
       - name
       - tracks_count
+      - uuid
     PlaylistAddManyRequest:
       type: object
       properties:

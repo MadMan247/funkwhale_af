@@ -14,7 +14,7 @@ defineProps<Props>()
   <!-- TODO: Remove this module -->
   <PlaylistsCard
     v-for="playlist in playlists"
-    :key="playlist.id"
+    :key="playlist.uuid"
     :playlist="playlist"
   />
 </template>

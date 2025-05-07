@@ -12,7 +12,8 @@ import Spacer from '~/components/ui/Spacer.vue'
 
 interface Props {
   type: string
-  id: number
+  id?: number
+  uuid?: string
 }
 
 const { t } = useI18n()
@@ -44,7 +45,8 @@ const iframeSrc = computed(() => {
     ? `&b=${instanceUrl}`
     : ''
 
-  return `${base}embed.html?&type=${props.type}&id=${props.id}${bParam}`
+  const identifier = props.id ?? props.uuid
+  return `${base}embed.html?&type=${props.type}&id=${identifier}${bParam}`
 })
 
 const frameWidth = computed(() => width.value ?? '100%')

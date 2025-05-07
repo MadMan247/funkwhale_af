@@ -15,7 +15,7 @@ class PlaylistXspfRenderer(renderers.BaseRenderer):
         if isinstance(data, bytes):
             return data
 
-        fw_playlist = Playlist.objects.get(id=data["id"])
+        fw_playlist = Playlist.objects.get(uuid=data["uuid"])
         plt_tracks = fw_playlist.playlist_tracks.prefetch_related("track")
         top = Element("playlist", version="1", xmlns="http://xspf.org/ns/0/")
         title_xspf = SubElement(top, "title")

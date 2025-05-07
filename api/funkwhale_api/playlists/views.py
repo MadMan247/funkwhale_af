@@ -1,4 +1,5 @@
 import logging
+from itertools import chain
 
 from django.db import transaction
 from django.db.models import Count
@@ -29,6 +30,7 @@ class PlaylistViewSet(
     mixins.ListModelMixin,
     viewsets.GenericViewSet,
 ):
+    lookup_field = "uuid"
     serializer_class = serializers.PlaylistSerializer
     queryset = (
         models.Playlist.objects.all()
@@ -157,6 +159,7 @@ class PlaylistViewSet(
         )
         serializer = serializers.PlaylistTrackSerializer(plts, many=True)
         data = {"count": len(plts), "results": serializer.data}
+        update_playlist_library_uploads(playlist, plts)
         playlist.schedule_scan(playlist.actor, force=True)
         return Response(data, status=201)
 
@@ -167,7 +170,8 @@ class PlaylistViewSet(
         playlist = self.get_object()
         playlist.playlist_tracks.all().delete()
         playlist.save(update_fields=["modification_date"])
-        playlist.schedule_scan(playlist.actor)
+        playlist.library.uploads.filter().delete()
+        playlist.schedule_scan(playlist.actor, force=True)
         return Response(status=204)
 
     def get_queryset(self):
@@ -200,6 +204,8 @@ class PlaylistViewSet(
             plt = playlist.playlist_tracks.by_index(index)
         except models.PlaylistTrack.DoesNotExist:
             return Response(status=404)
+        for upload in plt.track.uploads.filter(playlist_libraries=playlist.library):
+            upload.playlist_libraries.remove(playlist.library)
         plt.delete(update_indexes=True)
         plt.playlist.schedule_scan(playlist.actor)
         return Response(status=204)
@@ -244,7 +250,7 @@ class PlaylistViewSet(
         serializer = music_serializers.AlbumSerializer(releases, many=True)
         return Response(serializer.data, status=200)
 
-    @extend_schema(operation_id="get_playlist_artits")
+    @extend_schema(operation_id="get_playlist_artists")
     @action(methods=["get"], detail=True)
     @transaction.atomic
     def artists(self, request, *args, **kwargs):
@@ -258,3 +264,13 @@ class PlaylistViewSet(
         artists = music_models.Artist.objects.filter(pk__in=artists_pks)
         serializer = music_serializers.ArtistSerializer(artists, many=True)
         return Response(serializer.data, status=200)
+
+
+def update_playlist_library_uploads(playlist, plts):
+    uploads = list(
+        chain(
+            *[plt.track.uploads.filter(library__actor=playlist.actor) for plt in plts]
+        )
+    )
+    for upload in uploads:
+        upload.playlist_libraries.add(playlist.library)

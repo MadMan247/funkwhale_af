@@ -88,12 +88,19 @@ class Playlist(federation_models.FederationMixin):
     description = models.TextField(max_length=5000, null=True, blank=True)
     objects = PlaylistQuerySet.as_manager()
     federation_namespace = "playlists"
+    library = models.OneToOneField(
+        "music.Library",
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="playlist",
+    )
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return f"/library/playlists/{self.pk}"
+        return f"/library/playlists/{self.uuid}"
 
     def get_federation_id(self):
         if self.fid:
@@ -108,6 +115,19 @@ class Playlist(federation_models.FederationMixin):
     def save(self, **kwargs):
         if not self.pk and not self.fid:
             self.fid = self.get_federation_id()
+
+        if not self.pk and not self.library_id:
+            self.library = music_models.Library.objects.create(
+                actor=self.actor,
+                name="playlist_" + self.name,
+                privacy_level="me",
+                uuid=(new_uuid := uuid.uuid4()),
+                fid=federation_utils.full_url(
+                    reverse(
+                        "federation:music:libraries-detail", kwargs={"uuid": new_uuid}
+                    ),
+                ),
+            )
 
         return super().save(**kwargs)
 
@@ -232,7 +252,7 @@ class Playlist(federation_models.FederationMixin):
         latest_scan = (
             self.scans.exclude(status="errored").order_by("-creation_date").first()
         )
-        delay_between_scans = datetime.timedelta(seconds=3600 * 24)
+        delay_between_scans = datetime.timedelta(seconds=1)
         now = timezone.now()
         if (
             not force
@@ -344,6 +364,9 @@ class PlaylistTrack(federation_models.FederationMixin):
             self.fid = self.get_federation_id()
 
         return super().save(**kwargs)
+
+    def get_absolute_url(self):
+        return f"/library/tracks/{self.track.pk}"
 
 
 class PlaylistScan(models.Model):

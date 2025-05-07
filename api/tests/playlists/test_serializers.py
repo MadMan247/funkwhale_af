@@ -75,7 +75,8 @@ def test_playlist_serializer(factories, to_api_date):
     actor = playlist.actor
 
     expected = {
-        "id": playlist.pk,
+        "uuid": playlist.uuid,
+        "fid": playlist.fid,
         "name": playlist.name,
         "privacy_level": playlist.privacy_level,
         "is_playable": False,
@@ -86,6 +87,8 @@ def test_playlist_serializer(factories, to_api_date):
         "tracks_count": 0,
         "album_covers": [],
         "description": playlist.description,
+        "library": playlist.library.fid,
+        "library_followed": None,
     }
     serializer = serializers.PlaylistSerializer(playlist)
 

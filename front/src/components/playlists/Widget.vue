@@ -100,7 +100,7 @@ watch(
     </Alert>
     <PlaylistCard
       v-for="playlist in objects"
-      :key="playlist.id"
+      :key="playlist.uuid"
       :playlist="playlist"
     />
   </Section>
