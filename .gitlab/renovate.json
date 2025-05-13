@@ -9,7 +9,7 @@
     "group:monorepos",
     "group:recommended"
   ],
-  "baseBranches": ["stable", "develop"],
+  "baseBranches": ["develop"],
   "branchConcurrentLimit": 2,
   "prConcurrentLimit": 1,
   "rangeStrategy": "pin",
