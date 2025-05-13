@@ -77,6 +77,9 @@ workflow:
         )
     # Run for merge requests from any repo or branches
     - if: $CI_MERGE_REQUEST_ID
+    # run if NOCHANGELOG is added in the title 
+    - if: $CI_MERGE_REQUEST_TITLE =~ /NOCHANGELOG/
+
 
 stages:
   - review
@@ -166,7 +169,7 @@ require_changelog:
     # Don't run on merge request that mention NOCHANGELOG or renovate bot commits
     - if: >
         $CI_MERGE_REQUEST_TITLE =~ /NOCHANGELOG/ ||
-        $CI_COMMIT_AUTHOR == "Renovate Bot <bot@dev.funkwhale.audio>"
+        $CI_COMMIT_AUTHOR == "RenovateBot <bot@dev.funkwhale.audio>"
       when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
