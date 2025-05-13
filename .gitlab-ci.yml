@@ -77,9 +77,8 @@ workflow:
         )
     # Run for merge requests from any repo or branches
     - if: $CI_MERGE_REQUEST_ID
-    # run if NOCHANGELOG is added in the title 
+    # run if NOCHANGELOG is added in the title
     - if: $CI_MERGE_REQUEST_TITLE =~ /NOCHANGELOG/
-
 
 stages:
   - review
