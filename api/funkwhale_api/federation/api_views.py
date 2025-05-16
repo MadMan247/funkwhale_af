@@ -4,6 +4,7 @@ from django.db import transaction
 from django.db.models import Count, Q
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import decorators, mixins, permissions, response, viewsets
+from rest_framework.exceptions import NotFound as RestNotFound
 
 from funkwhale_api.common import preferences
 from funkwhale_api.common import utils as common_utils
@@ -289,7 +290,12 @@ class ActorViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     def get_object(self):
         queryset = self.get_queryset()
         username, domain = self.kwargs["full_username"].split("@", 1)
-        return queryset.get(preferred_username=username, domain_id=domain)
+        try:
+            return queryset.get(preferred_username=username, domain_id=domain)
+        except models.Actor.DoesNotExist:
+            raise RestNotFound(
+                detail=f"Actor {username}@{domain} not found",
+            )
 
     def get_queryset(self):
         qs = super().get_queryset()
