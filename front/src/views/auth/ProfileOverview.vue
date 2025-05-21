@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Actor } from '~/types'
 
-import LibraryWidget from '~/components/federation/LibraryWidget.vue'
 import ChannelsWidget from '~/components/audio/ChannelsWidget.vue'
 import ChannelForm from '~/components/audio/ChannelForm.vue'
 import { ref } from 'vue'
@@ -59,14 +58,6 @@ const createForm = ref()
         </div>
       </h2>
       <channels-widget :filters="{scope: `actor:${object?.full_username}`}" />
-      <h2 class="ui with-actions header">
-        {{ t('views.auth.ProfileOverview.header.libraries') }}
-      </h2>
-      <library-widget :url="`federation/actors/${object?.full_username}/libraries/`">
-        <template #title>
-          {{ t('views.auth.ProfileOverview.header.sharedLibraries') }}
-        </template>
-      </library-widget>
     </div>
 
     <Modal

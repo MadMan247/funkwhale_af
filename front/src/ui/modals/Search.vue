@@ -155,7 +155,7 @@ const categories = computed(() => [
     type: 'playlists',
     label: t('views.Search.label.playlists'),
     more: '/library/playlists/',
-    endpoint: '/TODO'
+    endpoint: '/playlists'
   },
   {
     type: 'radios',

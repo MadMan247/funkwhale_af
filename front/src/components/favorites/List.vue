@@ -2,7 +2,7 @@
 import type { OrderingProps } from '~/composables/navigation/useOrdering'
 import type { RouteRecordName } from 'vue-router'
 import type { OrderingField } from '~/store/ui'
-import type { Track } from '~/types'
+import type { UserTrackFavorite } from '~/types'
 
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -53,7 +53,7 @@ const sharedLabels = useSharedLabels()
 
 const { onOrderingUpdate, orderingString, paginateBy, ordering, orderingDirection } = useOrdering(props)
 
-const results = reactive<Track[]>([])
+const results = reactive<UserTrackFavorite[]>([])
 const nextLink = ref()
 const previousLink = ref()
 const count = ref(0)
@@ -66,7 +66,7 @@ const fetchFavorites = async () => {
     page: page.value,
     page_size: paginateBy.value,
     ordering: orderingString.value,
-    scope: store.state.auth.fullUsername
+    scope: "me"
   }
 
   const measureLoading = logger.time('Loading user favorites')
@@ -76,8 +76,8 @@ const fetchFavorites = async () => {
     results.length = 0
     results.push(...response.data.results)
 
-    for (const track of results) {
-      store.commit('favorites/track', { id: track.id, value: true })
+    for (const trackfavorite of results) {
+      store.commit('favorites/track', { id: trackfavorite.track.id, value: true })
     }
 
     count.value = response.data.count
@@ -225,7 +225,7 @@ const paginateOptions = computed(() => sortedUniq([12, 25, 50, paginateBy.value]
         :search="true"
         :show-artist="true"
         :show-album="true"
-        :tracks="results"
+        :tracks="results.map(r => r.track)"
       />
     </Layout>
     <Alert

@@ -68,6 +68,7 @@ export type Cover = components['schemas']['CoverField']
 export type RateLimitStatus = components['schemas']['RateLimit']['scopes'][number]
 export type PaginatedAlbumList = components['schemas']['PaginatedAlbumList']
 export type PaginatedChannelList = components['schemas']['PaginatedChannelList']
+export type UserTrackFavorite = components['schemas']['UserTrackFavorite']
 
 export type Artist = components['schemas']['Artist']
 

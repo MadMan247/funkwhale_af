@@ -67,20 +67,30 @@ const submitAndScan = async () => {
     :class="['ui form', {loading: isLoading}]"
     @submit.prevent="submit"
   >
-    <h3>{{ plugin.label }}</h3>
-    <sanitized-html
-      v-if="plugin.description"
-      :html="description"
-    />
-    <template v-if="plugin.homepage">
-      <a
-        :href="plugin.homepage"
-        target="_blank"
-      >
-        <i class="external icon" />
-        {{ t('components.auth.Plugin.link.documentation') }}
-      </a>
-    </template>
+    <h2>{{ plugin.label }}</h2>
+    <Alert blue>
+      <Layout flex>
+        <p><i class="bi bi-info-circle-fill" /></p>
+        <Layout
+          stack
+          no-gap
+        >
+          <sanitized-html
+            v-if="plugin.description"
+            :html="description"
+          />
+          <template v-if="plugin.homepage">
+            <a
+              :href="plugin.homepage"
+              target="_blank"
+            >
+              <i class="bi bi-box-arrow-up-right" />
+              {{ t('components.auth.Plugin.link.documentation') }}
+            </a>
+          </template>
+        </Layout>
+      </Layout>
+    </Alert>
     <Alert
       v-if="errors.length > 0"
       red

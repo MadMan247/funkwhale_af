@@ -189,4 +189,4 @@ def filter_files(files, allowed_extensions):
 def get_search_url(query, page_size, page):
     q = urllib.parse.urlencode({"q": query})
     return f"https://archive.org/advancedsearch.php?{q}&sort[]=addeddate+desc&rows={page_size}\
-        &page={page}&output=json&mediatype=audio"
+        &page={page}&output=json"

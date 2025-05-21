@@ -2,19 +2,19 @@
 import type { Library } from '~/types'
 
 import { ref, reactive, onMounted, watch } from 'vue'
-import { useStore } from '~/store'
 import { useI18n } from 'vue-i18n'
 
 import axios from 'axios'
 
-import LibraryCard from '~/views/content/remote/Card.vue'
 import Button from '~/components/ui/Button.vue'
 import Section from '~/components/ui/Section.vue'
 import Loader from '~/components/ui/Loader.vue'
 import Alert from '~/components/ui/Alert.vue'
 import Spacer from '~/components/ui/Spacer.vue'
+import ActorLink from '~/components/common/ActorLink.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
+import Layout from '../ui/Layout.vue'
 
 interface Events {
   (e: 'loaded', libraries: Library[]): void
@@ -26,7 +26,6 @@ interface Props {
 }
 
 const { t } = useI18n()
-const store = useStore()
 
 const emit = defineEmits<Events>()
 const props = defineProps<Props>()
@@ -67,7 +66,6 @@ watch(() => props.url, () => {
   <Section
     align-left
     :h2="title"
-    :columns-per-item="3"
   >
     <Loader
       v-if="isLoading"
@@ -80,14 +78,21 @@ watch(() => props.url, () => {
     >
       {{ t('components.federation.LibraryWidget.empty.noMatch') }}
     </Alert>
-    <library-card
-      v-for="library in libraries"
-      :key="library.uuid"
-      :display-scan="false"
-      :display-follow="store.state.auth.authenticated && library.actor.full_username != store.state.auth.fullUsername"
-      :initial-library="library"
-      :display-copy-fid="true"
-    />
+    <Layout
+      v-if="!isLoading && libraries.length > 0"
+      flex
+    >
+      {{ t('components.federation.LibraryWidget.main') }}
+      <template
+        v-for="library in libraries"
+        :key="library.uuid"
+      >
+        <ActorLink
+          :actor="library.actor"
+          discrete
+        />
+      </template>
+    </Layout>
     <template v-if="nextPage">
       <Spacer />
       <Button

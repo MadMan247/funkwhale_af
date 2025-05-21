@@ -6,7 +6,10 @@ import { computed, ref } from 'vue'
 
 import axios from 'axios'
 
+import Layout from '~/components/ui/Layout.vue'
 import Alert from '~/components/ui/Alert.vue'
+import Input from '~/components/ui/Input.vue'
+import Link from '~/components/ui/Link.vue'
 import Button from '~/components/ui/Button.vue'
 
 interface Props {
@@ -56,15 +59,14 @@ const submit = async () => {
     class="main"
   >
     <h2>{{ labels.changePassword }}</h2>
-    <form
+    <Layout
       v-if="!success"
-      class="ui form"
+      form
       @submit.prevent="submit()"
     >
       <Alert
         v-if="errors.length > 0"
-        role="alert"
-        class="ui negative message"
+        red
       >
         <h4 class="header">
           {{ t('views.auth.PasswordResetConfirm.header.failure') }}
@@ -83,26 +85,33 @@ const submit = async () => {
           <Input
             v-model="newPassword"
             password
-            label="t('views.auth.PasswordResetConfirm.label.newPassword')"
+            :label="t('views.auth.PasswordResetConfirm.label.newPassword')"
           />
         </div>
-        <router-link :to="{path: '/login'}">
-          {{ t('views.auth.PasswordResetConfirm.link.back') }}
-        </router-link>
-        <Button
-          :class="['ui', {'loading': isLoading}, 'right', 'floated', 'success', 'button']"
-          type="submit"
-          auto
-        >
-          {{ t('views.auth.PasswordResetConfirm.button.update') }}
-        </Button>
+        <Layout flex>
+          <Link
+            solid
+            secondary
+            :to="{path: '/login'}"
+          >
+            {{ t('views.auth.PasswordResetConfirm.link.back') }}
+          </Link>
+          <Button
+            :class="['ui', {'loading': isLoading}, 'right', 'floated', 'success', 'button']"
+            type="submit"
+            auto
+            primary
+          >
+            {{ t('views.auth.PasswordResetConfirm.button.update') }}
+          </Button>
+        </Layout>
       </template>
       <template v-else>
         <p>
           {{ t('views.auth.PasswordResetConfirm.message.requestSent') }}
         </p>
       </template>
-    </form>
+    </Layout>
     <Alert
       v-else
       green

@@ -122,7 +122,7 @@ store.dispatch('auth/fetchUser')
 .responsive {
   display: grid !important;
   grid-template-rows: min-content;
-  min-height: calc(100vh - 64px);
+  min-height: 100vh;
 
   @media screen and (min-width: 1024px) {
     grid-template-columns: 300px 1fr;

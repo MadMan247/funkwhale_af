@@ -1,9 +1,8 @@
 import type { Track, Album, ArtistCredit, QueueItemSource } from '~/types'
 import type { components } from '~/generated/types'
-import { useStore } from '~/store'
 import type { QueueTrack } from '~/composables/audio/queue'
+import store from '~/store'
 
-const store = useStore()
 
 export function generateTrackCreditString (track: Track | Album | null): string | null {
   if (!track || !track.artist_credit || track.artist_credit.length === 0) {
@@ -51,5 +50,15 @@ const getSimpleArtistCover = (artist: components['schemas']['SimpleChannelArtist
  * @param artist: a simple artist
  * @param field: the size you want
 */
-export const getSimpleArtistCoverUrl = (artist: components['schemas']['SimpleChannelArtist'] | components['schemas']['Artist'] | components['schemas']['ArtistWithAlbums'], field: 'original' | 'small_square_crop' | 'medium_square_crop' | 'large_square_crop') =>
-  store.getters['instance/absoluteUrl'](getSimpleArtistCover(artist)(field))
+export const getSimpleArtistCoverUrl = (
+  artist: components['schemas']['SimpleChannelArtist'] | components['schemas']['Artist'] | components['schemas']['ArtistWithAlbums'],
+  field: 'original' | 'small_square_crop' | 'medium_square_crop' | 'large_square_crop'
+): string | null => {
+  const coverGetter = getSimpleArtistCover(artist);
+  if (!coverGetter) return null;
+
+  const cover = coverGetter(field);
+  if (!cover) return null;
+
+  return store.getters['instance/absoluteUrl'](cover);
+};

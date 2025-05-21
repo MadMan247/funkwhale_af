@@ -7,6 +7,7 @@ import axios from 'axios'
 import PluginForm from '~/components/auth/Plugin.vue'
 
 import Layout from '~/components/ui/Layout.vue'
+import Loader from '~/components/ui/Loader.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 
@@ -46,13 +47,10 @@ fetchData()
     main
     stack
   >
-    <h2>{{ labels.title }}</h2>
-    <div
+    <h1>{{ labels.title }}</h1>
+    <Loader
       v-if="isLoading"
-      class="ui inverted active dimmer"
-    >
-      <div class="ui loader" />
-    </div>
+    />
 
     <template v-if="plugins && plugins.length > 0">
       <plugin-form

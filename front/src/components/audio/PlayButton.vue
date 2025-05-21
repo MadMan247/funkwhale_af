@@ -108,7 +108,7 @@ const labels = computed(() => ({
 
 const isOpen = ref(false)
 
-const playlistFollowInfo = computed(() => {
+const playlistLibraryFollowInfo = computed(() => {
   const playlist = props.playlist;
   if (!playlist) return null;
 
@@ -268,13 +268,13 @@ const playlistFollowInfo = computed(() => {
         {{ obj.label }}
       </PopoverItem>
       <PopoverItem
-        v-if="playlist && playlistFollowInfo"
-        :title="playlistFollowInfo.tooltip"
-        :icon="playlistFollowInfo.icon"
-        :disabled="playlistFollowInfo.disabled"
+        v-if="playlist && playlistLibraryFollowInfo && store.state.auth.profile && playlist.actor.full_username != store.state.auth.fullUsername"
+        :title="playlistLibraryFollowInfo.tooltip"
+        :icon="playlistLibraryFollowInfo.icon"
+        :disabled="playlistLibraryFollowInfo.disabled"
         @click.stop.prevent="requestPlaylistUploadsAccess(playlist)"
       >
-        {{ playlistFollowInfo.label }}
+        {{ playlistLibraryFollowInfo.label }}
       </PopoverItem>
     </template>
   </Popover>

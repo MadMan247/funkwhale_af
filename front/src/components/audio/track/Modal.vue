@@ -7,7 +7,7 @@ import useReport from '~/composables/moderation/useReport'
 import { useStore } from '~/store'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useVModel } from '@vueuse/core'
 import { generateTrackCreditString, getArtistCoverUrl } from '~/utils/utils'
 
@@ -50,7 +50,6 @@ const props = withDefaults(defineProps<Props>(), {
   account: null
 })
 
-const modal = ref()
 
 const show = useVModel(props, 'show', emit)
 
@@ -94,11 +93,8 @@ const labels = computed(() => ({
 
 <template>
   <Modal
-    ref="modal"
     v-model="show"
     :title="track.title"
-    :scrolling="true"
-    class="scrolling-track-options"
   >
     <div class="header">
       <div class="ui large centered rounded image">
