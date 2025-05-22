@@ -511,6 +511,7 @@ docker:
           --set *.platform=linux/amd64,linux/arm64,linux/arm/v7
           --no-cache
           --push
+          --provenance=false
 
     - if: $CI_COMMIT_BRANCH =~ /(stable|develop)/
       variables:
