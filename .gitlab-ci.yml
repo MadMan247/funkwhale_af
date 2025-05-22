@@ -511,7 +511,6 @@ docker:
           --set *.platform=linux/amd64,linux/arm64,linux/arm/v7
           --no-cache
           --push
-          --provenance=false
 
     - if: $CI_COMMIT_BRANCH =~ /(stable|develop)/
       variables:
@@ -520,7 +519,6 @@ docker:
           --set *.cache-from=type=registry,ref=$DOCKER_CACHE_IMAGE:$CI_COMMIT_BRANCH,oci-mediatypes=false
           --set *.cache-to=type=registry,ref=$DOCKER_CACHE_IMAGE:$CI_COMMIT_BRANCH,mode=max,oci-mediatypes=false
           --push
-          --provenance=false
 
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_PROJECT_NAMESPACE == "funkwhale"
       # We don't provide priviledged runners to everyone, so we can only build docker images in the funkwhale group
@@ -552,7 +550,6 @@ docker:
         ./scripts/set-api-build-metadata.sh $CI_COMMIT_SHORT_SHA;
       fi
     - docker buildx create --use
-    - echo "Using cache image: $DOCKER_CACHE_IMAGE:$CI_COMMIT_BRANCH"
     - make docker-build BUILD_ARGS="--metadata-file metadata.json $BUILD_ARGS"
     - cat metadata.json
   artifacts:
