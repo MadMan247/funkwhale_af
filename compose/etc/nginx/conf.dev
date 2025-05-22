@@ -74,6 +74,11 @@ server {
         proxy_pass   http://funkwhale-api;
     }
 
+    location /node_modules/.vite/ {
+        include /etc/nginx/funkwhale_proxy.conf;
+        proxy_pass   http://funkwhale-front;
+    }
+
     location ~ ^/@(vite-plugin-pwa|vite|id)/ {
         include /etc/nginx/funkwhale_proxy.conf;
         proxy_pass   http://funkwhale-front;
