@@ -552,6 +552,7 @@ docker:
         ./scripts/set-api-build-metadata.sh $CI_COMMIT_SHORT_SHA;
       fi
     - docker buildx create --use
+    - echo "Using cache image: $DOCKER_CACHE_IMAGE:$CI_COMMIT_BRANCH"
     - make docker-build BUILD_ARGS="--metadata-file metadata.json $BUILD_ARGS"
     - cat metadata.json
   artifacts:
