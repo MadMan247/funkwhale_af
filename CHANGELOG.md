@@ -43,7 +43,7 @@ Enhancements:
 - Add favorite and listening sync ith Listenbrainz (#2079)
 - Add tests for track cache
 - Allow special characters in tags (#2009)
-- disable some linter rule to avoid noise on the api lint process  (#2346)
+- disable some linter rule to avoid noise on the api lint process (#2346)
 - Drop python 3.8 and 3.9 (#2282)
 - Migrate frontend to api V2 (#2324)
 - Optimize radios queryset to support large tables (#2450)
@@ -91,8 +91,6 @@ Deprecation:
 
 - The "funkwhaleVersion" field in Subsonic responses is deprecated. Clients
   should use the OpenSubsonic field "serverVersion" instead.
-  The "funkwhaleVersion" field will get removed in Funkwhale 1.7.0.
-
 
 ## 1.4.0 (2023-12-12)
 
