@@ -1,1 +1,0 @@
-Entering an input in the global search in the sidebar opens up a modal that show all possible results at once with collapseable sections for each category, including federated searches for other users, channels and rss feeds. (#2910)

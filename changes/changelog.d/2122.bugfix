@@ -1,1 +1,0 @@
-Fixed the exceptions caught in two places in the getCoverArt subsonic API (#2122)

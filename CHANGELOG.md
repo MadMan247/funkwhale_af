@@ -9,6 +9,91 @@ This changelog is viewable on the web at https://docs.funkwhale.audio/changelog.
 
 <!-- towncrier -->
 
+## 2.0.0-alpha.1 (2025-05-23)
+
+Carefully read [this blog post](https://blog.funkwhale.audio/2025-funkwhale-2-news.html) before upgrading. This alpha release might break your db.
+
+Upgrade instructions are available at https://docs.funkwhale.audio/administrator/upgrade/index.html
+
+Features:
+
+- Add a command to create playlists from folder structure (#2223)
+- Add Musicbrainz genres to funkwhale tag table and allow Musicbrainz tag sync (#2143)
+- Add support for deprecated COVERART fields in ogg files.
+- Add support for Python 3.12
+- Allow specifying more parameters on fs-import API endpoint
+- Build desktop app with Tauri
+- Drop libraries in favor of playlist (#2366)
+- Entering an input in the global search in the sidebar opens up a modal that show all possible results at once with collapseable sections for each category, including federated searches for other users, channels and rss feeds. (#2910)
+- Extend Subsonic API with OpenSubsonic support (#2270)
+- Generate mock test server from openapi schema
+- Implement Subsonic getArtistInfo2 response
+- Improve mobile design (#2090)
+- Improve visuals & layout (#2091)
+- Playlist federation (#1458)
+- Quality filter for content frontend (#1469)
+- Quality filters backend (#2275)
+- Support multiples artists for tracks and albums (#1568)
+- Use playlists to privately share audio files (#2417)
+- User follow with listening and track favorite activities (#1810)
+
+Enhancements:
+
+- Add cli command to prune non mbid content from db (#2083)
+- Add favorite and listening sync ith Listenbrainz (#2079)
+- Add tests for track cache
+- Allow special characters in tags (#2009)
+- disable some linter rule to avoid noise on the api lint process  (#2346)
+- Drop python 3.8 and 3.9 (#2282)
+- Migrate frontend to api V2 (#2324)
+- Optimize radios queryset to support large tables (#2450)
+- Publish releases from CI job
+- Subsonic getAlbumInfo, getAlbumInfo2 and getTopSongs endpoints (#2392)
+- Support setting CELERY_TASK_TIME_LIMIT from environment
+- Update dj-rest-auth to 5.0.2 and django-allauth to 0.55.2
+- Update django to version 4.2
+
+Refactoring:
+
+- Add compatibility for lru-cache v10
+
+Bugfixes:
+
+- ActivityStreams compliance: duration (#1566)
+- Docker mac compatibility, dynamic DNS + Debian image (#2337)
+- Federation API returns a 404 response when an actor is not found
+- fix fakedata generation regression from multiartist (#2343)
+- Fix schema generation to allow propre types in front (#2404)
+- Fix third party upload triggers and plugin example (#2405)
+- Fixed the exceptions caught in two places in the getCoverArt subsonic API (#2122)
+- regression:multiple albums with same name and artsit creating during import (#2365)
+- Resolve forbidden tags due to filter database error (#2325)
+- Resolve Radio playing fails when unauthenticated (#2319)
+
+Documentation:
+
+- Add API v2 overview.
+- Add genre tags spec.
+- Add import group details to content upload spec (#2268)
+- add listenings-favorites-sync-with-lb spec
+- Added explanation of AWS_CUSTOM_DOMAIN and AWS_S3_URL_PROTOCOL.
+- Added new upload process spec
+- Added user deletion spec
+- Fixed the sample Apache configuration
+- Playlist federation spec
+- update federation doc with the new artist credit object (#2335)
+
+Other:
+
+- Use Alpine 3.19 as base for docker images
+
+Deprecation:
+
+- The "funkwhaleVersion" field in Subsonic responses is deprecated. Clients
+  should use the OpenSubsonic field "serverVersion" instead.
+  The "funkwhaleVersion" field will get removed in Funkwhale 1.7.0.
+
+
 ## 1.4.0 (2023-12-12)
 
 Upgrade instructions are available at https://docs.funkwhale.audio/administrator/upgrade/index.html
