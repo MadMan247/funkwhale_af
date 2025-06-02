@@ -556,7 +556,15 @@ The path where static files are collected.
 """
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = env("STATIC_URL", default=FUNKWHALE_URL + "/staticfiles/")
-DEFAULT_FILE_STORAGE = "funkwhale_api.common.storage.ASCIIFileSystemStorage"
+STORAGES = {
+    "default": {
+        "BACKEND": "funkwhale_api.common.storage.ASCIIFileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
 
 PROXY_MEDIA = env.bool("PROXY_MEDIA", default=True)
 """
@@ -655,7 +663,7 @@ if AWS_ACCESS_KEY_ID:
     A directory in your S3 bucket where you store files.
     Use this if you plan to share the bucket between services.
     """
-    DEFAULT_FILE_STORAGE = "funkwhale_api.common.storage.ASCIIS3Boto3Storage"
+    STORAGES["default"]["BACKEND"] = "funkwhale_api.common.storage.ASCIIS3Boto3Storage"
 
 
 # See:

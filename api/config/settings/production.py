@@ -41,10 +41,6 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 # SESSION_COOKIE_HTTPONLY = True
 # SECURE_SSL_REDIRECT = env.bool("DJANGO_SECURE_SSL_REDIRECT", default=True)
 
-# Static Assets
-# ------------------------
-STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
-
 # TEMPLATE CONFIGURATION
 # ------------------------------------------------------------------------------
 # See:
