@@ -55,12 +55,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="trackfavorite",
             name="fid",
-            field=models.URLField(
-                db_index=True,
-                default="https://default.fid",
-                max_length=500,
-                unique=True,
-            ),
+            field=models.URLField(default="https://default.fid"),
             preserve_default=False,
         ),
         migrations.AddField(
@@ -78,6 +73,15 @@ class Migration(migrations.Migration):
             model_name="trackfavorite",
             name="uuid",
             field=models.UUIDField(default=uuid.uuid4, unique=True, null=False),
+        ),
+        migrations.AlterField(
+            model_name="trackfavorite",
+            name="fid",
+            field=models.URLField(
+                db_index=True,
+                max_length=500,
+                unique=True,
+            ),
         ),
         migrations.RunPython(get_user_actor, reverse_code=migrations.RunPython.noop),
         migrations.AlterField(

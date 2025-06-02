@@ -9,14 +9,14 @@ from funkwhale_api.federation import utils
 from django.urls import reverse
 
 def gen_uuid(apps, schema_editor):
-    MyModel = apps.get_model("playlists", "Playlist")
+    MyModel = apps.get_model("playlists", "PlaylistTrack")
     for row in MyModel.objects.all():
         unique_uuid = uuid.uuid4()
         while MyModel.objects.filter(uuid=unique_uuid).exists():
             unique_uuid = uuid.uuid4()
 
         fid = utils.full_url(
-            reverse("federation:music:playlist-detail", kwargs={"uuid": unique_uuid})
+            reverse("federation:music:playlists-detail", kwargs={"uuid": unique_uuid})
         )
         row.uuid = unique_uuid
         row.fid = fid
@@ -38,8 +38,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="playlisttrack",
             name="fid",
-            field=models.URLField(max_length=500
-            ),
+            field=models.URLField(max_length=500, null=True),
         ),
         migrations.AddField(
             model_name="playlisttrack",
@@ -47,8 +46,8 @@ class Migration(migrations.Migration):
             field=models.URLField(blank=True, max_length=500, null=True),
         ),
         migrations.RunPython(gen_uuid, reverse_code=migrations.RunPython.noop),
-                migrations.AlterField(
-            model_name="playlist",
+        migrations.AlterField(
+            model_name="playlisttrack",
             name="uuid",
             field=models.UUIDField(default=uuid.uuid4, null=False, unique=True),
         ),
@@ -56,6 +55,7 @@ class Migration(migrations.Migration):
             model_name="playlisttrack",
             name="fid",
             field=models.URLField(
-                db_index=True, max_length=500, unique=True
-            ),),
+                db_index=True, max_length=500, unique=True, null=False
+            ),
+        ),
     ]

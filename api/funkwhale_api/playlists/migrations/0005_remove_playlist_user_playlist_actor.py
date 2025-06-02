@@ -25,7 +25,7 @@ def gen_uuid(apps, schema_editor):
             unique_uuid = uuid.uuid4()
 
         fid = utils.full_url(
-            reverse("federation:music:playlist-detail", kwargs={"uuid": unique_uuid})
+            reverse("federation:music:playlists-detail", kwargs={"uuid": unique_uuid})
         )
         row.uuid = unique_uuid
         row.fid = fid
@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="playlist",
             name="fid",
-            field=models.URLField(max_length=500            ),
+            field=models.URLField(max_length=500, null=True),
         ),
         migrations.AddField(
             model_name="playlist",
@@ -63,8 +63,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="playlist",
             name="fid",
-            field=models.URLField(max_length=500, unique=True, db_index=True,
-            ),),
+            field=models.URLField(
+                max_length=500,
+                unique=True,
+                db_index=True,
+                null=False,
+            ),
+        ),
         migrations.AddField(
             model_name="playlist",
             name="actor",
