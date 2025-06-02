@@ -8,6 +8,8 @@ import { ref, computed } from 'vue'
 import axios from 'axios'
 
 import TrackMobileRow from '~/components/audio/track/MobileRow.vue'
+import TrackModal from '~/components/audio/track/Modal.vue'
+
 import Pagination from '~/components/ui/Pagination.vue'
 import TrackRow from '~/components/audio/track/Row.vue'
 import Input from '~/components/ui/Input.vue'
@@ -143,6 +145,16 @@ const updatePage = (page: number) => {
     emit('page-changed', page)
   }
 }
+
+const showTrackModal = ref(false)
+const modalTrack = ref<Track | null>(null)
+const modalIndex = ref<number | null>(null)
+
+function openTrackModal(track: Track, index: number) {
+  showTrackModal.value = true
+  modalTrack.value = track
+  modalIndex.value = index
+}
 </script>
 
 <template>
@@ -251,13 +263,22 @@ const updatePage = (page: number) => {
         :key="track.id"
         :track="track"
         :index="index"
-        :tracks="allTracks"
         :show-position="showPosition"
         :show-art="showArt"
         :show-duration="showDuration"
         :is-artist="isArtist"
         :is-album="isAlbum"
         :is-podcast="isPodcast"
+        @open-modal="openTrackModal"
+      />
+      <!-- TODO: Replace with <PlayButton :dropdown-only="true"> after its display is fixed for mobile -->
+      <track-modal
+        v-if="modalTrack"
+        v-model:show="showTrackModal"
+        :track="modalTrack"
+        :index="modalIndex ?? 0"
+        :is-artist="isArtist"
+        :is-album="isAlbum"
       />
       <Pagination
         v-if="paginateResults"

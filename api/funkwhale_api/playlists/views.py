@@ -7,6 +7,7 @@ from django.db.models import Count
 from drf_spectacular.utils import extend_schema
 from rest_framework import exceptions, mixins, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
@@ -138,9 +139,15 @@ class PlaylistViewSet(
                 plugins.TRIGGER_THIRD_PARTY_UPLOAD,
                 track=plt.track,
             )
-        serializer = serializers.PlaylistTrackSerializer(plts, many=True)
-        data = {"count": len(plts), "results": serializer.data}
-        return Response(data, status=200)
+
+        # Apply pagination
+        paginator = PageNumberPagination()
+        paginator.page_size = 100  # Set the page size (number of items per page)
+        paginated_plts = paginator.paginate_queryset(plts, request)
+
+        # Serialize the paginated data
+        serializer = serializers.PlaylistTrackSerializer(paginated_plts, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     @extend_schema(
         operation_id="add_to_playlist", request=serializers.PlaylistAddManySerializer

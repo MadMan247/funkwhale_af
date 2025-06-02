@@ -12,6 +12,8 @@ import { useVModel } from '@vueuse/core'
 import { generateTrackCreditString, getArtistCoverUrl } from '~/utils/utils'
 
 import Modal from '~/components/ui/Modal.vue'
+import Button from '~/components/ui/Button.vue'
+import Layout from '~/components/ui/Layout.vue'
 
 interface Events {
   (e: 'update:show', value: boolean): void
@@ -92,9 +94,11 @@ const labels = computed(() => ({
 </script>
 
 <template>
+  <!-- TODO: Delete this file after this modal is replaced with playbutton dropdown-only popover -->
   <Modal
     v-model="show"
     :title="track.title"
+    class="small"
   >
     <div class="header">
       <div class="ui large centered rounded image">
@@ -127,126 +131,105 @@ const labels = computed(() => ({
         {{ generateTrackCreditString(track) }}
       </h4>
     </div>
-    <div class="ui hidden divider" />
     <div class="content">
-      <div class="ui one column unstackable grid">
-        <div
+      <Layout
+        stack
+        no-gap
+      >
+        <Button
           v-if="store.state.auth.authenticated && track.artist_credit?.[0].artist.content_category !== 'podcast'"
-          class="row"
+          full
+          ghost
+          :aria-label="favoriteButton"
+          :icon="isFavorite ? 'bi-heart-fill' : 'bi-heart'"
+          :is-active="isFavorite"
+          @click.stop="store.dispatch('favorites/toggle', track.id)"
         >
-          <div
-            tabindex="0"
-            class="column"
-            role="button"
-            :aria-label="favoriteButton"
-            @click.stop="store.dispatch('favorites/toggle', track.id)"
-          >
-            <i :class="[ 'heart', 'favorite-icon', { favorited: isFavorite, pink: isFavorite }, 'icon', 'track-modal', 'list-icon' ]" />
-            <span class="track-modal list-item">{{ favoriteButton }}</span>
-          </div>
-        </div>
-        <div class="row">
-          <div
-            class="column"
-            role="button"
-            :aria-label="labels.addToQueue"
-            @click.stop.prevent="enqueue(); show = false"
-          >
-            <i class="plus icon track-modal list-icon" />
-            <span class="track-modal list-item">{{ labels.addToQueue }}</span>
-          </div>
-        </div>
-        <div class="row">
-          <div
-            class="column"
-            role="button"
-            :aria-label="labels.playNext"
-            @click.stop.prevent="enqueueNext(true);show = false"
-          >
-            <i class="step forward icon track-modal list-icon" />
-            <span class="track-modal list-item">{{ labels.playNext }}</span>
-          </div>
-        </div>
-        <div class="row">
-          <div
-            class="column"
-            role="button"
-            :aria-label="labels.startRadio"
-            @click.stop.prevent="() => { store.dispatch('radios/start', { type: 'similar', objectId: track.id }); show = false }"
-          >
-            <i class="rss icon track-modal list-icon" />
-            <span class="track-modal list-item">{{ labels.startRadio }}</span>
-          </div>
-        </div>
-        <div class="row">
-          <div
-            class="column"
-            role="button"
-            :aria-label="labels.addToPlaylist"
-            @click.stop="store.commit('playlists/chooseTrack', track)"
-          >
-            <i class="list icon track-modal list-icon" />
-            <span class="track-modal list-item">
-              {{ labels.addToPlaylist }}
-            </span>
-          </div>
-        </div>
-        <div class="ui divider" />
-        <div
+          {{ favoriteButton }}
+        </Button>
+        <Button
+          full
+          ghost
+          :aria-label="labels.addToQueue"
+          icon="bi-plus"
+          @click.stop.prevent="enqueue(); show = false"
+        >
+          {{ labels.addToQueue }}
+        </Button>
+        <Button
+          full
+          ghost
+          :aria-label="labels.playNext"
+          icon="bi-skip-end"
+          @click.stop.prevent="enqueueNext(true); show = false"
+        >
+          {{ labels.playNext }}
+        </Button>
+        <Button
+          full
+          ghost
+          :aria-label="labels.startRadio"
+          icon="bi-rss"
+          @click.stop.prevent="store.dispatch('radios/start', { type: 'similar', objectId: track.id }); show = false"
+        >
+          {{ labels.startRadio }}
+        </Button>
+        <Button
+          full
+          ghost
+          :aria-label="labels.addToPlaylist"
+          icon="bi-list"
+          @click.stop="store.commit('playlists/chooseTrack', track)"
+        >
+          {{ labels.addToPlaylist }}
+        </Button>
+        <hr>
+        <Button
           v-if="!isAlbum && track.album"
-          class="row"
+          full
+          ghost
+          :aria-label="albumDetailsButton"
+          icon="bi-disc"
+          @click.prevent.exact="router.push({ name: 'library.albums.detail', params: { id: track.album?.id } })"
         >
-          <div
-            class="column"
-            role="button"
-            :aria-label="albumDetailsButton"
-            @click.prevent.exact="router.push({ name: 'library.albums.detail', params: { id: track.album?.id } })"
-          >
-            <i class="compact disc icon track-modal list-icon" />
-            <span class="track-modal list-item">{{ albumDetailsButton }}</span>
-          </div>
-        </div>
-        <div
+          {{ albumDetailsButton }}
+        </Button>
+        <template
           v-if="!isArtist"
-          class="row"
         >
-          <div
+          <Button
             v-for="ac in track.artist_credit"
             :key="ac.artist.id"
-            class="column"
-            role="button"
+            full
+            ghost
             :aria-label="artistDetailsButton"
+            icon="bi-person-fill"
             @click.prevent.exact="router.push({ name: 'library.artists.detail', params: { id: ac.artist.id } })"
           >
-            <i class="user icon track-modal list-icon" />
-            <span class="track-modal list-item">{{ ac.credit }}</span>
-            <span v-if="ac.joinphrase">{{ ac.joinphrase }}</span>
-          </div>
-        </div>
-        <div class="row">
-          <div
-            class="column"
-            role="button"
-            :aria-label="trackDetailsButton"
-            @click.prevent.exact="router.push({ name: 'library.tracks.detail', params: { id: track.id } })"
-          >
-            <i class="info icon track-modal list-icon" />
-            <span class="track-modal list-item">{{ trackDetailsButton }}</span>
-          </div>
-        </div>
-        <div class="ui divider" />
-        <div
+            {{ ac.credit }}<span v-if="ac.joinphrase">{{ ac.joinphrase }}</span>
+          </Button>
+        </template>
+        <Button
+          full
+          ghost
+          :aria-label="trackDetailsButton"
+          icon="bi-info-circle"
+          @click.prevent.exact="router.push({ name: 'library.tracks.detail', params: { id: track.id } })"
+        >
+          {{ trackDetailsButton }}
+        </Button>
+        <hr>
+        <Button
           v-for="obj in getReportableObjects({ track, album: track.album, artistCredit: track.artist_credit })"
           :key="obj.target.type + obj.target.id"
-          class="row"
+          full
+          ghost
+          icon="bi-share"
           @click.stop.prevent="report(obj)"
         >
-          <div class="column">
-            <i class="share icon track-modal list-icon" />
-            <span class="track-modal list-item">{{ obj.label }}</span>
-          </div>
-        </div>
-      </div>
+          {{ obj.label }}
+        </Button>
+      </Layout>
     </div>
   </Modal>
 </template>

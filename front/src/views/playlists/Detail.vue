@@ -31,7 +31,7 @@ import useErrorHandler from '~/composables/useErrorHandler'
 // }
 
 interface Props {
-  id: number
+  id: string
   defaultEdit?: boolean
 }
 
@@ -40,7 +40,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const store = useStore()
-
+const isLoadingMoreTracks = ref(false)
 const edit = ref(props.defaultEdit)
 const playlist = ref<Playlist | null>(null)
 const playlistTracks = ref<PlaylistTrack[]>([])
@@ -57,23 +57,49 @@ const labels = computed(() => ({
 }))
 
 const isLoading = ref(false)
+const nextPage = ref<string | null>(null) // Tracks the next page URL
+const previousPage = ref<string | null>(null) // Tracks the previous page URL
+const totalTracks = ref<number>(0) // Total number of tracks
+
 const fetchData = async () => {
   isLoading.value = true
 
   try {
     const [playlistResponse, tracksResponse] = await Promise.all([
       axios.get(`playlists/${props.id}/`),
-      axios.get(`playlists/${props.id}/tracks/`)
+      axios.get(`playlists/${props.id}/tracks?page=1`)
     ])
 
     playlist.value = playlistResponse.data
     fullPlaylistTracks.value = tracksResponse.data.results
+    nextPage.value = tracksResponse.data.next
+    previousPage.value = tracksResponse.data.previous
+    totalTracks.value = tracksResponse.data.count
   } catch (error) {
     useErrorHandler(error as Error)
   }
 
   isLoading.value = false
 }
+
+const loadMoreTracks = async () => {
+  if (nextPage.value) {
+    isLoadingMoreTracks.value = true; // Set loading state for the button
+    try {
+      const response = await axios.get(nextPage.value);
+
+      // Append new tracks to the existing list
+      fullPlaylistTracks.value = [...fullPlaylistTracks.value, ...response.data.results];
+
+      // Update pagination metadata
+      nextPage.value = response.data.next;
+    } catch (error) {
+      useErrorHandler(error as Error)
+    } finally {
+      isLoadingMoreTracks.value = false; // Reset loading state
+    }
+  }
+};
 
 fetchData()
 
@@ -112,17 +138,6 @@ const randomizedColors = computed(() => shuffleArray(bgcolors.value))
 //   const date = momentFormat(new Date(playlist.value?.modification_date ?? '1970-01-01'))
 //   return t('components.audio.ChannelCard.title', { date })
 // })
-
-// TODO: Check if this function is still needed
-// const deletePlaylist = async () => {
-//   try {
-//     await axios.delete(`playlists/${props.id}/`)
-//     store.dispatch('playlists/fetchOwn')
-//     return router.push({ path: '/library' })
-//   } catch (error) {
-//     useErrorHandler(error as Error)
-//   }
-// }
 
 // TODO: Implement shuffle
 const shuffle = () => {}
@@ -178,7 +193,6 @@ const shuffle = () => {}
     <RenderedDescription
       :content="{ html: playlist.description }"
       :truncate-length="100"
-      :show-more="true"
     />
     <Layout
       flex
@@ -240,6 +254,14 @@ const shuffle = () => {}
         :tracks="tracks"
         :unique="false"
       />
+      <Button
+        v-if="nextPage"
+        primary
+        :is-loading="isLoadingMoreTracks"
+        @click="loadMoreTracks"
+      >
+        {{ t('views.playlists.Detail.button.loadMoreTracks') }}
+      </Button>
     </template>
     <Alert
       v-else-if="!isLoading"

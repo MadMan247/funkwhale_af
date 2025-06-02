@@ -2,7 +2,7 @@
 import type { Track, Artist, Album, Playlist, Library, Channel, Actor } from '~/types'
 import type { PlayOptionsProps } from '~/composables/audio/usePlayOptions'
 
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { usePlayer } from '~/composables/audio/player'
@@ -12,8 +12,9 @@ import { useStore } from '~/store'
 import usePlayOptions from '~/composables/audio/usePlayOptions'
 
 import TrackFavoriteIcon from '~/components/favorites/TrackFavoriteIcon.vue'
-import TrackModal from '~/components/audio/track/Modal.vue'
 import { generateTrackCreditString } from '~/utils/utils'
+
+import Button from '~/components/ui/Button.vue'
 
 interface Props extends PlayOptionsProps {
   track: Track
@@ -25,7 +26,6 @@ interface Props extends PlayOptionsProps {
 
   // TODO(wvffle): Remove after https://github.com/vuejs/core/pull/4512 is merged
   isPlayable?: boolean
-  tracks?: Track[]
   artist?: Artist | null
   album?: Album | null
   playlist?: Playlist | null
@@ -39,7 +39,6 @@ const props = withDefaults(defineProps<Props>(), {
   isArtist: false,
   isAlbum: false,
 
-  tracks: () => [],
   artist: null,
   album: null,
   playlist: null,
@@ -48,7 +47,9 @@ const props = withDefaults(defineProps<Props>(), {
   account: null
 })
 
-const showTrackModal = ref(false)
+const emit = defineEmits<{
+  (e: 'open-modal', track: Track, index: number): void
+}>()
 
 const { currentTrack } = useQueue()
 const { isPlaying } = usePlayer()
@@ -115,8 +116,10 @@ const actionsButtonLabel = computed(() => t('components.audio.track.MobileRow.bu
         />
       </p>
     </div>
-    <div
+    <track-favorite-icon
       v-if="store.state.auth.authenticated"
+      ghost
+      tiny
       :class="[
         'meta',
         'right',
@@ -125,17 +128,14 @@ const actionsButtonLabel = computed(() => t('components.audio.track.MobileRow.bu
         'mobile',
         { 'with-art': showArt },
       ]"
-      role="button"
-    >
-      <track-favorite-icon
-        class="tiny"
-        :border="false"
-        :track="track"
-      />
-    </div>
-    <div
-      role="button"
+      :track="track"
+    />
+    <!-- TODO: Replace with <PlayButton :dropdown-only="true"> after its display is fixed for mobile -->
+    <Button
       :aria-label="actionsButtonLabel"
+      icon="bi-three-dots-vertical"
+      ghost
+      tiny
       :class="[
         'modal-button',
         'right',
@@ -144,16 +144,7 @@ const actionsButtonLabel = computed(() => t('components.audio.track.MobileRow.bu
         'mobile',
         { 'with-art': showArt },
       ]"
-      @click.prevent.exact="showTrackModal = !showTrackModal"
-    >
-      <i class="ellipsis large vertical icon" />
-    </div>
-    <track-modal
-      v-model:show="showTrackModal"
-      :track="track"
-      :index="index"
-      :is-artist="isArtist"
-      :is-album="isAlbum"
+      @click.prevent.exact="emit('open-modal', track, index)"
     />
   </div>
 </template>

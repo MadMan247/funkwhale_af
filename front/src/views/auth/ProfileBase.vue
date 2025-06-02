@@ -190,7 +190,6 @@ const isOpen = useModal('artist-description').isOpen
           class="description"
           :content="{ html: object?.summary.html || '' }"
           :truncate-length="100"
-          :more-link="false"
         />
         <Spacer grow />
         <Link
