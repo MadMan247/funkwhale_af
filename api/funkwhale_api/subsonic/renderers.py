@@ -42,7 +42,7 @@ def structure_payload(data):
         "status": "ok",
         "type": "funkwhale",
         "version": "1.16.0",
-        "openSubsonic": "true",
+        "openSubsonic": True,
     }
     payload.update(data)
     if "detail" in payload:
@@ -70,6 +70,7 @@ class SubsonicXMLRenderer(renderers.JSONRenderer):
             return super().render(data, accepted_media_type, renderer_context)
         final = structure_payload(data)
         final["xmlns"] = "http://subsonic.org/restapi"
+        final["openSubsonic"] = "true"
         tree = dict_to_xml_tree("subsonic-response", final)
         return b'<?xml version="1.0" encoding="UTF-8"?>\n' + ET.tostring(
             tree, encoding="utf-8"
