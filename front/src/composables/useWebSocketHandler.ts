@@ -1,4 +1,4 @@
-import type { Notification } from '~/types'
+import type { Notification, Track } from '~/types'
 
 import store from '~/store'
 import { tryOnScopeDispose } from '@vueuse/core'
@@ -51,6 +51,7 @@ function useWebSocketHandler (eventName: 'mutation.updated', handler: (event: Pe
 function useWebSocketHandler (eventName: 'import.status_updated', handler: (event: ImportStatusWS) => void): stopFn
 function useWebSocketHandler (eventName: 'user_request.created', handler: (event: PendingReviewRequests) => void): stopFn
 function useWebSocketHandler (eventName: 'Listen', handler: (event: unknown) => void): stopFn
+function useWebSocketHandler (eventName: 'playlist.track_updated', handler: (event: {track: Track}) => void): stopFn
 
 function useWebSocketHandler (eventName: string, handler: (event: any) => void): stopFn {
   const id = `${+new Date() + Math.random()}`

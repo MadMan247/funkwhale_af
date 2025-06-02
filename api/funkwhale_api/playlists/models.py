@@ -307,7 +307,7 @@ class PlaylistTrackQuerySet(models.QuerySet, common_models.LocalFromFidQuerySet)
         return self.annotate(is_playable_by_actor=subquery)
 
     def playable_by(self, actor, include=True):
-        tracks = music_models.Track.objects.playable_by(actor, include)
+        tracks = music_models.Track.objects.playable_by(actor)
         if include:
             return self.filter(track__pk__in=tracks).distinct()
         else:

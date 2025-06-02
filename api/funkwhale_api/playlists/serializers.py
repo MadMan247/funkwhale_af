@@ -67,8 +67,10 @@ class PlaylistSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(OpenApiTypes.BOOL)
     def get_library_followed(self, obj):
-        if self.context.get("request", False) and hasattr(
-            self.context["request"], "user"
+        if (
+            self.context.get("request", False)
+            and hasattr(self.context["request"], "user")
+            and hasattr(self.context["request"].user, "actor")
         ):
             actor = self.context["request"].user.actor
             lib_qs = obj.library.received_follows.filter(actor=actor)

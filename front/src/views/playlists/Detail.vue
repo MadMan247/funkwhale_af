@@ -24,6 +24,7 @@ import Alert from '~/components/ui/Alert.vue'
 import PlaylistDropdown from '~/components/playlists/PlaylistDropdown.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
+import useWebSocketHandler from '~/composables/useWebSocketHandler'
 
 // TODO: Is this event ever caught somewhere?
 // interface Events {
@@ -50,6 +51,15 @@ type FullPlaylistTrack = Omit<PlaylistTrack, 'track'> & { track: Track }
 const fullPlaylistTracks = ref<FullPlaylistTrack[]>([])
 
 const tracks = computed(() => fullPlaylistTracks.value.map(({ track }, index) => ({ ...track as Track, position: index + 1 })))
+
+const updateTrack = (updatedTrack: Track) => {
+    fullPlaylistTracks.value = fullPlaylistTracks.value.map((item) =>
+      item.track.id === updatedTrack.id ? { ...item, track: updatedTrack } : item
+    );
+};
+useWebSocketHandler('playlist.track_updated', async (event) => {
+    updateTrack(event.track);
+});
 
 const { t } = useI18n()
 const labels = computed(() => ({
@@ -203,6 +213,7 @@ const shuffle = () => {}
         low-height
         :is-playable="true"
         :tracks="tracks"
+        :playlist="playlist"
       >
         {{ t('views.playlists.Detail.button.playAll') }}
       </PlayButton>

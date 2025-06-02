@@ -250,7 +250,7 @@ const playlistLibraryFollowInfo = computed(() => {
       <hr v-if="filterableArtist || Object.keys(getReportableObjects({ track, album, artist, playlist, account, channel })).length > 0">
 
       <PopoverItem
-        v-if="filterableArtist"
+        v-if="filterableArtist && !props.playlist"
         :disabled="!filterableArtist"
         :title="labels.hideArtist"
         icon="bi-eye-slash"

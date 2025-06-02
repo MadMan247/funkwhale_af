@@ -12,7 +12,7 @@ import useLogger from '~/composables/useLogger'
 type SupportedExtension = 'flac' | 'ogg' | 'mp3' | 'opus' | 'aac' | 'm4a' | 'aiff' | 'aif'
 
 export type WebSocketEventName = 'inbox.item_added' | 'import.status_updated' | 'mutation.created' | 'mutation.updated'
-  | 'report.created' | 'user_request.created' | 'Listen'
+  | 'report.created' | 'user_request.created' | 'Listen' | 'playlist.track_updated'
 
 export type OrderingField = 'creation_date' | 'title' | 'album__title' | 'artist__name' | 'release_date' | 'name'
   | 'applied_date' | 'followers_count' | 'uploads_count' | 'length' | 'items_count' | 'modification_date' | 'size'
@@ -91,7 +91,8 @@ const store: Module<State, RootState> = {
       'mutation.updated': {},
       'report.created': {},
       'user_request.created': {},
-      Listen: {}
+      Listen: {},
+      'playlist.track_updated': {}
     },
     pageTitle: null,
     modalsOpen: new Set([]),
@@ -273,6 +274,7 @@ const store: Module<State, RootState> = {
       const handlers = state.websocketEventsHandlers[event.type]
       logger.log('Dispatching websocket event', event, handlers)
       if (!handlers) {
+        logger.log('No websocket handlers for this event', event, handlers)
         return
       }
 

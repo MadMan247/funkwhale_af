@@ -130,14 +130,15 @@ class PlaylistViewSet(
     @action(methods=["get"], detail=True)
     def tracks(self, request, *args, **kwargs):
         playlist = self.get_object()
-        plts = playlist.playlist_tracks.all().for_nested_serialization(
-            music_utils.get_actor_from_request(request)
-        )
-        plts_without_upload = plts.filter(track__uploads__isnull=True)
-        for plt in plts_without_upload[: settings.THIRD_PARTY_UPLOAD_MAX_UPLOADS]:
+        actor = music_utils.get_actor_from_request(request)
+        plts = playlist.playlist_tracks.all().for_nested_serialization(actor)
+        for plt in plts.playable_by(actor, include=False)[
+            : settings.THIRD_PARTY_UPLOAD_MAX_UPLOADS
+        ]:
             plugins.trigger_hook(
                 plugins.TRIGGER_THIRD_PARTY_UPLOAD,
                 track=plt.track,
+                actor=actor,
             )
 
         # Apply pagination
