@@ -236,8 +236,10 @@ def refresh_nodeinfo_known_nodes():
     settings.NODEINFO_REFRESH_DELAY
     """
     limit = timezone.now() - datetime.timedelta(seconds=settings.NODEINFO_REFRESH_DELAY)
-    candidates = models.Domain.objects.external().exclude(
-        nodeinfo_fetch_date__gte=limit
+    candidates = (
+        models.Domain.objects.external()
+        .exclude(nodeinfo_fetch_date__gte=limit)
+        .filter(nodeinfo__software__name="Funkwhale")
     )
     names = candidates.values_list("name", flat=True)
     logger.info("Launching periodic nodeinfo refresh on %s domains", len(names))

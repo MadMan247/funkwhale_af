@@ -233,15 +233,19 @@ def test_refresh_nodeinfo_known_nodes(settings, factories, mocker, now):
     settings.NODEINFO_REFRESH_DELAY = 666
 
     refreshed = [
-        factories["federation.Domain"](nodeinfo_fetch_date=None),
+        factories["federation.Domain"](
+            nodeinfo_fetch_date=None,
+            nodeinfo={"software": {"name": "Funkwhale"}},
+        ),
         factories["federation.Domain"](
             nodeinfo_fetch_date=now
-            - datetime.timedelta(seconds=settings.NODEINFO_REFRESH_DELAY + 1)
+            - datetime.timedelta(seconds=settings.NODEINFO_REFRESH_DELAY + 1),
+            nodeinfo={"software": {"name": "Funkwhale"}},
         ),
     ]
     factories["federation.Domain"](
         nodeinfo_fetch_date=now
-        - datetime.timedelta(seconds=settings.NODEINFO_REFRESH_DELAY - 1)
+        - datetime.timedelta(seconds=settings.NODEINFO_REFRESH_DELAY - 1),
     )
 
     update_domain_nodeinfo = mocker.patch.object(tasks.update_domain_nodeinfo, "delay")
