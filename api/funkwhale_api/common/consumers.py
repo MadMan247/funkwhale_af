@@ -19,6 +19,10 @@ class JsonAuthConsumer(JsonWebsocketConsumer):
             channels.group_add(group, self.channel_name)
 
     def disconnect(self, close_code):
-        groups = self.scope["user"].get_channels_groups() + self.groups
+        if self.scope.get("user", False) and self.scope.get("user").pk is not None:
+            groups = self.scope["user"].get_channels_groups() + self.groups
+        else:
+            groups = self.groups
+
         for group in groups:
             channels.group_discard(group, self.channel_name)
