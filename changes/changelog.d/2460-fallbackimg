@@ -1,0 +1,1 @@
+Small sized attachments now fallback to medium sized if small doesn't exist (#2460)

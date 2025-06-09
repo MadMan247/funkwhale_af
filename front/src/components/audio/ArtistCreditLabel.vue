@@ -48,6 +48,7 @@ const getRoute = (ac: ArtistCredit) => {
               v-if="ac.artist.cover && ac.artist.cover.urls.original"
               v-lazy="store.getters['instance/absoluteUrl'](ac.artist.cover.urls.small_square_crop)"
               :alt="ac.artist.name"
+              @error="(e) => { e.target && ac.artist.cover ? (e.target as HTMLImageElement).src = store.getters['instance/absoluteUrl'](ac.artist.cover.urls.medium_square_crop) : null }"
             >
             <i
               v-else
