@@ -6,7 +6,6 @@ import { useStore } from '~/store'
 
 import axios from 'axios'
 
-import usePage from '~/composables/navigation/usePage'
 import useErrorHandler from '~/composables/useErrorHandler'
 
 import AlbumCard from '~/components/album/Card.vue'
@@ -34,7 +33,7 @@ const store = useStore()
 const query = ref('')
 const albums = reactive([] as Album[])
 const count = ref(0)
-const page = usePage()
+const page = ref(1)
 const nextPage = ref()
 
 const isLoading = ref(false)

@@ -8,7 +8,6 @@ import { useI18n } from 'vue-i18n'
 import axios from 'axios'
 
 import useErrorHandler from '~/composables/useErrorHandler'
-import usePage from '~/composables/navigation/usePage'
 
 import PlaylistCard from '~/components/playlists/Card.vue'
 import Button from '~/components/ui/Button.vue'
@@ -31,7 +30,7 @@ const props = defineProps<Props>()
 const store = useStore()
 
 const objects = reactive([] as Playlist[])
-const page = usePage()
+const page = ref(1)
 const nextPage = ref('')
 const count = ref(0)
 

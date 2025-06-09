@@ -7,8 +7,6 @@ import { clone } from 'lodash-es'
 
 import axios from 'axios'
 
-import usePage from '~/composables/navigation/usePage'
-
 import ChannelCard from '~/components/audio/ChannelCard.vue'
 import Loader from '~/components/ui/Loader.vue'
 import Section from '~/components/ui/Section.vue'
@@ -33,7 +31,7 @@ const props = withDefaults(defineProps<Props>(), {
 const result = ref<PaginatedChannelList>()
 const errors = ref([] as string[])
 const nextPage = ref()
-const page = usePage()
+const page = ref(1)
 const count = ref(0)
 
 const isLoading = ref(false)

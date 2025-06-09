@@ -8,7 +8,6 @@ import { useI18n } from 'vue-i18n'
 import { getArtistCoverUrl } from '~/utils/utils'
 
 import axios from 'axios'
-import usePage from '~/composables/navigation/usePage'
 import useWebSocketHandler from '~/composables/useWebSocketHandler'
 
 import PlayButton from '~/components/audio/PlayButton.vue'
@@ -50,7 +49,7 @@ const { t } = useI18n()
 
 const objects = reactive([] as Listening[])
 const count = ref(0)
-const page = usePage()
+const page = ref(1)
 
 const isLoading = ref(false)
 

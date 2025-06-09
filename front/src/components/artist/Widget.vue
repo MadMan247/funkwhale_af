@@ -7,7 +7,6 @@ import { useStore } from '~/store'
 import axios from 'axios'
 
 import useErrorHandler from '~/composables/useErrorHandler'
-import usePage from '~/composables/navigation/usePage'
 
 import ArtistCard from '~/components/artist/Card.vue'
 import Section from '~/components/ui/Section.vue'
@@ -34,7 +33,7 @@ const store = useStore()
 const query = ref('')
 const artists = reactive([] as Artist[])
 const count = ref(0)
-const page = usePage()
+const page = ref(1)
 const nextPage = ref()
 
 const isLoading = ref(false)
