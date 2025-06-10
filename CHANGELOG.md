@@ -9,6 +9,19 @@ This changelog is viewable on the web at https://docs.funkwhale.audio/changelog.
 
 <!-- towncrier -->
 
+## 2.0.0-alpha.2 (2025-06-10)
+
+Upgrade instructions are available at https://docs.funkwhale.audio/administrator/upgrade/index.html
+
+Enhancements:
+
+- Make playlist detail page reactive to plugin upload updates (#2464)
+- Only refresh_nodeinfo_known_nodes for Funkwhale instances (#2442)
+
+Bugfixes:
+
+- Fixed database migrations for trackfavorite, playlist and playlisttrack
+
 ## 2.0.0-alpha.1 (2025-05-23)
 
 Carefully read [this blog post](https://blog.funkwhale.audio/2025-funkwhale-2-news.html) before upgrading. This alpha release might break your db.
