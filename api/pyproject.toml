@@ -135,7 +135,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pylint.master]
 load-plugins = ["pylint_django"]
-django-settings-module = "config.settings.testing"
+django-settings-module = "config.settings.local"
 
 [tool.pylint.messages_control]
 disable = [
