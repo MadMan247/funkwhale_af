@@ -58,6 +58,8 @@ Once we're ready to release a new version of the software, we can use the follow
 7. Update the next release version
 
    ```sh
+   docker compose build api
+   docker compose run --rm api funkwhale-manage spectacular > ./api/funkwhale_api/common/schema.yml
    cd api
    poetry version "$NEXT_RELEASE"
    cd ..
