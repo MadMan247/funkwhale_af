@@ -136,6 +136,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.pylint.master]
 load-plugins = ["pylint_django"]
 django-settings-module = "config.settings.local"
+init-hook = 'import os; os.environ.setdefault("FUNKWHALE_URL", "https://test.federation")'
 
 [tool.pylint.messages_control]
 disable = [
