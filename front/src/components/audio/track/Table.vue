@@ -45,7 +45,7 @@ interface Props {
   paginateResults?: boolean
   total?: number
   page?: number
-  paginateBy?: number,
+  paginateBy?: number
 
   unique?: boolean
 }

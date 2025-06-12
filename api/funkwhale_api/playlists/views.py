@@ -143,7 +143,7 @@ class PlaylistViewSet(
 
         # Apply pagination
         paginator = PageNumberPagination()
-        paginator.page_size = 100  # Set the page size (number of items per page)
+        paginator.page_size = 50  # Set the page size (number of items per page)
         paginated_plts = paginator.paginate_queryset(plts, request)
 
         # Serialize the paginated data

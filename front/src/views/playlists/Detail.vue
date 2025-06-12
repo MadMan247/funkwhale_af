@@ -96,20 +96,19 @@ const loadMoreTracks = async () => {
   if (nextPage.value) {
     isLoadingMoreTracks.value = true; // Set loading state for the button
     try {
-      const response = await axios.get(nextPage.value);
+      const response = await axios.get(nextPage.value)
 
       // Append new tracks to the existing list
-      fullPlaylistTracks.value = [...fullPlaylistTracks.value, ...response.data.results];
-
+      fullPlaylistTracks.value = [...fullPlaylistTracks.value, ...response.data.results]
       // Update pagination metadata
-      nextPage.value = response.data.next;
+      nextPage.value = response.data.next
     } catch (error) {
       useErrorHandler(error as Error)
     } finally {
       isLoadingMoreTracks.value = false; // Reset loading state
     }
   }
-};
+}
 
 fetchData()
 
