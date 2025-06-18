@@ -27,6 +27,14 @@ const soundCache = new LRUCache<number, Sound>({
   dispose: (sound) => sound.dispose()
 })
 
+// used to make soundCache reactive
+const soundCacheVersion = ref(0)
+function setSoundCache(trackId: number, sound: Sound) {
+  soundCache.set(trackId, sound)
+  soundCacheVersion.value++  // bump to trigger reactivity
+}
+
+
 const currentTrack = ref<QueueTrack>()
 
 export const fetchTrackSources = async (id: number): Promise<QueueTrackSource[]> => {
@@ -139,7 +147,7 @@ export const useTracks = createGlobalState(() => {
       }
 
       // Add track to the sound cache and remove from the promise cache
-      soundCache.set(track.id, sound)
+      setSoundCache(track.id, sound)
       soundPromises.delete(track.id)
 
       return sound
@@ -224,7 +232,12 @@ export const useTracks = createGlobalState(() => {
     })
   })
 
-  const currentSound = computed(() => soundCache.get(currentTrack.value?.id ?? -1))
+  const currentSound = computed(() => {
+    soundCacheVersion.value //trigger reactivity
+    const trackId = currentTrack.value?.id ?? -1
+    const sound = soundCache.get(trackId)
+    return sound
+  })
 
   const clearCache = () => {
     return soundCache.clear()
