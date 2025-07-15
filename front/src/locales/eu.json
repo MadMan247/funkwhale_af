@@ -453,6 +453,9 @@
       },
       "PlayButton": {
         "button": {
+          "PlaylistUploadGranted": "Erreprodukzio-zerrendaren jabeak bere erreprodukzio-zerrendaren fitxategietarako sarbidea eman dizu",
+          "PlaylistUploadNotRequest": "Eskatu fitxategietarako sarbidea erreprodukzio-zerrenda honetan",
+          "PlaylistUploadPending": "Jada eskatua duzu erreprodukzio-zerrenden fitxategietarako sarbidea",
           "addToPlaylist": "Gehitu zerrendan",
           "addToQueue": "Gehitu uneko ilaran",
           "discretePlay": "Erreproduzitu",
