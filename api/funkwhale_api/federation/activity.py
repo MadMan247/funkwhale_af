@@ -336,7 +336,7 @@ def activity_pass_user_privacy_level(context, routing):
 def activity_pass_object_privacy_level(context, routing):
     MUSIC_OBJECT_TYPE = ["Audio", "Track", "Album", "Artist"]
 
-    # we only support playlist federation for now
+    # we only support playlist federation for now (other objects follow user.privacy_level)
     object = context.get("playlist", False)
 
     obj_privacy_level = object.privacy_level if object else None
@@ -344,6 +344,16 @@ def activity_pass_object_privacy_level(context, routing):
 
     # We do not consider music metadata has private
     if object_type in MUSIC_OBJECT_TYPE:
+        return True
+    if routing["type"] == "Delete":
+        return True
+
+    if routing["type"] == "Update" and obj_privacy_level in ["me", "instance"]:
+        # we send a delete request instead
+        logger.debug(
+            "[federation] Object privacy level is me or instance, sending delete instead of update"
+        )
+        routing["type"] = "Delete"
         return True
 
     if object and obj_privacy_level and obj_privacy_level in ["me", "instance"]:
@@ -364,7 +374,9 @@ class OutboxRouter(Router):
 
         from . import models, tasks
 
-        logger.debug(f"[federation] Outbox dispatch context : {context}")
+        logger.debug(
+            f"[federation] Outbox dispatch context : {context} and routing : {routing}"
+        )
         allow_list_enabled = preferences.get("moderation__allow_list_enabled")
         allowed_domains = None
         if allow_list_enabled:
