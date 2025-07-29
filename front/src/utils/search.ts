@@ -3,9 +3,19 @@ export interface Token {
   value: string
 }
 
+/**
+ * Normalizes a query string by splitting it into tokens while respecting quoted phrases.
+ *
+ * @param query - The input query string to normalize
+ * @returns Array of normalized tokens with quoted phrases preserved as single tokens
+ *
+ * @example
+ * ```
+ * normalizeQuery('this is "my query" go')
+ * // Returns: ['this', 'is', 'my query', 'go']
+ * ```
+ */
 export function normalizeQuery (query: string): string[] {
-  // given a string such as 'this is "my query" go', returns
-  // an array of tokens like this: ['this', 'is', 'my query', 'go']
   if (!query) return []
 
   const match = query.match(/\\?.|^$/g)
@@ -32,51 +42,46 @@ const unquote = (str: string) => {
   return str
 }
 
-export function parseTokens (normalizedQuery: string[]): Token[] {
-  // given an array of tokens as returned by normalizeQuery,
-  // returns a list of objects such as [
-  //  {
-  //    field: 'status',
-  //    value: 'pending'
-  //  },
-  //  {
-  //    field: null,
-  //    value: 'hello'
-  //  }
-  // ]
-  return normalizedQuery.map(t => {
-    // we split the token on ":"
+const quoteIfNecessary = (str: string) =>
+  str.includes(' ')
+      ? `"${str}"`
+      :  str
+
+/**
+ * Parses an array of normalized query tokens into structured Token objects.
+ *
+ * @param normalizedQuery - Array of tokens as returned by normalizeQuery
+ * @returns Array of Token objects with field and value properties
+ *
+ * @example
+ * ```
+ * parseTokens(['status:pending', 'hello'])
+ * // Returns:
+ * // [
+ * //   { field: 'status', value: 'pending' },
+ * //   { field: null, value: 'hello' }
+ * // ]
+ * ```
+ */
+export const parseTokens = (normalizedQuery: string[]): Token[] =>
+  normalizedQuery.map(t => {
+    // Split the token on ":" to separate field from value
     const parts = t.split(/:(.+)/)
-    if (parts.length === 1) {
-      // no field specified
-      return { field: null, value: t }
-    }
-
-    // first item is the field, second is the value, possibly quoted
-    const [field, value] = parts
-
-    // we remove surrounding quotes if any
-    return { field, value: unquote(value) }
-  })
-}
-
-export function compileTokens (tokens: Token[]) {
-  // given a list of tokens as returned by parseTokens,
-  // returns a string query
-  const parts = tokens.map(token => {
-    const { field } = token
-    let { value } = token
-
-    if (value.includes(' ')) {
-      value = `"${value}"`
-    }
-
-    if (field) {
-      return `${field}:${value}`
-    }
-
-    return value
+    return parts.length === 1
+      ? { field: null, value: t }  // No field specified
+      : { field: parts[0], value: unquote(parts[1]) }  // Field:value format, remove quotes
   })
 
-  return parts.join(' ')
-}
+/**
+ * Compiles an array of Token objects back into a query string.
+ *
+ * @param tokens - Array of Token objects as returned by parseTokens
+ * @returns A formatted query string
+ */
+export const compileTokens = (tokens: Token[]) =>
+  tokens.map(({field, value}) =>{
+    field
+      ? `${field}:${quoteIfNecessary(value)}`
+      : quoteIfNecessary(value)
+  })
+  .join(' ')
