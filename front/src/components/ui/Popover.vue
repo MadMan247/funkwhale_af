@@ -13,6 +13,8 @@ import { type ColorProps, type DefaultProps, type RaisedProps, color } from '~/c
 */
 
 const isOpen = defineModel<boolean>({ default: false })
+// Delay closing by 300ms
+const isOpenDelayed = refDebounced(isOpen, () => isOpen.value ? 0 : 300)
 
 // Delay closing by 300ms, but allow immediate closing
 const shouldDelayClose = ref(true)
@@ -165,7 +167,10 @@ watch(isOpen, (isOpen) => {
         v-bind="color(colorProps)()"
         style="display:flex; flex-direction:column;"
       >
-        <slot name="items" />
+        <slot
+          name="items"
+          :close="() => isOpen = false"
+        />
       </div>
     </div>
   </teleport>
