@@ -134,7 +134,7 @@
     --void-on-hover-pin-color: var(--fw-blue-010);
   }
 
-  .secondary {
+  .secondary, .secondary .funkwhale {
     --color: var(--fw-gray-700);
     --background-color: var(--fw-gray-200);
     --border-color:var(--fw-gray-300);
@@ -165,7 +165,7 @@
     --link-hover-color:var(--fw-blue-700);
   }
 
-  .primary {
+  .primary, .primary .funkwhale {
     --color: var(--fw-blue-010);
     --color-over-transparent: var(--background-color);
     --background-color:var(--fw-blue-400);
