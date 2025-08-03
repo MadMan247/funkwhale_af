@@ -13,8 +13,10 @@ import { type ColorProps, type DefaultProps, type RaisedProps, color } from '~/c
 */
 
 const isOpen = defineModel<boolean>({ default: false })
-// Delay closing by 300ms
-const isOpenDelayed = refDebounced(isOpen, () => isOpen.value ? 0 : 300)
+
+// Delay closing by 300ms, but allow immediate closing
+const shouldDelayClose = ref(true)
+const isOpenDelayed = refDebounced(isOpen, () => isOpen.value ? 0 : (shouldDelayClose.value ? 300 : 0))
 
 // Delay closing by 300ms, but allow immediate closing
 const shouldDelayClose = ref(true)
