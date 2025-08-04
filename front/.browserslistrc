@@ -1,0 +1,24 @@
+# Browser support targeting 95% coverage while enabling modern features
+# This targets browsers that support ES2020+ and modern CSS features
+
+# Cover 95% of global usage
+> 1%
+last 2 versions
+not dead
+
+# Exclude problematic browsers
+not ie 11
+not op_mini all
+not android <= 4.4
+not samsung <= 4
+
+# Ensure modern browser support for ES2020+ features
+chrome >= 87
+firefox >= 78
+safari >= 14
+edge >= 88
+
+# Mobile browsers
+ios >= 14
+and_chr >= 87
+and_ff >= 78

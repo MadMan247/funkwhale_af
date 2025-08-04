@@ -5,6 +5,8 @@ import { ref, computed } from 'vue'
 import { useStore } from '~/store'
 import { useI18n } from 'vue-i18n'
 
+import UserLink from '~/components/common/UserLink.vue'
+
 import RadioButton from './Button.vue'
 import Card from '~/components/ui/Card.vue'
 import Button from '~/components/ui/Button.vue'
@@ -53,11 +55,10 @@ const customRadioId = computed(() => props.customRadio?.id ?? null)
     </template>
 
     <template #default>
-      <user-link
+      <UserLink
         v-if="radio.user"
         :user="radio.user"
         :avatar="false"
-        discrete
       />
       <Spacer />
       <div
@@ -90,9 +91,8 @@ const customRadioId = computed(() => props.customRadio?.id ?? null)
     :title="radio.name"
   >
     <template #default>
-      <user-link
+      <UserLink
         v-if="radio.user"
-        discrete
         :user="radio.user"
         :avatar="false"
       />

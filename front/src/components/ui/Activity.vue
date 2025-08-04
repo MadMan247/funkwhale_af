@@ -8,6 +8,8 @@ import { type Track, type User } from '~/types'
 import OptionsButton from '~/components/ui/button/Options.vue'
 import PlayButton from '~/components/ui/button/Play.vue'
 
+// TODO (2.0.0+): Move into app namespace because this component uses funkwhale types
+
 const { t } = useI18n()
 
 const emit = defineEmits<{ play: [track: Track] }>()

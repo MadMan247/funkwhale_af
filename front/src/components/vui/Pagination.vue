@@ -62,26 +62,22 @@ const setPage = (page: number) => {
 }
 
 const { t } = useI18n()
-const labels = computed(() => ({
-  pagination: t('components.vui.Pagination.label'),
-  previousPage: t('components.vui.Pagination.previous'),
-  nextPage: t('components.vui.Pagination.next')
-}))
 </script>
 
 <template>
+  <!-- TODO (2.0.0+): Use semantic tags and <Link> component -->
   <div
     v-if="maxPage > 1"
     class="ui pagination menu component-pagination"
     role="navigation"
-    :aria-label="labels.pagination"
+    :aria-label="t('vui.aria.pagination')"
   >
     <a
       href="#"
-      :disabled="current - 1 < 1 || null"
+      :disabled="current < 2 || null"
       role="button"
-      :aria-label="labels.previousPage"
-      :class="[{ 'disabled': current - 1 < 1 }, 'item']"
+      :aria-label="t('vui.aria.pagination.gotoPrevious')"
+      :class="[{ 'disabled': current < 2 }, 'item']"
       @click.prevent.stop="setPage(current - 1)"
     >
       <i class="angle left icon" />
@@ -114,7 +110,7 @@ const labels = computed(() => ({
       href="#"
       :disabled="current + 1 > maxPage || null"
       role="button"
-      :aria-label="labels.nextPage"
+      :aria-label="t('vui.aria.pagination.gotoNext')"
       :class="[{ disabled: current + 1 > maxPage }, 'item']"
       @click.prevent.stop="setPage(current + 1)"
     >

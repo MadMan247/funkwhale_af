@@ -7,9 +7,6 @@ import Button from '~/components/ui/Button.vue'
 import Link from '~/components/ui/Link.vue'
 import Heading from '~/components/ui/Heading.vue'
 
-const actionComponents
-  = { Button, Link }
-
 const props = defineProps<{
   columnsPerItem?: 1 | 2 | 3 | 4
   alignLeft?: boolean
@@ -106,7 +103,7 @@ const props = defineProps<{
         </template>
         <!-- Action! You can either specify `to` or `onClick`. -->
         <component
-          :is="'onClick' in action ? actionComponents.Button : actionComponents.Link"
+          :is="'to' in action ? Link : Button"
           v-if="action"
           thin-font
           min-content
@@ -141,7 +138,7 @@ const props = defineProps<{
         transition: max-height .5s, grid-template-rows .3s, padding .2s;
       `"
       v-bind="columnsPerItem
-        ? { grid: `auto / repeat(auto-fit, 46px)` }
+        ? { grid: 'auto / repeat(auto-fit, 46px)' }
         : { flex: true }
       "
     >

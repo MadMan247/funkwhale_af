@@ -135,8 +135,9 @@ flake.lock
 # Zed
 .zed/
 
-# Node version (asdf)
+# Node version (asdf, mise)
 .tool-versions
+mise.toml
 
 # Lychee link checker
 .lycheecache

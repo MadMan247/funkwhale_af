@@ -7,6 +7,7 @@ const value = defineModel<boolean>()
 <template>
   <PopoverItem
     class="checkbox"
+    :keep-open="true"
     @click="value = !value"
   >
     <i :class="['bi', value ? 'bi-check-square' : 'bi-square']" />

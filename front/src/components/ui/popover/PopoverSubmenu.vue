@@ -7,7 +7,8 @@ import PopoverItem from './PopoverItem.vue'
 
 const context = inject(POPOVER_CONTEXT_INJECTION_KEY, {
   items: ref(0),
-  hoveredItem: ref(-2)
+  hoveredItem: ref(-2),
+  close: () => { isOpen.value = false }
 })
 
 const isOpen = ref(false)
@@ -25,6 +26,7 @@ watchEffect(() => {
     <PopoverItem
       :parent-popover-context="context"
       class="submenu"
+      :keep-open="true"
       @click="isOpen = !isOpen"
       @internal:id="id = $event"
     >

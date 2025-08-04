@@ -66,7 +66,7 @@ const continueInBackground = () => {
   router.push('/upload/running')
 }
 
-// TODO (whole file): Delete this file, please.
+// TODO (2.0.0+): Delete this file, please.
 
 // Sorting
 const sortItems = reactive([

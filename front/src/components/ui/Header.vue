@@ -30,14 +30,17 @@ const props = defineProps<{
     header
     flex
     gap-24
+    v-bind="$attrs"
   >
     <div v-if="$slots.image">
       <slot name="image" />
     </div>
+    <!-- The inferred type of props occasionally overloads the typescript compiler. -->
+    <!-- TODO: Remove @vue-ignore once tsc is re-implemented in Go (and 10x faster) -->
+    <!-- @vue-ignore -->
     <Layout
       stack
-      :gap-8="!(props.noGap as boolean)"
-      :no-gap="props.noGap"
+      v-bind="{ [props.noGap ? 'no-gap' : 'gap-8']: true }"
       style="flex-grow: 1;"
     >
       <Layout

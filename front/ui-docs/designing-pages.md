@@ -1,14 +1,8 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-
-import { type Track, type User } from '~/types'
+import { ref } from 'vue'
 
 import Card from '~/components/ui/Card.vue'
-import Layout from '~/components/ui/Layout.vue'
-import Toggle from '~/components/ui/Toggle.vue'
 import Spacer from '~/components/ui/Spacer.vue'
-import Button from '~/components/ui/Button.vue'
-import Activity from '~/components/ui/Activity.vue'
 import Section from '~/components/ui/Section.vue'
 
 const alignLeft = ref(false)

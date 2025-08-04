@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, inject, provide, shallowReactive, watch, onScopeDispose } from 'vue'
-import { whenever, useElementBounding, onClickOutside } from '@vueuse/core'
+import { whenever, useElementBounding, onClickOutside, refDebounced } from '@vueuse/core'
 
 import { isMobileView, useScreenSize } from '~/composables/screen'
 import { POPOVER_INJECTION_KEY, POPOVER_CONTEXT_INJECTION_KEY } from '~/injection-keys'
@@ -13,6 +13,10 @@ import { type ColorProps, type DefaultProps, type RaisedProps, color } from '~/c
 */
 
 const isOpen = defineModel<boolean>({ default: false })
+
+// Delay closing by 300ms, but allow immediate closing
+const shouldDelayClose = ref(true)
+const isOpenDelayed = refDebounced(isOpen, () => isOpen.value ? 0 : (shouldDelayClose.value ? 300 : 0))
 
 const { positioning = 'vertical', ...colorProps } = defineProps<{
   positioning?:'horizontal' | 'vertical'
@@ -27,12 +31,14 @@ const inSlot = ref()
 const mobileClickOutside = (event: MouseEvent) => {
   const inPopover = !!(event.target as HTMLElement).closest('.funkwhale.popover')
   if (isMobile.value && !inPopover) {
+    shouldDelayClose.value = false
     isOpen.value = false
   }
 }
 onClickOutside(popover, async (event) => {
   const inPopover = !!(event.target as HTMLElement).closest('.funkwhale.popover')
   if (!isMobile.value && !inPopover) {
+    shouldDelayClose.value = false
     isOpen.value = false
   }
 }, { ignore: [slot] })
@@ -48,7 +54,7 @@ whenever(isOpen, update, { immediate: true })
 
 const { width: screenWidth, height: screenHeight } = useScreenSize()
 
-// TODO (basic functionality):
+// TODO (2.0.0+) ~Type::A11y #2487:
 // - I can't operate the popup with a keyboard. Remove barrier for people not using a mouse (A11y)
 // - Switching to submenus is error-prone. When moving cursor into freshly opened submenu, it should not close if the cursor crosses another menu item
 // - Large menus disappear. When menus get big, they need to scroll.
@@ -98,11 +104,15 @@ onScopeDispose(() => {
   stack?.splice(stack.indexOf(isOpen), 1)
 })
 
+// Check if there's an ancestral context to inherit close function from
+const ancestralContext = inject(POPOVER_CONTEXT_INJECTION_KEY, null)
+
 // Provide context for child items
 const hoveredItem = ref(-2)
 provide(POPOVER_CONTEXT_INJECTION_KEY, {
   items: ref(0),
-  hoveredItem
+  hoveredItem,
+  close: ancestralContext?.close ?? (() => { isOpen.value = false })
 })
 
 // Closing
@@ -115,7 +125,10 @@ const closeChild = () => {
 
 // Recursively close popover tree
 watch(isOpen, (isOpen) => {
-  if (isOpen) return
+  if (isOpen) {
+    shouldDelayClose.value = true
+    return
+  }
   closeChild()
 })
 </script>
@@ -136,7 +149,7 @@ watch(isOpen, (isOpen) => {
   </div>
 
   <teleport
-    v-if="isOpen"
+    v-if="isOpenDelayed"
     to="body"
   >
     <div

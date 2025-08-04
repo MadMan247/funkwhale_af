@@ -11,15 +11,14 @@ import Link from '~/components/ui/Link.vue'
 interface Props {
   user: User
   avatar?: boolean
-  discrete?: boolean
+  solid?: true
 }
 
 const store = useStore()
 const { t } = useI18n()
 
 const props = withDefaults(defineProps<Props>(), {
-  avatar: true,
-  discrete: false
+  avatar: true
 })
 
 const userColor = computed(() => intToRGB(hashCode(props.user.username + props.user.id)))
@@ -28,11 +27,11 @@ const defaultAvatarStyle = computed(() => ({ backgroundColor: `#${userColor.valu
 
 <template>
   <Link
-    :to="user"
+    to="user"
     :title="user.full_username"
+    :solid="solid"
+    :round="solid"
     class="username"
-    :solid="!discrete"
-    :round="!discrete"
   >
     <template v-if="avatar">
       <img

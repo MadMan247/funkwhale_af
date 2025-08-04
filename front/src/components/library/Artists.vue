@@ -10,6 +10,7 @@ import { useI18n } from 'vue-i18n'
 import { syncRef } from '@vueuse/core'
 import { sortedUniq } from 'lodash-es'
 import { useStore } from '~/store'
+import { useDataStore } from '~/ui/stores/data'
 import { useModal } from '~/ui/composables/useModal.ts'
 
 import axios from 'axios'
@@ -101,6 +102,7 @@ const fetchData = async () => {
 }
 
 const store = useStore()
+const dataStore = useDataStore()
 watch([() => store.state.moderation.lastUpdate, excludeCompilation], fetchData)
 watch([page, tags, q, ordering, orderingDirection, () => props.scope], fetchData)
 fetchData()
@@ -150,13 +152,16 @@ const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value]
         :placeholder="labels.searchPlaceholder"
       />
       <Pills
+        v-if="typeof tags === 'object'"
         :get="model => { tags = model.currents.map(({ label }) => label) }"
         :set="model => ({
-          ...model,
           currents: tags.map(tag => ({ type: 'custom' as const, label: tag })),
+          others: dataStore.tags().value
+            .filter(({ name }) => result?.results?.some((object) => object.tags?.includes(name)) && !tags.includes(name))
+            .map(({ name }) => ({ type: 'preset' as const, label: name })),
         })"
         :label="t('components.library.Artists.label.tags')"
-        style="max-width: 150px;"
+        style="max-width: 350px;"
       />
       <Layout
         stack

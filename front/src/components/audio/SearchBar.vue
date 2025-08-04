@@ -26,9 +26,6 @@ const router = useRouter()
 const query = ref()
 
 const enter = () => {
-  // TODO: Find out what jQuery version supports `search`
-  // jQuery(el.value).search('cancel query')
-
   // Cancel any API search request to backend…
   return router.push(`/search?q=${query.value}&type=artists`)
 }
@@ -38,108 +35,7 @@ const blur = () => {
 }
 
 onMounted(() => {
-  // TODO: Find out what jQuery version supports `search`
-  // jQuery(el.value).search({
-  //   type: 'category',
-  //   minCharacters: 3,
-  //   showNoResults: true,
-  //   error: {
-  //     // @ts-expect-error Semantic is broken
-  //     noResultsHeader: t('components.audio.SearchBar.header.noResults'),
-  //     noResults: t('components.audio.SearchBar.empty.noResults')
-  //   },
-
-  //   onSelect (result, response) {
-  //     jQuery(el.value).search('set value', query.value)
-  //     router.push(result.routerUrl)
-  //     jQuery(el.value).search('hide results')
-  //     return false
-  //   },
-  //   onSearchQuery (value) {
-  //     // query.value = value
-  //     emit('search')
-  //   },
-  //   apiSettings: {
-  //     url: store.getters['instance/absoluteUrl']('api/v1/search?query={query}'),
-  //     beforeXHR: function (xhrObject) {
-  //       if (!store.state.auth.authenticated) {
-  //         return xhrObject
-  //       }
-
-  //       if (store.state.auth.oauth.accessToken) {
-  //         xhrObject.setRequestHeader('Authorization', store.getters['auth/header'])
-  //       }
-
-  //       return xhrObject
-  //     },
-  //     onResponse: function (initialResponse) {
-  //       const id = objectId.value
-  //       const results: Partial<Record<CategoryCode, Results>> = {}
-
-  //       let resultsEmpty = true
-  //       for (const category of categories.value) {
-  //         results[category.code] = {
-  //           name: category.name,
-  //           results: []
-  //         }
-
-  //         if (category.code === 'federation' && id) {
-  //           resultsEmpty = false
-  //           results[category.code]?.results.push({
-  //             title: t('components.audio.SearchBar.link.fediverse'),
-  //             routerUrl: {
-  //               name: 'search',
-  //               query: { id }
-  //             }
-  //           })
-  //         }
-
-  //         if (category.code === 'podcasts' && id) {
-  //           resultsEmpty = false
-  //           results[category.code]?.results.push({
-  //             title: t('components.audio.SearchBar.link.rss'),
-  //             routerUrl: {
-  //               name: 'search',
-  //               query: { id, type: 'rss' }
-  //             }
-  //           })
-  //         }
-
-  //         if (category.code === 'more') {
-  //           results[category.code]?.results.push({
-  //             title: t('components.audio.SearchBar.link.more'),
-  //             routerUrl: {
-  //               name: 'search',
-  //               query: { type: 'artists', q: query.value }
-  //             }
-  //           })
-  //         }
-
-  //         if (isCategoryGuard(category)) {
-  //           for (const result of initialResponse[category.code]) {
-  //             resultsEmpty = false
-  //             const id = category.getId(result)
-  //             results[category.code]?.results.push({
-  //               title: category.getTitle(result),
-  //               id,
-  //               routerUrl: {
-  //                 name: category.route,
-  //                 params: { id }
-  //               },
-  //               description: category.getDescription(result)
-  //             })
-  //           }
-  //         }
-  //       }
-
-  //       return {
-  //         results: resultsEmpty
-  //           ? {}
-  //           : results
-  //       }
-  //     }
-  //   }
-  // })
+  // Search functionality could be implemented here if needed
 })
 </script>
 

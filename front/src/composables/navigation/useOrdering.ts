@@ -6,9 +6,17 @@ import { useRoute } from 'vue-router'
 import { watch, readonly } from 'vue'
 
 export interface OrderingProps {
+  /** Custom name for storing ordering preferences */
   orderingConfigName?: RouteRecordName
 }
 
+/**
+ * Synchronizes ordering state between URL query parameters and localStorage,
+ * with automatic persistence across page reloads.
+ *
+ * @param props - Configuration options
+ * @returns Ordering state and update handlers
+ */
 export default <T extends string = string>(props: OrderingProps) => {
   const route = useRoute()
 
@@ -24,6 +32,8 @@ export default <T extends string = string>(props: OrderingProps) => {
     paginateBy: route.meta.paginateBy ?? 50
   }))
 
+  // TODO: I would like to replace the prefix `pref` with something that feels more solid.
+  // The implicit renaming here somewhat obscures the author's intention...
   const {
     orderingDirection: prefOrderingDirection,
     paginateBy: prefPaginateBy,
@@ -32,7 +42,15 @@ export default <T extends string = string>(props: OrderingProps) => {
     replaceRef: false
   })
 
-  const normalizeDirection = (direction: string) => direction === '+' ? '' : '-'
+  /**
+   * Normalizes ordering direction for URL query parameters.
+   * @param direction - '+' or some other string
+   * @returns Empty string for ascending, '-' for descending
+   */
+  const normalizeDirection = (direction: string) =>
+    direction === '+'
+      ? ''
+      : '-'
 
   const queryOrdering = useRouteQuery(
     'ordering',
@@ -60,7 +78,12 @@ export default <T extends string = string>(props: OrderingProps) => {
     prefOrdering.value = ordering.replace(/^[+-]/, '')
   }, { immediate: true })
 
-  // NOTE: We're using `flush: 'post'` to make sure that the `onOrderingUpdate` callback is called after all updates are done
+/**
+   * Registers a callback to execute when ordering preferences change.
+   * @param fn - Callback function to execute on updates
+   * @returns Watcher cleanup function
+   * NOTE: We're using `flush: 'post'` to make sure that the `onOrderingUpdate` callback is called after all updates are done
+   */
   const onOrderingUpdate = (fn: () => void) => watch(preferences, fn, {
     flush: 'post'
   })

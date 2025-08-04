@@ -10,6 +10,7 @@ import PopoverCheckbox from "~/components/ui/popover/PopoverCheckbox.vue"
 import PopoverItem from "~/components/ui/popover/PopoverItem.vue"
 import PopoverRadio from "~/components/ui/popover/PopoverRadio.vue"
 import PopoverSubmenu from "~/components/ui/popover/PopoverSubmenu.vue"
+import Toggle from "~/components/ui/Toggle.vue"
 
 // String values
 
@@ -40,6 +41,7 @@ const extraItemsMenu = ref(false)
 const linksMenu = ref(false)
 const fullMenu= ref(false)
 const isOpen = ref(false)
+const keepOpen = ref(false)
 </script>
 
 ```ts
@@ -203,7 +205,32 @@ const bcPrivacy = ref("pod");
     </Pill>
   </template>
   <template #items>
-    <PopoverRadio v-model="bcPrivacy" :choices="privacyChoices"/>
+    <PopoverRadio v-model="bcPrivacy" :choices="privacyChoices" />
+  </template>
+</Popover>
+
+## Keep the popover open
+
+By default, the popover closes when a radiobutton, link, or other item is chosen. The exception is with checkboxes because the user can select multiple options. Override the default behavior by setting the `keep-open` prop on any of the following components:
+
+- `<PopoverRadio>` - keep the popover open when any radio item is selected
+- `<PopoverRadioItem>` - keep the popover open when a specific radio item is selected
+- `<PopoverItem>` - keep the popover open when the link or button is activated
+- `<Popover>` - keep the popover open when any item is selected (clicking outside the popover still closes it)
+
+```vue
+<Popover v-model="keepOpen">
+  <Toggle v-model="keepOpen" label="Show privacy controls" />
+  <template #items>
+    <PopoverRadio v-model="bcPrivacy" :choices="privacyChoices" keep-open />
+  </template>
+</Popover>
+```
+
+<Popover v-model="keepOpen">
+  <Toggle v-model="keepOpen" label="Show privacy controls" />
+  <template #items>
+    <PopoverRadio v-model="bcPrivacy" :choices="privacyChoices" keep-open />
   </template>
 </Popover>
 
@@ -411,6 +438,10 @@ const isOpen = ref(false)
           <PopoverCheckbox v-model="bc">
             Bandcamp
           </PopoverCheckbox>
+          <PopoverItem :to="{ name: 'learn-more' }">
+              Learn more...
+          </PopoverItem>
+          <PopoverItem>Cancel</PopoverItem>
         </template>
       </PopoverSubmenu>
     </template>
@@ -428,6 +459,10 @@ const isOpen = ref(false)
         <PopoverCheckbox v-model="bc">
           Bandcamp
         </PopoverCheckbox>
+        <PopoverItem to="https://docs.funkwhale.audio">
+            Learn more...
+        </PopoverItem>
+        <PopoverItem>Cancel</PopoverItem>
       </template>
     </PopoverSubmenu>
   </template>

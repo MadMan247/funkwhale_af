@@ -48,7 +48,7 @@ const attributes = computed(() =>
     stack
     no-gap
     :class="[{ [$style.card]: true, [$style['is-category']]: category }, 'card']"
-    v-bind="attributes"
+    v-bind="{...attributes, ...$attrs, class: `${attributes.class} ${$attrs.class}`}"
   >
     <!-- Link -->
 
@@ -137,7 +137,8 @@ const attributes = computed(() =>
 
     <Layout
       v-if="$slots.default"
-      no-gap
+      :no-gap="Object.entries($attrs).every(
+        ([key, value]) => !key.startsWith('gap'))"
       :class="$style.content"
     >
       <slot />
@@ -166,14 +167,14 @@ const attributes = computed(() =>
 
     <Spacer
       v-if="!$slots.footer && !$slots.action"
-      :size="'small' in props? 24 : 32"
+      :size="'small' in props && props.small? 18 : 24"
     />
   </Layout>
 </template>
 
 <style module lang="scss">
 .card {
-  --fw-card-padding: v-bind("'small' in props ? '16px' : '24px'");
+  --fw-card-padding: v-bind("'small' in props && props.small ? '16px' : '24px'");
 
   position: relative;
 
@@ -295,12 +296,17 @@ const attributes = computed(() =>
     }
   }
 
+  /* If both card and an action control has a special color, draw foreground color line above that action control */
+  &:global(:is(.primary, .destructive)) > .action :global(:is(.primary, .destructive)) {
+      border-top-color: color-mix(in oklab, var(--color) 50%, transparent) !important;
+  }
+
   >.action {
     display: flex;
     background: color-mix(in oklab, var(--fw-bg-color) 80%, var(--fw-gray-500));
     border-bottom-left-radius: var(--fw-border-radius);
     border-bottom-right-radius: var(--fw-border-radius);
-    margin-top:16px;
+    margin-top: var(--fw-card-padding);
 
     >*:not(.with-padding) {
       margin: 0;

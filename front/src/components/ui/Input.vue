@@ -24,15 +24,15 @@ const { icon, placeholder, ...props } = defineProps<{
 // https://technology.blog.gov.uk/2020/02/24/why-the-gov-uk-design-system-team-changed-the-input-type-for-numbers/
 // const isNumeric = restProps.numeric
 
-const showPassword = ref(false)
-onKeyboardShortcut('escape', () => showPassword.value = false)
+const isShowingPassword = ref(false)
+onKeyboardShortcut('escape', () => isShowingPassword.value = false)
 
 // TODO: Accept fallback $attrs:  `const fallthroughAttrs = useAttrs()`
 
 // TODO: Implement `copy password` button?
 
 const attributes = computed(() => ({
-  ...(props.password && !showPassword.value ? { type: 'password' } : {}),
+  ...(props.password && !isShowingPassword.value ? { type: 'password' } : {}),
   ...(props.search ? { type: 'search' } : {}),
   ...(props.numeric ? { type: 'numeric' } : {})
 }))
@@ -85,7 +85,7 @@ const model = defineModel<string|number>({ required: true })
       :autofocus="autofocus || undefined"
       :placeholder="placeholder"
       @click.stop
-      @blur="showPassword = false"
+      @blur="isShowingPassword = false"
     >
 
     <!-- Left side icon -->
@@ -119,13 +119,15 @@ const model = defineModel<string|number>({ required: true })
     <!-- Password -->
     <button
       v-if="props.password"
-      style="background:transparent; border:none; appearance:none;"
+      v-bind="{...$attrs, ...attributes, ...color(props, ['solid', 'default', 'secondary'])()}"
+      style="background:transparent; border:none; appearance:none; height:calc(100% - 16px); color:var(--color); cursor:pointer;"
       role="switch"
       type="button"
       class="input-right show-password"
-      title="toggle visibility"
-      @click="showPassword = !showPassword"
-      @blur="(e) => { if (e.relatedTarget && 'value' in e.relatedTarget && e.relatedTarget.value === model) showPassword = showPassword; else showPassword = false; }"
+      :title="isShowingPassword ? t('vui.aria.password.hide') : t('vui.aria.password.show')"
+      :aria-label="isShowingPassword ? t('vui.aria.password.hide') : t('vui.aria.password.show')"
+      @click="isShowingPassword = !isShowingPassword"
+      @blur="(e) => { if (e.relatedTarget && 'value' in e.relatedTarget && e.relatedTarget.value === model) isShowingPassword = isShowingPassword; else isShowingPassword = false; }"
     >
       <i class="bi bi-eye" />
     </button>

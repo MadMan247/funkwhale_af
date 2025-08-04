@@ -1,12 +1,3 @@
 <template>
-  <div class="main page-library">
-    <RouterView />
-  </div>
+  <RouterView />
 </template>
-
-<style scoped lang="scss">
-main {
-  padding: 32px;
-}
-
-</style>

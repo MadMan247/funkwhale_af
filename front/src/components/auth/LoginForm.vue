@@ -12,11 +12,13 @@ import Input from '~/components/ui/Input.vue'
 import Button from '~/components/ui/Button.vue'
 import Spacer from '~/components/ui/Spacer.vue'
 import Layout from '~/components/ui/Layout.vue'
+import Card from '~/components/ui/Card.vue'
 
 interface Props {
   next?: RouteLocationRaw
   buttonClasses?: string
   showSignup?: boolean
+  isCard?: true
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -75,15 +77,19 @@ const submit = async () => {
 </script>
 
 <template>
-  <Layout
+  <component
+    :is="isCard ? Card : Layout"
+    v-bind="$attrs"
     form
     stack
+    gap-32
     style="max-width: 600px"
     @submit.prevent="submit()"
   >
     <Alert
       v-if="errors.length > 0"
       red
+      style="margin: 0px calc(0px - var(--fw-card-padding) - 1px);"
     >
       <h4 class="header">
         {{ t('components.auth.LoginForm.header.loginFailure') }}
@@ -112,7 +118,7 @@ const submit = async () => {
         </component>
       </component>
     </Alert>
-    <Spacer />
+    <Spacer h />
     <template v-if="domain === store.getters['instance/domain']">
       <Input
         id="username-field"
@@ -161,11 +167,25 @@ const submit = async () => {
       </p>
     </template>
     <Button
+      v-if="!isCard"
       solid
       primary
       type="submit"
     >
       {{ t('components.auth.LoginForm.button.login') }}
     </Button>
-  </Layout>
+    <Layout
+      v-if="isCard"
+      flex
+    >
+      <Spacer grow />
+      <Button
+        primary
+        raised
+        type="submit"
+      >
+        {{ t('components.auth.LoginForm.button.login') }}
+      </Button>
+    </Layout>
+  </component>
 </template>

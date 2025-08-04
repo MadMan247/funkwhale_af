@@ -477,9 +477,9 @@ See [Using width](/using-width) and [Using alignment](/using-alignment)
     <Button alignSelf="center">🐌</Button>
     <Button alignSelf="end">🐌</Button>
     <hr />
-    <Button alignText="left">🐌</Button>
+    <Button alignText="start">🐌</Button>
     <Button alignText="center">🐌</Button>
-    <Button alignText="right">🐌</Button>
+    <Button alignText="end">🐌</Button>
 ```
 
   <Layout class="preview solid primary" stack no-gap>
@@ -493,8 +493,28 @@ See [Using width](/using-width) and [Using alignment](/using-alignment)
     <Button alignSelf="center">🐌</Button>
     <Button alignSelf="end">🐌</Button>
     <hr />
-    <Button alignText="left">🐌</Button>
+    <Button alignText="start">🐌</Button>
     <Button alignText="center">🐌</Button>
-    <Button alignText="right">🐌</Button>
+    <Button alignText="end">🐌</Button>
   </Layout>
 </Layout>
+
+### Override the cursor
+
+With the css variable `--cursor`, you can override the default (pointer).
+
+<Button style="--cursor: text;">Text cursor here</Button>
+
+### Emphasize a button that responds to SPACE with `autofocus` and ENTER with `fake-focus`
+
+If the user is likely to choose a certain button in a given situation, give it the `autofocus` attribute.
+This will put the focus on it so that the user can confirm it by pressing `SPACE` and doesn't need to navigate to it.
+The button will be emphasized with a contrasting outline. Primary buttons will draw the outline outside their shape
+for increased emphasis and visibility (A11y).
+
+Make sure to not steal focus from a more important control, and to to visibly return focus to whare it was before
+after the button is gone. See the `Modal` component ([docs](./modal)) for a complete example.
+
+**If pressing ENTER implicitly activates the button** (and only then), give the button a `fake-focus` attribute.
+It indicates that "pressing the enter key has the same effect as pressing this button". An example is a "Best match"
+button under an input where the user can search for matching items. This is implemented [in the `Pill` component](./pill)

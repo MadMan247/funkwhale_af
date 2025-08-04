@@ -4,6 +4,8 @@ import { type RouterLinkProps } from 'vue-router'
 import Link from '~/components/ui/Link.vue'
 import Layout from '~/components/ui/Layout.vue'
 
+// TODO (2.0.0+): Consolidate with `Tab`, `Tabs` components
+
 type Tab = {
     title: string,
     to: RouterLinkProps['to'],
@@ -31,7 +33,7 @@ const tabs = defineModel<Tab[]>({ required: true })
         stack
         no-gap
       >
-        <span :class="$style.fakeTitle">{{ tab.title }}</span>
+        <span aria-hidden="true">{{ tab.title }}</span>
         <span :class="$style.realTitle">{{ tab.title }}</span>
         <span
           v-if="tab.badge"
@@ -45,17 +47,17 @@ const tabs = defineModel<Tab[]>({ required: true })
 </template>
 
 <style module>
-    .fakeTitle {
+    .realTitle {
+        font-size: 16px;
+        font-weight: 400;
+    }
+    [aria-hidden="true"] {
         font-size: 16px;
         font-weight: 900;
         opacity: 0;
         pointer-events: none;
         max-height: 0;
         overflow: hidden;
-    }
-    .realTitle {
-        font-size: 16px;
-        font-weight: 400;
     }
     .tab {
         --hover-background-color: transparent;

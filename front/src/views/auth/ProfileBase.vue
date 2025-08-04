@@ -25,16 +25,11 @@ import Nav from '~/components/ui/Nav.vue'
 import Alert from '~/components/ui/Alert.vue'
 import Modal from '~/components/ui/Modal.vue'
 
-interface Events {
-  (e: 'updated', value: components['schemas']['FullActor']): void
-}
-
 interface Props {
   username: string
   domain?: string | null
 }
 
-const emit = defineEmits<Events>()
 const props = withDefaults(defineProps<Props>(), {
   domain: null
 })

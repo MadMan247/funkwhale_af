@@ -234,13 +234,15 @@ const showCreateModal = ref(false)
         :placeholder="labels.searchPlaceholder"
       />
       <Pills
+        v-if="typeof tags === 'object'"
         :get="model => { tags = model.currents.map(({ label }) => label) }"
         :set="model => ({
           ...model,
+          others: [],
           currents: tags.map(tag => ({ type: 'custom' as const, label: tag })),
         })"
         :label="t('components.library.Podcasts.label.tags')"
-        style="max-width: 150px;"
+        style="max-width: 350px;"
       />
       <Layout
         stack

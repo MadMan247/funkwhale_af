@@ -32,7 +32,7 @@ withDefaults(defineProps<Props>(), {
   total: 0
 })
 
-const { page } = defineModels<{ page: number, }>()
+const page = defineModel<number>('page', { required: true })
 </script>
 
 <template>

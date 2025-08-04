@@ -3,6 +3,15 @@
     "loading": "Loading…"
   },
   "vui": {
+    "addItem": "Add {item}",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deselect": "Deselect",
+    "deletItem": "Delete {item}",
+    "pressKey": "Press {key}",
+    "pressKeyToAction": "Press {key} to {action}",
+    "preview": "Preview",
+    "resetTo": "Reset to {previousValue}",
     "radio": "Radio",
     "albums": "{n} album | {n} albums",
     "tracks": "{n} track | {n} tracks",
@@ -14,6 +23,27 @@
       "next": "Next"
     },
     "aria": {
+      "close": "Close",
+      "text": {
+        "paragraph": "paragraph",
+        "heading1": "heading1",
+        "heading2": "heading2",
+        "heading3": "heading3",
+        "heading4": "heading4",
+        "heading5": "heading5",
+        "heading6": "heading6",
+        "quote": "quote",
+        "orderedList": "ordered list",
+        "unorderedList": "unordered list",
+        "bold": "bold",
+        "italic": "italic",
+        "strikethrough": "strikethrough",
+        "link": "link"
+      },
+      "password": {
+        "show": "Show password",
+        "hide": "Hide password"
+      },
       "pagination": {
         "nav": "Pagination Navigation",
         "gotoPage": "Go to Page {n}",
@@ -2955,13 +2985,6 @@
         "button": {
           "more": "Show 1 more tag | Show {n} more tags"
         }
-      }
-    },
-    "vui": {
-      "Pagination": {
-        "label": "Pagination",
-        "next": "Next Page",
-        "previous": "Previous Page"
       }
     }
   },

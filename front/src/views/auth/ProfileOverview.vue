@@ -13,10 +13,6 @@ import Modal from '~/components/ui/Modal.vue'
 import Button from '~/components/ui/Button.vue'
 import Link from '~/components/ui/Link.vue'
 
-interface Events {
-  (e: 'updated', value: Actor): void
-}
-
 interface Props {
   object: Actor | null
 }
@@ -25,7 +21,6 @@ const store = useStore()
 const { t } = useI18n()
 const router = useRouter()
 
-const emit = defineEmits<Events>()
 defineProps<Props>()
 
 const step = ref(1)

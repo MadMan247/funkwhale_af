@@ -2,19 +2,29 @@
 import { inject, ref } from 'vue'
 import { type RouterLinkProps, RouterLink } from 'vue-router'
 import { POPOVER_CONTEXT_INJECTION_KEY, type PopoverContext } from '~/injection-keys'
+import { refDebounced } from '@vueuse/core'
 
 import Button from '~/components/ui/Button.vue'
 
+const animation = ref<'none' | 'flash'>('none')
+
 const emit = defineEmits<{ setId: [value: number] }>()
+
+const isOpen = ref(true)
+// Delay closing by 300ms
+const isOpenDelayed = refDebounced(isOpen, () => isOpen.value ? 0 : 300)
 
 const { parentPopoverContext, to } = defineProps<{
   parentPopoverContext?: PopoverContext;
   to?:RouterLinkProps['to'];
   icon?: string;
+  iconAfter?: string;
+  keepOpen?: boolean;
 }>()
-const { items, hoveredItem } = parentPopoverContext ?? inject(POPOVER_CONTEXT_INJECTION_KEY, {
+const { items, hoveredItem, close } = parentPopoverContext ?? inject(POPOVER_CONTEXT_INJECTION_KEY, {
   items: ref(0),
-  hoveredItem: ref(-2)
+  hoveredItem: ref(-2),
+  close: () => { isOpen.value = false }
 })
 
 const id = items.value++
@@ -22,62 +32,83 @@ emit('setId', id)
 </script>
 
 <template>
-  <a
-    v-if="to && typeof to === 'string' && to.startsWith('http')"
-    :href="to.toString()"
-    class="popover-item"
-    target="_blank"
-  >
-    <i
-      v-if="icon"
-      :class="['bi', icon]"
-    />
-    <slot />
+  <template v-if="isOpenDelayed">
+    <a
+      v-if="to && typeof to === 'string' && to.startsWith('http')"
+      :href="to.toString()"
+      class="popover-item"
+      target="_blank"
+      @mouseover="hoveredItem = id"
+      @click="() => { if (!keepOpen) { animation = 'flash'; close(); } }"
+    >
+      <i
+        v-if="icon"
+        :class="['bi', icon]"
+      />
+      <slot />
 
-    <div class="after">
-      <slot name="after" />
-    </div>
-  </a>
-  <RouterLink
-    v-else-if="to"
-    :to="to"
-    class="popover-item"
-    @mouseover="hoveredItem = id"
-  >
-    <i
-      v-if="icon"
-      :class="['bi', icon]"
-    />
-    <slot />
+      <div class="after">
+        <i
+          v-if="iconAfter"
+          :class="['bi', iconAfter]"
+        />
+        <slot name="after" />
+      </div>
+    </a>
+    <RouterLink
+      v-else-if="to"
+      :to="to"
+      class="popover-item"
+      @mouseover="hoveredItem = id"
+      @click="() => { if (!keepOpen) { animation = 'flash'; close(); } }"
+    >
+      <i
+        v-if="icon"
+        :class="['bi', icon]"
+      />
+      <slot />
 
-    <div class="after">
-      <slot name="after" />
-    </div>
-  </RouterLink>
-  <Button
-    v-else
-    ghost
-    thin-font
-    v-bind="$attrs"
-    style="
+      <div class="after">
+        <i
+          v-if="iconAfter"
+          :class="['bi', iconAfter]"
+        />
+        <slot name="after" />
+      </div>
+    </RouterLink>
+    <Button
+      v-else
+      ghost
+      thin-font
+      v-bind="{ ...$attrs, onClick: undefined }"
+      style="
       width: 100%;
-      textAlign: left;
+      text-align: left;
       gap: 8px;
     "
-    :icon="icon"
-    class="popover-item"
-    @mouseover="hoveredItem = id"
-  >
-    <slot />
+      :icon="icon"
+      class="popover-item"
+      :on-click="(event:unknown) => {
+        ($attrs.onClick as Function | undefined)?.(event);
+        if (!keepOpen) { animation = 'flash'; close(); }
+      }"
+      @mouseover="hoveredItem = id"
+    >
+      <slot />
 
-    <div class="after">
-      <slot name="after" />
-    </div>
-  </Button>
+      <div class="after">
+        <i
+          v-if="iconAfter"
+          :class="['bi', iconAfter]"
+        />
+        <slot name="after" />
+      </div>
+    </Button>
+  </template>
 </template>
 
 <style scoped>
-  div { color:var(--fw-text-color); }
+div { color:var(--fw-text-color); }
 </style>
 
 <style lang="scss">
@@ -90,6 +121,8 @@ emit('setId', id)
   align-items: center;
   border-radius: var(--fw-border-radius);
   white-space: nowrap;
+
+  animation: v-bind('animation') 0.15s steps(1, end) 1 reverse;
 
   &:hover {
     background-color: var(--hover-background-color);
@@ -133,7 +166,15 @@ emit('setId', id)
       display: flex;
       place-items: center;
       gap: 8px;
+      > i:last-child {
+          margin-right: 12px;
+      }
     }
+  }
+}
+@keyframes flash {
+  50% {
+    filter: invert(1);
   }
 }
 </style>

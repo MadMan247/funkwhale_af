@@ -1,6 +1,5 @@
 <script setup lang="ts">
   import Button from '~/components/ui/Button.vue'
-  import Link from '~/components/ui/Link.vue'
   import Card from '~/components/ui/Card.vue'
   import Layout from '~/components/ui/Layout.vue'
   import OptionsButton from '~/components/ui/button/Options.vue'
@@ -278,7 +277,7 @@ Large Buttons or links at the bottom edge of the card serve as Call-to-Actions (
   >
     The easiest way to get started with Funkwhale is to register an account on a public pod.
     <template #action>
-      <Button secondary full @click="alert('Open the pod picker')">Action!
+      <Button secondary grow @click="alert('Open the pod picker')">Action!
       </Button>
     </template>
   </Card>
@@ -403,7 +402,7 @@ Instead, use the [action area](#add-an-action) to offer the primary link:
   <Button secondary low-height :onClick="()=>alert('Button clicked')">Click me!</Button>
   <Link secondary to="./card.md" align-text="end">Open this file in a new window</Link>
   <template #action>
-    <Link solid full primary to="./card.md" align-text="center">Details</Link>
+    <Link solid grow primary to="./card.md" align-text="center">Details</Link>
   </template>
 </Card>
 

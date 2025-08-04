@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { color } from '~/composables/color'
+
+import { uniqBy } from 'lodash-es'
 
 import Pill from './Pill.vue'
 import Layout from './Layout.vue'
 import Button from './Button.vue'
+
+const { t } = useI18n()
 
 /**
  * Use `get` to read the pills into your app.
@@ -33,11 +38,18 @@ const emptyItem = {
   label: '', type: 'custom'
 } as const
 
-const nextIndex = ref<number | undefined>(undefined)
+const nextIndex = ref<number | undefined>()
+
+const unique = (value: Item[]) => uniqBy(value, item => item.label)
 
 const sanitize = () => {
   if (model.value.others) {
-    model.value.currents = [...model.value.currents.filter(({ label }) => label !== ''), { ...emptyItem }]
+    // Filter out empty items and add an empty item at the endfor the user to add pills
+    model.value.currents = unique([...model.value.currents.filter(({ label }) => label !== ''), { ...emptyItem }])
+    // Filter out others that are already in the current list
+    model.value.others = model.value.others.filter(({ label }) => model.value.currents.every(item => item.label !== label))
+    // Store the result, excluding the added empty item
+    // TODO: Check if this needs to run on every sanitization
     props.get({ ...model.value, currents: [...model.value.currents.filter(({ label }) => label !== '')] });
   }
 }
@@ -48,10 +60,9 @@ watch(model, () => {
   sanitize()
 })
 
-sanitize();
-
 onMounted(() => {
   model.value = props.set(model.value)
+  sanitize();
 })
 </script>
 
@@ -83,7 +94,10 @@ onMounted(() => {
     <Layout
       flex
       gap-4
-      v-bind="color({}, ['solid', 'default', 'secondary'])()"
+      v-bind="{
+        ...$attrs,
+        ...color({}, ['solid', 'default', 'secondary'])()
+      }"
       :class="$style.list"
     >
       <Pill
@@ -93,15 +107,15 @@ onMounted(() => {
         v-model:others="model.others"
         :cancel="cancel"
         :autofocus="index === nextIndex && nextIndex < model.currents.length"
-        outline
         no-underline
-        :class="[$style.pill, $style[
-          isStatic
-            ? 'static'
-            : model.currents[index].label === ''
-              ? 'empty'
-              : model.currents[index].type
-        ]]"
+        v-bind="model.currents[index].label === '' ? {'solid': true, 'default': true} : {'secondary':true}"
+        :class="[
+          $style.pill,
+          isStatic ? $style.static
+          : model.currents[index].label === '' ? $style.empty
+            : model.currents[index].type === 'custom' ? $style.custom
+              : $style.preset
+        ]"
         @opened="() => { model = props.set(model); }"
         @closed="() => { sanitize(); }"
         @confirmed="() => { next(index) }"
@@ -119,11 +133,11 @@ onMounted(() => {
             primary
             round
             icon="bi-x"
-            title="Deselect"
+            :title="t('vui.deselect')"
             @click.stop.prevent="() => {
               if (!model.others) return
-              model.others.push({...model.currents[index]});
-              model.currents[index] = {label: '', type: 'custom'}
+              model.others.push({ ...model.currents[index] });
+              model.currents[index] = { label: '', type: 'custom' }
               sanitize()
             }"
           />
@@ -134,36 +148,42 @@ onMounted(() => {
 </template>
 
 <style module lang="scss">
-  .pills {
-    >.label {
-      margin-top: -18px;
-      padding-bottom: 8px;
-      font-size: 14px;
-      font-weight: 600;
-    }
-    >.list {
-      position: relative;
-
-      // Compensation for round shapes -> https://en.wikipedia.org/wiki/Overshoot_(typography)
-      margin: 0 -4px;
-
-      // padding: 4px;
-      border-radius: 22px;
-
-      gap: 8px;
-      padding: 2px;
-
-      min-height: 36px;
-
-      .empty {
-        flex-grow: 1;
-      }
-    }
-    &:hover:has(select)>.list {
-      box-shadow: inset 0 0 0 4px var(--border-color)
-    }
-    :has(>select:focus) {
-      box-shadow: inset 0 0 0 4px var(--focus-ring-color)
-    }
+.pills {
+  >.label {
+    margin-top: -18px;
+    padding-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
   }
+  >.list {
+    position: relative;
+
+    // Compensation for round shapes -> https://en.wikipedia.org/wiki/Overshoot_(typography)
+    margin: 0 -4px;
+
+    border-radius: 22px;
+
+    gap: 0px;
+    padding: 4.5px 6px;
+
+    min-height: 36px;
+
+    // Different kinds of pills
+    > .pill {
+        background: transparent !important;
+        border-color: transparent !important;
+    }
+    .empty {
+      flex-grow: 1;
+      --cursor: text;
+    }
+
+  }
+  &:hover:has(select)>.list {
+    box-shadow: inset 0 0 0 4px var(--border-color)
+  }
+  :has(>select:focus) {
+    box-shadow: inset 0 0 0 4px var(--focus-ring-color)
+  }
+}
 </style>

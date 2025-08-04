@@ -13,17 +13,6 @@ const route = useRoute();
 const here = route.path
 </script>
 
-<Alert blue style="margin: 0 -48px">
-Want to fix colors?
-<Spacer h />
-<Layout flex no-gap>
-<Link solid primary to="#change-a-color-value">Change a color value</Link>
-<Link solid primary to="#alter-the-shade-of-a-color">Alter the shade of a color</Link>
-<Link solid primary to="#choose-a-different-style-for-a-specific-variant">Modify a specific variant</Link>
-</Layout>
-</Alert>
-<Spacer />
-
 # Using Color
 
 ## Add color via props

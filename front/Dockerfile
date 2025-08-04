@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM node:18-alpine AS builder
+FROM --platform=$BUILDPLATFORM node:22-alpine AS builder
 
 RUN apk add --no-cache jq bash coreutils python3 build-base
 

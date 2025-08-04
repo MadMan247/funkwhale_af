@@ -1,11 +1,11 @@
 :not(.active) button.title {
   outline-color: white;
 }
-button, *[role="button"] {
+/* button, *[role="button"] {
   * {
     cursor: pointer;
   }
-}
+}*/
 
 .reset.button {
   margin-top: 0.5em;
@@ -61,9 +61,9 @@ button.reset {
   }
 }
 
-[role="button"] {
+/* [role="button"] {
   cursor: pointer;
-}
+} */
 
 
 .button-group {

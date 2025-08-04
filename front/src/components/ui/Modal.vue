@@ -2,17 +2,20 @@
 import { type ColorProps, type DefaultProps, color } from '~/composables/color'
 import { watchEffect, ref, nextTick } from 'vue'
 import onKeyboardShortcut from '~/composables/onKeyboardShortcut'
+import { useI18n } from 'vue-i18n'
 
 import Button from '~/components/ui/Button.vue'
 import Spacer from '~/components/ui/Spacer.vue'
 import Layout from '~/components/ui/Layout.vue'
 import Heading from '~/components/ui/Heading.vue'
 
+const { t } = useI18n()
+
 const props = defineProps<{
   title: string,
   overPopover?: true,
   destructive?: true,
-  cancel?: string,
+  cancel?: string | true,
   icon?: string,
   autofocus?: true | 'off'
 } &(ColorProps | DefaultProps)>()
@@ -94,6 +97,7 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
               icon="bi-x-lg"
               ghost
               align-self="baseline"
+              :aria-label="t('vui.aria.close')"
               :autofocus="props.autofocus === undefined ? ($slots.actions || cancel ? undefined : true) : props.autofocus !== 'off'"
               @click="isOpen = false"
             />
@@ -138,7 +142,7 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
               autofocus
               :on-click="()=>{ isOpen = false }"
             >
-              {{ cancel }}
+              {{ typeof cancel === 'string' ? cancel : t('vui.cancel') }}
             </Button>
           </Layout>
         </div>

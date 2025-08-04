@@ -8,6 +8,7 @@ export type WidthProps =
   | { buttonWidth?: true }
   | { small?: true }
   | { medium?: true }
+  | { larger?: true }
   | { auto?: true }
   | { full?: true }
   | { grow?: true }
@@ -25,6 +26,7 @@ const widths = {
   buttonWidth: 'width: 136px; --grid-column: span 2; flex-grow: 0; min-width: min-content;',
   small: 'width: 202px; --grid-column: span 3;',
   medium: 'width: 280px; --grid-column: span 4;',
+  larger: 'width: 358px; --grid-column: span 5;',
   auto: 'width: auto;',
   full: 'width: auto; --grid-column: 1 / -1; place-self: stretch;',
   grow: 'flex-grow: 1;',

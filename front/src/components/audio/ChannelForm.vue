@@ -5,6 +5,7 @@ import type { paths } from '~/generated/types'
 import { slugify } from 'transliteration'
 import { reactive, computed, ref, watchEffect, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useDataStore } from '~/ui/stores/data'
 
 import axios from 'axios'
 import AttachmentInput from '~/components/common/AttachmentInput.vue'
@@ -35,6 +36,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const { t } = useI18n()
+const dataStore = useDataStore()
 
 const newValues = reactive({
   name: props.object?.artist?.name ?? '',
@@ -261,7 +263,7 @@ defineExpose({
           :get="model => { newValues.tags = model.currents.map(({ label }) => label) }"
           :set="model => ({
             currents: newValues.tags.map(tag => ({ type: 'custom' as const, label: tag })),
-            others: [].map(tag => ({ type: 'custom' as const, label: tag }))
+            others: dataStore.tags().value.map(({ name }) => ({ type: 'custom' as const, label: name }))
           })"
           :label="t('components.audio.ChannelForm.label.tags')"
         />

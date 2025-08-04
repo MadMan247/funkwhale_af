@@ -7,6 +7,7 @@ import { isEqual, clone } from 'lodash-es'
 import { useI18n } from 'vue-i18n'
 import { useStore } from '~/store'
 import { useRoute } from 'vue-router'
+import { useDataStore } from '~/ui/stores/data'
 
 import axios from 'axios'
 
@@ -34,14 +35,18 @@ const props = withDefaults(defineProps<Props>(), {
   licenses: () => []
 })
 
+// Since the object may be reactive (self-updating), we need a clone to compare changes
+const originalObject = Object.assign({}, props.object)
+
 const { t } = useI18n()
 const configs = useEditConfigs()
 const store = useStore()
+const dataStore = useDataStore()
 const route = useRoute()
 
 const config = computed(() => configs[props.objectType])
 const currentState = computed(() => config.value.fields.reduce((state: ReviewState, field) => {
-  state[field.id] = { value: field.getValue(props.object) }
+  state[field.id] = { value: field.getValue(originalObject) }
   return state
 }, {}))
 
@@ -123,6 +128,9 @@ const submit = async () => {
     })
 
     submittedMutation.value = response.data
+
+    // Immediately re-fetch the updated object into the store
+    dataStore.get(props.objectType, props.object.id!.toString(), { immediate: true })
   } catch (error) {
     errors.value = (error as BackendError).backendErrors
   }
@@ -255,7 +263,7 @@ const resetField = (fieldId: string) => {
             :id="fieldConfig.id"
             v-model="values[fieldConfig.id]"
             :type="fieldConfig.inputType || 'text'"
-            :required="fieldConfig.required"
+            :required="fieldConfig.required || undefined"
             :name="fieldConfig.id"
             :label="fieldConfig.label"
           />
@@ -303,17 +311,19 @@ const resetField = (fieldId: string) => {
           </attachment-input>
         </template>
         <template v-else-if="fieldConfig.type === 'tags'">
-          <!-- TODO: Make Tags work -->
           <Pills
-            :id="fieldConfig.id"
-            ref="tags"
+            v-for="key in [fieldConfig.id]"
+            :key="key"
             :get="model => { values[fieldConfig.id] = model.currents.map(({ label }) => label) }"
             :set="model => ({
               ...model,
-              currents: (values[fieldConfig.id] as string[]).map(tag => ({ type: 'custom' as const, label: tag })),
+              currents: (values[fieldConfig.id] as string[]).map(tag =>
+                ({ type: dataStore.tags().value.every(({ name })=> name !== tag) ? 'custom' as const : 'preset' as const, label: tag })),
+              others: dataStore.tags().value.map(({ name }) =>
+                ({ type: 'preset' as const, label: name })),
             })"
             :label="fieldConfig.label"
-            required="fieldConfig.required"
+            :required="fieldConfig.required"
           >
             <Button
               icon="bi-x"
@@ -359,13 +369,12 @@ const resetField = (fieldId: string) => {
         primary
         :disabled="isLoading || !mutationPayload"
       >
-        <span v-if="canEdit">
-          {{ t('components.library.EditForm.button.submit') }}
-        </span>
-        <span v-else>
-          {{ t('components.library.EditForm.button.suggest') }}
-        </span>
+        {{ canEdit
+          ? t('components.library.EditForm.button.submit')
+          : t('components.library.EditForm.button.suggest')
+        }}
       </Button>
+      <Spacer />
     </form>
   </Layout>
 </template>

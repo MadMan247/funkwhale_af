@@ -88,7 +88,7 @@
 :is(body.theme-light, html:not(.dark)>body:not(.theme-dark)), .force-light-theme.force-light-theme.force-light-theme {
   --focus-ring-color: var(--fw-primary);
 
-  .default, .funkwhale, .VPDoc {
+  .default, .funkwhale.default, .funkwhale:not(.primary *):not(.secondary *):not(.primary):not(.secondary), .VPDoc {
     --link-color:var(--fw-blue-400);
     --link-hover-color:var(--fw-blue-500);
 
@@ -170,6 +170,13 @@
     --color-over-transparent: var(--background-color);
     --background-color:var(--fw-blue-400);
     --border-color:var(--fw-blue-010);
+
+    --pressed-color:var(--fw-blue-010);
+    --pressed-background-color:var(--fw-blue-900);
+
+    // Since the focus outline color is primary, it would be invisible if overlaid with the element itself, so we shift it outward:
+    outline-offset: 2px;
+
     &> .primary {
       --border-color:var(--fw-blue-010);
     }
@@ -188,9 +195,9 @@
     --disabled-border-color:transparent;
 
     &.raised {
-      --background-color:var(--fw-blue-500);
-      --hover-background-color:var(--fw-blue-600);
-      --active-background-color:var(--fw-blue-700);
+      --background-color:var(--fw-blue-600);
+      --hover-background-color:var(--fw-blue-700);
+      --active-background-color:var(--fw-blue-800);
     }
 
     &:not(:is(.ghost, .outline)) {
@@ -317,7 +324,7 @@
 :is(body.theme-dark, html.dark>body:not(.theme-light)), .force-dark-theme.force-dark-theme.force-dark-theme {
   --focus-ring-color: var(--fw-gray-600);
 
-  .default, .funkwhale, .VPDoc {
+  .default, .funkwhale.default, .funkwhale:not(.primary *):not(.secondary *):not(.primary):not(.secondary), .VPDoc {
     --link-color:var(--fw-gray-300);
     --link-hover-color:var(--fw-gray-200);
 
@@ -327,7 +334,7 @@
 
     --hover-color:var(--fw-beige-400);
     --hover-background-color:var(--fw-gray-850);
-    --hover-border-color:var(--fw-beige-400);
+    --hover-border-color:var(--fw-gray-850);
 
     --active-color:var(--fw-gray-200);
     --active-background-color:var(--fw-gray-700);
@@ -373,7 +380,7 @@
 
     --hover-color:var(--fw-gray-200);
     --hover-background-color:var(--fw-gray-800);
-    --hover-border-color:var(--fw-gray-300);
+    --hover-border-color:var(--fw-gray-800);
 
     --active-color:color-mix(in oklab, var(--fw-gray-200) 50%, var(--fw-gray-300));
     --active-background-color:color-mix(in oklab, var(--fw-gray-950), var(--fw-gray-970));
@@ -413,18 +420,24 @@
     --active-background-color:var(--fw-blue-800);
 
     --pressed-color:var(--fw-blue-010);
-    --pressed-background-color:var(--fw-blue-700);
+    --pressed-background-color:var(--fw-blue-900);
 
     --disabled-color:color-mix(in oklab, var(--fw-blue-010) 10%, var(--fw-blue-100));
     --disabled-background-color:color-mix(in oklab, var(--fw-blue-700) 50%, var(--fw-blue-600));
-    --disabled-border-color:transparent;
+    --disabled-border-color: var(--hover-background-color);
 
+    --focus-ring-color: var(--background-color);
+
+    // Since the focus outline color is the primary background, it would be invisible if overlaid with the element itself, so we shift it outward:
+    // A11y: indicate primary focus though shape rather than color
+    outline-offset: 2px;
 
     &.raised {
-      --background-color:var(--fw-blue-500);
-      --hover-background-color:var(--fw-blue-400);
-      --active-background-color:var(--fw-blue-900);
-      --disabled-background-color:color-mix(in oklab, var(--fw-blue-500) 20%, var(--fw-blue-600));
+      --background-color: var(--fw-blue-400);
+      --hover-background-color: var(--fw-blue-100);
+      --hover-border-color: var(--fw-blue-100);
+      --active-background-color: var(--fw-blue-900);
+      --disabled-background-color: color-mix(in oklab, var(--fw-blue-500) 20%, var(--fw-blue-600));
     }
   }
 
@@ -522,7 +535,7 @@
 
 :is(.VPDoc .vp-doc, .funkwhale){
 
-  // (3a) Applying colors to everything that has no explicit color props
+  // (3a) Applying colors to everything that has no explicit color props (for A11y)
 
   color: var(--color);
 
@@ -546,10 +559,12 @@
   }
 
   // Indicate autofocus when using a mouse
+  // The [fake-focus] attribute enables the same focus decoration for
+  // inputs that currently can be confirmed by pressing ENTER
 
-  [autofocus]:focus:not(:focus-visible) {
-    outline: 4px solid var(--autofocus-outline-color);
-    outline-offset: 2px;
+  [autofocus]:focus:not(:focus-visible), [fake-focus=true] {
+    outline: 4px solid var(--autofocus-outline-color) !important;
+    outline-offset: 2px !important;
   }
 
   // Fallback for decorative elements without explicit color props
@@ -576,7 +591,7 @@
       &:hover:not(:has(.interactive:hover)):not([disabled]) {
         color: var(--hover-color, var(--color));
         background-color: var(--hover-background-color);
-        border-color: var(--hover-background-color);
+        border-color: var(--hover-border-color, var(--hover-background-color));
       }
       &[aria-pressed=true] {
         color: var(--pressed-color, var(--active-color));

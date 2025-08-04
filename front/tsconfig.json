@@ -6,6 +6,7 @@
     "noUnusedLocals": true,
     "noImplicitAny": true,
     "experimentalDecorators": true,
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "typeRoots": ["node_modules", "node_modules/@types"],
     "types": [
       "vitest/globals",
@@ -29,17 +30,13 @@
     "src/docs/**/*.ts",
     "ui-docs/**/*.md"
   ],
+  "exclude": [
+    "ui-docs/components/ui/link.md",
+    "ui-docs/components/ui/popover.md",
+    "ui-docs/using-color.md"
+  ],
   "vueCompilerOptions": {
     "vitePressExtensions": [".md"],
-    "plugins": [
-      "@vue-macros/volar/define-options",
-      "@vue-macros/volar/define-models",
-      "@vue-macros/volar/define-props",
-      "@vue-macros/volar/define-props-refs",
-      "@vue-macros/volar/short-vmodel",
-      "@vue-macros/volar/define-slots",
-      "@vue-macros/volar/export-props",
-      "@vue-macros/volar/jsx-directive"
-    ]
+    "plugins": []
   }
 }

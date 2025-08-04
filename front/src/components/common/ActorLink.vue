@@ -14,15 +14,14 @@ interface Props {
   admin?: boolean
   displayName?: boolean
   truncateLength?: number
-  discrete?: boolean
+  discrete?: true
 }
 
 const props = withDefaults(defineProps<Props>(), {
   avatar: true,
   admin: false,
   displayName: false,
-  truncateLength: 30,
-  discrete: false
+  truncateLength: 30
 })
 
 const { displayName, actor, truncateLength, admin, avatar } = toRefs(props)

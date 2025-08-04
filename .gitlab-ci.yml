@@ -95,7 +95,7 @@ review_front:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: manual
 
-  image: $CI_REGISTRY/funkwhale/ci/node-python:18
+  image: $CI_REGISTRY/funkwhale/ci/node-python:22
   variables:
     BASE_URL: /-/$CI_PROJECT_NAME/-/jobs/$CI_JOB_ID/artifacts/front-review/
     VUE_APP_ROUTER_BASE_URL: /-/$CI_PROJECT_NAME/-/jobs/$CI_JOB_ID/artifacts/front-review/
@@ -202,7 +202,7 @@ lint_front:
     - if: $CI_COMMIT_BRANCH =~ /(stable|develop)/
     - changes: [front/**/*]
 
-  image: $CI_REGISTRY/funkwhale/ci/node-python:18
+  image: $CI_REGISTRY/funkwhale/ci/node-python:22
   cache:
     - *yarn_cache
     - *node_cache
@@ -290,7 +290,7 @@ test_front:
     - if: $CI_COMMIT_BRANCH =~ /(stable|develop)/
     - changes: [front/**/*]
 
-  image: $CI_REGISTRY/funkwhale/ci/node-python:18
+  image: $CI_REGISTRY/funkwhale/ci/node-python:22
   cache:
     - *yarn_cache
     - *node_cache
@@ -417,7 +417,7 @@ build_front:
     - if: $CI_COMMIT_BRANCH =~ /(stable|develop)/
     - changes: [front/**/*]
 
-  image: $CI_REGISTRY/funkwhale/ci/node-python:18
+  image: $CI_REGISTRY/funkwhale/ci/node-python:22
   variables:
     <<: *keep_git_files_permissions
     NODE_OPTIONS: --max-old-space-size=4096

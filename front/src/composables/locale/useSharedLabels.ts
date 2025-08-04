@@ -6,6 +6,8 @@ import { i18n } from '~/init/locale'
 
 const { t } = i18n.global
 
+// TODO: Remove this unnecessary abstraction (unless it has a purpose)
+
 export default () => ({
   fields: {
     privacy_level: {

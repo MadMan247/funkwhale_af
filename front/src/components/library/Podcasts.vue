@@ -10,6 +10,7 @@ import { useI18n } from 'vue-i18n'
 import { syncRef } from '@vueuse/core'
 import { sortedUniq } from 'lodash-es'
 import { useStore } from '~/store'
+import { useDataStore } from '~/ui/stores/data'
 import { useModal } from '~/ui/composables/useModal.ts'
 
 import axios from 'axios'
@@ -59,11 +60,6 @@ const modalContent = ref()
 const submittable = ref(false)
 
 const tags = useRouteQuery<string[]>('tag', [])
-
-computed(() => ({
-  currents: [].map(tag => ({ type: 'custom' as const, label: tag })),
-  others: tags.value.map(tag => ({ type: 'custom' as const, label: tag }))
-}))
 
 const q = useRouteQuery('query', '')
 const query = ref(q.value)
@@ -116,6 +112,7 @@ const fetchData = async () => {
 }
 
 const store = useStore()
+const dataStore = useDataStore()
 watch(() => store.state.moderation.lastUpdate, fetchData)
 watch([page, tags, q, ordering, orderingDirection], fetchData)
 fetchData()
@@ -176,13 +173,16 @@ const { to: upload } = useModal('upload')
         :placeholder="labels.searchPlaceholder"
       />
       <Pills
+        v-if="typeof tags === 'object'"
         :get="model => { tags = model.currents.map(({ label }) => label) }"
         :set="model => ({
-          ...model,
           currents: tags.map(tag => ({ type: 'custom' as const, label: tag })),
+          others: dataStore.tags().value
+            .filter(({ name }) => result?.results?.some((object) => object.tags?.includes(name)) && !tags.includes(name))
+            .map(({ name }) => ({ type: 'preset' as const, label: name })),
         })"
         :label="t('components.library.Podcasts.label.tags')"
-        style="max-width: 150px;"
+        style="max-width: 350px;"
       />
       <Layout
         stack

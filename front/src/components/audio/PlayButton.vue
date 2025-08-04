@@ -20,7 +20,7 @@ interface Props extends PlayOptionsProps {
   dropdownIconClasses?: string[]
   playIconClass?: string
   buttonClasses?: string[]
-  discrete?: boolean
+  discrete?: true
   dropdownOnly?: boolean
   iconOnly?: boolean
   playing?: boolean
@@ -52,7 +52,6 @@ const props = withDefaults(defineProps<Props>(), {
   dropdownIconClasses: () => ['bi-caret-down-fill'],
   playIconClass: () => 'bi-play-fill',
   buttonClasses: () => ['button'],
-  discrete: () => false,
   dropdownOnly: () => false,
   iconOnly: () => false,
   isPlayable: () => false,

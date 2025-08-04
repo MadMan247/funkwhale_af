@@ -255,3 +255,11 @@ const others = ref([
 {{ current }} (+ {{ others.length }} other options)
 
 <!-- prettier-ignore-end -->
+
+### Override the cursor
+
+With the css variable `--cursor`, you can override the default (pointer):
+
+```css
+--cursor: text;
+```

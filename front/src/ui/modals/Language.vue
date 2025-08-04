@@ -29,7 +29,7 @@ const isOpen = useModal('language').isOpen
         ghost
         thin-font
         small
-        align-text="left"
+        align-text="start"
         :aria-pressed="key===locale || undefined"
         @click="setI18nLanguage(key)"
       >

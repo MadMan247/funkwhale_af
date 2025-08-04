@@ -43,6 +43,7 @@ export default defineConfig({
                 ],
               },
               { text: 'Input', link: '/components/ui/input' },
+              { text: 'Select', link: '/components/ui/select' },
               { text: 'Slider', link: '/components/ui/slider' },
               { text: 'Popover (Dropdown Menu)', link: '/components/ui/popover' },
               { text: 'Textarea', link: '/components/ui/textarea' },

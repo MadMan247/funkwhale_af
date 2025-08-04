@@ -13,6 +13,13 @@ import { whenever } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 
+import Header from '~/components/ui/Header.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Card from '~/components/ui/Card.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Section from '~/components/ui/Section.vue'
+import Link from '~/components/ui/Link.vue'
+
 const { t } = useI18n()
 const labels = computed(() => ({
   title: t('components.Home.title')
@@ -43,15 +50,11 @@ const stats = computed(() => {
   return { users, hours }
 })
 
-const headerStyle = computed(() => {
-  if (!banner.value) {
-    return ''
-  }
-
-  return {
-    backgroundImage: `url(${store.getters['instance/absoluteUrl'](banner.value)})`
-  }
-})
+const backgroundImage = computed(() =>
+  banner.value
+    ? `url(${store.getters['instance/absoluteUrl'](banner.value)})`
+    : 'radial-gradient(circle at 80%, rgb(55, 122, 170), transparent), linear-gradient(135deg, rgb(40, 88, 125) 0%, rgb(64, 190, 220) 100%)'
+)
 
 // TODO (wvffle): Check if needed
 const router = useRouter()
@@ -62,243 +65,207 @@ whenever(() => store.state.auth.authenticated, () => {
 </script>
 
 <template>
-  <main
+  <Layout
     v-title="labels.title"
-    class="main page-home"
+    stack
+    main
   >
-    <section
-      :class="['ui', 'head', {'with-background': banner}, 'vertical', 'center', 'aligned', 'stripe', 'segment']"
-      :style="headerStyle"
+    <Header
+      page-heading
+      :class="$style.banner"
+      :h1="t('components.Home.header.welcome', {podName: podName})"
     >
-      <div class="segment-content">
-        <h1 class="ui center aligned large header">
-          <span>
-            {{ t('components.Home.header.welcome', {podName: podName}) }}
-          </span>
-          <div
-            v-if="shortDescription"
-            class="sub header"
-          >
-            {{ shortDescription }}
-          </div>
-        </h1>
+      <p :class="$style.description">
+        {{ shortDescription }}
+      </p>
+      <div>
+        <img
+          :class="$style.logo"
+          src="../assets/network.png"
+          alt=""
+        >
       </div>
-    </section>
-    <section class="ui vertical stripe segment">
-      <div class="ui stackable grid">
-        <div class="ten wide column">
-          <h2 class="header">
-            {{ t('components.Home.header.about') }}
-          </h2>
-          <div
-            id="pod"
-            class="ui raised segment"
-          >
-            <div class="ui stackable grid">
-              <div class="eight wide column">
-                <p v-if="!longDescription">
-                  {{ t('components.Home.placeholder.noDescription') }}
-                </p>
-                <template v-if="longDescription || rules">
-                  <sanitized-html
-                    v-if="longDescription"
-                    id="renderedDescription"
-                    :html="longDescription"
-                  />
-                  <div
-                    v-if="longDescription"
-                    class="ui hidden divider"
-                  />
-                  <div class="ui relaxed list">
-                    <div
-                      v-if="longDescription"
-                      class="item"
+      <Spacer />
+      <Spacer />
+      <Spacer />
+      <Section
+        align-left
+        :columns-per-item="3"
+        :h2="t('components.Home.header.about')"
+      >
+        <Layout
+          flex
+          :class="$style['long-description']"
+        >
+          <div>
+            <p v-if="!longDescription">
+              {{ t('components.Home.placeholder.noDescription') }}
+            </p>
+            <!-- TODO: Use new Ui elements once we can test with data -->
+            <template v-if="longDescription || rules">
+              <sanitized-html
+                v-if="longDescription"
+                id="renderedDescription"
+                :html="longDescription"
+              />
+              <div
+                v-if="longDescription"
+                class="ui hidden divider"
+              />
+              <div class="ui relaxed list">
+                <div
+                  v-if="longDescription"
+                  class="item"
+                >
+                  <i class="arrow right icon" />
+                  <div class="content">
+                    <router-link
+                      class="ui link"
+                      :to="{name: 'about'}"
                     >
-                      <i class="arrow right icon" />
-                      <div class="content">
-                        <router-link
-                          class="ui link"
-                          :to="{name: 'about'}"
-                        >
-                          {{ t('components.Home.link.learnMore') }}
-                        </router-link>
-                      </div>
-                    </div>
-                    <div
-                      v-if="rules"
-                      class="item"
-                    >
-                      <i class="book open icon" />
-                      <div class="content">
-                        <router-link
-                          v-if="rules"
-                          class="ui link"
-                          :to="{name: 'about', hash: '#rules'}"
-                        >
-                          {{ t('components.Home.link.rules') }}
-                        </router-link>
-                      </div>
-                    </div>
+                      {{ t('components.Home.link.learnMore') }}
+                    </router-link>
                   </div>
-                </template>
+                </div>
+                <div
+                  v-if="rules"
+                  class="item"
+                >
+                  <i class="book open icon" />
+                  <div class="content">
+                    <router-link
+                      v-if="rules"
+                      class="ui link"
+                      :to="{name: 'about', hash: '#rules'}"
+                    >
+                      {{ t('components.Home.link.rules') }}
+                    </router-link>
+                  </div>
+                </div>
               </div>
-              <div class="eight wide column">
-                <template v-if="stats">
-                  <h3 class="sub header">
-                    {{ t('components.Home.header.statistics') }}
-                  </h3>
-                  <p>
-                    <i class="user icon" />
-                    {{ t('components.Home.stat.activeUsers', stats.users) }}
-                  </p>
-                  <p>
-                    <i class="music icon" />
-                    {{ t('components.Home.stat.hoursOfMusic', stats.hours) }}
-                  </p>
-                </template>
-                <template v-if="contactEmail">
-                  <h3 class="sub header">
-                    {{ t('components.Home.header.contact') }}
-                  </h3>
-                  <i class="at icon" />
-                  <a :href="`mailto:${contactEmail}`">{{ contactEmail }}</a>
-                </template>
-              </div>
-            </div>
+            </template>
           </div>
-        </div>
+        </Layout>
+        <Card
+          v-if="stats"
+          :title="t('components.Home.header.statistics')"
+          caption
+          style="--grid-column: -5 /-1;"
+        >
+          <div>
+            <i class="bi bi-people-fill" />
+            {{ t('components.Home.stat.activeUsers', stats.users) }}
+          </div>
+          <div>
+            <i class="bi bi-music-note-list" />
+            {{ t('components.Home.stat.hoursOfMusic', stats.hours) }}
+          </div>
+        </Card>
+        <Card
+          v-if="contactEmail"
+          :title="t('components.Home.header.contact')"
+          :to="`mailto:${contactEmail}`"
+        >
+          <p>
+            <i class="bi bi-envelope-at-fill" />
+            {{ contactEmail }}
+          </p>
+        </Card>
+      </Section>
+    </Header>
 
-        <div class="six wide column">
-          <img
-            class="ui image"
-            src="../assets/network.png"
-            alt=""
-          >
-        </div>
-      </div>
-      <div class="ui hidden divider" />
-      <div class="ui hidden divider" />
-      <div class="ui stackable grid">
-        <div class="four wide column">
-          <h3 class="header">
-            {{ t('components.Home.header.aboutFunkwhale') }}
-          </h3>
+    <Section
+      align-left
+      :columns-per-item="3"
+      style="row-gap: 64px;"
+    >
+      <Section
+        :h2="t('components.Home.header.aboutFunkwhale')"
+        :class="$style.about"
+      >
+        <div>
           <p>
             {{ t('components.Home.description.funkwhale.paragraph1') }}
           </p>
           <p>
             {{ t('components.Home.description.funkwhale.paragraph2') }}
           </p>
-          <a
-            target="_blank"
-            rel="noopener"
-            href="https://funkwhale.audio"
+          <Link
+            to="https://funkwhale.audio"
+            icon="bi-box-arrow-up-right"
           >
-            <i class="external alternate icon" />
             {{ t('components.Home.link.funkwhale') }}
-          </a>
+          </Link>
         </div>
-        <div class="four wide column">
-          <h3 class="header">
-            {{ t('components.Home.header.login') }}
-          </h3>
-          <login-form
+      </Section>
+      <Section
+        :h2="t('components.Home.header.signup')"
+        :class="$style.signup"
+      >
+        <template v-if="openRegistrations">
+          <p>
+            {{ t('components.Home.description.signup') }}
+          </p>
+          <p v-if="defaultUploadQuota">
+            {{ t('components.Home.description.quota', { quota: humanSize(defaultUploadQuota * 1000 * 1000) }) }}
+          </p>
+          <signup-form
             button-classes="success"
-            :show-signup="false"
+            :show-login="false"
           />
-          <div class="ui hidden clearing divider" />
+        </template>
+        <div v-else>
+          <p>
+            {{ t('components.Home.help.registrationsClosed') }}
+          </p>
+          <Link
+            to="https://funkwhale.audio/#get-started"
+            icon="bi-box-arrow-up-right"
+          >
+            {{ t('components.Home.link.findOtherPod') }}
+          </Link>
         </div>
-        <div class="four wide column">
-          <h3 class="header">
-            {{ t('components.Home.header.signup') }}
-          </h3>
-          <template v-if="openRegistrations">
-            <p>
-              {{ t('components.Home.description.signup') }}
-            </p>
-            <p v-if="defaultUploadQuota">
-              {{ t('components.Home.description.quota', { quota: humanSize(defaultUploadQuota * 1000 * 1000) }) }}
-            </p>
-            <signup-form
-              button-classes="success"
-              :show-login="false"
-            />
-          </template>
-          <div v-else>
-            <p>
-              {{ t('components.Home.help.registrationsClosed') }}
-            </p>
-            <a
-              target="_blank"
-              rel="noopener"
-              href="https://funkwhale.audio/#get-started"
-            >
-              <i class="external alternate icon" />
-              {{ t('components.Home.link.findOtherPod') }}
-            </a>
-          </div>
-        </div>
+      </Section>
+      <login-form
+        is-card
+        primary
+        solid
+        :title="t('components.Home.header.login')"
+        :class="$style.loginCard"
+        button-classes="success"
+        :show-signup="false"
+      />
+    </Section>
 
-        <div class="four wide column">
-          <h3 class="header">
-            {{ t('components.Home.header.links') }}
-          </h3>
-          <div class="ui relaxed list">
-            <div class="item">
-              <i class="headphones icon" />
-              <div class="content">
-                <router-link
-                  v-if="anonymousCanListen"
-                  class="header"
-                  to="/library"
-                >
-                  {{ t('components.Home.link.publicContent.label') }}
-                </router-link>
-                <div class="description">
-                  {{ t('components.Home.link.publicContent.description') }}
-                </div>
-              </div>
-            </div>
-            <div class="item">
-              <i class="mobile alternate icon" />
-              <div class="content">
-                <a
-                  class="header"
-                  href="https://funkwhale.audio/apps"
-                  target="_blank"
-                  rel="noopener"
-                >
-                  {{ t('components.Home.link.mobileApps.label') }}
-                </a>
-                <div class="description">
-                  {{ t('components.Home.link.mobileApps.description') }}
-                </div>
-              </div>
-            </div>
-            <div class="item">
-              <i class="book icon" />
-              <div class="content">
-                <a
-                  class="header"
-                  href="https://docs.funkwhale.audio/users/index.html"
-                  target="_blank"
-                  rel="noopener"
-                >
-                  {{ t('components.Home.link.userGuides.label') }}
-                </a>
-                <div class="description">
-                  {{ t('components.Home.link.userGuides.description') }}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section
-      v-if="anonymousCanListen"
-      class="ui vertical stripe segment"
-    >
+    <Section :h2="t('components.Home.header.links')">
+      <Card
+        v-if="anonymousCanListen"
+        tiny
+        :title="t('components.Home.link.publicContent.label')"
+        icon="bi-headphones"
+        to="/library"
+      >
+        <p>
+          {{ t('components.Home.link.publicContent.description') }}
+        </p>
+      </Card>
+      <Card
+        :title="t('components.Home.link.mobileApps.label') "
+        icon="bi-phone-fill large"
+        to="https://funkwhale.audio/apps"
+      >
+        <p> {{ t('components.Home.link.mobileApps.description') }} </p>
+      </Card>
+      <Card
+        :title=" t('components.Home.link.userGuides.label') "
+        icon="bi-book-half large"
+        to="https://docs.funkwhale.audio/users/index.html"
+      >
+        <p> {{ t('components.Home.link.userGuides.description') }} </p>
+      </Card>
+    </Section>
+    <Section v-if="anonymousCanListen">
+      <!-- TODO: Update design here. Cannot do it right now because `anonymousCanListen` is `undefined`-->
       <album-widget
         :filters="{playable: true, ordering: '-creation_date'}"
         :limit="10"
@@ -320,6 +287,85 @@ whenever(() => store.state.auth.authenticated, () => {
         :limit="10"
         :filters="{ordering: '-creation_date', external: 'false'}"
       />
-    </section>
-  </main>
+    </Section>
+    <Spacer />
+    <Spacer />
+  </Layout>
 </template>
+
+<style module>
+
+.banner {
+  position: relative;
+
+  color: white;
+  text-shadow: .5px .5px 4px rgba(0, 0, 0, 0.5);
+
+  --logo-width: min(60rem, max(63%, 350px));
+
+  padding-top: calc(var(--logo-width) / 1.6 - 14rem);
+
+  &::before{
+      content: "";
+      position: absolute;
+      inset: -32px;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-image: v-bind('backgroundImage');
+  }
+
+  > *{ z-index: 2; }
+
+  .description {
+    font-weight: 700;
+    max-width: min(220px, calc(100% - var(--logo-width)));
+    &:empty { display: none; }
+  }
+  :has(>.logo) {
+      position: relative;
+      > .logo {
+        width: var(--logo-width);
+        height: auto;
+        position: absolute;
+        bottom: -12rem;
+        right: max(-32px, calc(5% - 7rem));
+        z-index: -2;
+      }
+      z-index: -2;
+  }
+}
+i {
+    min-width: 24px;
+    display: inline-block;
+}
+
+p {
+    text-wrap: balance;
+}
+
+.about, .signup, .long-description {
+    grid-column: 1 / -5 !important;
+    margin-bottom: 58px;
+}
+
+.loginCard{
+    grid-column: -5 / -1 !important;
+    grid-row: 1 / 4 !important;
+    margin-bottom: 58px;
+}
+
+@media (max-width: 768px) {
+    .about, .signup, .description, .long-description  { grid-column: 1 / -1 !important; }
+}
+
+@media (min-width: 1280px) {
+    .about {
+        grid-column: 1 / 5 !important;
+    }
+    .signup {
+        grid-column: 5 / -5 !important;
+    }
+
+
+}
+</style>

@@ -33,7 +33,7 @@ const duration = computed(() => props.entry.uploads.find(upload => upload.durati
     <div class="controls">
       <play-button
         class="basic circular icon"
-        :discrete="true"
+        discrete
         :icon-only="true"
         :is-playable="true"
         :button-classes="['ui', 'circular', 'inverted vibrant', 'icon', 'button']"

@@ -10,12 +10,14 @@ import type { paths, components } from '~/generated/types'
 import { humanSize, truncate } from '~/utils/filters'
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouteQuery } from '@vueuse/router'
 
 import axios from 'axios'
 
 import ImportStatusModal from '~/components/library/ImportStatusModal.vue'
 
-import useSmartSearch from '~/composables/navigation/useSmartSearch'
+// TODO (2.0.0+): Consolidate token logic from useSmartSearch and search.ts
+// import useSmartSearch from '~/composables/navigation/useSmartSearch'
 import useSharedLabels from '~/composables/locale/useSharedLabels'
 import useOrdering from '~/composables/navigation/useOrdering'
 import useErrorHandler from '~/composables/useErrorHandler'
@@ -31,12 +33,16 @@ import Loader from '~/components/ui/Loader.vue'
 import Pagination from '~/components/ui/Pagination.vue'
 import Table from '~/components/ui/Table.vue'
 import Slider from '~/components/ui/Slider.vue'
+import Select from '~/components/ui/Select.vue'
 
 interface Props extends SmartSearchProps, OrderingProps {
   object: Actor
   filters?: object
 
   // TODO(wvffle): Remove after https://github.com/vuejs/core/pull/4512 is merged
+  // // Was merged on 2022-10-26
+  //  // https://github.com/vuejs/core/issues/4498
+  // TODO (2.0.0+): Simplify this code if possible. It seems that it supports unnecessary cases (?), and Vue might support a more declarative way to express its intention by now... (?)
   orderingConfigName?: RouteRecordName
   defaultQuery?: string
   updateUrl?: boolean
@@ -44,13 +50,10 @@ interface Props extends SmartSearchProps, OrderingProps {
 
 const props = withDefaults(defineProps<Props>(), {
   defaultQuery: '',
-  updateUrl: false,
+  updateUrl: true,
   filters: () => ({}),
   orderingConfigName: undefined
 })
-
-const search = ref()
-
 const page = usePage()
 const result = ref<paths['/api/v2/uploads/']['get']['responses']['200']['content']['application/json']>()
 
@@ -93,13 +96,7 @@ const isAllSelected = computed<boolean | 'mixed'>({
   }
 })
 
-// For privacy slider
-const options = {
-  me: sharedLabels.fields.privacy_level.choices.me,
-  instance: sharedLabels.fields.privacy_level.choices.instance,
-  everyone: sharedLabels.fields.privacy_level.choices.everyone
-} as const satisfies Record<PrivacyLevel, string>
-
+// For privacy slider and <select>
 
 // Model for use in global slider `privacy_level`
 const globalPrivacyLevel = computed<PrivacyLevel | undefined>({
@@ -139,17 +136,10 @@ const globalPrivacyLevel = computed<PrivacyLevel | undefined>({
   }
 })
 
-const { onSearch, query, addSearchToken, getTokenValue } = useSmartSearch(props)
-const { onOrderingUpdate, orderingString, paginateBy, ordering, orderingDirection } = useOrdering(props)
+/// SEARCH
 
-const orderingOptions: [OrderingField, keyof typeof sharedLabels.filters][] = [
-  ['creation_date', 'creation_date'],
-  ['modification_date', 'modification_date'],
-  ['accessed_date', 'accessed_date'],
-  ['size', 'size'],
-  ['bitrate', 'bitrate'],
-  ['duration', 'duration']
-]
+// const { onSearch, query, addSearchToken, getTokenValue, token } = useSmartSearch(props)
+const { onOrderingUpdate, orderingString, paginateBy, ordering, orderingDirection } = useOrdering(props)
 
 const { t } = useI18n()
 
@@ -161,8 +151,8 @@ const fetchData = async () => {
       scope: 'me',
       page: page.value,
       page_size: paginateBy.value,
-      q: query.value,
       ordering: orderingString.value,
+      ...Object.fromEntries(tokens.get()),
       ...props.filters
     }})
 
@@ -175,11 +165,6 @@ const fetchData = async () => {
   }
 }
 
-onSearch(() => (page.value = 1))
-watch(page, fetchData)
-onOrderingUpdate(fetchData)
-fetchData()
-
 const labels = computed(() => ({
   searchPlaceholder: t('components.manage.library.UploadsTable.placeholder.search')
 }))
@@ -190,134 +175,243 @@ const displayName = (item: Item): string => {
 
 const detailedUpload = ref<Item>()
 const showUploadDetailModal = ref(false)
+
+const privacyOptions = {
+  me: sharedLabels.fields.privacy_level.choices.me,
+  instance: sharedLabels.fields.privacy_level.choices.instance,
+  everyone: sharedLabels.fields.privacy_level.choices.everyone
+} as const satisfies Record<PrivacyLevel, string>
+
+
+// Current logic:
+// - [x] `ordering` and `orderingDirection` are 2-way synced with the
+//          `ordering` parameter of the URL and parametrize `fetchData`
+// - [x] `query` is 2-way synced with the `query` parameter of the URL
+// - [x] `query.q` field is 2-way synced with the `search` input
+// - [x] `status` and `privacy_level` are linked to tokens/fields inside `query`
+// - [x] Inside `q`, quoted ranges are interpreted as atomic tokens;
+//          otherwise words are tokens (Is this backend logic?).
+// - [x] `query` provides parameters for search (`fetchData`)
+//
+// TODO (2.0.0+): Consolidate token logic from useSmartSearch and search.ts
+// - [ ] Document usage sites for tokenized search logic
+// - [ ] Document logic and check in with backend to confirm completeness
+// - [ ] Consolidate search.ts with useSmartSearch composable if possible
+// - [ ] Once ES2025 is activated, refactor logic to use iterator method chain
+//         instead of imperative procedures
+// - [ ] Strongly type parameters according to endpoint (check if schema is complete)
+// - [ ] Integrate into `useDataStore` (data.ts) to activate search result caching and
+//         eager fetching
+//
+// Test cases (draft):
+// - q = `"Hello you"` searches a single full-text token
+// - q = `"Hello you" privacy_level:me` filters it by privacy_level==='me'
+// - q = `a b` gives the same result as `b a` because the tokens form a set (?)
+//
+// Ux considerations:
+// - The `token` behavior is not communicated through the Ui.
+//    A potential way to communicate it would be to
+//    - Draw pill-shaped pastel backgrounds behind each token
+//    - Integrate the (duplicate) `Select` controls into the `Input`
+//    - Replace `Search` with `Filter` to make it clear that we are already
+//       operating on a smaller pool: the user's Uploads, not global/federation.
+// - The ordering is cumbersome and at the wrong place (it's not a filter).
+//    - Use conventional arrow controls on table headers for switching
+//       between all the ordering configurations
+// TODO (2.0.0+): User-test, re-design and consolidate search/filter interface
+// **A11y (UX):**
+// The search/filter interface is perceivable
+// - [ ] All users gather the purpose and semantics of all operations available
+// The search/filter interface is operable
+// - [ ] Users can access all controls by using only their keyboard
+// - [ ] Users have enough time
+// - [ ] No seizures or physical reactions
+// - [ ] Users can always tell where they are (navigation, focus, cursor...) and how to find what they are looking for
+// - [ ] Users can operate the interface with pointers (including aborting functions)
+// The search/filter interface is understandable
+// - [ ] User can easily read and understand content
+// - [ ] Users can successfully predict next steps
+// - [ ] Context changes are only initiated on user request
+// - [ ] If errors are possible, correcting them is easy
+// The search/filter interface is robust
+// - [ ] It can be interpreted by 95% of browsers, and by standard assistive tech
+// The search/filter interface conforms to WCAG 2.1
+// **Consolidation (DX):**
+// - [ ] Where possible, search/filter interfaces are implemented with the same patterns,
+//         or abstracted into components if that reduces cognitive load on developers
+// - [ ] Data handling is consolidated around the generated schema and the Url as the
+//         source of truth, and abstracted into composables/stores where possible
+
+/* Sync up `query` with tokens stored in the `q` parameter of the Url */
+const query = useRouteQuery<string>('query', '')
+// const query = ref(query.value ?? '')
+// syncRef(q, query, { direction: 'ltr' })
+
+/* Go to first page whenever the query parameters change  */
+watch([query, ordering], () =>
+  { page.value = 1 }
+)
+
+/* Represent the `q` parameter of the Url as a Map of tokens.
+- Key-Value pairs `key:value` are stored as [key, value] in the Map
+- Deduplication: The last key in the Url overrides all previous ones
+- Words `w` and phrases `"x y` are concatenated in order of insertion under the `''` key
+   and moved to the start of `q` resp. `tokens`.
+
+TODO (2.0.0+): The quote/unquote feature from search.ts is still missing in this file!
+*/
+const tokens = {
+  get: () => query.value
+    .split(' ')
+    .filter(token => token.trim())
+    .map(token => token.split(':'))
+    .filter(([head, ...tail]) => tail.length !== 1 || tail[0].trim())
+    .reduce((dict, [head, ...tail]) =>
+      // TODO: Once we activate ES2025, we can use pattern matching here:
+      tail.length === 1
+        ? dict.set(head, tail[0])
+        : dict.set('q', `${dict.get('q') ?? ''} ${head} ${tail.join(':')}`.trim())
+      , new Map<string, string>()),
+  set: (dict: Map<string, string>) => {
+    const fullText = dict.get('q') ?? ''
+    const keyValuePairs = Array.from(dict)
+      .filter(([key, value]) => key !== 'q' )
+      .map(([key, value]) => `${key}:${value}`)
+
+    query.value = [fullText, ...keyValuePairs].filter(part => part.trim()).join(' ')
+  }
+}
+
+/* Ref with a token of form `key:value` within the Url parameter `q`.
+ - Updating the `q` parameter updates the token, and vice versa
+ - Deduplication: The last key in the Url overrides all previous ones
+ - Words and phrases are accessible under the `'q'` key */
+const token = (key: string) =>
+  computed({
+    get: () => tokens.get().get(key) ?? '',
+    set: (value: string) => tokens.set(tokens.get().set(key, value))
+  })
+
+const search = token('q')
+
+/* Options and `refs` for each filter `<Select>` control */
+const searchFilters = ref({
+  'privacy_level': {
+    label: t('components.manage.library.UploadsTable.label.visibility'),
+    current: token('privacy_level'),
+    options: {
+      '': t('components.manage.library.UploadsTable.option.all'),
+      ...privacyOptions
+    }
+  },
+  'status': {
+    label: t('components.manage.library.UploadsTable.label.status'),
+    current: token('import_status'),
+    options: {
+      '': t('components.manage.library.UploadsTable.option.all'),
+      'pending': t('components.manage.library.UploadsTable.option.pending'),
+      'skipped': t('components.manage.library.UploadsTable.option.skipped'),
+      'errored': t('components.manage.library.UploadsTable.option.failed'),
+      'finished': t('components.manage.library.UploadsTable.option.finished')
+    }
+  },
+  'ordering': {
+    label: t('components.manage.library.UploadsTable.ordering.label'),
+    current: ordering,
+    options: {
+      'creation_date': sharedLabels.filters.creation_date,
+      'modification_date': sharedLabels.filters.modification_date,
+      'accessed_date': sharedLabels.filters.accessed_date,
+      'size': sharedLabels.filters.size,
+      'bitrate': sharedLabels.filters.bitrate,
+      'duration': sharedLabels.filters.duration
+    } satisfies Partial<Record<OrderingField, string>>
+  },
+  'orderingDirection': {
+    label: t('components.manage.library.UploadsTable.ordering.direction.label'),
+    current: orderingDirection,
+    options: {
+      '+': t('components.manage.library.UploadsTable.ordering.direction.ascending'),
+      '-': t('components.manage.library.UploadsTable.ordering.direction.descending')
+    }
+  }
+} as const)
+
+// Reload data when changing page
+watch(page, fetchData)
+
+// Reset page and reload data when privacy level or import status changes
+watch([token('privacy_level'), token('import_status')], () => {
+  page.value !== 1
+    ? page.value = 1
+    : fetchData();
+});
+
+onOrderingUpdate(fetchData)
+fetchData()
 </script>
 
 <template>
-  <div class="ui inline form">
-    <div class="fields">
-      <div class="ui six wide field">
-        <form @submit.prevent="query = search.value">
-          <Input
-            id="uploads-search"
-            ref="search"
-            v-model="query"
-            name="search"
-            search
-            :label="t('components.manage.library.UploadsTable.label.search')"
-            :placeholder="labels.searchPlaceholder"
-          />
-        </form>
-      </div>
-      <Spacer :size="16" />
-      <Layout flex>
-        <Spacer grow />
-        <div class="field">
-          <label for="uploads-visibility">{{ t('components.manage.library.UploadsTable.label.visibility') }}</label>
-          <select
-            id="uploads-visibility"
-            class="ui dropdown"
-            :value="getTokenValue('privacy_level', '')"
-            @change="addSearchToken('privacy_level', ($event.target as HTMLSelectElement).value)"
-          >
-            <option value="">
-              {{ t('components.manage.library.UploadsTable.option.all') }}
-            </option>
-            <option value="me">
-              {{ sharedLabels.fields.privacy_level.shortChoices.me }}
-            </option>
-            <option value="instance">
-              {{ sharedLabels.fields.privacy_level.shortChoices.instance }}
-            </option>
-            <option value="everyone">
-              {{ sharedLabels.fields.privacy_level.shortChoices.everyone }}
-            </option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="uploads-status">{{ t('components.manage.library.UploadsTable.label.status') }}</label>
-          <select
-            id="uploads-status"
-            class="ui dropdown"
-            :value="getTokenValue('status', '')"
-            @change="addSearchToken('status', ($event.target as HTMLSelectElement).value)"
-          >
-            <option value="">
-              {{ t('components.manage.library.UploadsTable.option.all') }}
-            </option>
-            <option value="pending">
-              {{ t('components.manage.library.UploadsTable.option.pending') }}
-            </option>
-            <option value="skipped">
-              {{ t('components.manage.library.UploadsTable.option.skipped') }}
-            </option>
-            <option value="errored">
-              {{ t('components.manage.library.UploadsTable.option.failed') }}
-            </option>
-            <option value="finished">
-              {{ t('components.manage.library.UploadsTable.option.finished') }}
-            </option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="uploads-ordering">{{ t('components.manage.library.UploadsTable.ordering.label') }}</label>
-          <select
-            id="uploads-ordering"
-            v-model="ordering"
-            class="ui dropdown"
-          >
-            <option
-              v-for="(option, key) in orderingOptions"
-              :key="key"
-              :value="option[0]"
-            >
-              {{ sharedLabels.filters[option[1]] }}
-            </option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="uploads-ordering-direction">{{ t('components.manage.library.UploadsTable.ordering.direction.label') }}</label>
-          <select
-            id="uploads-ordering-direction"
-            v-model="orderingDirection"
-            class="ui dropdown"
-          >
-            <option value="+">
-              {{ t('components.manage.library.UploadsTable.ordering.direction.ascending') }}
-            </option>
-            <option value="-">
-              {{ t('components.manage.library.UploadsTable.ordering.direction.descending') }}
-            </option>
-          </select>
-        </div>
-      </Layout>
+  <Spacer />
+  <Layout
+    form
+    flex
+    @submit.prevent="fetchData"
+  >
+    <!-- Enter a search string and start the search -->
 
-      <!-- Edit the currently selected items -->
+    <!-- TODO (2.0.0+): Replace with `Pills` component and allow editing all tokens (filters) -->
 
-      <Spacer />
-      <Spacer />
-      <div
-        class="default solid raised"
-        style="margin: -32px; padding: 32px;"
-      >
-        <Slider
-          v-model="globalPrivacyLevel"
-          :disabled="selectedItems.length === 0 ? true : undefined"
-          :options="options"
-          :label="`Privacy level (${ selectedItems.length } items)`"
-        />
-      </div>
-      <Spacer />
-    </div>
+    <Input
+      v-model="search"
+      :label="t('components.manage.library.UploadsTable.label.search')"
+      :placeholder="labels.searchPlaceholder"
+      search
+      style="min-width: min(100%, 520px)"
+    />
+
+    <!-- Filter the search results -->
+
+    <!-- TODO (2.0.0+): Integrate these filters as `Pills` into above control -->
+
+    <Select
+      v-for="[id, filter] in Object.entries(searchFilters)"
+      :id="`uploads-${id}`"
+      :key="id"
+      v-model:current="filter.current"
+      v-model:options="filter.options"
+      :label="filter.label"
+    />
+  </Layout>
+
+  <Spacer />
+
+  <!-- Edit the currently selected items -->
+
+  <div :class="['default solid raised', $style.toolbox]">
+    <Spacer />
+    <Slider
+      v-model="globalPrivacyLevel"
+      :disabled="selectedItems.length === 0 ? true : undefined"
+      :options="privacyOptions"
+      :label="`Privacy level (${ selectedItems.length } items)`"
+    />
   </div>
+
+  <!-- Select my items -->
+
   <!-- TODO (wvffle): Check if :upload shouldn't be v-model:upload -->
   <!-- Alternative design: v-model of type components['schemas']['UploadForOwner'] | null (:show would be non-null) -->
-  <!-- TODO (flupsi): Check if we can safely upgrade from type Upload to type components['schemas']['UploadForOwner'] -->
+  <!-- TODO (2.0.0+): Check if we can safely upgrade from type Upload to type components['schemas']['UploadForOwner'] -->
   <import-status-modal
     v-if="detailedUpload"
     v-model:show="showUploadDetailModal"
     :upload="detailedUpload as unknown as Upload"
   />
-  <Loader v-if="isLoading" />
+  <Loader
+    v-if="isLoading"
+    style="height: 0;"
+  />
 
   <Table
     v-if="result"
@@ -383,7 +477,7 @@ const showUploadDetailModal = ref(false)
       <Pill
         :title="t('components.manage.library.UploadsTable.table.upload.header.visibility')"
         v-bind="item.privacy_level
-          ? { onClick: () => addSearchToken('privacy_level', item.privacy_level as PrivacyLevel) }
+          ? { onClick: () => { token('privacy_level').value = item.privacy_level as PrivacyLevel } }
           : { disabled: true }
         "
       >
@@ -399,9 +493,9 @@ const showUploadDetailModal = ref(false)
           pending: 'blue',
           finished: 'green',
           errored: 'red',
-          skipped: 'purple'
+          skipped: 'purple',
         }[item.import_status]]: true }"
-        @click="addSearchToken('import_status', item.import_status)"
+        @click="() => { token('import_status').value = item.import_status }"
       >
         {{ item.import_status }}
         <template #action>
@@ -447,3 +541,17 @@ const showUploadDetailModal = ref(false)
     {{ t('components.manage.library.UploadsTable.pagination.results', { start: ((page-1) * paginateBy) + 1, end: ((page-1) * paginateBy) + result.results.length, total: result.count }) }}
   </span>
 </template>
+
+<style module>
+.toolbox {
+    margin: 0 -32px;
+    padding: 32px;
+    max-height: 20em;
+    transition: opacity 0.2s ease-in-out;
+
+    &:has([disabled]) {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+}
+</style>

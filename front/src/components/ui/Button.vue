@@ -195,6 +195,7 @@ onUnmounted(() =>
 <style lang="scss">
 .funkwhale {
   &.split-button {
+      cursor: var(--cursor, pointer);
 
     .button {
       display: inline-flex; // Ensure consistent display
@@ -214,6 +215,7 @@ onUnmounted(() =>
   }
 
   &.button {
+      cursor: var(--cursor, pointer);
 
     // Layout
 

@@ -15,6 +15,7 @@ export const TABS_INJECTION_KEY = Symbol('tabs') as InjectionKey<{
 export interface PopoverContext {
   items: Ref<number>
   hoveredItem: Ref<number>
+  close: () => void
 }
 
 export const POPOVER_INJECTION_KEY = Symbol('popover') as InjectionKey<Ref<boolean>[]>

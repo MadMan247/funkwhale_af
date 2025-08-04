@@ -50,6 +50,10 @@
     font-weight:600;
   }
 
+  &:has(>[required])>.label:after {
+      content: ' *';
+  }
+
   > .prefix,
   > .input-right {
     align-items: center;

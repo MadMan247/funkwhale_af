@@ -254,6 +254,7 @@ onMounted(() => {
           secondary
           square-small
           icon="bi-paragraph"
+          :aria-label="t('vui.aria.text.paragraph')"
           :aria-pressed="isParagraph || undefined"
           :disabled="preview"
           @click="paragraph"
@@ -262,6 +263,7 @@ onMounted(() => {
           secondary
           square-small
           icon="bi-type-h1"
+          :aria-label="t('vui.aria.text.heading1')"
           :aria-pressed="isHeading1 || undefined"
           :disabled="preview"
           @click="heading1"
@@ -270,6 +272,7 @@ onMounted(() => {
           secondary
           square-small
           icon="bi-type-h2"
+          :aria-label="t('vui.aria.text.heading2')"
           :aria-pressed="isHeading2 || undefined"
           :disabled="preview"
           @click="heading2"
@@ -278,6 +281,7 @@ onMounted(() => {
           secondary
           square-small
           icon="bi-quote"
+          :aria-label="t('vui.aria.text.quote')"
           :aria-pressed="isQuote || undefined"
           :disabled="preview"
           @click="quote"
@@ -286,6 +290,7 @@ onMounted(() => {
           secondary
           square-small
           icon="bi-list-ol"
+          :aria-label="t('vui.aria.text.orderedList')"
           :aria-pressed="isOrderedList || undefined"
           :disabled="preview"
           @click="orderedList"
@@ -294,6 +299,7 @@ onMounted(() => {
           secondary
           square-small
           icon="bi-list-ul"
+          :aria-label="t('vui.aria.text.unorderedList')"
           :aria-pressed="isUnorderedList || undefined"
           :disabled="preview"
           @click="unorderedList"
@@ -305,6 +311,7 @@ onMounted(() => {
           secondary
           square-small
           icon="bi-type-bold"
+          :aria-label="t('vui.aria.text.bold')"
           :disabled="preview"
           @click="bold"
         />
@@ -312,6 +319,7 @@ onMounted(() => {
           secondary
           square-small
           icon="bi-type-italic"
+          :aria-label="t('vui.aria.text.italic')"
           :disabled="preview"
           @click="italics"
         />
@@ -319,6 +327,7 @@ onMounted(() => {
           secondary
           square-small
           icon="bi-type-strikethrough"
+          :aria-label="t('vui.aria.text.strikethrough')"
           :disabled="preview"
           @click="strikethrough"
         />
@@ -326,6 +335,7 @@ onMounted(() => {
           secondary
           square-small
           icon="bi-link-45deg"
+          :aria-label="t('vui.aria.text.link')"
           :disabled="preview"
           @click="link"
         />
@@ -354,7 +364,7 @@ onMounted(() => {
           :aria-pressed="preview || undefined"
           @click="preview = !preview"
         >
-          {{ t('components.common.ContentForm.button.preview') }}
+          {{ t('vui.preview') }}
         </Button>
       </label>
     </div>

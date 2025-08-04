@@ -6,6 +6,7 @@ import Button from '~/components/ui/Button.vue'
 import Input from '~/components/ui/Input.vue'
 import Modal from '~/components/ui/Modal.vue'
 import Layout from '~/components/ui/Layout.vue'
+import Spacer from '~/components/ui/Spacer.vue'
 
 const isOpen = ref(false)
 const isOpen2 = ref(false)
@@ -19,11 +20,9 @@ watchEffect(() => {
 })
 
 const isOpen4 = ref(false)
-const isOpen5 = ref(false)
 const isOpen6 = ref(false)
 const isOpen7 = ref(false)
 const isOpen8 = ref(false)
-const isOpen9 = ref(false)
 const isOpen10 = ref(false)
 
 const input = ref('Episcosaurus')
@@ -82,6 +81,7 @@ Make sure to add `autofocus` to the preferred button.
 
   <template #actions>
     <Button secondary @click="isOpen2 = false" icon="bi-arrow-left"/>
+    <Button icon="bi-arrow-right"/>
     <Button autofocus @click="isOpen = false">
       Ok
     </Button>
@@ -97,6 +97,8 @@ Make sure to add `autofocus` to the preferred button.
     Modal content
     <template #actions>
       <Button secondary @click="isOpen2 = false" icon="bi-arrow-left"/>
+      <Button disabled icon="bi-arrow-right"/>
+      <Spacer grow />
       <Button primary autofocus @click="isOpen2 = false">
         Ok
       </Button>
@@ -340,6 +342,13 @@ primary
 If there are no action slots and no cancel button, the close button is auto-focused.
 
 The `autofocus` prop, when set to `off`, overrides this behavior.
+
+## Handle focus programmatically
+
+**If pressing ENTER implicitly activates a button, link, or `Card`** (and only then), give that button, link or `Card` a `fake-focus` attribute.
+It indicates that "pressing the enter key has the same effect as pressing this button". An example would be a "Search" modal where the best match among the search results.
+
+_TODO: Implement `autofocus` and `fake-focus` props for `Card`, and implement said behavior_
 
 ## Responsivity
 

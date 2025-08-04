@@ -60,7 +60,7 @@ const fetchData = async (url = props.url) => {
 fetchData()
 
 watch(
-  [() => store.state.moderation.lastUpdate, page],
+  () => [store.state.moderation.lastUpdate, page.value],
   () => fetchData(),
   { immediate: true }
 )

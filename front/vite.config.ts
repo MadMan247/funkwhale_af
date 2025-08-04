@@ -2,13 +2,13 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig, type PluginOption } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import { fileURLToPath, URL } from 'node:url'
-import UnoCSS from 'unocss/vite'
+
+
 
 import manifest from './pwa-manifest.json'
 
 import VueI18n from '@intlify/unplugin-vue-i18n/vite'
 import Vue from '@vitejs/plugin-vue'
-import VueMacros from 'unplugin-vue-macros/vite'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
@@ -23,13 +23,8 @@ export const exPort = port
 export default defineConfig(({ mode }) => ({
   envPrefix: ['VUE_', 'TAURI_', 'FUNKWHALE_SENTRY_'],
   plugins: [
-    // https://vue-macros.sxzz.moe/
-    VueMacros({
-      plugins: {
-        // https://github.com/vitejs/vite/tree/main/packages/plugin-vue
-        vue: Vue()
-      }
-    }),
+    // https://github.com/vitejs/vite/tree/main/packages/plugin-vue
+    Vue(),
 
     // https://github.com/intlify/bundle-tools/tree/main/packages/vite-plugin-vue-i18n
     VueI18n({
@@ -57,15 +52,22 @@ export default defineConfig(({ mode }) => ({
     // see: https://github.com/Borewit/music-metadata-browser/issues/836
     nodePolyfills(),
 
-    // https://unocss.dev/
-    UnoCSS(),
+
     vueDevTools()
   ],
   server: {
     port: +(process.env.VUE_PORT ?? 8080),
     watch: {
       usePolling: true
+    },
+    allowedHosts: [".funkwhale.test"],
+    hmr: {
+      overlay: false
     }
+  },
+  optimizeDeps: {
+    include: ['vue', 'vue-router', 'pinia', 'axios', 'lodash-es'],
+    exclude: ['@sentry/vue', '@sentry/tracing']
   },
   resolve: {
     alias: [
@@ -86,22 +88,31 @@ export default defineConfig(({ mode }) => ({
       }
     }
   },
+  esbuild: {
+    target: mode === 'development' ? 'esnext' : 'es2020',
+    supported: {
+      'top-level-await': true
+    }
+  },
   build: {
+    target: mode === 'development'
+      ? 'esnext'
+      : ['es2020', 'chrome87', 'firefox78', 'safari14', 'edge88'],
     sourcemap: true,
+    minify: mode === 'development' ? false : 'esbuild',
     // https://rollupjs.org/configuration-options/
     rollupOptions: {
-      output: {
+      output: mode === 'production' ? {
         manualChunks: {
           axios: ['axios', 'axios-auth-refresh'],
           dompurify: ['dompurify'],
-          jquery: ['jquery'],
           lodash: ['lodash-es'],
           moment: ['moment'],
           sentry: ['@sentry/vue', '@sentry/tracing'],
           'standardized-audio-context': ['standardized-audio-context'],
           'vue-router': ['vue-router']
         }
-      }
+      } : {}
     }
   },
   test: {

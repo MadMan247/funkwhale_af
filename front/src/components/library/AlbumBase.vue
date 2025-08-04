@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Track, Album, Artist, Library, ArtistCredit } from '~/types'
+import type { Track, Library } from '~/types'
 
 import { momentFormat } from '~/utils/filters'
 import { computed, reactive, ref, watch } from 'vue'
@@ -7,6 +7,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter, useRoute } from 'vue-router'
 import { sum } from 'lodash-es'
 import { useStore } from '~/store'
+import { useDataStore } from '~/ui/stores/data'
 import { useQueue } from '~/composables/audio/queue'
 
 import axios from 'axios'
@@ -35,13 +36,15 @@ interface Props {
 }
 
 const store = useStore()
+const dataStore = useDataStore()
 
 const emit = defineEmits<Events>()
 const props = defineProps<Props>()
 
-const object = ref<Album | null>(null)
-const artist = ref<Artist | null>(null)
-const artistCredit = ref([] as ArtistCredit[])
+const object = computed(() => dataStore.get("album", props.id).value)
+const artistCredit = computed(() => object.value?.artist_credit ?? [])
+
+
 const libraries = ref([] as Library[])
 const paginateBy = ref(50)
 
@@ -75,20 +78,10 @@ const {
 const isLoading = ref(false)
 const fetchData = async () => {
   isLoading.value = true
-
-  const albumResponse = await axios.get(`albums/${props.id}/`, { params: { refresh: 'true' } })
-
-  artistCredit.value = albumResponse.data.artist_credit
-
-  // fetch the first artist of the album
-  const artistResponse = await axios.get(`artists/${albumResponse.data.artist_credit[0].artist.id}/`)
-
-  artist.value = artistResponse.data
-
-  object.value = albumResponse.data
-  if (object.value) {
+  if (!object.value)
+    return
+  else
     object.value.tracks = []
-  }
 
   fetchTracks()
   isLoading.value = false
@@ -128,7 +121,7 @@ const fetchTracks = async () => {
   }
 }
 
-watch(() => props.id, fetchData, { immediate: true })
+watch(() => [props.id, object.value], fetchData, { immediate: true })
 
 const router = useRouter()
 const route = useRoute()
@@ -138,7 +131,8 @@ const remove = async () => {
   try {
     await axios.delete(`albums/${object.value?.id}`)
     emit('deleted')
-    router.push({ name: 'library.artists.detail', params: { id: artist.value?.id } })
+    if (artistCredit.value)
+      router.push({ name: 'library.artists.detail', params: { id: artistCredit.value[0].artist.id } })
   } catch (error) {
     useErrorHandler(error as Error)
   }
@@ -154,6 +148,7 @@ const remove = async () => {
   />
   <Header
     v-if="object"
+    :key="object.title /*Re-render component when title changes after an update*/"
     :h1="object.title"
     page-heading
   >
@@ -272,7 +267,7 @@ const remove = async () => {
     </Layout>
   </Header>
 
-  <div style="flex 1;">
+  <div style="flex: 1;">
     <router-view
       v-if="object"
       :key="route.fullPath"
