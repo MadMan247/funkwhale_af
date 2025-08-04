@@ -83,7 +83,7 @@ whenever(() => store.state.auth.authenticated, () => {
           :class="$style.logo"
           src="../assets/network.png"
           alt=""
-        >
+        />
       </div>
       <Spacer />
       <Spacer />
