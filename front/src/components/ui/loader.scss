@@ -1,6 +1,10 @@
 // Modified version of https://github.com/lukehaas/css-loaders
 
 .funkwhale {
+  &:not(:has(>.loader-container)):has(>.loader) {
+      position: relative;
+      margin-bottom: 100%;
+  }
   &.loader-container {
     position: relative;
     height: 100%;
