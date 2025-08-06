@@ -106,6 +106,7 @@ watch(
         @refresh="fetchData"
       />
     </slot>
+    <Spacer grow />
     <Pagination
       v-if="page && albums && count > props.limit"
       v-model:page="page"

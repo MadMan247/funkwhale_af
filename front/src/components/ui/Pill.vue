@@ -303,7 +303,6 @@ const current = computed(() => (
               <Input
                 v-model="currentItem.label"
                 autofocus
-                low-height
                 :class="$style.input"
                 @keydown.enter.stop.prevent="pressedKey"
                 @keydown="pressedKey"
@@ -492,10 +491,8 @@ const current = computed(() => (
   }
 }
 .input {
-  // Position the input label within a 40px high popover item
   margin: -4px -16px;
   position: relative;
-  top: -4px;
   &:has(+* .input-delete-button:hover) input{
     background: var(--background-color);
     color: var(--disabled-color) !important;

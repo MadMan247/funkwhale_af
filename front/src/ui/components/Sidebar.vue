@@ -67,6 +67,7 @@ const moderationNotifications = computed(() =>
     solid
     gap-12
     :class="[$style.sidebar, $style['sticky-content']]"
+    v-bind="$attrs"
   >
     <Layout
       header

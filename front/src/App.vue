@@ -79,11 +79,12 @@ store.dispatch('auth/fetchUser')
 
 <template>
   <div class="funkwhale responsive">
-    <Sidebar />
+    <Sidebar style="grid-area: 1 / 1 / 999;" />
     <RouterView
       v-slot="{ Component }"
       v-bind="color({}, ['default', 'solid'])()"
       :class="$style.layout"
+      style="grid-row: 1 / 999;"
     >
       <Transition
         v-if="Component"
@@ -126,7 +127,7 @@ store.dispatch('auth/fetchUser')
 
   @media screen and (min-width: 1024px) {
     grid-template-columns: 300px 1fr;
-    grid-template-rows: 100% 0 0;
+    grid-template-rows: auto;
   }
 }
 </style>
@@ -139,5 +140,8 @@ store.dispatch('auth/fetchUser')
 <style module>
   .layout {
     padding: 32px;
+
+    /* Make space for the play bar */
+    padding-bottom: 5rem;
   }
 </style>

@@ -70,6 +70,7 @@ const open = ref(false)
     <Popover v-model="open">
       <template #default="{ toggleOpen }">
         <OptionsButton
+          v-bind="$attrs"
           :title="labels.more"
           is-square-small
           @click="toggleOpen()"

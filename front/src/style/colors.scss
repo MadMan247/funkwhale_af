@@ -167,7 +167,7 @@
 
   .primary, .primary .funkwhale {
     --color: var(--fw-blue-010);
-    --color-over-transparent: var(--background-color);
+    --color-over-transparent: var(--fw-blue-500);
     --background-color:var(--fw-blue-400);
     --border-color:var(--fw-blue-010);
 
@@ -208,7 +208,7 @@
 
   .destructive {
     --color: var(--fw-red-010);
-    --color-over-transparent: var(--background-color);
+    --color-over-transparent: var(--fw-red-600);
     --background-color: var(--fw-red-500);
     --border-color:var(--fw-red-010);
 
@@ -409,7 +409,7 @@
 
   .primary {
     --color: var(--fw-blue-010);
-    --color-over-transparent: var(--background-color);
+    --color-over-transparent: var(--fw-blue-500);
     --background-color:var(--fw-blue-600);
     --border-color:var(--fw-blue-100);
 
@@ -443,7 +443,7 @@
 
   .destructive {
     --color: var(--fw-red-010);
-    --color-over-transparent: var(--background-color);
+    --color-over-transparent: var(--fw-red-100);
     --background-color: var(--fw-red-500);
     --border-color:var(--fw-red-100);
 

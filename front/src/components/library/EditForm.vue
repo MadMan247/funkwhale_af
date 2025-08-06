@@ -171,7 +171,7 @@ const resetField = (fieldId: string) => {
     <Link
       v-if="route.path.includes('album')"
       solid
-      secondary
+      default
       raised
       :to="{ name: 'library.albums.detail', params: { id: object.id } }"
     >

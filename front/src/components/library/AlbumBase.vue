@@ -142,6 +142,11 @@ const remove = async () => {
 </script>
 
 <template>
+  <Layout
+    stack
+    main
+    raised
+  >
   <Loader
     v-if="isLoading"
     v-title="labels.title"
@@ -244,17 +249,21 @@ const remove = async () => {
         grow
       />
       <TrackFavoriteIcon
+        default raised
         v-if="store.state.auth.authenticated"
         square-small
         :album="object"
       />
       <TrackPlaylistIcon
+        default raised
         v-if="store.state.auth.authenticated"
         square-small
         :album="object"
       />
       <!-- TODO: Share Button -->
       <album-dropdown
+        default
+        raised
         :object="object"
         :public-libraries="publicLibraries"
         :is-loading="isLoading"
@@ -267,7 +276,6 @@ const remove = async () => {
     </Layout>
   </Header>
 
-  <div style="flex: 1;">
     <router-view
       v-if="object"
       :key="route.fullPath"
@@ -280,7 +288,8 @@ const remove = async () => {
       object-type="album"
       @libraries-loaded="libraries = $event"
     />
-  </div>
+  <Spacer grow />
+</Layout>
 </template>
 
 <style scoped lang="scss">

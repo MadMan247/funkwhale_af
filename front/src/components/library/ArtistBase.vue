@@ -134,6 +134,11 @@ const isOpen = useModal('artist-description').isOpen
 </script>
 
 <template>
+<Layout
+  stack
+  main
+  raised
+>
   <Loader v-if="isLoading" />
   <Header
     v-if="object && !isLoading"
@@ -223,6 +228,8 @@ const isOpen = useModal('artist-description').isOpen
       <Popover>
         <template #default="{ toggleOpen }">
           <OptionsButton
+          default
+          raised
             is-square-small
             @click="toggleOpen"
           />
@@ -332,7 +339,6 @@ const isOpen = useModal('artist-description').isOpen
       </template>
     </Modal>
   </Header>
-  <hr>
   <router-view
     :key="route.fullPath"
     :tracks="tracks"
@@ -344,6 +350,8 @@ const isOpen = useModal('artist-description').isOpen
     object-type="artist"
     @libraries-loaded="libraries = $event"
   />
+  <Spacer grow />
+  </Layout>
 </template>
 
 <style scoped lang="scss">
