@@ -180,7 +180,7 @@ const attributes = computed(() =>
 
   color: var(--fw-text-color);
   background-color: var(--fw-bg-color);
-  box-shadow: 0px 2px 8px 0px rgb(0 0 0 / 20%);
+  box-shadow: 0px 2px 8px 0px var(--shadow-color);
 
   border-radius: var(--fw-border-radius);
   font-size: 1rem;

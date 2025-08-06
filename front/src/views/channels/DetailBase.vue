@@ -454,31 +454,29 @@ const tabs = ref([
           :cancel="t('views.channels.DetailBase.button.cancel')"
         >
           <div class="scrollable content">
-            <div class="description">
+            <Layout class="description">
               <template v-if="object.rss_url">
                 <h3>
                   <i class="feed icon" />
                   {{ t('views.channels.DetailBase.modal.subscribe.rss.header') }}
                 </h3>
-                <p>
-                  {{ t('views.channels.DetailBase.modal.subscribe.rss.content.help') }}
-                </p>
-                <copy-input :value="object.rss_url" />
+                <copy-input
+                  :value="object.rss_url"
+                  :label="t('views.channels.DetailBase.modal.subscribe.rss.content.help')"
+                />
               </template>
               <template v-if="object.actor">
                 <h3>
                   <i class="bell icon" />
                   {{ t('views.channels.DetailBase.modal.subscribe.fediverse.header') }}
                 </h3>
-                <p>
-                  {{ t('views.channels.DetailBase.modal.subscribe.fediverse.content.help') }}
-                </p>
                 <copy-input
                   id="copy-tag"
                   :value="`@${object.actor.full_username}`"
+                  :label="t('views.channels.DetailBase.modal.subscribe.fediverse.content.help')"
                 />
               </template>
-            </div>
+            </Layout>
           </div>
         </Modal>
       </Layout>

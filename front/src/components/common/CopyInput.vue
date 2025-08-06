@@ -14,8 +14,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   buttonClasses: 'accent',
-  id: 'copy-input',
-  label: 'label'
+  id: 'copy-input'
 })
 
 const { t } = useI18n()
@@ -25,12 +24,6 @@ const { copy, isSupported: canCopy, copied } = useClipboard({ source: value, cop
 </script>
 
 <template>
-  <p
-    v-if="copied"
-    class="message"
-  >
-    {{ t('components.common.CopyInput.message.success') }}
-  </p>
   <Input
     :id="id"
     v-model="value"
@@ -44,12 +37,22 @@ const { copy, isSupported: canCopy, copied } = useClipboard({ source: value, cop
         :class="['ui', buttonClasses, 'input-right']"
         min-content
         secondary
+        :ghost="!copied || undefined"
+        :aria-pressed="copied"
+        raised
+        icon="bi-copy"
         :disabled="!canCopy || undefined"
         @click="copy()"
       >
-        <i class="bi bi-copy" />
         {{ t('components.common.CopyInput.button.copy') }}
       </Button>
+
+      <p
+        v-if="copied"
+        class="message blue"
+      >
+        {{ t('components.common.CopyInput.message.success') }}
+      </p>
     </template>
   </Input>
 </template>
@@ -70,10 +73,13 @@ const { copy, isSupported: canCopy, copied } = useClipboard({ source: value, cop
   }
 }
 p.message {
-  background-color: var(--hover-background-color);
+  background-color: var(--background-color);
+  color: var(--color);
   padding: 8px;
   position: absolute;
-  bottom: -32px;
-  right: 0px;
+  top: 32px;
+  right: -4px;
+  width: max-content;
+  box-shadow: 0px 1px 12px 0px var(--shadow-color);
 }
 </style>

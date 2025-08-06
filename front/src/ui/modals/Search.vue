@@ -20,6 +20,7 @@ import AlbumCard from '~/components/album/Card.vue'
 import RadioCard from '~/components/radios/Card.vue'
 import RadioButton from '~/components/radios/Button.vue'
 import TagsList from '~/components/tags/List.vue'
+import EmptyState from '~/components/common/EmptyState.vue'
 
 import Modal from '~/components/ui/Modal.vue'
 import Spacer from '~/components/ui/Spacer.vue'
@@ -28,7 +29,6 @@ import Section from '~/components/ui/Section.vue'
 import Link from '~/components/ui/Link.vue'
 import Loader from '~/components/ui/Loader.vue'
 import Alert from '~/components/ui/Alert.vue'
-import EmptyState from '~/components/common/EmptyState.vue'
 
 const { t } = useI18n()
 
@@ -61,6 +61,23 @@ const { isOpen, value: query } = useModal(
 - Open Categories (this value is just computed, based on open sections)
 
 */
+
+/* TODO: Refactor */
+// 1. Move fetching logic to `data.ts` (useDataStore)
+//     - Use caching
+//     - Debounce from input by 500ms
+//     - Load modal on keydown; show empty state while fetching
+// 2. Debug content loading logic
+// 3. Make colors subtler
+//      -
+// 4. Make layout nicer
+//     - Sections fill the modal
+//     - Optimize space use
+//     - Disable opening empty sections; deemphasize them (disable attribute)
+//     - Make the headers transparent by default (ghost: only show background on hover)
+//     - When Modal closes, delete customly closed categories (open them again as they appear in search results)
+//
+// Only show `View More` if there are actually more
 
 // Search query
 

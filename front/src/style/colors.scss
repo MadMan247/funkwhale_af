@@ -87,6 +87,7 @@
 
 :is(body.theme-light, html:not(.dark)>body:not(.theme-dark)), .force-light-theme.force-light-theme.force-light-theme {
   --focus-ring-color: var(--fw-primary);
+  --shadow-color: rgba(0,0,0,.2);
 
   .default, .funkwhale.default, .funkwhale:not(.primary *):not(.secondary *):not(.primary):not(.secondary), .VPDoc {
     --link-color:var(--fw-blue-400);
@@ -323,6 +324,7 @@
 
 :is(body.theme-dark, html.dark>body:not(.theme-light)), .force-dark-theme.force-dark-theme.force-dark-theme {
   --focus-ring-color: var(--fw-gray-600);
+  --shadow-color: rgba(0,0,0,.4);
 
   .default, .funkwhale.default, .funkwhale:not(.primary *):not(.secondary *):not(.primary):not(.secondary), .VPDoc {
     --link-color:var(--fw-gray-300);
@@ -388,6 +390,7 @@
 
     --pressed-color:var(--fw-beige-200);
     --pressed-background-color:var(--fw-gray-900);
+    --pressed-hover-background-color:var(--fw-gray-100);
 
     --disabled-color:var(--fw-gray-500);
     --disabled-background-color:color-mix(in oklab, var(--fw-gray-900) 20%, var(--fw-gray-950));
@@ -597,6 +600,9 @@
         color: var(--pressed-color, var(--active-color));
         background-color: var(--pressed-background-color, var(--active-background-color));
         border-color: var(--pressed-background-color, var(--active-background-color));
+        &:hover {
+            background-color: var(--pressed-hover-background-color, var(--hover-background-color));
+        }
       }
       &:is(:active, .active:not(.router-link-no-matching-query-flags)) {
         color:var(--active-color);
