@@ -18,10 +18,6 @@ const isOpen = defineModel<boolean>({ default: false })
 const shouldDelayClose = ref(true)
 const isOpenDelayed = refDebounced(isOpen, () => isOpen.value ? 0 : (shouldDelayClose.value ? 300 : 0))
 
-// Delay closing by 300ms, but allow immediate closing
-const shouldDelayClose = ref(true)
-const isOpenDelayed = refDebounced(isOpen, () => isOpen.value ? 0 : (shouldDelayClose.value ? 300 : 0))
-
 const { positioning = 'vertical', ...colorProps } = defineProps<{
   positioning?:'horizontal' | 'vertical'
 } &(ColorProps | DefaultProps) & RaisedProps>()
