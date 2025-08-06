@@ -5,16 +5,19 @@ import VueDOMPurifyHTML from 'vue-dompurify-html'
 import store, { key } from '~/store'
 import router from '~/router'
 
-import { createApp, defineAsyncComponent, h } from 'vue'
+import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
 import useLogger from '~/composables/useLogger'
 import useTheme from '~/composables/useTheme'
+import App from '~/App.vue'
 
+// TODO: remove (Global styles should be handled by theme in Ui library)
 import '~/style/_main.scss'
 
 import '~/api'
 
+// TODO: remove (Theme should be handled by Ui library)
 // NOTE: Set the theme as fast as possible
 useTheme()
 
@@ -22,21 +25,7 @@ const logger = useLogger()
 logger.info('Loading environment:', import.meta.env.MODE)
 logger.debug('Environment variables:', import.meta.env)
 
-const app = createApp({
-  name: 'Root',
-  data: () => ({ ready: false }),
-  mounted () {
-    this.ready = true
-    logger.info('Everything loaded!')
-  },
-  render () {
-    if (this.ready) {
-      return h(defineAsyncComponent(() => import('~/App.vue')))
-    }
-
-    return null
-  }
-})
+const app = createApp(App)
 
 const pinia = createPinia()
 

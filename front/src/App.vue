@@ -88,7 +88,6 @@ store.dispatch('auth/fetchUser')
     >
       <Transition
         v-if="Component"
-        name="main"
         mode="out-in"
       >
         <KeepAlive :max="10">
