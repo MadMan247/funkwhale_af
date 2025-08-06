@@ -632,9 +632,9 @@
         background-color: var(--active-background-color);
       }
       &[disabled] {
-        color: var(--disabled-color);
-        border-color: var(--disabled-border-color);
-        background-color:var(--disabled-background-color);
+        color: color-mix(in oklab, var(--disabled-color) 50%, var(--color-over-transparent, var(--color)));
+        border-color: transparent;
+        background-color: transparent;
       }
       // Link
       /* &.active {

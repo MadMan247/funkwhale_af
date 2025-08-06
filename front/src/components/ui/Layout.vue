@@ -8,7 +8,7 @@ const props = defineProps<{
   noRule?: true,
   noWrap?: true,
 } & { [P in 'stack' | 'grid' | 'flex' | 'columns' | 'row' | 'page']?: true | string }
-  & { [C in 'nav' | 'aside' | 'header' | 'footer' | 'main' | 'label' | 'form' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5']?: true }
+  & { [C in 'nav' | 'ul' | 'aside' | 'header' | 'footer' | 'main' | 'label' | 'form' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5']?: true }
   & { [G in 'no-gap' | `gap-${'4' | '8' | '12' | '16' | '24' | '32' | '48' | '64' | 'auto'}` ]?: true }
   &(PastelProps | ColorProps | DefaultProps)
   & RaisedProps
@@ -38,7 +38,7 @@ const attributes = computed(() => ({
 
 <template>
   <component
-    :is="props.nav ? 'nav' : props.aside ? 'aside' : props.header ? 'header' : props.footer ? 'footer' : props.main ? 'main' : props.label ? 'label' : props.form ? 'form' : props.h1 ? 'h1' : props.h2 ? 'h2' : props.h3 ? 'h3' : props.h4 ? 'h4' : props.h5 ? 'h5' : 'div'"
+    :is="props.nav ? 'nav' : props.ul ? 'ul' : props.aside ? 'aside' : props.header ? 'header' : props.footer ? 'footer' : props.main ? 'main' : props.label ? 'label' : props.form ? 'form' : props.h1 ? 'h1' : props.h2 ? 'h2' : props.h3 ? 'h3' : props.h4 ? 'h4' : props.h5 ? 'h5' : 'div'"
     :class="[
       $style.layout,
       ('noGap' in props && props.noGap === true) || $style.gap,

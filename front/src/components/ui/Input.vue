@@ -3,6 +3,7 @@ import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import onKeyboardShortcut from '~/composables/onKeyboardShortcut'
 import { type ColorProps, type VariantProps, type DefaultProps, type RaisedProps, type PastelProps, color } from '~/composables/color.ts'
+import { type WidthProps, width } from '~/composables/width'
 
 import Button from '~/components/ui/Button.vue'
 import Layout from '~/components/ui/Layout.vue'
@@ -18,7 +19,9 @@ const { icon, placeholder, ...props } = defineProps<{
     reset?:() => void;
   } & (ColorProps | DefaultProps | PastelProps)
     & VariantProps
-    & RaisedProps>()
+    & RaisedProps
+    & WidthProps
+>()
 
 // TODO(A11y): Add `inputmode="numeric" pattern="[0-9]*"` to input if model type is number:
 // https://technology.blog.gov.uk/2020/02/24/why-the-gov-uk-design-system-team-changed-the-input-type-for-numbers/
@@ -79,7 +82,7 @@ const model = defineModel<string|number>({ required: true })
     </span>
 
     <input
-      v-bind="{...$attrs, ...attributes, ...color(props, ['solid', 'default', 'secondary'])()}"
+      v-bind="{...$attrs, ...attributes, ...color(props, ['solid', 'default', 'secondary'])(width(props)())}"
       ref="input"
       v-model="model"
       :autofocus="autofocus || undefined"

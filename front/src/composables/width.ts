@@ -17,6 +17,7 @@ export type WidthProps =
   | { squareSmall?: true }
   | { lowHeight?: true }
   | { normalHeight?: true }
+  | { circular? : true }
 export type Key = KeysOfUnion<WidthProps>
 
 const widths = {
@@ -30,6 +31,7 @@ const widths = {
   auto: 'width: auto;',
   full: 'width: auto; --grid-column: 1 / -1; place-self: stretch;',
   grow: 'flex-grow: 1;',
+  circular: 'border-radius: 100%;',
   width: (w: string) => `width: ${w}; flex-grow:0;`
 } as const
 

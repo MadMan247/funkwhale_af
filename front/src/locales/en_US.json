@@ -17,10 +17,11 @@
     "tracks": "{n} track | {n} tracks",
     "episodes": "{n} episode | {n} episodes",
     "by-user": "by {username}",
-    "go-to": "Go to",
     "pagination": {
       "previous": "Previous",
-      "next": "Next"
+      "next": "Next",
+      "ellipsis": "…",
+      "enterPageNumber": "Go to page…"
     },
     "aria": {
       "close": "Close",
@@ -46,7 +47,7 @@
       },
       "pagination": {
         "nav": "Pagination Navigation",
-        "gotoPage": "Go to Page {n}",
+        "goToPage": "Go to Page {n}",
         "gotoPrevious": "Go to Previous Page",
         "gotoNext": "Go to Next Page",
         "currentPage": "Current Page, Page {n}"

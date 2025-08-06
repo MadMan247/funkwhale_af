@@ -1,20 +1,27 @@
 .funkwhale {
   &.pagination {
 
-    @include light-theme {
-      > .goto {
-        border-left: 1px solid var(--fw-gray-200);
-      }
-    }
+    /* People using a screen reader want to be able to use default 'previous page', 'next page' controls*/
 
-    @include dark-theme {
-      > .goto {
-        border-left: 1px solid var(--fw-gray-800);
-      }
+    @media screen and (max-width: 671px) {
+        flex-wrap: wrap;
+        .visually-hidden-when-small:not(:focus):not(:active) {
+           	border: 0;
+           	clip: rect(0 0 0 0);
+           	clip-path: inset(50%);
+           	height: 1px;
+           	margin: -1px;
+           	overflow: hidden;
+           	padding: 0;
+           	position: absolute;
+           	white-space: nowrap;
+           	width: 1px;
+        }
     }
 
     height: 34px;
     display: flex;
+    justify-content: center;
 
     &.is-small {
       > .pages {
@@ -33,44 +40,21 @@
       list-style: none;
       margin: 0;
       padding: 0;
+      gap: 4px;
+      margin-bottom: 8px;
 
       > li {
-        margin-top: 0;
-        margin: 0 0.5ch;
+        margin: 0;
         text-align: center;
 
         &:not(:first-child):not(:last-child) {
-          width: 34px;
-        }
-
-        > .funkwhale.button {
           min-width: 34px;
-          margin: 0;
         }
-
 
         &:first-child > .funkwhale.button,
         &:last-child > .funkwhale.button {
-          min-width: 94px;
+          width: 94px;
           text-align: center;
-        }
-      }
-    }
-
-    > .goto {
-      margin-left: 16px;
-      padding-left: 16px;
-      display: flex;
-      align-items: center;
-      white-space: nowrap;
-
-      > .funkwhale.input {
-        margin-left: 16px;
-        width: calc(3ch + 32px);
-
-        input {
-          text-align: center;
-          padding: 6px 8px;
         }
       }
     }

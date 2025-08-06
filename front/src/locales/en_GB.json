@@ -4689,25 +4689,55 @@
     }
   },
   "vui": {
-    "albums": "{n} album | {n} albums",
-    "aria": {
-      "pagination": {
-        "currentPage": "Current Page, Page {n}",
-        "gotoNext": "Goto Next Page",
-        "gotoPage": "Goto Page {n}",
-        "gotoPrevious": "Goto Previous Page",
-        "nav": "Pagination Navigation"
-      }
-    },
-    "by-user": "by {username}",
-    "episodes": "{n} episode | {n} episodes",
-    "go-to": "Go to",
-    "pagination": {
-      "label": "Pagination",
-      "next": "Next page",
-      "previous": "Previous page"
-    },
+    "addItem": "Add {item}",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deselect": "Deselect",
+    "deletItem": "Delete {item}",
+    "pressKey": "Press {key}",
+    "pressKeyToAction": "Press {key} to {action}",
+    "preview": "Preview",
+    "resetTo": "Reset to {previousValue}",
     "radio": "Radio",
-    "tracks": "{n} track | {n} tracks"
+    "albums": "{n} album | {n} albums",
+    "tracks": "{n} track | {n} tracks",
+    "episodes": "{n} episode | {n} episodes",
+    "by-user": "by {username}",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "ellipsis": "…",
+      "enterPageNumber": "Go to page…"
+    },
+    "aria": {
+      "close": "Close",
+      "text": {
+        "paragraph": "paragraph",
+        "heading1": "heading1",
+        "heading2": "heading2",
+        "heading3": "heading3",
+        "heading4": "heading4",
+        "heading5": "heading5",
+        "heading6": "heading6",
+        "quote": "quote",
+        "orderedList": "ordered list",
+        "unorderedList": "unordered list",
+        "bold": "bold",
+        "italic": "italic",
+        "strikethrough": "strikethrough",
+        "link": "link"
+      },
+      "password": {
+        "show": "Show password",
+        "hide": "Hide password"
+      },
+      "pagination": {
+        "nav": "Pagination Navigation",
+        "goToPage": "Go to Page {n}",
+        "gotoPrevious": "Go to Previous Page",
+        "gotoNext": "Go to Next Page",
+        "currentPage": "Current Page, Page {n}"
+      }
+    }
   }
 }

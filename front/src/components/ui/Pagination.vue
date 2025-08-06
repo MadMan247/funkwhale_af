@@ -6,6 +6,7 @@ import { isMobileView } from '~/composables/screen'
 
 import Button from '~/components/ui/Button.vue'
 import Input from '~/components/ui/Input.vue'
+import Spacer from '~/components/ui/Spacer.vue'
 
 const { t } = useI18n()
 
@@ -23,7 +24,11 @@ const goTo = ref<number | string>('' as const)
 
 const range = (start: number, end: number) => Array.from({ length: end - start + 1 }, (_, i) => i + start)
 
-/* Why? What? */
+/* Render only pages nearby if >5 pages:
+- If near the end, show 1, ..., end-4, end-3, end-2, end-1, end
+- If smaller than -4 and larger than 4, show 1, ..., current-1, current, current+1, ..., end
+- If near beginning, show 1, 2, 3, 4, 5, ..., 12
+*/
 const renderPages = computed(() => {
   const start = range(2, 5)
   const end = range(pages - 4, pages - 1)
@@ -72,6 +77,11 @@ watch(page, (_) => {
 })
 </script>
 
+
+<!-- REDESIGN, without custom CSS -->
+
+
+
 <template>
   <nav
     ref="pagination"
@@ -85,78 +95,66 @@ watch(page, (_) => {
         <Button
           low-height
           min-content
+          :square-small="isSmall"
           :disabled="page <= 1"
           :aria-label="t('vui.aria.pagination.gotoPrevious')"
           secondary
+          ghost
           icon="bi-chevron-left"
+          class="visually-hidden-when-small"
           @click="page -= 1"
         >
           <span v-if="!isSmall">{{ t('vui.pagination.previous') }}</span>
         </Button>
       </li>
 
+      <Spacer
+        no-size
+        grow
+      />
+
       <template
-        v-for="(i, index) in (isSmall ? [] : renderPages)"
+        v-for="(i, index) in (renderPages)"
         :key="i"
       >
         <li>
           <Button
-            v-if="i <= pages && i > 0 && pages > 3"
+            v-if="i <= pages && i > 0 && pages > 2"
             square-small
             :aria-label="page !== i ? t('vui.aria.pagination.gotoPage', i) : t('vui.aria.pagination.currentPage', page)"
             :secondary="page !== i"
+            :aria-pressed="page === i"
+            circular
+            ghost
             @click="page = i"
           >
             {{ i }}
           </Button>
         </li>
-        <li v-if="i + 1 < renderPages[index + 1]">
-          {{ (() => '…')() }}
+        <li
+          v-if="i + 1 < renderPages[index + 1]"
+          style="user-select: none;"
+        >
+          {{ t('vui.pagination.ellipsis') }}
         </li>
       </template>
-      <template v-if="isSmall">
-        <li>
-          <Button
-            square-small
-            :aria-label="page !== 1 ? t('vui.aria.pagination.gotoPage', page) : t('vui.aria.pagination.currentPage', page)"
-            :secondary="page !== 1"
-            @click="page = 1"
-          >
-            {{ (() => '1')() }}
-          </Button>
-        </li>
-        <li v-if="page === 1 || page === pages">
-          {{ (() => '…')() }}
-        </li>
-        <li v-else>
-          <Button
-            square-small
-            :aria-label="t('vui.aria.pagination.currentPage', page)"
-            aria-current="true"
-          >
-            {{ page }}
-          </Button>
-        </li>
-        <li>
-          <Button
-            square-small
-            :aria-label="page !== pages ? t('vui.aria.pagination.gotoPage', page) : t('vui.aria.pagination.currentPage', page)"
-            :secondary="page !== pages"
-            @click="page = pages"
-          >
-            {{ pages }}
-          </Button>
-        </li>
-      </template>
+
+      <Spacer
+        no-size
+        grow
+      />
 
       <li>
         <Button
           low-height
           min-content
+          :square-small="isSmall"
           :disabled="page >= pages"
           :aria-label="t('vui.aria.pagination.gotoNext')"
           secondary
+          ghost
           icon="right bi-chevron-right"
+          class="visually-hidden-when-small"
           @click="page += 1"
         >
           <span v-if="!isSmall">{{ t('vui.pagination.next') }}</span>
@@ -164,17 +162,23 @@ watch(page, (_) => {
       </li>
     </ul>
     <!-- \d{1,100} -->
-    <div class="goto">
-      {{ t('vui.go-to') }}
+    <Spacer size-8 />
+    <label
+      style="transform: translateY(-7px);"
+    >
       <Input
         v-model.number="goTo"
-        :placeholder="page?.toString()"
+        :placeholder="t('vui.pagination.enterPageNumber')"
+        low-height
+        tiny
         inputmode="numeric"
         pattern="[0-9]*"
+        :aria-label="t('vui.aria.pagination.goToPage', { goTo })"
         @click.stop
         @keyup.enter="setPage"
+        @blur="setPage"
       />
-    </div>
+    </label>
   </nav>
 </template>
 

@@ -1,4 +1,3 @@
-
 .ui.bottom-player {
   z-index: 999999;
   width: 100%;
@@ -14,9 +13,9 @@
       height: 0.2rem;
     }
   }
-
 }
 .ui.bottom-player > .segment.fixed-controls {
+  max-width: 100vw;
   color: var(--color);
   background: var(--player-background);
   width: 100%;
@@ -147,14 +146,16 @@
       accent-color: var(--vibrant-color);
     }
 
-    .looping, .shuffling,
-    .looping:hover, .shuffling:hover {
+    .looping,
+    .shuffling,
+    .looping:hover,
+    .shuffling:hover {
       > i {
         color: var(--vibrant-color);
       }
     }
 
-    @include media(">desktop") {
+    @include media('>desktop') {
       &:not(.fluid) {
         width: 20%;
       }
