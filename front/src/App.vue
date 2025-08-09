@@ -141,6 +141,10 @@ store.dispatch('auth/fetchUser')
 }
 </style>
 <style>
+html, body {
+    background-color: var(--background-color);
+}
+
 /* Make inert pages (behind modals) unscrollable */
 body:has(#app[inert="true"]) {
   overflow: hidden;

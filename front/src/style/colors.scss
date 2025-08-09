@@ -85,6 +85,10 @@
 
 // Light theme
 
+:root:has(body.theme-light) {
+    --background-color: var(--fw-beige-100);
+}
+
 :is(body.theme-light, html:not(.dark) > body:not(.theme-dark)),
 .force-light-theme.force-light-theme.force-light-theme {
   --focus-ring-color: var(--fw-primary);
@@ -327,6 +331,10 @@
 }
 
 // Dark theme
+
+:root:has(body.theme-dark) {
+    --background-color: var(--fw-gray-960);
+}
 
 :is(body.theme-dark, html.dark > body:not(.theme-light)),
 .force-dark-theme.force-dark-theme.force-dark-theme {
