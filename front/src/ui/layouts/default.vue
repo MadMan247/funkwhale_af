@@ -8,10 +8,9 @@
   </main>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 main {
   padding: 56px 48px;
   font-size: 16px;
 }
-
 </style>

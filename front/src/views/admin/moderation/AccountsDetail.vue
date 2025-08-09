@@ -519,6 +519,7 @@ const updatePolicy = (newPolicy: InstancePolicy) => {
 </template>
 
 <style scoped lang="scss">
+@import '~/style/funkwhale.scss';
 
 .channel-image {
   width: 200px;

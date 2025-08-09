@@ -104,7 +104,7 @@ const { state: items } = useAsyncState(
   <!-- eslint-enable @intlify/vue-i18n/no-raw-text -->
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 :deep(.funkwhale.select) {
   margin-bottom: 1rem;
 }

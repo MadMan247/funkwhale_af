@@ -453,47 +453,50 @@ const displayName = (object: any) => object?.filename ?? object?.source ?? objec
 </template>
 
 <style scoped lang="scss">
-  .avatar {
-    font-size: 64px;
+@import '~/style/funkwhale.scss';
+
+.avatar {
+  font-size: 64px;
+}
+
+h3.category {
+  margin-bottom: 16px;
+}
+
+.details {
+  padding: 0 16px;
+  height: 72px;
+  align-items: center;
+  border-top: 1px solid;
+  min-width: 280px;
+
+  @include light-theme {
+    border-color: var(--fw-gray-300);
   }
 
-  h3.category {
-    margin-bottom: 16px;
+  @include dark-theme {
+    border-color: var(--fw-gray-800);
   }
 
-  .details {
-    padding: 0 16px;
-    height: 72px;
-    align-items: center;
-    border-top: 1px solid;
-    min-width: 280px;
+  .label {
+    font-weight: 800;
 
     @include light-theme {
-      border-color: var(--fw-gray-300);
+      color: var(--fw-gray-600);
     }
+
     @include dark-theme {
-      border-color: var(--fw-gray-800);
-    }
-
-    .label {
-      font-weight: 800;
-
-      @include light-theme {
-        color: var(--fw-gray-600);
-      }
-
-      @include dark-theme {
-        color: var(--fw-gray-500);
-      }
-    }
-
-    a.label,
-    a.value {
-      text-decoration: underline;
-    }
-
-    &:last-child {
-      border-bottom: 1px solid;
+      color: var(--fw-gray-500);
     }
   }
+
+  a.label,
+  a.value {
+    text-decoration: underline;
+  }
+
+  &:last-child {
+    border-bottom: 1px solid;
+  }
+}
 </style>

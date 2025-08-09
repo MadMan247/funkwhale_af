@@ -88,7 +88,7 @@ const imageUrl = computed(() => props.album.cover?.urls.original
   </Card>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .play-button {
   top: 16px;
   right: 16px;

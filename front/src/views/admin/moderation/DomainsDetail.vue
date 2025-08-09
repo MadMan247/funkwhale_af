@@ -511,6 +511,8 @@ const setAllowList = async (value: boolean) => {
 </template>
 
 <style scoped lang="scss">
+@import '~/style/funkwhale.scss';
+
 .channel-image {
   width: 200px;
   height: 200px;
@@ -519,9 +521,11 @@ const setAllowList = async (value: boolean) => {
   display: block;
   text-align: center;
   align-content: center;
+
   @include light-theme {
     background-color: var(--fw-gray-200);
   }
+
   @include dark-theme {
     background-color: var(--fw-gray-800);
   }
@@ -541,6 +545,7 @@ h3.category {
   @include light-theme {
     border-color: var(--fw-gray-300);
   }
+
   @include dark-theme {
     border-color: var(--fw-gray-800);
   }

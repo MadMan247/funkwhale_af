@@ -292,7 +292,7 @@ const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value]
   </Layout>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .label {
   margin-top: -18px;
   font-size: 14px;

@@ -236,9 +236,11 @@ const getQuery = (field: string, value: string) => `${field}:"${value}"`
 </template>
 
 <style scoped lang="scss">
- h3.category {
-    margin-bottom: 16px;
-  }
+@import '~/style/funkwhale.scss';
+
+h3.category {
+  margin-bottom: 16px;
+}
 
 .details {
   padding: 0 16px;

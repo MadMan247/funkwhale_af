@@ -1,4 +1,7 @@
 $font-main: "Lato", sans-serif;
+.funkwhale {
+  --font-main: "Lato", sans-serif;
+}
 
 @mixin theme($isDark) {
   $root-selectors: ();

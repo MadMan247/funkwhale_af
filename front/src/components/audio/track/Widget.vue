@@ -226,6 +226,8 @@ watch(() => props.websocketHandlers.includes('Listen'), (to) => {
 </template>
 
 <style lang="scss" scoped>
+@import '~/style/funkwhale.scss';
+
 .funkwhale {
   &.activity {
     padding-top: 14px;

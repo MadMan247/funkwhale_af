@@ -141,7 +141,7 @@ const open = ref(false)
         primary
         low-height
         icon="bi-info-circle"
-        :to="{name: 'library.albums.detail', params: {id: object.id }}"
+        :to="{ name: 'library.albums.detail', params: { id: object.id } }"
       >
         {{ t('views.admin.library.AlbumDetail.link.localProfile') }}
       </Link>
@@ -160,7 +160,7 @@ const open = ref(false)
         primary
         low-height
         icon="bi-pencil-fill"
-        :to="{name: 'library.albums.edit', params: {id: object.id }}"
+        :to="{ name: 'library.albums.edit', params: { id: object.id } }"
       >
         {{ t('views.admin.library.AlbumDetail.button.edit') }}
       </Link>
@@ -241,9 +241,7 @@ const open = ref(false)
         flex
         class="details"
       >
-        <span
-          class="label"
-        >
+        <span class="label">
           {{ t('views.admin.library.AlbumDetail.table.album.title') }}
         </span>
         <Spacer
@@ -267,7 +265,7 @@ const open = ref(false)
           v-for="a in object?.artist_credit"
           :key="a.artist.id"
           class="value"
-          :to="{name: 'manage.library.artists.detail', params: {id: a.artist.id }}"
+          :to="{ name: 'manage.library.artists.detail', params: { id: a.artist.id } }"
         >
           {{ a.artist.name }}
         </Link>
@@ -277,7 +275,7 @@ const open = ref(false)
         flex
         class="details"
       >
-        <Link :to="{name: 'manage.moderation.domains.detail', params: {id: object?.domain }}">
+        <Link :to="{ name: 'manage.moderation.domains.detail', params: { id: object?.domain } }">
           {{ t('views.admin.library.AlbumDetail.link.domain') }}
         </Link>
         <Spacer
@@ -291,9 +289,7 @@ const open = ref(false)
         flex
         class="details"
       >
-        <span
-          class="label"
-        >
+        <span class="label">
           {{ t('views.admin.library.AlbumDetail.table.album.description') }}
         </span>
         <Spacer
@@ -319,9 +315,7 @@ const open = ref(false)
         flex
         class="details"
       >
-        <span
-          class="label"
-        >
+        <span class="label">
           {{ t('views.admin.library.AlbumDetail.table.activity.firstSeen') }}
         </span>
         <Spacer
@@ -334,18 +328,14 @@ const open = ref(false)
         flex
         class="details"
       >
-        <span
-          class="label"
-        >
+        <span class="label">
           {{ t('views.admin.library.AlbumDetail.table.activity.listenings') }}
         </span>
         <Spacer
           h
           grow
         />
-        <span
-          class="label"
-        >
+        <span class="label">
           {{ stats?.listenings }}
         </span>
       </Layout>
@@ -353,18 +343,14 @@ const open = ref(false)
         flex
         class="details"
       >
-        <span
-          class="label"
-        >
+        <span class="label">
           {{ t('views.admin.library.AlbumDetail.table.activity.favorited') }}
         </span>
         <Spacer
           h
           grow
         />
-        <span
-          class="value"
-        >
+        <span class="value">
           {{ stats?.track_favorites ?? 0 }}
         </span>
       </Layout>
@@ -372,18 +358,14 @@ const open = ref(false)
         flex
         class="details"
       >
-        <span
-          class="label"
-        >
+        <span class="label">
           {{ t('views.admin.library.AlbumDetail.table.activity.playlists') }}
         </span>
         <Spacer
           h
           grow
         />
-        <span
-          class="value"
-        >
+        <span class="value">
           {{ stats?.playlists }}
         </span>
       </Layout>
@@ -393,7 +375,7 @@ const open = ref(false)
       >
         <Link
           class="label"
-          :to="{name: 'manage.moderation.reports.list', query: {q: getQuery('target', `album:${object?.id}`) }}"
+          :to="{ name: 'manage.moderation.reports.list', query: { q: getQuery('target', `album:${object?.id}`) } }"
         >
           {{ t('views.admin.library.AlbumDetail.link.reports') }}
         </Link>
@@ -411,7 +393,7 @@ const open = ref(false)
       >
         <Link
           class="label"
-          :to="{name: 'manage.library.edits', query: {q: getQuery('target', 'album ' + object?.id)}}"
+          :to="{ name: 'manage.library.edits', query: { q: getQuery('target', 'album ' + object?.id) } }"
         >
           {{ t('views.admin.library.AlbumDetail.link.edits') }}
         </Link>
@@ -434,9 +416,7 @@ const open = ref(false)
         flex
         class="details"
       >
-        <span
-          class="label"
-        >
+        <span class="label">
           {{ t('views.admin.library.AlbumDetail.table.audioContent.cachedSize') }}
         </span>
         <Spacer
@@ -451,9 +431,7 @@ const open = ref(false)
         flex
         class="details"
       >
-        <span
-          class="label"
-        >
+        <span class="label">
           {{ t('views.admin.library.AlbumDetail.table.audioContent.totalSize') }}
         </span>
         <Spacer
@@ -468,9 +446,7 @@ const open = ref(false)
         flex
         class="details"
       >
-        <Link
-          :to="{name: 'manage.library.libraries', query: {q: getQuery('album_id', object?.id) }}"
-        >
+        <Link :to="{ name: 'manage.library.libraries', query: { q: getQuery('album_id', object?.id) } }">
           {{ t('views.admin.library.AlbumDetail.link.libraries') }}
         </Link>
         <Spacer
@@ -485,9 +461,7 @@ const open = ref(false)
         flex
         class="details"
       >
-        <Link
-          :to="{name: 'manage.library.uploads', query: {q: getQuery('album_id', object?.id) }}"
-        >
+        <Link :to="{ name: 'manage.library.uploads', query: { q: getQuery('album_id', object?.id) } }">
           {{ t('views.admin.library.AlbumDetail.link.uploads') }}
         </Link>
         <Spacer
@@ -518,6 +492,8 @@ const open = ref(false)
 </template>
 
 <style scoped lang="scss">
+@import '~/style/funkwhale.scss';
+
 .channel-image {
   width: 200px;
   height: 200px;

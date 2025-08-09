@@ -119,7 +119,7 @@ store.dispatch('auth/fetchUser')
   <SearchModal />
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 .responsive {
   display: grid !important;
   grid-template-columns: 300px 1fr;

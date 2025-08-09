@@ -71,5 +71,60 @@ const profileParams = computed(() => {
 </template>
 
 <style lang="scss">
-@import './activity.scss'
+@import '~/style/funkwhale.scss';
+
+.funkwhale {
+  &.activity {
+    padding: 0 16px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    border-top: 1px solid;
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+    grid-column: span 4;
+
+    &.clickable {
+      cursor: pointer;
+    }
+
+    @include light-theme {
+      color: var(--fw-gray-500);
+
+      +.funkwhale.activity {
+        border-top: 1px solid var(--fw-gray-300);
+      }
+
+      >.activity-content {
+        >.track-title {
+          color: var(--fw-gray-900);
+        }
+
+        >.artist {
+          --fw-link-color: var(--fw-gray-900);
+        }
+
+        >.user {
+          --fw-link-color: var(--fw-gray-500);
+        }
+      }
+
+      .play-button {
+        background: rgba(255, 255, 255, .5);
+
+        &:hover {
+          --fw-text-color: var(--fw-gray-800) !important;
+        }
+      }
+    }
+
+    @include dark-theme {
+      +.funkwhale.activity {
+        border-top: 1px solid var(--fw-gray-800);
+      }
+    }
+  }
+}
 </style>

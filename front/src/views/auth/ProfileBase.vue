@@ -228,36 +228,36 @@ const isOpen = useModal('artist-description').isOpen
   </Layout>
 </template>
 
-<style scoped lang="scss">
-  img.avatar {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-  }
+<style scoped>
+img.avatar {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+}
 
-  span.avatar {
-    display: block;
-    font-size: 150px;
-    font-style: normal;
-    font-weight: 800;
-    text-align: center;
-    align-content: center;
-    background-color: var(--fw-gray-500);
-    border-radius: 50%;
-    width: 200px;
-    height: 200px;
-  }
+span.avatar {
+  display: block;
+  font-size: 150px;
+  font-style: normal;
+  font-weight: 800;
+  text-align: center;
+  align-content: center;
+  background-color: var(--fw-gray-500);
+  border-radius: 50%;
+  width: 200px;
+  height: 200px;
+}
 
-  h1 {
-    font-size: 48px;
-    margin-bottom: 8px;
-  }
+h1 {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
 
-  a.edit span {
-    color: var(--fw-primary);
+a.edit span {
+  color: var(--fw-primary);
 
-    &:hover {
-      color: var(--color);
-    }
+  &:hover {
+    color: var(--color);
   }
+}
 </style>

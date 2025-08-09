@@ -317,6 +317,7 @@ const shuffle = () => { }
 </template>
 
 <style lang="scss" scoped>
+@import '~/style/funkwhale.scss';
 
 .playlist-grid {
   display: grid;

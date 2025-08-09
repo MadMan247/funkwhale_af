@@ -184,47 +184,53 @@ const labels = computed(() => ({
 </template>
 
 <style lang="scss" scoped>
-  header > nav button.button {
-    padding: 10px;
+@import '~/style/funkwhale.scss';
 
-    &.user-menu {
-      padding: 0px !important;
+header>nav button.button {
+  padding: 10px;
 
-      .avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
+  &.user-menu {
+    padding: 0px !important;
 
-        @include light-theme {
-          &.label {
-            background-color: var(--fw-gray-900);
-            color: var(--fw-beige-300);
-            &:hover {
-              color: var(--fw-color);
-              background-color: var(--hover-background-color);
-            }
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+
+      @include light-theme {
+        &.label {
+          background-color: var(--fw-gray-900);
+          color: var(--fw-beige-300);
+
+          &:hover {
+            color: var(--fw-color);
+            background-color: var(--hover-background-color);
           }
         }
+      }
 
-        @include dark-theme {
-          &.label {
-            background-color: var(--fw-beige-400);
-            color: var(--fw-gray-900);
-            &:hover {
-              color: var(--fw-color);
-              background-color: var(--hover-background-color);
-            }
+      @include dark-theme {
+        &.label {
+          background-color: var(--fw-beige-400);
+          color: var(--fw-gray-900);
+
+          &:hover {
+            color: var(--fw-color);
+            background-color: var(--hover-background-color);
           }
         }
       }
     }
+  }
 
+}
+
+nav.button-list {
+  width: 100%;
+
+  a:hover {
+    background-color: transparent;
+    border: none;
   }
-  nav.button-list {
-    width: 100%;
-    a:hover {
-      background-color: transparent;
-      border: none;
-    }
-  }
+}
 </style>

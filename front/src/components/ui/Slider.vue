@@ -131,6 +131,8 @@ onMounted(() => {
 </template>
 
 <style module lang="scss">
+@import '~/style/funkwhale.scss';
+
 .slider {
   .label {
     margin-top: -18px;
@@ -138,14 +140,17 @@ onMounted(() => {
     font-size: 14px;
     font-weight: 600;
   }
+
   .key {
     all: unset;
     cursor: pointer;
     opacity: .7;
+
     &.current {
-        opacity: 1;
+      opacity: 1;
     }
   }
+
   .description {
     font-size: 12px;
     font-weight: 600;
@@ -155,11 +160,13 @@ onMounted(() => {
     --inset: calc(var(--step-size) * var(--current-step));
     margin-left: var(--inset);
     margin-right: calc(0px - var(--inset));
+
     p {
       margin: 0;
       line-height: 1.5em;
     }
   }
+
   // Fake slider
   .range {
     width: calc(var(--step-size) * var(--current-step) + 4px);
@@ -173,17 +180,21 @@ onMounted(() => {
     pointer-events: none;
     opacity: var(--slider-opacity);
   }
+
   input[type=range]::-moz-range-thumb {
     background-color: var(--fw-primary);
     transition: all .1s;
     pointer-events: none;
   }
+
   input[type="range"]::-moz-range-track {
     border-radius: 8px;
+
     @include light-theme {
       background: var(--fw-gray-400);
     }
   }
+
   .pin {
     border-radius: 8px;
     width: 16px;
@@ -196,16 +207,18 @@ onMounted(() => {
     transition: all .1s;
     pointer-events: none;
   }
+
   input:focus~.pin,
   input:hover~.pin {
     outline: 1px solid currentColor;
   }
+
   &[disabled] .pin {
     display: none;
   }
+
   &[disabled] * {
     pointer-events: none;
   }
 }
-
 </style>

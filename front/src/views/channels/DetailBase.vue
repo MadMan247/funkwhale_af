@@ -492,20 +492,26 @@ const tabs = ref([
 </template>
 
 <style scoped lang="scss">
-  .channel-image {
-    border-radius: 50%;
+@import '~/style/funkwhale.scss';
+
+.channel-image {
+  border-radius: 50%;
+}
+
+.huge {
+  width: 200px;
+  height: 200px;
+}
+
+.meta {
+  font-size: 15px;
+
+  @include light-theme {
+    color: var(--fw-gray-700);
   }
-  .huge {
-    width: 200px;
-    height: 200px;
+
+  @include dark-theme {
+    color: var(--fw-gray-500);
   }
-  .meta {
-    font-size: 15px;
-    @include light-theme {
-      color: var(--fw-gray-700);
-    }
-    @include dark-theme {
-      color: var(--fw-gray-500);
-    }
-  }
+}
 </style>

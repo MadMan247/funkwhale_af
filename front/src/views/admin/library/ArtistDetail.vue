@@ -504,6 +504,8 @@ const open = ref(false)
 </template>
 
 <style scoped lang="scss">
+@import '~/style/funkwhale.scss';
+
 .channel-image {
   width: 200px;
   height: 200px;

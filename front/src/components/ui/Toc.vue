@@ -55,5 +55,71 @@ watchEffect(() => {
 </template>
 
 <style lang="scss">
-@import './toc.scss'
+@import '~/style/funkwhale.scss';
+
+.funkwhale {
+  &.toc {
+    > .toc-toc > .toc-links > button {
+      --fw-link-color: var(--fw-text-color) !important;
+
+      &.is-active::before {
+        background-color: var(--fw-secondary);
+      }
+    }
+
+    @include light-theme {
+      --fw-border-color: var(--fw-gray-300);
+    }
+
+    @include dark-theme {
+      --fw-border-color: var(--fw-gray-700);
+
+      > .toc-toc > .toc-links > button {
+        --fw-text-color: var(--fw-gray-300);
+      }
+    }
+
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 1rem;
+
+    > .toc-toc {
+      border-left: 1px solid var(--fw-border-color);
+
+      > .toc-links {
+        position: sticky;
+        top: 0;
+
+        padding-left: 8px;
+
+        /* @include docs {
+          top: 72px;
+        } */
+
+        > button {
+          position: relative;
+          font-size: 1rem;
+          padding: 4px 8px 4px 11px;
+          display: block;
+          width: 100%;
+          text-align: left;
+
+          &.is-active {
+            font-weight: 900;
+
+            &::before {
+              content: '';
+              width: 4px;
+              height: 100%;
+              position: absolute;
+              right: 100%;
+              top: 0;
+              border-radius: 100vh;
+            }
+          }
+        }
+      }
+    }
+  }
+}
 </style>
