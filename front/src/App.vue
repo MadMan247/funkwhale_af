@@ -76,15 +76,21 @@ useIntervalFn(() => {
 // NOTE: We're not checking if we're authenticated in the store,
 //       because we want to learn if we are authenticated at all
 store.dispatch('auth/fetchUser')
-
 </script>
 
 <template>
   <div class="funkwhale responsive">
     <Sidebar style="grid-area: sidebar;" />
-    <RouterView v-slot="{ Component }" v-bind="color({}, ['default', 'solid'])()" :class="$style.layout"
-      style="grid-area: main;">
-      <Transition v-if="Component" mode="out-in">
+    <RouterView
+      v-slot="{ Component }"
+      v-bind="color({}, ['default', 'solid'])()"
+      :class="$style.layout"
+      style="grid-area: main;"
+    >
+      <Transition
+        v-if="Component"
+        mode="out-in"
+      >
         <KeepAlive :max="10">
           <Suspense>
             <component :is="Component" />
@@ -99,7 +105,10 @@ store.dispatch('auth/fetchUser')
       </transition>
     </RouterView>
   </div>
-  <AudioPlayer class="funkwhale" v-bind="color({}, ['default', 'solid'])()" />
+  <AudioPlayer
+    class="funkwhale"
+    v-bind="color({}, ['default', 'solid'])()"
+  />
   <ServiceMessages />
   <LanguagesModal />
   <ShortcutsModal />

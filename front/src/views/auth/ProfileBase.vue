@@ -83,17 +83,17 @@ watch(props, fetchData, { immediate: true })
 const { copy, copied, isSupported } = useClipboard()
 
 const tabs = ref([{
-  title:  t('views.auth.ProfileBase.link.overview') ,
-  to:  { name: 'profile.overview', params: routerParams }
+  title: t('views.auth.ProfileBase.link.overview'),
+  to: { name: 'profile.overview', params: routerParams }
 }, {
-  title:  t('views.auth.ProfileBase.link.activity') ,
-  to:  { name: 'profile.activity', params: routerParams }
+  title: t('views.auth.ProfileBase.link.activity'),
+  to: { name: 'profile.activity', params: routerParams }
 }, ...(
   store.state.auth.authenticated && fullUsername.value === store.state.auth.fullUsername
     ? [{
-        title: t('views.auth.ProfileBase.link.manageUploads') ,
-        to: { name: 'profile.manageUploads', params: routerParams }
-      }]
+      title: t('views.auth.ProfileBase.link.manageUploads'),
+      to: { name: 'profile.manageUploads', params: routerParams }
+    }]
     : []
 )])
 
@@ -115,7 +115,7 @@ const isOpen = useModal('artist-description').isOpen
       :action="{
         text: t('views.auth.ProfileBase.link.edit'),
         // @ts-ignore
-        to:'/settings',
+        to: '/settings',
         // @ts-ignore
         primary: true,
         // @ts-ignore

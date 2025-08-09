@@ -37,7 +37,7 @@ const imageUrl = computed(() => props.album.cover?.urls.original
     :title="album.title"
     :image="imageUrl"
     :tags="album.tags"
-    :to="{name: 'library.albums.detail', params: {id: album.id}}"
+    :to="{ name: 'library.albums.detail', params: { id: album.id } }"
     small
   >
     <template #topright>
@@ -58,7 +58,7 @@ const imageUrl = computed(() => props.album.cover?.urls.original
       >
         <Link
           align-text="start"
-          :to="{ name: 'library.artists.detail', params: { id: ac.artist.id }}"
+          :to="{ name: 'library.artists.detail', params: { id: ac.artist.id } }"
         >
           {{ ac.credit ?? t('components.Queue.meta.unknownArtist') }}
         </Link>

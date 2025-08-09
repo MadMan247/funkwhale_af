@@ -499,6 +499,8 @@ const getQuery = (field: string, value: string) => `${field}:"${value}"`
 </template>
 
 <style scoped lang="scss">
+@import '~/style/funkwhale.scss';
+
 .channel-image {
   width: 200px;
   height: 200px;
@@ -519,6 +521,7 @@ h3.category {
   @include light-theme {
     border-color: var(--fw-gray-300);
   }
+
   @include dark-theme {
     border-color: var(--fw-gray-800);
   }

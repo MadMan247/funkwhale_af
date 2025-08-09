@@ -45,24 +45,30 @@ const diameter = big ? '28px' : '20px'
   &[checked] {
     --void-color: var(--void-on-background-color);
     --pin-color: var(--void-on-pin-color);
-    &::after{
-      transform:translateX(var(--diameter));
+
+    &::after {
+      transform: translateX(var(--diameter));
     }
   }
 
-  &:hover, &:has(:focus-visible) {
+  &:hover,
+  &:has(:focus-visible) {
     --void-color: var(--void-off-hover-background-color);
     --pin-color: var(--void-off-hover-pin-color);
+
     &[checked] {
       --void-color: var(--void-on-hover-background-color);
       --pin-color: var(--void-on-hover-pin-color);
     }
   }
-  &::before, &::after {
+
+  &::before,
+  &::after {
     content: '';
     position: absolute;
     border-radius: var(--diameter);
   }
+
   &::before {
     height: var(--diameter);
     aspect-ratio: 2;
@@ -70,6 +76,7 @@ const diameter = big ? '28px' : '20px'
     left: 0;
     top: calc(var(--padding) * 2 - var(--diameter) / 2);
   }
+
   &::after {
     height: calc(var(--diameter) - var(--lineWidth) * 2);
     aspect-ratio: 1;
@@ -79,7 +86,7 @@ const diameter = big ? '28px' : '20px'
     transition: all .2s;
   }
 
-  > span {
+  >span {
     padding-left: calc(var(--diameter) * 2 - 12px);
   }
 }

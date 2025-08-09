@@ -141,7 +141,7 @@ const open = ref(false)
         primary
         low-height
         icon="bi-info-circle"
-        :to="{name: 'library.artists.detail', params: {id: object.id }}"
+        :to="{ name: 'library.artists.detail', params: { id: object.id } }"
       >
         {{ t('views.admin.library.ArtistDetail.link.localProfile') }}
       </Link>
@@ -160,7 +160,7 @@ const open = ref(false)
         primary
         low-height
         icon="bi-pencil-fill"
-        :to="{name: 'library.artists.edit', params: {id: object.id }}"
+        :to="{ name: 'library.artists.edit', params: { id: object.id } }"
       >
         {{ t('views.admin.library.ArtistDetail.button.edit') }}
       </Link>
@@ -256,7 +256,7 @@ const open = ref(false)
       >
         <Link
           class="label"
-          :to="{name: 'manage.library.artists', query: {q: getQuery('category', object?.content_category) }}"
+          :to="{ name: 'manage.library.artists', query: { q: getQuery('category', object?.content_category) } }"
         >
           {{ t('views.admin.library.ArtistDetail.link.category') }}
         </Link>
@@ -273,7 +273,7 @@ const open = ref(false)
       >
         <Link
           class="label"
-          :to="{name: 'manage.moderation.domains.detail', params: {id: object?.domain }}"
+          :to="{ name: 'manage.moderation.domains.detail', params: { id: object?.domain } }"
         >
           {{ t('views.admin.library.ArtistDetail.link.domain') }}
         </Link>
@@ -374,7 +374,7 @@ const open = ref(false)
       >
         <Link
           class="label"
-          :to="{name: 'manage.moderation.reports.list', query: {q: getQuery('target', `artist:${object?.id}`) }}"
+          :to="{ name: 'manage.moderation.reports.list', query: { q: getQuery('target', `artist:${object?.id}`) } }"
         >
           {{ t('views.admin.library.ArtistDetail.link.reports') }}
         </Link>
@@ -390,7 +390,7 @@ const open = ref(false)
       >
         <Link
           class="label"
-          :to="{name: 'manage.library.edits', query: {q: getQuery('target', 'artist ' + object?.id) }}"
+          :to="{ name: 'manage.library.edits', query: { q: getQuery('target', 'artist ' + object?.id) } }"
         >
           {{ t('views.admin.library.ArtistDetail.link.edits') }}
         </Link>
@@ -441,7 +441,7 @@ const open = ref(false)
       >
         <Link
           class="label"
-          :to="{name: 'manage.library.libraries', query: {q: getQuery('artist_id', object?.id) }}"
+          :to="{ name: 'manage.library.libraries', query: { q: getQuery('artist_id', object?.id) } }"
         >
           {{ t('views.admin.library.ArtistDetail.link.libraries') }}
         </Link>
@@ -457,7 +457,7 @@ const open = ref(false)
       >
         <Link
           class="label"
-          :to="{name: 'manage.library.uploads', query: {q: getQuery('artist_id', object?.id) }}"
+          :to="{ name: 'manage.library.uploads', query: { q: getQuery('artist_id', object?.id) } }"
         >
           {{ t('views.admin.library.ArtistDetail.link.uploads') }}
         </Link>
@@ -473,7 +473,7 @@ const open = ref(false)
       >
         <Link
           class="label"
-          :to="{name: 'manage.library.albums', query: {q: getQuery('artist_id', object?.id) }}"
+          :to="{ name: 'manage.library.albums', query: { q: getQuery('artist_id', object?.id) } }"
         >
           {{ t('views.admin.library.ArtistDetail.link.albums') }}
         </Link>
@@ -489,7 +489,7 @@ const open = ref(false)
       >
         <Link
           class="label"
-          :to="{name: 'manage.library.tracks', query: {q: getQuery('artist_id', object?.id) }}"
+          :to="{ name: 'manage.library.tracks', query: { q: getQuery('artist_id', object?.id) } }"
         >
           {{ t('views.admin.library.ArtistDetail.link.tracks') }}
         </Link>
@@ -524,6 +524,7 @@ h3.category {
   @include light-theme {
     border-color: var(--fw-gray-300);
   }
+
   @include dark-theme {
     border-color: var(--fw-gray-800);
   }

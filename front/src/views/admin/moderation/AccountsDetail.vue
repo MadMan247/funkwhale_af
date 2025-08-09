@@ -409,7 +409,9 @@ const updatePolicy = (newPolicy: InstancePolicy) => {
         flex
         class="details"
       >
-        <router-link :to="{name: 'manage.moderation.reports.list', query: {q: getQuery('target', `account:${object?.full_username}`) }}">
+        <router-link
+          :to="{ name: 'manage.moderation.reports.list', query: { q: getQuery('target', `account:${object?.full_username}`) } }"
+        >
           {{ t('views.admin.moderation.AccountsDetail.link.linkedReports') }}
         </router-link>
         <Spacer
@@ -423,7 +425,9 @@ const updatePolicy = (newPolicy: InstancePolicy) => {
         flex
         class="details"
       >
-        <router-link :to="{name: 'manage.moderation.requests.list', query: {q: getQuery('submitter', `${object?.full_username}`) }}">
+        <router-link
+          :to="{ name: 'manage.moderation.requests.list', query: { q: getQuery('submitter', `${object?.full_username}`) } }"
+        >
           {{ t('views.admin.moderation.AccountsDetail.link.requests') }}
         </router-link>
         <Spacer
@@ -525,9 +529,11 @@ const updatePolicy = (newPolicy: InstancePolicy) => {
   text-align: center;
   align-content: center;
   border-radius: 50%;
+
   @include light-theme {
     background-color: var(--fw-gray-200);
   }
+
   @include dark-theme {
     background-color: var(--fw-gray-800);
   }
@@ -547,6 +553,7 @@ h3.category {
   @include light-theme {
     border-color: var(--fw-gray-300);
   }
+
   @include dark-theme {
     border-color: var(--fw-gray-800);
   }

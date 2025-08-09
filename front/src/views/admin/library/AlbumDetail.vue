@@ -502,9 +502,7 @@ const open = ref(false)
         flex
         class="details"
       >
-        <Link
-          :to="{name: 'manage.library.tracks', query: {q: getQuery('album_id', object?.id) }}"
-        >
+        <Link :to="{ name: 'manage.library.tracks', query: { q: getQuery('album_id', object?.id) } }">
           {{ t('views.admin.library.AlbumDetail.link.tracks') }}
         </Link>
         <Spacer
@@ -540,6 +538,7 @@ h3.category {
   @include light-theme {
     border-color: var(--fw-gray-300);
   }
+
   @include dark-theme {
     border-color: var(--fw-gray-800);
   }
@@ -564,5 +563,4 @@ h3.category {
     border-bottom: 1px solid;
   }
 }
-
 </style>

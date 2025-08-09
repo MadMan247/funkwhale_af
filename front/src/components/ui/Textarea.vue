@@ -230,7 +230,7 @@ onMounted(() => {
         :required="required"
         :placeholder="placeholder"
         :rows="initialLines"
-        :style="`min-height:${((typeof(initialLines) === 'string' ? parseInt(initialLines) : (initialLines ?? 3)) + 1.2) * 1.5}rem`"
+        :style="`min-height:${((typeof (initialLines) === 'string' ? parseInt(initialLines) : (initialLines ?? 3)) + 1.2) * 1.5}rem`"
         @click="updateLineNumber"
         @mousedown.stop
         @mouseup.stop
@@ -343,7 +343,8 @@ onMounted(() => {
         <span
           v-if="charLimit !== Infinity && typeof charLimit === 'number'"
           class="letter-count"
-        >{{ charLimit - model.length }}</span>
+        >{{ charLimit -
+          model.length }}</span>
 
         <Spacer />
 

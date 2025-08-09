@@ -153,12 +153,12 @@ const updateSubscriptionCount = (delta: number) => {
 const tabs = ref([
   {
     title: t('views.channels.DetailBase.link.channelOverview'),
-    to: {name: 'channels.detail', params: { id: props.id }}
+    to: { name: 'channels.detail', params: { id: props.id } }
 
   },
   {
     title: t('views.channels.DetailBase.link.channelEpisodes'),
-    to: {name: 'channels.detail.episodes', params: { id: props.id }}
+    to: { name: 'channels.detail.episodes', params: { id: props.id } }
   }
 ])
 </script>
@@ -200,14 +200,10 @@ const tabs = ref([
           no-gap
         >
           <template v-if="totalTracks > 0">
-            <span
-              v-if="object.artist?.content_category === 'podcast'"
-            >
+            <span v-if="object.artist?.content_category === 'podcast'">
               {{ t('views.channels.DetailBase.meta.episodes', totalTracks) }}
             </span>
-            <span
-              v-else
-            >
+            <span v-else>
               {{ t('views.channels.DetailBase.meta.tracks', totalTracks) }}
             </span>
             <i class="bi bi-dot" />
@@ -232,9 +228,7 @@ const tabs = ref([
             <span>
               {{ t('views.channels.DetailBase.header.podcastChannel') }}
             </span>
-            <span
-              v-if="!object.actor"
-            >
+            <span v-if="!object.actor">
               <i class="bi bi-dot" />
               <a
                 :href="object.url || object.rss_url"
@@ -242,7 +236,7 @@ const tabs = ref([
                 target="_blank"
               >
                 <i class="bi bi-box-arrow-up-right" />
-                {{ t('views.channels.DetailBase.link.mirrored', {domain: externalDomain}) }}
+                {{ t('views.channels.DetailBase.link.mirrored', { domain: externalDomain }) }}
               </a>
             </span>
           </template>
@@ -327,11 +321,11 @@ const tabs = ref([
               target="_blank"
               icon="bi-box-arrow-up-right"
             >
-              {{ t('views.channels.DetailBase.link.domainView', {domain: object.actor.domain}) }}
+              {{ t('views.channels.DetailBase.link.domainView', { domain: object.actor.domain }) }}
             </PopoverItem>
             <hr>
             <PopoverItem
-              v-for="obj in getReportableObjects({account: object.attributed_to, channel: object})"
+              v-for="obj in getReportableObjects({ account: object.attributed_to, channel: object })"
               :key="obj.target.type + obj.target.id"
               icon="bi-share"
               @click.stop.prevent="report(obj)"
@@ -412,10 +406,9 @@ const tabs = ref([
         <Modal
           v-if="isOwner"
           v-model="showEditModal"
-          :title="
-            object.artist?.content_category === 'podcast'
-              ? t('views.channels.DetailBase.header.podcastChannel')
-              : t('views.channels.DetailBase.header.artistChannel')
+          :title="object.artist?.content_category === 'podcast'
+            ? t('views.channels.DetailBase.header.podcastChannel')
+            : t('views.channels.DetailBase.header.artistChannel')
           "
         >
           <div class="scrolling content">

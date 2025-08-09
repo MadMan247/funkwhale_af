@@ -16,10 +16,10 @@ const props = defineProps<{
   icon?: string;
   round?: true;
 
-  autofocus? : boolean
-  forceUnderline? : true
+  autofocus?: boolean
+  forceUnderline?: true
 } & RouterLinkProps
-  &(ColorProps | DefaultProps)
+  & (ColorProps | DefaultProps)
   & VariantProps
   & WidthProps
   & AlignmentProps>()
@@ -40,8 +40,8 @@ const [fontWeight, activeFontWeight] = 'solid' in props || props.thickWhenActive
 const isIconOnly = computed(() =>
   !!props.icon && (
     !useSlots().default
-      || 'square' in props && props.square
-      || 'squareSmall' in props && props.squareSmall
+    || 'square' in props && props.square
+    || 'squareSmall' in props && props.squareSmall
   )
 )
 
@@ -55,13 +55,12 @@ onMounted(() => {
 <template>
   <component
     :is="isExternalLink ? 'a' : RouterLink"
-    v-bind="
-      color(props, ['interactive'])(
-        width(props,
-              isNoColors(props) ? [] : ['normalHeight', 'solid' in props ? 'buttonWidth' : 'auto']
-        )(
-          align(props, 'solid' in props ? {alignText: 'center'} : {})(
-          )))"
+    v-bind="color(props, ['interactive'])(
+      width(props,
+            isNoColors(props) ? [] : ['normalHeight', 'solid' in props ? 'buttonWidth' : 'auto']
+      )(
+        align(props, 'solid' in props ? { alignText: 'center' } : {})(
+        )))"
     ref="button"
     :autofocus="autofocus || undefined"
     :class="[
@@ -88,81 +87,85 @@ onMounted(() => {
 </template>
 
 <style module lang="scss">
+.link {
 
-  .link {
+  // Layout
 
-    // Layout
+  --padding: 16px;
+  --shift-by: 0.5px;
 
-    --padding: 16px;
-    --shift-by: 0.5px;
+  position: relative;
+  display: inline-flex;
+  white-space: nowrap;
+  align-items: center;
 
+  padding: calc(var(--padding) / 2 - var(--shift-by)) var(--padding) calc(var(--padding) / 2 + var(--shift-by)) var(--padding);
+
+  &.is-icon-only {
+    padding: var(--padding);
+  }
+
+  &.no-spacing {
+    padding: 0;
+    margin: 0;
+    font-size: 1em;
+  }
+
+  // Font
+
+  font-family: var(--font-main);
+  font-weight: v-bind(fontWeight);
+  font-size: 14px;
+
+  line-height: 1em;
+
+  // Content
+
+  >span {
     position: relative;
-    display: inline-flex;
-    white-space: nowrap;
-    align-items: center;
+    top: calc(0px - var(--shift-by));
+  }
 
-    padding: calc(var(--padding) / 2 - var(--shift-by)) var(--padding) calc(var(--padding) / 2 + var(--shift-by)) var(--padding);
-    &.is-icon-only {
-      padding: var(--padding);
-    }
-    &.no-spacing {
-      padding: 0;
-      margin: 0;
-      font-size: 1em;
-    }
+  // Decoration
 
-    // Font
+  &:not([disabled]) {
+    cursor: pointer;
+  }
 
-    font-family: $font-main;
-    font-weight: v-bind(fontWeight);
-    font-size: 14px;
+  transform: translateX(var(--fw-translate-x)) translateY(var(--fw-translate-y)) scale(var(--fw-scale));
+  transition:background-color .2s,
+  border-color .3s;
 
-    line-height: 1em;
+  &:not(.force-underline) {
+    text-decoration: none;
+    // background-color: transparent;
+    // border-color: transparent;
+  }
 
-    // Content
+  border-radius: var(--fw-border-radius);
 
-    > span {
-      position: relative;
-      top: calc(0px - var(--shift-by));
-    }
+  &.is-round {
+    border-radius: 100vh;
+  }
 
-    // Decoration
+  // States
 
-    &:not([disabled]) {
-      cursor: pointer;
-    }
+  &:global(.router-link-exact-active) {
+    font-weight: v-bind(activeFontWeight);
+  }
 
-    transform: translateX(var(--fw-translate-x)) translateY(var(--fw-translate-y)) scale(var(--fw-scale));
-    transition:background-color .2s, border-color .3s;
+  // Icon
 
-    &:not(.force-underline) {
-      text-decoration: none;
-      // background-color: transparent;
-      // border-color: transparent;
+  >i:global(.bi) {
+    font-size: 1.2rem;
+
+    &.large {
+      font-size: 2rem;
     }
 
-    border-radius: var(--fw-border-radius);
-
-    &.is-round {
-      border-radius: 100vh;
-    }
-
-    // States
-
-    &:global(.router-link-exact-active) {
-      font-weight: v-bind(activeFontWeight);
-    }
-
-    // Icon
-
-    > i:global(.bi) {
-      font-size: 1.2rem;
-      &.large {
-        font-size:2rem;
-      }
-      &+span:not(:empty) {
-        margin-left: 1ch;
-      }
+    &+span:not(:empty) {
+      margin-left: 1ch;
     }
   }
+}
 </style>

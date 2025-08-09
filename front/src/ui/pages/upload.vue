@@ -88,7 +88,7 @@ const tabs = computed(() => [
   <!-- eslint-enable @intlify/vue-i18n/no-raw-text -->
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 h1 {
   font-size: 36px;
   font-weight: 900;
@@ -109,7 +109,8 @@ h1 {
 
 .filesystem-stats {
   color: var(--fw-gray-700);
-  > .flex {
+
+  >.flex {
     padding: 1ch;
   }
 }
@@ -166,6 +167,7 @@ h1 {
   align-items: center;
   justify-content: center;
 }
+
 .funkwhale.card {
   margin-bottom: 2rem;
   transition: margin-bottom 0.2s ease;
@@ -211,7 +213,7 @@ label {
   align-items: center;
   margin: 2rem 0 1rem;
 
-  > .file-count {
+  >.file-count {
     margin-right: auto;
     color: var(--fw-gray-600);
     font-weight: 900;
@@ -228,7 +230,7 @@ label {
     border-top: 1px solid var(--fw-gray-200);
   }
 
-  > .track-cover {
+  >.track-cover {
     height: 3rem;
     width: 3rem;
     border-radius: 0.5rem;
@@ -243,7 +245,7 @@ label {
     position: relative;
     overflow: hidden;
 
-    > img {
+    >img {
       position: absolute;
       top: 0;
       left: 0;
@@ -287,6 +289,7 @@ label {
       opacity: 0;
     }
   }
+
   .track-progress {
     font-size: 0.875rem;
     color: var(--fw-gray-600);

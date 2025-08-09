@@ -9,18 +9,18 @@ import Button from '~/components/ui/Button.vue'
 import Layout from '~/components/ui/Layout.vue'
 
 const { icon, placeholder, ...props } = defineProps<{
-    icon?: string;
-    placeholder?: string;
-    password?: true;
-    search?: true;
-    numeric?: true;
-    label?: string;
-    autofocus?: boolean;
-    reset?:() => void;
-  } & (ColorProps | DefaultProps | PastelProps)
-    & VariantProps
-    & RaisedProps
-    & WidthProps
+  icon?: string;
+  placeholder?: string;
+  password?: true;
+  search?: true;
+  numeric?: true;
+  label?: string;
+  autofocus?: boolean;
+  reset?: () => void;
+} & (ColorProps | DefaultProps | PastelProps)
+  & VariantProps
+  & RaisedProps
+  & WidthProps
 >()
 
 // TODO(A11y): Add `inputmode="numeric" pattern="[0-9]*"` to input if model type is number:
@@ -56,7 +56,7 @@ onUnmounted(() =>
   previouslyFocusedElement.value?.focus()
 )
 
-const model = defineModel<string|number>({ required: true })
+const model = defineModel<string | number>({ required: true })
 </script>
 
 <template>
@@ -82,7 +82,7 @@ const model = defineModel<string|number>({ required: true })
     </span>
 
     <input
-      v-bind="{...$attrs, ...attributes, ...color(props, ['solid', 'default', 'secondary'])(width(props)())}"
+      v-bind="{ ...$attrs, ...attributes, ...color(props, ['solid', 'default', 'secondary'])(width(props)()) }"
       ref="input"
       v-model="model"
       :autofocus="autofocus || undefined"
@@ -122,7 +122,7 @@ const model = defineModel<string|number>({ required: true })
     <!-- Password -->
     <button
       v-if="props.password"
-      v-bind="{...$attrs, ...attributes, ...color(props, ['solid', 'default', 'secondary'])()}"
+      v-bind="{ ...$attrs, ...attributes, ...color(props, ['solid', 'default', 'secondary'])() }"
       style="background:transparent; border:none; appearance:none; height:calc(100% - 16px); color:var(--color); cursor:pointer;"
       role="switch"
       type="button"

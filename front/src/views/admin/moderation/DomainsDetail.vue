@@ -183,9 +183,7 @@ const setAllowList = async (value: boolean) => {
     </Layout>
   </Header>
 
-  <Alert
-    blue
-  >
+  <Alert blue>
     <template v-if="isLoadingPolicy">
       <div class="paragraph">
         <div class="line" />
@@ -296,7 +294,11 @@ const setAllowList = async (value: boolean) => {
           grow
         />
         <span class="value">
-          {{ t('views.admin.moderation.DomainsDetail.table.instanceData.software.value', {name: get(object, 'nodeinfo.payload.software.name', t('views.admin.moderation.DomainsDetail.notApplicable')), version: get(object, 'nodeinfo.payload.software.version', t('views.admin.moderation.DomainsDetail.notApplicable'))}) }}
+          {{ t('views.admin.moderation.DomainsDetail.table.instanceData.software.value', {
+            name: get(object,
+                      'nodeinfo.payload.software.name', t('views.admin.moderation.DomainsDetail.notApplicable')), version:
+                        get(object,
+                            'nodeinfo.payload.software.version', t('views.admin.moderation.DomainsDetail.notApplicable'))}) }}
         </span>
       </Layout>
       <Layout
@@ -312,7 +314,11 @@ const setAllowList = async (value: boolean) => {
           grow
         />
         <span class="value">
-          {{ t('views.admin.moderation.DomainsDetail.table.instanceData.nodeInfoStatus.value', {name: get(object, 'nodeinfo.payload.software.name', t('views.admin.moderation.DomainsDetail.notApplicable')), version: get(object, 'nodeinfo.payload.software.version', t('views.admin.moderation.DomainsDetail.notApplicable'))}) }}
+          {{ t('views.admin.moderation.DomainsDetail.table.instanceData.nodeInfoStatus.value', {
+            name: get(object,
+                      'nodeinfo.payload.software.name', t('views.admin.moderation.DomainsDetail.notApplicable')), version:
+                        get(object,
+                            'nodeinfo.payload.software.version', t('views.admin.moderation.DomainsDetail.notApplicable'))}) }}
         </span>
         <span :data-tooltip="object.nodeinfo.error"><i class="bi bi-question-circle" /></span>
       </Layout>
@@ -358,7 +364,7 @@ const setAllowList = async (value: boolean) => {
       >
         <Link
           class="label"
-          :to="{name: 'manage.moderation.accounts.list', query: {q: 'domain:' + object?.name }}"
+          :to="{ name: 'manage.moderation.accounts.list', query: { q: 'domain:' + object?.name } }"
         >
           {{ t('views.admin.moderation.DomainsDetail.link.knownAccounts') }}
         </Link>
@@ -415,7 +421,7 @@ const setAllowList = async (value: boolean) => {
         class="details"
       >
         <span class="label">
-          <router-link :to="{name: 'manage.channels', query: {q: getQuery('domain', object.name) }}">
+          <router-link :to="{ name: 'manage.channels', query: { q: getQuery('domain', object.name) } }">
             {{ t('views.admin.moderation.DomainsDetail.link.channels') }}
           </router-link>
         </span>
@@ -430,7 +436,7 @@ const setAllowList = async (value: boolean) => {
         class="details"
       >
         <span class="label">
-          <router-link :to="{name: 'manage.library.libraries', query: {q: getQuery('domain', object.name) }}">
+          <router-link :to="{ name: 'manage.library.libraries', query: { q: getQuery('domain', object.name) } }">
             {{ t('views.admin.moderation.DomainsDetail.link.libraries') }}
           </router-link>
         </span>
@@ -445,7 +451,7 @@ const setAllowList = async (value: boolean) => {
         class="details"
       >
         <span class="label">
-          <router-link :to="{name: 'manage.library.uploads', query: {q: getQuery('domain', object.name) }}">
+          <router-link :to="{ name: 'manage.library.uploads', query: { q: getQuery('domain', object.name) } }">
             {{ t('views.admin.moderation.DomainsDetail.link.uploads') }}
           </router-link>
         </span>
@@ -460,7 +466,7 @@ const setAllowList = async (value: boolean) => {
         class="details"
       >
         <span class="label">
-          <router-link :to="{name: 'manage.library.artists', query: {q: getQuery('domain', object.name) }}">
+          <router-link :to="{ name: 'manage.library.artists', query: { q: getQuery('domain', object.name) } }">
             {{ t('views.admin.moderation.DomainsDetail.link.artists') }}
           </router-link>
         </span>
@@ -475,7 +481,7 @@ const setAllowList = async (value: boolean) => {
         class="details"
       >
         <span class="label">
-          <router-link :to="{name: 'manage.library.albums', query: {q: getQuery('domain', object.name) }}">
+          <router-link :to="{ name: 'manage.library.albums', query: { q: getQuery('domain', object.name) } }">
             {{ t('views.admin.moderation.DomainsDetail.link.albums') }}
           </router-link>
         </span>
@@ -490,7 +496,7 @@ const setAllowList = async (value: boolean) => {
         class="details"
       >
         <span class="label">
-          <router-link :to="{name: 'manage.library.tracks', query: {q: getQuery('domain', object.name) }}">
+          <router-link :to="{ name: 'manage.library.tracks', query: { q: getQuery('domain', object.name) } }">
             {{ t('views.admin.moderation.DomainsDetail.link.tracks') }}
           </router-link>
         </span>

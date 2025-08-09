@@ -53,12 +53,12 @@ const fullPlaylistTracks = ref<FullPlaylistTrack[]>([])
 const tracks = computed(() => fullPlaylistTracks.value.map(({ track }, index) => ({ ...track as Track, position: index + 1 })))
 
 const updateTrack = (updatedTrack: Track) => {
-    fullPlaylistTracks.value = fullPlaylistTracks.value.map((item) =>
-      item.track.id === updatedTrack.id ? { ...item, track: updatedTrack } : item
-    );
+  fullPlaylistTracks.value = fullPlaylistTracks.value.map((item) =>
+    item.track.id === updatedTrack.id ? { ...item, track: updatedTrack } : item
+  );
 };
 useWebSocketHandler('playlist.track_updated', async (event) => {
-    updateTrack(event.track);
+  updateTrack(event.track);
 });
 
 const { t } = useI18n()
@@ -136,7 +136,7 @@ const bgcolors = ref([
   '#322f2f'
 ])
 
-function shuffleArray (array: string[]): string[] {
+function shuffleArray(array: string[]): string[] {
   return [...array].sort(() => Math.random() - 0.5)
 }
 
@@ -149,7 +149,7 @@ const randomizedColors = computed(() => shuffleArray(bgcolors.value))
 // })
 
 // TODO: Implement shuffle
-const shuffle = () => {}
+const shuffle = () => { }
 </script>
 
 <template>
@@ -194,9 +194,7 @@ const shuffle = () => {}
         {{ playlist.actor.full_username }}
         <i class="bi bi-dot" />
         {{ t('views.playlists.Detail.meta.updated') }}
-        <HumanDate
-          :date="playlist.modification_date"
-        />
+        <HumanDate :date="playlist.modification_date" />
       </Layout>
     </Layout>
     <RenderedDescription
@@ -337,9 +335,11 @@ const shuffle = () => {}
 
 .meta {
   font-size: 15px;
+
   @include light-theme {
     color: var(--fw-gray-700);
   }
+
   @include dark-theme {
     color: var(--fw-gray-500);
   }

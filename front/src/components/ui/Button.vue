@@ -80,71 +80,118 @@ onUnmounted(() =>
 </script>
 
 <template>
-  <div v-if="split" class="funkwhale split-button">
-    <button v-if="!dropdownOnly" ref="button" v-bind="{
-      ...$attrs,
-      ...color(props, ['interactive'])(
-        width(props, isIconOnly ? ['square'] : ['normalHeight', 'buttonWidth'])(
-          align(props, { alignText: 'center' })(
-          )))
-    }" class="funkwhale button split-main" :autofocus="autofocus || undefined"
-      :disabled="disabled || undefined" :aria-pressed="props.ariaPressed" :class="{
+  <div
+    v-if="split"
+    class="funkwhale split-button"
+  >
+    <button
+      v-if="!dropdownOnly"
+      ref="button"
+      v-bind="{
+        ...$attrs,
+        ...color(props, ['interactive'])(
+          width(props, isIconOnly ? ['square'] : ['normalHeight', 'buttonWidth'])(
+            align(props, { alignText: 'center' })(
+            ))
+        )
+      }"
+      class="funkwhale button split-main"
+      :autofocus="autofocus || undefined"
+      :disabled="disabled || undefined"
+      :aria-pressed="props.ariaPressed"
+      :class="{
         'is-loading': isLoading,
         'is-icon-only': isIconOnly,
         'has-icon': !!icon,
         'is-round': round,
         'is-shadow': shadow,
-      }" @click="click">
+      }"
+      @click="click"
+    >
       <slot name="main">
-        <i v-if="icon && !icon.startsWith('right ')" :class="['bi', icon]" />
+        <i
+          v-if="icon && !icon.startsWith('right ')"
+          :class="['bi', icon]"
+        />
 
         <span v-if="!isIconOnly">
           <slot />
         </span>
 
-        <i v-if="icon && icon.startsWith('right ')" :class="['bi', icon.replace('right ', '')]" />
+        <i
+          v-if="icon && icon.startsWith('right ')"
+          :class="['bi', icon.replace('right ', '')]"
+        />
       </slot>
-      <Loader v-if="isLoading" :container="false" />
+      <Loader
+        v-if="isLoading"
+        :container="false"
+      />
     </button>
-    <button v-bind="{
-      ...$attrs,
-      ...color(props, ['interactive'])(
-        width(props, isSplitIconOnly ? ['square'] : ['normalHeight', 'buttonWidth'])(
-          align(props, { alignSelf: 'start', alignText: 'center' })(
-          )))
-    }" :disabled="disabled || undefined" :autofocus="autofocus || undefined" :class="[
-              'funkwhale',
-              'button',
-              {
-                'split-toggle': true,
-                'is-loading': isLoading,
-                'is-icon-only': isSplitIconOnly,
-                'has-icon': !!splitIcon,
-                'is-round': round,
-                'is-shadow': shadow
-              }
-            ]" @click="onSplitClick">
+    <button
+      v-bind="{
+        ...$attrs,
+        ...color(props, ['interactive'])(
+          width(props, isSplitIconOnly ? ['square'] : ['normalHeight', 'buttonWidth'])(
+            align(props, { alignSelf: 'start', alignText: 'center' })(
+            )))
+      }"
+      :disabled="disabled || undefined"
+      :autofocus="autofocus || undefined"
+      :class="[
+        'funkwhale',
+        'button',
+        {
+          'split-toggle': true,
+          'is-loading': isLoading,
+          'is-icon-only': isSplitIconOnly,
+          'has-icon': !!splitIcon,
+          'is-round': round,
+          'is-shadow': shadow
+        }
+      ]"
+      @click="onSplitClick"
+    >
       <span v-if="splitTitle">{{ splitTitle }}</span>
       <i :class="['bi', splitIcon]" />
     </button>
   </div>
-  <button v-else ref="button" v-bind="color(props, ['interactive'])(
-    width(props, isIconOnly ? ['square'] : ['normalHeight', 'buttonWidth'])(
-      align(props, { alignText: 'center' })(
-      )))" :disabled="disabled || undefined" :autofocus="autofocus || undefined" class="funkwhale button"
-    :aria-pressed="props.ariaPressed" :class="{
+  <button
+    v-else
+    ref="button"
+    v-bind="color(props, ['interactive'])(
+      width(props, isIconOnly ? ['square'] : ['normalHeight', 'buttonWidth'])(
+        align(props, { alignText: 'center' })(
+        )))"
+    :disabled="disabled || undefined"
+    :autofocus="autofocus || undefined"
+    class="funkwhale button"
+    :aria-pressed="props.ariaPressed"
+    :class="{
       'is-loading': isLoading,
       'is-icon-only': isIconOnly,
       'has-icon': !!icon,
       'is-round': round,
       'is-shadow': shadow,
-    }" :type="onClick ? 'button' : 'submit' /* Prevents default `submit` if onCLick is set */" @click="click">
-    <i v-if="icon && !icon.startsWith('right ')" :class="['bi', icon]" />
+    }"
+    :type="onClick ? 'button' : 'submit' /* Prevents default `submit` if onCLick is set */"
+    @click="click"
+  >
+    <i
+      v-if="icon && !icon.startsWith('right ')"
+      :class="['bi', icon]"
+    />
     <span v-if="!isIconOnly">
       <slot />
     </span>
-    <i v-if="icon && icon.startsWith('right ')" :class="['bi', icon.replace('right ', '')]" />
-    <Loader v-if="isLoading" :container="false" />
+    <i
+      v-if="icon && icon.startsWith('right ')"
+      :class="['bi', icon.replace('right ', '')]"
+    />
+    <Loader
+      v-if="isLoading"
+      :container="false"
+    />
   </button>
 </template>
 

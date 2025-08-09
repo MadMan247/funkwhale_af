@@ -204,7 +204,7 @@ const remove = async () => {
             v-if="totalDuration > 0"
             :duration="totalDuration"
           />
-        <!--TODO: License -->
+          <!--TODO: License -->
         </Layout>
       </Layout>
       <RenderedDescription
@@ -295,13 +295,17 @@ const remove = async () => {
 </template>
 
 <style scoped lang="scss">
-  .meta {
-    font-size: 15px;
-    @include light-theme {
-      color: var(--fw-gray-700);
-    }
-    @include dark-theme {
-      color: var(--fw-gray-500);
-    }
+@import '~/style/funkwhale.scss';
+
+.meta {
+  font-size: 15px;
+
+  @include light-theme {
+    color: var(--fw-gray-700);
   }
+
+  @include dark-theme {
+    color: var(--fw-gray-500);
+  }
+}
 </style>

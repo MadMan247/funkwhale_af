@@ -17,7 +17,8 @@ const props = defineProps<Props>()
       ...$attrs,
       ...color(props, ['solid'])(
         align(props)(
-        ))}"
+        ))
+    }"
   >
     <slot />
 

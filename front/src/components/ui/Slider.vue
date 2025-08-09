@@ -16,12 +16,12 @@ const keys = computed(() => Object.keys(props.options) as T[])
 const model = defineModel<T | undefined>({ required: true })
 
 const index = computed({
-  get () {
+  get() {
     return model.value
       ? keys.value.indexOf(model.value)
       : undefined
   },
-  set (newIndex) {
+  set(newIndex) {
     model.value = newIndex
       ? keys.value[newIndex]
       : undefined
@@ -43,8 +43,8 @@ onMounted(() => {
     :style="`
       --step-size: calc(100% / ${keys.length + 2});
       --slider-width: calc(var(--step-size) * ${keys.length - 1} + 16px);
-      --slider-opacity: ${ index === undefined ? .5 : 1 };
-      --current-step: ${ index === undefined ? keys.length - 1 : index };
+      --slider-opacity: ${index === undefined ? .5 : 1};
+      --current-step: ${index === undefined ? keys.length - 1 : index};
     `"
   >
     <!-- Label -->
@@ -71,7 +71,7 @@ onMounted(() => {
       <button
         v-for="key in keys"
         :key="key"
-        :class="[$style.key, { [$style.current]: key === model } ]"
+        :class="[$style.key, { [$style.current]: key === model }]"
         style="flex-basis: var(--step-size); padding-bottom: 8px;"
         type="button"
         tabindex="-1"

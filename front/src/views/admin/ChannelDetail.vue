@@ -459,6 +459,7 @@ h3.category {
   @include light-theme {
     border-color: var(--fw-gray-300);
   }
+
   @include dark-theme {
     border-color: var(--fw-gray-800);
   }

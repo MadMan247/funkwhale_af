@@ -5,7 +5,7 @@ import { useScroll } from '@vueuse/core'
 
 import Button from '~/components/ui/Button.vue'
 
-const { heading = 'h1' } = defineProps<{heading?:'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'}>()
+const { heading = 'h1' } = defineProps<{ heading?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' }>()
 
 const toc = ref()
 

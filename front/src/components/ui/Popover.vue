@@ -19,8 +19,8 @@ const shouldDelayClose = ref(true)
 const isOpenDelayed = refDebounced(isOpen, () => isOpen.value ? 0 : (shouldDelayClose.value ? 300 : 0))
 
 const { positioning = 'vertical', ...colorProps } = defineProps<{
-  positioning?:'horizontal' | 'vertical'
-} &(ColorProps | DefaultProps) & RaisedProps>()
+  positioning?: 'horizontal' | 'vertical'
+} & (ColorProps | DefaultProps) & RaisedProps>()
 
 // Template refs
 const popover = ref()

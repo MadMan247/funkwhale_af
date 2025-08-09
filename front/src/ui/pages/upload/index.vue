@@ -162,7 +162,7 @@ const { state: items } = useAsyncState(
   justify-content: center;
 }
 
-.upload > .funkwhale.button {
+.upload>.funkwhale.button {
   margin-left: 0;
 }
 
@@ -171,22 +171,22 @@ const { state: items } = useAsyncState(
   display: flex;
   align-items: center;
 
-  > .box {
+  >.box {
     width: 2.75rem;
     height: 2.75rem;
     flex-shrink: 0;
     background: var(--fw-pastel-blue-1);
     border-radius: 8px;
-    margin-right:8px;
+    margin-right: 8px;
 
-    + div {
+    +div {
       width: 100%;
 
       > :last-child {
         display: flex;
         width: 100%;
 
-        > div {
+        >div {
           margin-left: auto;
         }
       }
@@ -197,5 +197,4 @@ const { state: items } = useAsyncState(
     font-size: 1rem;
   }
 }
-
 </style>

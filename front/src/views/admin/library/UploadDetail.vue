@@ -392,7 +392,9 @@ const displayName = (object: any) => object?.filename ?? object?.source ?? objec
         />
         <span class="value">
           <template v-if="object?.bitrate">
-            {{ t('views.admin.library.UploadDetail.table.audioContent.bitrate.value', { bitrate: humanSize(object?.bitrate) }) }}
+            {{ t('views.admin.library.UploadDetail.table.audioContent.bitrate.value', {
+              bitrate:
+                humanSize(object?.bitrate) }) }}
           </template>
           <span v-else>
             {{ t('views.admin.library.UploadDetail.notApplicable') }}

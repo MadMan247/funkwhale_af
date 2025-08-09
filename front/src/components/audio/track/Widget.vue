@@ -162,7 +162,7 @@ watch(() => props.websocketHandlers.includes('Listen'), (to) => {
       <div class="activity-content">
         <router-link
           class="funkwhale link artist"
-          :to="{name: 'library.tracks.detail', params: {id: object.track.id}}"
+          :to="{ name: 'library.tracks.detail', params: { id: object.track.id } }"
         >
           <Heading
             :h3="object.track.title"
@@ -202,7 +202,7 @@ watch(() => props.websocketHandlers.includes('Listen'), (to) => {
         >
           <router-link
             class="funkwhale link user"
-            :to="{name: 'profile.overview', params: {username: object.actor.name}}"
+            :to="{ name: 'profile.overview', params: { username: object.actor.name } }"
           >
             <span class="at symbol" />{{ object.actor.name }}
           </router-link>
@@ -235,9 +235,11 @@ watch(() => props.websocketHandlers.includes('Listen'), (to) => {
     @include light-theme {
       border-color: var(--fw-gray-300);
     }
+
     @include dark-theme {
       border-color: var(--fw-gray-800);
     }
+
     display: grid;
     grid-template-columns: auto 1fr auto;
     gap: 12px;
@@ -247,25 +249,25 @@ watch(() => props.websocketHandlers.includes('Listen'), (to) => {
       border-bottom: 1px solid;
     }
 
-    > .activity-image {
+    >.activity-image {
 
       width: 40px;
       aspect-ratio: 1;
       overflow: hidden;
       border-radius: var(--fw-border-radius);
 
-      > img {
+      >img {
         width: 100%;
         aspect-ratio: 1;
         object-fit: cover;
       }
 
-      > i {
+      >i {
         font-size: 40px;
         line-height: 36px;
       }
 
-      > .play-button {
+      >.play-button {
         position: absolute;
         top: 0;
         left: 0;
@@ -284,7 +286,7 @@ watch(() => props.websocketHandlers.includes('Listen'), (to) => {
       }
     }
 
-    > .activity-content {
+    >.activity-content {
 
       a {
         text-decoration: none;
@@ -295,9 +297,10 @@ watch(() => props.websocketHandlers.includes('Listen'), (to) => {
         }
       }
 
-      > .track-title {
+      >.track-title {
         font-weight: 700;
         line-height: 1.5em;
+
         @include dark-theme {
           color: var(--fw-gray-300);
         }
@@ -307,7 +310,8 @@ watch(() => props.websocketHandlers.includes('Listen'), (to) => {
         font-size: 15px;
       }
 
-      .user, time {
+      .user,
+      time {
         line-height: 1.5em;
         font-size: 0.8125rem;
         color: var(--fw-gray-500);
