@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { ComponentProps } from 'vue-component-type-helpers'
 
+import { computed } from 'vue'
+
 import Layout from '~/components/ui/Layout.vue'
 import Spacer from '~/components/ui/Spacer.vue'
 import Button from '~/components/ui/Button.vue'
@@ -20,6 +22,10 @@ const props = defineProps<{
   [Operation in 'expand' | 'collapse']?: () => void
 }>()
 
+const hasContent = computed(() => {
+  // @ts-expect-error too complex type thingy
+  return Object.keys(props).some(key => (key === 'expand' || key === 'collapse' || key === 'action' || key.startsWith('h')) && props[key])
+})
 </script>
 
 <template>
@@ -37,13 +43,14 @@ const props = defineProps<{
       <Layout
         flex
         no-gap
-        style="
+        :style="`
           grid-column: 1 / -1;
           align-self: baseline;
           align-items: baseline;
           position: relative;
           flex-grow: 1;
-        "
+          ${ hasContent ? '' : 'pointer-events: none;'}
+        `"
       >
         <!-- Accordion? -->
 
@@ -101,7 +108,9 @@ const props = defineProps<{
           />
           <Spacer grow />
         </template>
+
         <!-- Action! You can either specify `to` or `onClick`. -->
+
         <component
           :is="'to' in action ? Link : Button"
           v-if="action"
