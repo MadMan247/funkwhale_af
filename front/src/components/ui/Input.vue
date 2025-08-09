@@ -96,6 +96,7 @@ const model = defineModel<string | number>({ required: true })
     <div
       v-if="icon"
       class="prefix"
+      :style="`--input-label-gap: ${label ? 7 : 0}px`"
     >
       <i :class="['bi', icon]" />
     </div>
@@ -104,6 +105,7 @@ const model = defineModel<string | number>({ required: true })
     <div
       v-if="props.search"
       class="prefix"
+      :style="`--input-label-gap: ${label ? 7 : 0}px`"
     >
       <i class="bi bi-search" />
     </div>
@@ -231,7 +233,7 @@ const model = defineModel<string | number>({ required: true })
     left: 0;
     bottom: 0;
 
-    height: 100%;
+    height: calc(100% - var(--input-label-gap));
     min-width: 48px;
     display: flex;
 
