@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useStore } from '~/store'
 import { useModal } from '~/ui/composables/useModal.ts'
@@ -49,9 +49,18 @@ const goBack = computed(() =>
 const destinationSelected = (destination: UploadDestination) =>
   state.value = { ...state.value, uploadDestination: destination, page: 'uploadFiles' }
 
+const direction = ref<'forward' | 'backward'>('forward')
 
+watch(state, ({ page }, oldValue) => {
+  direction.value
+    = pages.indexOf(page) > pages.indexOf(oldValue.page)
+      ? 'forward'
+      : 'backward'
 
-// Wait for pablo: If no channel exists, auto-create an empty channel
+  // TODO: Tidy up this dirty dirty hack
+  // Also, it only works for the first page
+  document.querySelector('#app')?.setAttribute('inert', 'true')
+}, { deep: true })
 
 // Step 1.1
 
@@ -82,80 +91,86 @@ const channelUpload = ref()
       />
       <Spacer grow />
     </template>
-    <!-- Page content -->
-    <!-- Page 1 -->
 
-    <Layout
-      v-if="state.page === 'selectDestination'"
-      flex
-      style="place-content:center"
+    <Transition
+      mode="out-in"
+      :class="direction"
     >
-      <Card
-        small
-        solid
-        title="Music"
-        icon="bi-upload"
-        @click="destinationSelected({ type: 'library' })"
-      >
-        <template #image>
-          <i
-            class="bi bi-headphones solid secondary raised"
-            :class="$style.icon"
-          />
-        </template>
-        {{ t('modals.upload.library') }}
-      </Card>
-      <Card
-        small
-        solid
-        title="Music"
-        icon="bi-upload primary solid"
-        @click="destinationSelected({ type: 'channel', filter: 'music' })"
-      >
-        <template #image>
-          <i
-            class="bi bi-music-note-beamed solid primary"
-            :class="$style.icon"
-          />
-        </template>
-        {{ t('modals.upload.musicChannel') }}
-      </Card>
-      <Card
-        small
-        solid
-        title="Podcast"
-        icon="bi-upload primary solid"
-        @click="destinationSelected({ type: 'channel', filter: 'podcast' })"
-      >
-        <template #image>
-          <i
-            class="bi bi-mic-fill solid primary"
-            :class="$style.icon"
-          />
-        </template>
-        {{ t('modals.upload.podcastChannel') }}
-      </Card>
-    </Layout>
+      <!-- Page content -->
+      <!-- Page 1 -->
 
-    <!-- Page 2 -->
+      <Layout
+        v-if="state.page === 'selectDestination'"
+        flex
+        style="place-content:center"
+      >
+        <Card
+          small
+          solid
+          title="Music"
+          icon="bi-upload"
+          @click="destinationSelected({ type: 'library' })"
+        >
+          <template #image>
+            <i
+              class="bi bi-headphones solid secondary raised"
+              :class="$style.icon"
+            />
+          </template>
+          {{ t('modals.upload.library') }}
+        </Card>
+        <Card
+          small
+          solid
+          title="Music"
+          icon="bi-upload primary solid"
+          @click="destinationSelected({ type: 'channel', filter: 'music' })"
+        >
+          <template #image>
+            <i
+              class="bi bi-music-note-beamed solid primary"
+              :class="$style.icon"
+            />
+          </template>
+          {{ t('modals.upload.musicChannel') }}
+        </Card>
+        <Card
+          small
+          solid
+          title="Podcast"
+          icon="bi-upload primary solid"
+          @click="destinationSelected({ type: 'channel', filter: 'podcast' })"
+        >
+          <template #image>
+            <i
+              class="bi bi-mic-fill solid primary"
+              :class="$style.icon"
+            />
+          </template>
+          {{ t('modals.upload.podcastChannel') }}
+        </Card>
+      </Layout>
 
-    <Layout
-      v-if="state.page === 'uploadFiles'"
-      stack
-    >
-      <ChannelUpload
-        v-if="state.uploadDestination?.type === 'channel'"
-        ref="channelUpload"
-        :filter="state.uploadDestination.filter"
-        :channel="state.uploadDestination?.channel || null"
-      />
+      <!-- Page 2 -->
 
-      <LibraryUpload
-        v-if="state.uploadDestination?.type === 'library'"
-        v-model="privacyLevel"
-      />
-      {{ state.files }}
-    </Layout>
+      <Layout
+        v-else-if="state.page === 'uploadFiles'"
+        stack
+      >
+        <ChannelUpload
+          v-if="state.uploadDestination?.type === 'channel'"
+          ref="channelUpload"
+          :filter="state.uploadDestination.filter"
+          :channel="state.uploadDestination?.channel || null"
+        />
+
+        <LibraryUpload
+          v-if="state.uploadDestination?.type === 'library'"
+          v-model="privacyLevel"
+        />
+        {{ state.files }}
+      </Layout>
+    </Transition>
 
     <template #actions>
       <Spacer
@@ -181,11 +196,36 @@ const channelUpload = ref()
 </template>
 
 <style module>
-  .icon {
-    font-size:100px;
-    padding:28px;
-    inset:0;
-    display:block;
-    text-align: center;
+.icon {
+  font-size:100px;
+  padding:28px;
+  inset:0;
+  display:block;
+  text-align: center;
+}
+</style>
+<style>
+.v-enter-active,
+.v-leave-active {
+  transition: all 0.5s ease;
+}
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+  &.forward {
+      transform: translateX(100%);
   }
+  &.backward {
+      transform: translateX(-100%);
+  }
+}
+
+.v-leave-to {
+    &.forward {
+        transform: translateX(100%);
+    }
+    &.backward {
+        transform: translateX(-100%);
+    }
+}
 </style>
