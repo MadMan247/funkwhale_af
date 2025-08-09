@@ -4524,7 +4524,7 @@
       "pagination": {
         "currentPage": "当前页面，第 {n} 页",
         "gotoNext": "转到下一页",
-        "gotoPage": "转到页面 {n}",
+        "goToPage": "转到页面 {n}",
         "gotoPrevious": "转到上一页",
         "nav": "分页导航"
       }

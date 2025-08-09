@@ -4636,7 +4636,7 @@
       "pagination": {
         "currentPage": "Page Actuelle, Page {n}",
         "gotoNext": "Aller à la Page Suivante",
-        "gotoPage": "Aller à la Page {n}",
+        "goToPage": "Aller à la Page {n}",
         "gotoPrevious": "Aller à la Page Précédente",
         "nav": "Navigation par Pagination"
       }

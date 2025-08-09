@@ -4429,7 +4429,7 @@
       "pagination": {
         "currentPage": "Página corriente, Página {n}",
         "gotoNext": "Ir a la página siguiente",
-        "gotoPage": "Ir a la página {n}",
+        "goToPage": "Ir a la página {n}",
         "gotoPrevious": "Ir a la página anterior",
         "nav": "Paginación Navegación"
       }

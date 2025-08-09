@@ -121,7 +121,7 @@ watch(page, (_) => {
           <Button
             v-if="i <= pages && i > 0 && pages > 2"
             square-small
-            :aria-label="page !== i ? t('vui.aria.pagination.gotoPage', i) : t('vui.aria.pagination.currentPage', page)"
+            :aria-label="page !== i ? t('vui.aria.pagination.goToPage', i) : t('vui.aria.pagination.currentPage', page)"
             :secondary="page !== i"
             :aria-pressed="page === i"
             circular

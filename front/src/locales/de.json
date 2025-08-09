@@ -4618,7 +4618,7 @@
       "pagination": {
         "currentPage": "Aktuelle Seite, Seite {n}",
         "gotoNext": "Gehe zur nächsten Seite",
-        "gotoPage": "Gehe zu Seite {n}",
+        "goToPage": "Gehe zu Seite {n}",
         "gotoPrevious": "Gehe zur vorherigen Seite",
         "nav": "Nummerierte Navigation"
       }

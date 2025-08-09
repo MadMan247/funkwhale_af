@@ -4636,7 +4636,7 @@
       "pagination": {
         "currentPage": "Pàgina actual, Pàgina {n}",
         "gotoNext": "Anar a la Pàgina Següent",
-        "gotoPage": "Anar a Pàgina {n}",
+        "goToPage": "Anar a Pàgina {n}",
         "gotoPrevious": "Anar a la Pàgina Prèvia",
         "nav": "Navegació per Paginació"
       }

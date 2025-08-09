@@ -4621,7 +4621,7 @@
       "pagination": {
         "currentPage": "Uneko orria: {n}",
         "gotoNext": "Joan hurrengo orrira",
-        "gotoPage": "Joan orri honetara: {n}",
+        "goToPage": "Joan orri honetara: {n}",
         "gotoPrevious": "Joan aurreko orrira",
         "nav": "Orrikatzearen nabigazioa"
       }

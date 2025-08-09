@@ -4786,7 +4786,7 @@
       "pagination": {
         "currentPage": "",
         "gotoNext": "",
-        "gotoPage": "",
+        "goToPage": "",
         "gotoPrevious": "",
         "nav": ""
       }

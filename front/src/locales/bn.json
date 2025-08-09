@@ -7,7 +7,7 @@
     "by-user": "{username} থেকে",
     "aria": {
       "pagination": {
-        "gotoPage": "{n} পৃষ্ঠায় যাও",
+        "goToPage": "{n} পৃষ্ঠায় যাও",
         "gotoNext": "পরের পৃষ্ঠায় যাও",
         "currentPage": "বর্তমান পৃষ্ঠা, পৃষ্ঠা {n}",
         "gotoPrevious": "পূর্ববর্তী পৃষ্ঠায় যাও",

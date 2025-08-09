@@ -2243,7 +2243,7 @@
       "pagination": {
         "currentPage": "Geçerli Sayfa, Sayfa {n}",
         "gotoNext": "Sonraki Sayfaya Git",
-        "gotoPage": "Sayfaya Git {n}",
+        "goToPage": "Sayfaya Git {n}",
         "gotoPrevious": "Önceki Sayfaya Git",
         "nav": "Sayfalandırma Navigasyonu"
       }

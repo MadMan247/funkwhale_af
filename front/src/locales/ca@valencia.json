@@ -6,7 +6,7 @@
     "pagination": {
       "currentPage": "Pàgina actual, Pàgina {n}",
       "gotoNext": "Anar a la Pàgina Següent",
-      "gotoPage": "Anar a Pàgina {n}",
+      "goToPage": "Anar a Pàgina {n}",
       "gotoPrevious": "Anar a la Pàgina Prèvia",
       "nav": "Navegació per Paginació"
     }
@@ -4627,7 +4627,7 @@
       "pagination": {
         "currentPage": "Pàgina actual, Pàgina {n}",
         "gotoNext": "Anar a la pàgina següent",
-        "gotoPage": "Anar a la pàgina {n}",
+        "goToPage": "Anar a la pàgina {n}",
         "gotoPrevious": "Retornar a la pàgina anterior",
         "nav": "Paginació de navegació"
       }
