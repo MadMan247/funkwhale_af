@@ -95,6 +95,7 @@ const fetchData = async () => {
   } catch (error) {
     useErrorHandler(error as Error)
     result.value = undefined
+    setTimeout(() => page.value = 1, 1000)
   } finally {
     measureLoading()
     isLoading.value = false
@@ -127,79 +128,32 @@ const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value]
 </script>
 
 <template>
-  <Layout
-    v-title="labels.title"
-    stack
-    main
-  >
-    <Header
-      :h1="t('components.library.Artists.header.browse')"
-      page-heading
-    />
-    <Layout
-      form
-      flex
-      :class="['ui', {'loading': isLoading}, 'form']"
-      @submit.prevent="search"
-    >
-      <Input
-        id="artist-search"
-        v-model="query"
-        search
-        name="search"
-        :label="t('components.library.Artists.label.search')"
-        autofocus
-        :placeholder="labels.searchPlaceholder"
-      />
-      <Pills
-        v-if="typeof tags === 'object'"
-        :get="model => { tags = model.currents.map(({ label }) => label) }"
-        :set="model => ({
-          currents: tags.map(tag => ({ type: 'custom' as const, label: tag })),
-          others: dataStore.tags().value
-            .filter(({ name }) => result?.results?.some((object) => object.tags?.includes(name)) && !tags.includes(name))
-            .map(({ name }) => ({ type: 'preset' as const, label: name })),
-        })"
-        :label="t('components.library.Artists.label.tags')"
-        style="max-width: 350px;"
-      />
-      <Layout
-        stack
-        no-gap
-        label
-        for="artist-ordering"
-      >
+  <Layout v-title="labels.title" stack main>
+    <Header :h1="t('components.library.Artists.header.browse')" page-heading />
+    <Layout form flex :class="['ui', { 'loading': isLoading }, 'form']" @submit.prevent="search">
+      <Input id="artist-search" v-model="query" search name="search"
+        :label="t('components.library.Artists.label.search')" autofocus :placeholder="labels.searchPlaceholder" />
+      <Pills v-if="typeof tags === 'object'" :get="model => { tags = model.currents.map(({ label }) => label) }" :set="model => ({
+        currents: tags.map(tag => ({ type: 'custom' as const, label: tag })),
+        others: dataStore.tags().value
+          .filter(({ name }) => result?.results?.some((object) => object.tags?.includes(name)) && !tags.includes(name))
+          .map(({ name }) => ({ type: 'preset' as const, label: name })),
+      })" :label="t('components.library.Artists.label.tags')" style="max-width: 350px;" />
+      <Layout stack no-gap label for="artist-ordering">
         <span class="label">
           {{ t('components.library.Artists.ordering.label') }}
         </span>
-        <select
-          id="artist-ordering"
-          v-model="ordering"
-          class="dropdown"
-        >
-          <option
-            v-for="(option, key) in orderingOptions"
-            :key="key"
-            :value="option[0]"
-          >
+        <select id="artist-ordering" v-model="ordering" class="dropdown">
+          <option v-for="(option, key) in orderingOptions" :key="key" :value="option[0]">
             {{ sharedLabels.filters[option[1]] }}
           </option>
         </select>
       </Layout>
-      <Layout
-        stack
-        no-gap
-        label
-        for="artist-ordering-direction"
-      >
+      <Layout stack no-gap label for="artist-ordering-direction">
         <span class="label">
           {{ t('components.library.Artists.ordering.direction.label') }}
         </span>
-        <select
-          id="artist-ordering-direction"
-          v-model="orderingDirection"
-          class="dropdown"
-        >
+        <select id="artist-ordering-direction" v-model="orderingDirection" class="dropdown">
           <option value="+">
             {{ t('components.library.Artists.ordering.direction.ascending') }}
           </option>
@@ -208,93 +162,49 @@ const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value]
           </option>
         </select>
       </Layout>
-      <Layout
-        stack
-        no-gap
-        label
-        for="artist-results"
-      >
+      <Layout stack no-gap label for="artist-results">
         <span class="label">
           {{ t('components.library.Artists.pagination.results') }}
         </span>
-        <select
-          id="artist-results"
-          v-model="paginateBy"
-          class="dropdown"
-        >
-          <option
-            v-for="opt in paginateOptions"
-            :key="opt"
-            :value="opt"
-          >
+        <select id="artist-results" v-model="paginateBy" class="dropdown">
+          <option v-for="opt in paginateOptions" :key="opt" :value="opt">
             {{ opt }}
           </option>
         </select>
       </Layout>
-      <Toggle
-        id="exclude-compilation"
-        v-model="excludeCompilation"
-        :label="t('components.library.Artists.label.excludeCompilation')"
-        true-value="true"
-        false-value="null"
-        type="checkbox"
-      />
+      <Toggle id="exclude-compilation" v-model="excludeCompilation"
+        :label="t('components.library.Artists.label.excludeCompilation')" true-value="true" false-value="null"
+        type="checkbox" />
     </Layout>
     <Loader v-if="isLoading" />
-    <Pagination
-      v-if="page && result && result.count > paginateBy"
-      v-model:page="page"
-      :pages="Math.ceil(result.count / paginateBy)"
-    />
-    <Layout
-      v-if="result && result.results.length > 0"
-      grid
-      style="display:flex; flex-wrap:wrap; gap: 32px; margin-top:32px;"
-    >
-      <ArtistCard
-        v-for="artist in result.results"
-        :key="artist.id"
-        :artist="artist"
-      />
+    <Pagination v-if="page && result && result.count > paginateBy" v-model:page="page"
+      :pages="Math.ceil(result.count / paginateBy)" />
+    <Layout v-if="result && result.results.length > 0" grid
+      style="display:flex; flex-wrap:wrap; gap: 32px; margin-top:32px;">
+      <ArtistCard v-for="artist in result.results" :key="artist.id" :artist="artist" />
     </Layout>
-    <Layout
-      v-else-if="result && result.results.length === 0"
-      stack
-    >
+    <Layout v-else-if="result && result.results.length === 0" stack>
       <Alert yellow>
         <i class="compact disc icon" />
         {{ t('components.library.Artists.empty.noResults') }}
       </Alert>
-      <Card
-        v-if="store.state.auth.authenticated"
-        :title="t('components.library.Artists.button.upload')"
-        solid
-        small
-        primary
-        style="text-align: center;"
-        :to="useModal('upload').to"
-      >
+      <Card v-if="store.state.auth.authenticated" :title="t('components.library.Artists.button.upload')" solid small
+        primary style="text-align: center;" :to="useModal('upload').to">
         <template #image>
-          <i
-            class="bi bi-upload"
-            style="font-size: 100px; position: relative; top: 50px;"
-          />
+          <i class="bi bi-upload" style="font-size: 100px; position: relative; top: 50px;" />
         </template>
       </Card>
     </Layout>
     <Spacer grow />
-    <Pagination
-      v-if="page && result && result.count > paginateBy"
-      v-model:page="page"
-      :pages="Math.ceil(result.count / paginateBy)"
-    />
+    <Pagination v-if="page && result && result.count > paginateBy" v-model:page="page"
+      :pages="Math.ceil(result.count / paginateBy)" />
   </Layout>
 </template>
 
 <style lang="scss" scoped>
-  .label {
-    margin-top: -18px;
-    font-size: 14px;
-    font-weight: 600;
-  }
+.label {
+  margin-top: -18px;
+  font-size: 14px;
+  font-weight: 600;
+}
 </style>

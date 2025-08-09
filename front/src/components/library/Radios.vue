@@ -81,6 +81,7 @@ const fetchData = async () => {
   } catch (error) {
     useErrorHandler(error as Error)
     result.value = undefined
+    setTimeout(()=> page.value = 1, 1000)
   } finally {
     measureLoading()
     isLoading.value = false
