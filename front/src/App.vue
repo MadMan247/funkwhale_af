@@ -9,6 +9,8 @@ import { color } from '~/composables/color'
 
 import { generateTrackCreditStringFromQueue } from '~/utils/utils'
 
+import '~/style/funkwhale.scss'
+
 import PlaylistModal from '~/components/playlists/PlaylistModal.vue'
 import FilterModal from '~/components/moderation/FilterModal.vue'
 import ReportModal from '~/components/moderation/ReportModal.vue'
@@ -80,16 +82,9 @@ store.dispatch('auth/fetchUser')
 <template>
   <div class="funkwhale responsive">
     <Sidebar style="grid-area: sidebar;" />
-    <RouterView
-      v-slot="{ Component }"
-      v-bind="color({}, ['default', 'solid'])()"
-      :class="$style.layout"
-      style="grid-area: main;"
-    >
-      <Transition
-        v-if="Component"
-        mode="out-in"
-      >
+    <RouterView v-slot="{ Component }" v-bind="color({}, ['default', 'solid'])()" :class="$style.layout"
+      style="grid-area: main;">
+      <Transition v-if="Component" mode="out-in">
         <KeepAlive :max="10">
           <Suspense>
             <component :is="Component" />
@@ -104,10 +99,7 @@ store.dispatch('auth/fetchUser')
       </transition>
     </RouterView>
   </div>
-  <AudioPlayer
-    class="funkwhale"
-    v-bind="color({}, ['default', 'solid'])()"
-  />
+  <AudioPlayer class="funkwhale" v-bind="color({}, ['default', 'solid'])()" />
   <ServiceMessages />
   <LanguagesModal />
   <ShortcutsModal />
@@ -140,18 +132,18 @@ store.dispatch('auth/fetchUser')
 }
 </style>
 <style>
-  /* Make inert pages (behind modals) unscrollable */
-  body:has(#app[inert="true"]) {
-    overflow:hidden;
-  }
+/* Make inert pages (behind modals) unscrollable */
+body:has(#app[inert="true"]) {
+  overflow: hidden;
+}
 </style>
 <style module>
-  .layout {
-    padding: 32px;
+.layout {
+  padding: 32px;
 
-    /* Make space for the play bar */
-    padding-bottom: 5rem;
+  /* Make space for the play bar */
+  padding-bottom: 5rem;
 
-    transition: all .3s;
-  }
+  transition: all .3s;
+}
 </style>

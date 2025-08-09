@@ -20,9 +20,7 @@ export default defineConfig({
       scss: {
         additionalData: `
           $docs: ${!!process.env.VP_DOCS};
-          @import "~/style/inc/theme.scss";
           @import "~/style/inc/docs.scss";
-          @import "~/style/funkwhale.scss";
         `
       }
     }

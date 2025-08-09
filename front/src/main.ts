@@ -12,9 +12,6 @@ import useLogger from '~/composables/useLogger'
 import useTheme from '~/composables/useTheme'
 import App from '~/App.vue'
 
-// TODO: remove (Global styles should be handled by theme in Ui library)
-import '~/style/_main.scss'
-
 import '~/api'
 
 // TODO: remove (Theme should be handled by Ui library)

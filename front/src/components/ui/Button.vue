@@ -18,7 +18,7 @@ const props = defineProps<{
   round?: boolean
   icon?: string | `right ${string}`
 
-  onClick?:(...args: any[]) => void | Promise<void> // The default fallback is `submit`
+  onClick?: (...args: any[]) => void | Promise<void> // The default fallback is `submit`
 
   split?: boolean // Add this prop for split button support
   splitIcon?: string // Add this prop for the split button icon
@@ -28,8 +28,8 @@ const props = defineProps<{
 
   disabled?: boolean
 
-  autofocus? : boolean
-  ariaPressed? : true
+  autofocus?: boolean
+  ariaPressed?: true
 } & (ColorProps | DefaultProps | PastelProps)
   & VariantProps
   & RaisedProps
@@ -41,11 +41,11 @@ const slots = useSlots()
 // TODO: Refactor this once upload button progress indicator can be tested (in Sidebar.vue)
 const isIconOnly = computed(() =>
   !!props.icon
-    && (!slots.default
-        || ('square' in props && props.square)
-        || ('squareSmall' in props && props.squareSmall)
-      )
-    )
+  && (!slots.default
+    || ('square' in props && props.square)
+    || ('squareSmall' in props && props.squareSmall)
+  )
+)
 
 const isSplitIconOnly = computed(() => !!props.splitIcon && !props.splitTitle)
 
@@ -80,122 +80,78 @@ onUnmounted(() =>
 </script>
 
 <template>
-  <div
-    v-if="split"
-    class="funkwhale split-button"
-  >
-    <button
-      v-if="!dropdownOnly"
-      ref="button"
-      v-bind="{
-        ...$attrs,
-        ...color(props, ['interactive'])(
-          width(props, isIconOnly ? ['square'] : ['normalHeight', 'buttonWidth'])(
-            align(props, { alignText:'center' })(
-            )))}"
-      class="funkwhale button split-main"
-      :autofocus="autofocus || undefined"
-      :disabled="disabled || undefined"
-      :aria-pressed="props.ariaPressed"
-      :class="{
+  <div v-if="split" class="funkwhale split-button">
+    <button v-if="!dropdownOnly" ref="button" v-bind="{
+      ...$attrs,
+      ...color(props, ['interactive'])(
+        width(props, isIconOnly ? ['square'] : ['normalHeight', 'buttonWidth'])(
+          align(props, { alignText: 'center' })(
+          )))
+    }" class="funkwhale button split-main" :autofocus="autofocus || undefined"
+      :disabled="disabled || undefined" :aria-pressed="props.ariaPressed" :class="{
         'is-loading': isLoading,
         'is-icon-only': isIconOnly,
         'has-icon': !!icon,
         'is-round': round,
         'is-shadow': shadow,
-      }"
-      @click="click"
-    >
+      }" @click="click">
       <slot name="main">
-        <i
-          v-if="icon && !icon.startsWith('right ')"
-          :class="['bi', icon]"
-        />
+        <i v-if="icon && !icon.startsWith('right ')" :class="['bi', icon]" />
 
         <span v-if="!isIconOnly">
           <slot />
         </span>
 
-        <i
-          v-if="icon && icon.startsWith('right ')"
-          :class="['bi', icon.replace('right ', '')]"
-        />
+        <i v-if="icon && icon.startsWith('right ')" :class="['bi', icon.replace('right ', '')]" />
       </slot>
-      <Loader
-        v-if="isLoading"
-        :container="false"
-      />
+      <Loader v-if="isLoading" :container="false" />
     </button>
-    <button
-      v-bind="{
-        ...$attrs,
-        ...color(props, ['interactive'])(
-          width(props, isSplitIconOnly ? ['square'] : ['normalHeight', 'buttonWidth'])(
-            align(props, { alignSelf:'start', alignText:'center' })(
-            )))}"
-      :disabled="disabled || undefined"
-      :autofocus="autofocus || undefined"
-      :class="[
-        'funkwhale',
-        'button',
-        {
-          'split-toggle': true,
-          'is-loading': isLoading,
-          'is-icon-only': isSplitIconOnly,
-          'has-icon': !!splitIcon,
-          'is-round': round,
-          'is-shadow': shadow
-        }
-      ]"
-      @click="onSplitClick"
-    >
+    <button v-bind="{
+      ...$attrs,
+      ...color(props, ['interactive'])(
+        width(props, isSplitIconOnly ? ['square'] : ['normalHeight', 'buttonWidth'])(
+          align(props, { alignSelf: 'start', alignText: 'center' })(
+          )))
+    }" :disabled="disabled || undefined" :autofocus="autofocus || undefined" :class="[
+              'funkwhale',
+              'button',
+              {
+                'split-toggle': true,
+                'is-loading': isLoading,
+                'is-icon-only': isSplitIconOnly,
+                'has-icon': !!splitIcon,
+                'is-round': round,
+                'is-shadow': shadow
+              }
+            ]" @click="onSplitClick">
       <span v-if="splitTitle">{{ splitTitle }}</span>
       <i :class="['bi', splitIcon]" />
     </button>
   </div>
-  <button
-    v-else
-    ref="button"
-    v-bind="color(props, ['interactive'])(
-      width(props, isIconOnly ? ['square'] : ['normalHeight', 'buttonWidth'])(
-        align(props, { alignText:'center' })(
-        )))"
-    :disabled="disabled || undefined"
-    :autofocus="autofocus || undefined"
-    class="funkwhale button"
-    :aria-pressed="props.ariaPressed"
-    :class="{
+  <button v-else ref="button" v-bind="color(props, ['interactive'])(
+    width(props, isIconOnly ? ['square'] : ['normalHeight', 'buttonWidth'])(
+      align(props, { alignText: 'center' })(
+      )))" :disabled="disabled || undefined" :autofocus="autofocus || undefined" class="funkwhale button"
+    :aria-pressed="props.ariaPressed" :class="{
       'is-loading': isLoading,
       'is-icon-only': isIconOnly,
       'has-icon': !!icon,
       'is-round': round,
       'is-shadow': shadow,
-    }"
-    :type="onClick ? 'button' : 'submit' /* Prevents default `submit` if onCLick is set */"
-    @click="click"
-  >
-    <i
-      v-if="icon && !icon.startsWith('right ')"
-      :class="['bi', icon]"
-    />
+    }" :type="onClick ? 'button' : 'submit' /* Prevents default `submit` if onCLick is set */" @click="click">
+    <i v-if="icon && !icon.startsWith('right ')" :class="['bi', icon]" />
     <span v-if="!isIconOnly">
       <slot />
     </span>
-    <i
-      v-if="icon && icon.startsWith('right ')"
-      :class="['bi', icon.replace('right ', '')]"
-    />
-    <Loader
-      v-if="isLoading"
-      :container="false"
-    />
+    <i v-if="icon && icon.startsWith('right ')" :class="['bi', icon.replace('right ', '')]" />
+    <Loader v-if="isLoading" :container="false" />
   </button>
 </template>
 
 <style lang="scss">
 .funkwhale {
   &.split-button {
-      cursor: var(--cursor, pointer);
+    cursor: var(--cursor, pointer);
 
     .button {
       display: inline-flex; // Ensure consistent display
@@ -215,7 +171,7 @@ onUnmounted(() =>
   }
 
   &.button {
-      cursor: var(--cursor, pointer);
+    cursor: var(--cursor, pointer);
 
     // Layout
 
@@ -234,6 +190,7 @@ onUnmounted(() =>
     }
 
     padding: calc(var(--padding) / 2 - var(--shift-by)) var(--padding) calc(var(--padding) / 2 + var(--shift-by)) var(--padding);
+
     &.is-icon-only {
       padding: var(--padding);
     }
@@ -256,6 +213,7 @@ onUnmounted(() =>
     }
 
     border-radius: var(--fw-border-radius);
+
     &.is-round {
       border-radius: 100vh;
     }
@@ -268,40 +226,43 @@ onUnmounted(() =>
     }
 
     &.is-loading {
-      @extend :active;
+      @extend :active !optional;
 
-      > span {
+      >span {
         opacity: 0;
       }
     }
 
     // Content
 
-    > span {
+    >span {
       position: relative;
       top: calc(0px - var(--shift-by));
     }
 
     // Icon
 
-    > i.bi {
+    >i.bi {
       font-size: 18px;
       margin: -2px 0;
+
       &.large {
         font-size: 32px;
         margin: -8px 0;
       }
     }
+
     &.is-icon-only i.bi {
       margin: -6px;
+
       &.large {
         margin: -8px;
       }
     }
-    &:has(>i){
+
+    &:has(>i) {
       gap: 10px;
     }
   }
 }
-
 </style>

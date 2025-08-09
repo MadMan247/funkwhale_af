@@ -82,8 +82,6 @@ export default defineConfig(({ mode }) => ({
         additionalData: `
           $docs: ${!!process.env.VP_DOCS};
           @use "~/style/_vars" as *;
-          @import "~/style/inc/theme";
-          @import "~/style/funkwhale";
         `
       }
     }

@@ -1,4 +1,5 @@
 <script setup>
+import '~/style/funkwhale.scss'
 import DefaultTheme from 'vitepress/theme'
 const { Theme } = DefaultTheme
 </script>
@@ -38,18 +39,20 @@ const { Theme } = DefaultTheme
   font-size: 14px;
 }
 
-.vp-doc div[class*="language-"]:has(+h1){
+.vp-doc div[class*="language-"]:has(+h1) {
   width: min-content;
   float: right;
   margin: -4px -32px -4px -4px;
   background: transparent;
+
   &>pre {
     padding-right: 32px;
   }
 }
 
-.language-template:has(~.preview){
+.language-template:has(~.preview) {
   flex-grow: 1;
+
   &~.preview {
     flex-grow: 0;
   }
@@ -59,7 +62,7 @@ const { Theme } = DefaultTheme
   background: light-dark(var(--fw-beige-100), var(--fw-gray-960));
 }
 
-.vp-doc .custom-block{
+.vp-doc .custom-block {
   margin-left: -2px;
 
   /* background-color: transparent; */
@@ -68,7 +71,11 @@ const { Theme } = DefaultTheme
   border-left-width: 4px;
 
   --vp-custom-block-details-border: currentcolor;
-  &:has(summary:hover){color: var(--fw-blue-400)}
+
+  &:has(summary:hover) {
+    color: var(--fw-blue-400)
+  }
+
   --vp-custom-block-details-bg: color-mix(in oklab, var(--vp-custom-block-details-border) 0%, transparent);
   --vp-custom-block-warning-border: var(--fw-pastel-yellow-4);
   --vp-custom-block-warning-bg: color-mix(in oklab, var(--vp-custom-block-warning-border) 10%, transparent);
@@ -78,7 +85,7 @@ const { Theme } = DefaultTheme
 
 .funkwhale h3 {
   /* override vitepress */
-  margin:0;
+  margin: 0;
 }
 
 .vp-doc .preview:not(.funkwhale .preview) {
@@ -88,11 +95,11 @@ const { Theme } = DefaultTheme
   justify-content: start;
   --vp-code-block-bg: transparent;
 
-  &:not(.transparent){
-    background-color:var(--background-color);
+  &:not(.transparent) {
+    background-color: var(--background-color);
     box-shadow: 0px 0px 16px 16px var(--background-color);
-    margin:16px 0;
-    padding:0;
+    margin: 16px 0;
+    padding: 0;
 
   }
 
