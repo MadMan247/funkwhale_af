@@ -26,6 +26,14 @@ const hasContent = computed(() => {
   // @ts-expect-error too complex type thingy
   return Object.keys(props).some(key => (key === 'expand' || key === 'collapse' || key === 'action' || key.startsWith('h')) && props[key])
 })
+
+// TODO: (flupsi) Have to tidy this up...
+const headingProps = computed(() =>
+  Object.fromEntries(Object.entries(props).filter(
+    ([key, value]) => value
+      && (['page-heading', 'section-heading', 'large-section-heading', 'subsection-heading', 'caption', 'title', 'radio', 'secondary']
+        .includes(key) || key.startsWith('h'))
+  )))
 </script>
 
 <template>
@@ -68,7 +76,7 @@ const hasContent = computed(() => {
             <slot name="topleft" />
 
             <!-- @vue-ignore -->
-            <Heading v-bind="props" />
+            <Heading v-bind="headingProps" />
           </Button>
           <i
             :class="!!expand ? 'bi bi-chevron-down' : 'bi bi-chevron-up'"
@@ -100,7 +108,7 @@ const hasContent = computed(() => {
           </div>
           <slot name="topleft" />
           <Heading
-            v-bind="props"
+            v-bind="headingProps"
             style="
               padding: 0 0 24px 0;
               margin: 0;
@@ -157,24 +165,24 @@ const hasContent = computed(() => {
 </template>
 
 <style module lang="scss">
-  // Thank you, css, for offering this weird alternative to !important
-  header.left.left {
-    justify-content: start;
-  }
+// Thank you, css, for offering this weird alternative to !important
+header.left.left {
+  justify-content: start;
+}
 
-  .uncollapsible {
-    margin-top: -64px;
-  }
+.uncollapsible {
+  margin-top: -64px;
+}
 
-  .summary {
-    align-self: baseline;
-    min-width: calc(100% + 32px);
-    margin: 0 -16px;
-    --fw-border-radius: 32px;
-  }
+.summary {
+  align-self: baseline;
+  min-width: calc(100% + 32px);
+  margin: 0 -16px;
+  --fw-border-radius: 32px;
+}
 
-  // Visually push ghost link and non-solid button to the edge
-  .action:global(.interactive:not(:is(.primary, .solid, .destructive, .secondary)):is(button, a.ghost)) {
-    margin-right: -16px;
-  }
+// Visually push ghost link and non-solid button to the edge
+.action:global(.interactive:not(:is(.primary, .solid, .destructive, .secondary)):is(button, a.ghost)) {
+  margin-right: -16px;
+}
 </style>
