@@ -153,167 +153,172 @@ const shuffle = () => { }
 </script>
 
 <template>
-  <Loader
-    v-if="isLoading"
-    v-title="labels.playlist"
-  />
-  <Header
-    v-if="!isLoading && playlist"
-    :h1="playlist.name"
-    page-heading
+  <Layout
+    raised
+    main
   >
-    <template #image>
-      <div class="playlist-grid">
-        <img
-          v-for="(url, idx) in images"
-          :key="idx"
-          v-lazy="url"
-          :alt="playlist.name"
-          :style="{ backgroundColor: randomizedColors[idx % randomizedColors.length] }"
-        >
-      </div>
-    </template>
-    <Layout
-      gap-4
-      class="meta"
-    >
-      <Layout
-        flex
-        gap-4
-      >
-        {{ playlist.tracks_count }}
-        {{ t('views.playlists.Detail.header.tracks') }}
-        <i class="bi bi-dot" />
-        <Duration :seconds="playlist.duration" />
-      </Layout>
-      <Layout
-        flex
-        gap-4
-      >
-        {{ t('views.playlists.Detail.meta.attribution') }}
-        {{ playlist.actor.full_username }}
-        <i class="bi bi-dot" />
-        {{ t('views.playlists.Detail.meta.updated') }}
-        <HumanDate :date="playlist.modification_date" />
-      </Layout>
-    </Layout>
-    <RenderedDescription
-      :content="{ html: playlist.description }"
-      :truncate-length="100"
+    <Loader
+      v-if="isLoading"
+      v-title="labels.playlist"
     />
-    <Layout
-      flex
-      class="header-buttons"
+    <Header
+      v-if="!isLoading && playlist"
+      :h1="playlist.name"
+      page-heading
     >
-      <PlayButton
-        split
-        low-height
-        :is-playable="true"
-        :tracks="tracks"
-        :playlist="playlist"
+      <template #image>
+        <div class="playlist-grid">
+          <img
+            v-for="(url, idx) in images"
+            :key="idx"
+            v-lazy="url"
+            :alt="playlist.name"
+            :style="{ backgroundColor: randomizedColors[idx % randomizedColors.length] }"
+          >
+        </div>
+      </template>
+      <Layout
+        gap-4
+        class="meta"
       >
-        {{ t('views.playlists.Detail.button.playAll') }}
-      </PlayButton>
-      <Button
-        v-if="playlist.tracks_count > 1"
-        primary
-        icon="bi-shuffle"
-        low-height
-        :aria-label="t('components.audio.Player.label.shuffleQueue')"
-        @click.prevent.stop="shuffle()"
-      >
-        {{ t('components.audio.Player.label.shuffleQueue') }}
-      </Button>
-      <Button
-        v-if="store.state.auth.profile && playlist.actor.full_username === store.state.auth.fullUsername"
-        secondary
-        low-height
-        icon="bi-pencil"
-        @click="edit = !edit"
-      >
-        <template v-if="edit">
-          {{ t('views.playlists.Detail.button.stopEdit') }}
-        </template>
-        <template v-else>
-          {{ t('views.playlists.Detail.button.edit') }}
-        </template>
-      </Button>
-      <Spacer
-        h
-        grow
+        <Layout
+          flex
+          gap-4
+        >
+          {{ playlist.tracks_count }}
+          {{ t('views.playlists.Detail.header.tracks') }}
+          <i class="bi bi-dot" />
+          <Duration :seconds="playlist.duration" />
+        </Layout>
+        <Layout
+          flex
+          gap-4
+        >
+          {{ t('views.playlists.Detail.meta.attribution') }}
+          {{ playlist.actor.full_username }}
+          <i class="bi bi-dot" />
+          {{ t('views.playlists.Detail.meta.updated') }}
+          <HumanDate :date="playlist.modification_date" />
+        </Layout>
+      </Layout>
+      <RenderedDescription
+        :content="{ html: playlist.description }"
+        :truncate-length="100"
       />
-      <playlist-dropdown
-        :playlist="playlist"
-        @import="fetchData"
-      />
-    </Layout>
-  </Header>
-
-  <Layout stack>
-    <template v-if="edit">
-      <playlist-editor
-        v-model:playlist="playlist"
-        v-model:playlist-tracks="playlistTracks"
-      />
-    </template>
-    <template v-else-if="tracks.length > 0">
-      <track-table
-        :show-position="true"
-        :tracks="tracks"
-        :unique="false"
-      />
-      <Button
-        v-if="nextPage"
-        primary
-        :is-loading="isLoadingMoreTracks"
-        @click="loadMoreTracks"
-      >
-        {{ t('views.playlists.Detail.button.loadMoreTracks') }}
-      </Button>
-    </template>
-    <Alert
-      v-else-if="!isLoading"
-      blue
-      align-items="center"
-    >
       <Layout
         flex
-        :gap="8"
+        class="header-buttons"
       >
-        <i class="bi bi-music-note-list" />
-        {{ t('views.playlists.Detail.empty.noTracks') }}
-      </Layout>
-      <Spacer size-16 />
-      <Button
-        primary
-        icon="bi-pencil"
-        align-self="center"
-        @click="edit = !edit"
-      >
-        {{ t('views.playlists.Detail.button.edit') }}
-      </Button>
-    </Alert>
-  </Layout>
-
-  <Modal
-    v-if="playlist?.privacy_level === 'everyone' && playlist?.is_playable"
-    v-model="showEmbedModal"
-    title="t('views.playlists.Detail.modal.embed.header')"
-  >
-    <div class="scrolling content">
-      <div class="description">
-        <embed-wizard
-          :uuid="playlist.uuid"
-          type="playlist"
+        <PlayButton
+          split
+          low-height
+          :is-playable="true"
+          :tracks="tracks"
+          :playlist="playlist"
+        >
+          {{ t('views.playlists.Detail.button.playAll') }}
+        </PlayButton>
+        <Button
+          v-if="playlist.tracks_count > 1"
+          primary
+          icon="bi-shuffle"
+          low-height
+          :aria-label="t('components.audio.Player.label.shuffleQueue')"
+          @click.prevent.stop="shuffle()"
+        >
+          {{ t('components.audio.Player.label.shuffleQueue') }}
+        </Button>
+        <Button
+          v-if="store.state.auth.profile && playlist.actor.full_username === store.state.auth.fullUsername"
+          secondary
+          low-height
+          icon="bi-pencil"
+          @click="edit = !edit"
+        >
+          <template v-if="edit">
+            {{ t('views.playlists.Detail.button.stopEdit') }}
+          </template>
+          <template v-else>
+            {{ t('views.playlists.Detail.button.edit') }}
+          </template>
+        </Button>
+        <Spacer
+          h
+          grow
         />
+        <playlist-dropdown
+          :playlist="playlist"
+          @import="fetchData"
+        />
+      </Layout>
+    </Header>
+
+    <Layout stack>
+      <template v-if="edit">
+        <playlist-editor
+          v-model:playlist="playlist"
+          v-model:playlist-tracks="playlistTracks"
+        />
+      </template>
+      <template v-else-if="tracks.length > 0">
+        <track-table
+          :show-position="true"
+          :tracks="tracks"
+          :unique="false"
+        />
+        <Button
+          v-if="nextPage"
+          primary
+          :is-loading="isLoadingMoreTracks"
+          @click="loadMoreTracks"
+        >
+          {{ t('views.playlists.Detail.button.loadMoreTracks') }}
+        </Button>
+      </template>
+      <Alert
+        v-else-if="!isLoading"
+        blue
+        align-items="center"
+      >
+        <Layout
+          flex
+          :gap="8"
+        >
+          <i class="bi bi-music-note-list" />
+          {{ t('views.playlists.Detail.empty.noTracks') }}
+        </Layout>
+        <Spacer size-16 />
+        <Button
+          primary
+          icon="bi-pencil"
+          align-self="center"
+          @click="edit = !edit"
+        >
+          {{ t('views.playlists.Detail.button.edit') }}
+        </Button>
+      </Alert>
+    </Layout>
+
+    <Modal
+      v-if="playlist?.privacy_level === 'everyone' && playlist?.is_playable"
+      v-model="showEmbedModal"
+      title="t('views.playlists.Detail.modal.embed.header')"
+    >
+      <div class="scrolling content">
+        <div class="description">
+          <embed-wizard
+            :uuid="playlist.uuid"
+            type="playlist"
+          />
+        </div>
       </div>
-    </div>
-    <template #actions>
-      <Button variant="outline">
-        {{ t('views.playlists.Detail.button.cancel') }}
-      </Button>
-    </template>
-  </Modal>
+      <template #actions>
+        <Button variant="outline">
+          {{ t('views.playlists.Detail.button.cancel') }}
+        </Button>
+      </template>
+    </Modal>
+  </Layout>
 </template>
 
 <style lang="scss" scoped>
