@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, getCurrentInstance } from 'vue'
 
 import { type RouterLinkProps, RouterLink } from 'vue-router'
 import { type ColorProps, type DefaultProps, type PastelProps, type RaisedProps, type VariantProps, color } from '~/composables/color'
@@ -37,8 +37,12 @@ const isExternalLink = computed(() => {
   return typeof props.to === 'string' && props.to.startsWith('http')
 })
 
+const hasClickEventListener = computed(
+  () => !!getCurrentInstance()?.vnode.props?.onClick
+);
+
 const attributes = computed(() =>
-  color(props, props.to ? ['interactive', 'solid'] : [])(
+  color(props, (props.to || hasClickEventListener.value) ? ['interactive', 'solid'] : [])(
     width(props, ['medium'])()
   ))
 </script>
@@ -177,6 +181,8 @@ const attributes = computed(() =>
   --fw-card-padding: v-bind("'small' in props && props.small ? '16px' : '24px'");
 
   position: relative;
+
+  cursor: v-bind("hasClickEventListener ? 'pointer' : 'default'");
 
   color: var(--fw-text-color);
   background-color: var(--fw-bg-color);

@@ -107,8 +107,8 @@ const channelUpload = ref()
       </Card>
       <Card
         small
-        title="Music"
         solid
+        title="Music"
         icon="bi-upload primary solid"
         @click="destinationSelected({ type: 'channel', filter: 'music' })"
       >

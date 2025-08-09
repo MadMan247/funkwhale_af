@@ -59,7 +59,7 @@ const randomizedColors = computed(() => shuffleArray(bgcolors.value))
 
 const updatedTitle = computed(() => {
   const date = momentFormat(new Date(props.playlist.modification_date ?? '1970-01-01'))
-  return t('components.playlists.Card.title', { date })
+  return t('views.playlists.Card.title', { date })
 })
 const updatedAgo = computed(() => moment(props.playlist.modification_date).fromNow())
 

@@ -11,6 +11,7 @@ import useErrorHandler from '~/composables/useErrorHandler'
 import AlbumCard from '~/components/album/Card.vue'
 import Section from '~/components/ui/Section.vue'
 import Loader from '~/components/ui/Loader.vue'
+import Spacer from '~/components/ui/Spacer.vue'
 import Pagination from '~/components/ui/Pagination.vue'
 
 interface Props {

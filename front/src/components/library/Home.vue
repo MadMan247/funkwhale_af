@@ -89,9 +89,8 @@ fetchData()
     <Spacer />
     <playlist-widget
       :url="'playlists/'"
-      :filters="{scope: scope, playable: true, ordering: '-modification_date'}"
+      :filters="{scope: scope, playable: true, ordering: '-modification_date', limit: 4}"
       :title="t('components.library.Home.header.playlists')"
-      :limit="4"
     />
     <Spacer />
     <track-widget

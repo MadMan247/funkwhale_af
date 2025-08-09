@@ -61,7 +61,7 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
               'over-popover': overPopover,
             }
           ]"
-          v-bind="{ ...$attrs, ...color(props) }"
+          v-bind="{ ...$attrs, ...color(props, ['default'])() }"
           @click.stop
         >
           <Layout
@@ -156,7 +156,7 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
 .funkwhale.modal {
   background: var(--background-color);
 
-  box-shadow: 0 2px 4px 2px rgba(#000, 0.2);
+  box-shadow: 0 2px 12px 2px var(--shadow-color);
   border-radius: 1rem;
   max-width: min(90vw, 55rem);
   width: 100%;

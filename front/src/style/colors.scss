@@ -88,7 +88,7 @@
 :is(body.theme-light, html:not(.dark) > body:not(.theme-dark)),
 .force-light-theme.force-light-theme.force-light-theme {
   --focus-ring-color: var(--fw-primary);
-  --shadow-color: rgba(0, 0, 0, 0.2);
+  --shadow-color: rgba(0, 0, 0, 0.3);
 
   .default,
   .VPDoc {
@@ -331,7 +331,7 @@
 :is(body.theme-dark, html.dark > body:not(.theme-light)),
 .force-dark-theme.force-dark-theme.force-dark-theme {
   --focus-ring-color: var(--fw-gray-600);
-  --shadow-color: rgba(0, 0, 0, 0.4);
+  --shadow-color: rgba(0, 0, 0, 0.8);
 
   .default,
   .funkwhale.default,

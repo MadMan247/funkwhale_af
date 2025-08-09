@@ -355,6 +355,8 @@ const isOpen = useModal('artist-description').isOpen
 </template>
 
 <style scoped lang="scss">
+@import '~/style/funkwhale.scss';
+
   .channel-image {
     border-radius: 50%;
   }
