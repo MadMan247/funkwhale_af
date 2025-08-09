@@ -33,7 +33,6 @@ if ('albums' in artist && Array.isArray(artist.albums)) {
     :tags="artist.tags"
     :to="{name: 'library.artists.detail', params: {id: artist.id}}"
     small
-    style="align-self: flex-start;"
   >
     <template #topright>
       <PlayButton

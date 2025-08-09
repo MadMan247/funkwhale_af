@@ -78,7 +78,7 @@ watch(
 <template>
   <Section
     align-left
-    :columns-per-item="1"
+    :columns-per-item="3"
     :h2="title"
   >
     <Loader

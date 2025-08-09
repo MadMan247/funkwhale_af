@@ -1906,11 +1906,14 @@
       "TagDetail": {
         "header": {
           "channels": "Channels",
-          "tracks": "Tracks"
+          "tracks": "Tracks",
+          "artists": "Artists",
+          "albums": "Albums"
         },
         "link": {
-          "albums": "Albums",
-          "artists": "Artists",
+          "albums": "Browse Albums...",
+          "artists": "Browse artists...",
+          "channels": "Browse channels...",
           "moderation": "Open in moderation interface"
         }
       },

@@ -27,95 +27,99 @@ const labels = computed(() => ({
 </script>
 
 <template>
-  <h1 class="ui header">
-    <span class="funkwhale solid raised secondary pill">
-      <span class="pill-content">
-        {{ labels.title }}
-      </span>
-    </span>
-  </h1>
   <Layout
-    flex
-    class="buttons"
+    raised
+    main
   >
-    <radio-button
-      type="tag"
-      :object-id="id"
-    />
-    <Button
-      v-if="store.state.auth.availablePermissions['library']"
-      icon="bi-wrench"
-      secondary
-      :to="{name: 'manage.library.tags.detail', params: {id: id}}"
+    <h1 class="ui header">
+      <span class="funkwhale solid raised secondary pill">
+        <span class="pill-content">
+          {{ labels.title }}
+        </span>
+      </span>
+    </h1>
+    <Layout
+      flex
+      class="buttons"
     >
-      {{ t('components.library.TagDetail.link.moderation') }}
-    </Button>
+      <radio-button
+        type="tag"
+        :object-id="id"
+      />
+      <Button
+        v-if="store.state.auth.availablePermissions['library']"
+        icon="bi-wrench"
+        secondary
+        :to="{name: 'manage.library.tags.detail', params: {id: id}}"
+      >
+        {{ t('components.library.TagDetail.link.moderation') }}
+      </Button>
+    </Layout>
+    <Spacer :size="64" />
+    <artist-widget
+      :key="'artist' + id"
+      :controls="false"
+      :title="t('components.library.TagDetail.header.artists')"
+      :action="{
+        text: t('components.library.TagDetail.link.artists'),
+        to: {name: 'library.artists.browse', query: {tag: id}},
+        // secondary: true,
+        // solid: true
+      }"
+      :filters="{playable: true, ordering: '-creation_date', tag: id, include_channels: 'false'}"
+    />
+    <Spacer :size="64" />
+    <channels-widget
+      :key="'channels' + id"
+      :show-modification-date="true"
+      :limit="12"
+      :title="t('components.library.TagDetail.header.channels')"
+      :action="{
+        text: t('components.library.TagDetail.link.channels'),
+        to: {name: 'library.channels.browse', query: {tag: id}},
+        // secondary: true,
+        // solid: true
+      }"
+      :filters="{tag: id, ordering: '-creation_date'}"
+    />
+    <Spacer :size="64" />
+    <album-widget
+      :key="'album' + id"
+      :show-count="true"
+      :controls="false"
+      :filters="{playable: true, ordering: '-creation_date', tag: id}"
+      :title="t('components.library.TagDetail.header.albums')"
+      :action="{
+        text: t('components.library.TagDetail.link.albums'),
+        to: {name: 'library.albums.browse', query: {tag: id}},
+        // secondary: true,
+        // solid: true
+      }"
+    />
+    <Spacer :size="64" />
+    <track-widget
+      :key="'track' + id"
+      :show-count="true"
+      :limit="12"
+      item-classes="track-item inline"
+      :url="'/tracks/'"
+      :is-activity="false"
+      :filters="{playable: true, ordering: '-creation_date', tag: id}"
+      :title="t('components.library.TagDetail.header.tracks')"
+    />
   </Layout>
-
-  <Spacer :size="64" />
-  <artist-widget
-    :key="'artist' + id"
-    :controls="false"
-    :title="t('components.library.TagDetail.header.artists')"
-    :action="{
-      text: t('components.library.TagDetail.link.artists'),
-      to: {name: 'library.artists.browse', query: {tag: id}},
-      secondary: true,
-      solid: true
-    }"
-    :filters="{playable: true, ordering: '-creation_date', tag: id, include_channels: 'false'}"
-  />
-  <Spacer :size="64" />
-  <channels-widget
-    :key="'channels' + id"
-    :show-modification-date="true"
-    :limit="12"
-    :title="t('components.library.TagDetail.header.channels')"
-    :action="{
-      text: t('components.library.TagDetail.link.channels'),
-      to: {name: 'library.channels.browse', query: {tag: id}},
-      secondary: true,
-      solid: true
-    }"
-    :filters="{tag: id, ordering: '-creation_date'}"
-  />
-  <Spacer :size="64" />
-  <album-widget
-    :key="'album' + id"
-    :show-count="true"
-    :controls="false"
-    :filters="{playable: true, ordering: '-creation_date', tag: id}"
-    :title="t('components.library.TagDetail.header.albums')"
-    :action="{
-      text: t('components.library.TagDetail.link.albums'),
-      to: {name: 'library.albums.browse', query: {tag: id}},
-      secondary: true,
-      solid: true
-    }"
-  />
-  <Spacer :size="64" />
-  <track-widget
-    :key="'track' + id"
-    :show-count="true"
-    :limit="12"
-    item-classes="track-item inline"
-    :url="'/tracks/'"
-    :is-activity="false"
-    :filters="{playable: true, ordering: '-creation_date', tag: id}"
-    :title="t('components.library.TagDetail.header.tracks')"
-  />
 </template>
 
 <style lang="scss" scoped>
-  h1 > .pill {
-    border-radius: 100vh;
-    display: inline-block;
-    padding: 10px;
+h1 > .pill {
+  border-radius: 100vh;
+  display: inline-block;
+  padding: 10px;
 
-    > .pill-content {
-      font-size: 48px;
-      line-height: 48px;
-      padding: 20px 30px;
-    }
+  > .pill-content {
+    font-size: 48px;
+    line-height: 48px;
+    padding: 20px 30px;
   }
+}
 </style>
