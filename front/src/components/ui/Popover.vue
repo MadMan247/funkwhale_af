@@ -162,7 +162,7 @@ watch(isOpen, (isOpen) => {
         :style="position"
         :class="{ 'is-mobile': isMobile }"
         class="funkwhale popover"
-        v-bind="color(colorProps)()"
+        v-bind="color(colorProps, ['default'])()"
         style="display:flex; flex-direction:column;"
       >
         <slot
