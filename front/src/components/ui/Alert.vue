@@ -42,14 +42,12 @@ const props = defineProps<Props>()
   display: flex;
   flex-direction: column;
 
-  h2,
-  h3,
-  h4 {
+  h2, h3, h4 {
     margin-top: 0;
     margin-bottom: 0;
   }
 
-  >.actions {
+  > .actions {
     margin-left: auto;
   }
 

@@ -1,5 +1,7 @@
 <script setup lang="ts">
 const { container = true } = defineProps<{ container?: boolean }>()
+
+// TODO: Revisit this. For now, normal loaders as displayed without any container over the next higher non-`static`-positioned element while `container="false` loaders are positioned in-place.
 </script>
 
 <template>
