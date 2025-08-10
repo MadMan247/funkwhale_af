@@ -166,18 +166,18 @@ watch(showDeleteModal, (newValue) => {
       v-if="track"
       :h1="track.title"
       :action="{
-      text: labels.download,
-      // @ts-ignore
-      to: downloadUrl,
-      // @ts-ignore
-      solid: true,
-      // @ts-ignore
-      primary: true,
-      // @ts-ignore
-      icon: 'bi-download',
-      // @ts-ignore
-      lowHeight: true
-    }"
+        text: labels.download,
+        // @ts-ignore
+        to: downloadUrl,
+        // @ts-ignore
+        solid: true,
+        // @ts-ignore
+        primary: true,
+        // @ts-ignore
+        icon: 'bi-download',
+        // @ts-ignore
+        lowHeight: true
+      }"
       page-heading
     >
       <template #image>
@@ -186,19 +186,19 @@ watch(showDeleteModal, (newValue) => {
           v-lazy="store.getters['instance/absoluteUrl'](track.cover.urls.large_square_crop)"
           alt=""
           class="channel-image"
-        />
+        >
         <img
           v-if="track.album && track.album.cover"
           v-lazy="store.getters['instance/absoluteUrl'](track.album.cover.urls.large_square_crop)"
           alt=""
           class="channel-image"
-        />
+        >
         <img
           v-else
           alt=""
           class="channel-image"
           src="../../assets/audio/default-cover.png"
-        />
+        >
       </template>
       <artist-credit-label :artist-credit="track.artist_credit" />
       <div class="meta">
@@ -293,16 +293,16 @@ watch(showDeleteModal, (newValue) => {
 
             <PopoverItem
               v-if="artist &&
-              store.state.auth.authenticated &&
-              artist.channel &&
-              artist.attributed_to?.full_username === store.state.auth.fullUsername"
+                store.state.auth.authenticated &&
+                artist.channel &&
+                artist.attributed_to?.full_username === store.state.auth.fullUsername"
               icon="bi-trash"
               @click="showDeleteModal = true"
             >
               {{ t('components.library.TrackBase.button.delete') }}
             </PopoverItem>
 
-            <hr />
+            <hr>
 
             <PopoverItem
               v-for="obj in getReportableObjects({ track })"
@@ -313,14 +313,14 @@ watch(showDeleteModal, (newValue) => {
               {{ obj.label }}
             </PopoverItem>
 
-            <hr />
+            <hr>
 
             <PopoverItem
               v-if="store.state.auth.availablePermissions['library']"
               :to="{
-              name: 'manage.library.tracks.detail',
-              params: { id: track.id }
-            }"
+                name: 'manage.library.tracks.detail',
+                params: { id: track.id }
+              }"
               icon="bi-wrench"
             >
               {{ t('components.library.TrackBase.link.moderation') }}
@@ -339,7 +339,7 @@ watch(showDeleteModal, (newValue) => {
         </Popover>
       </Layout>
     </Header>
-    <hr />
+    <hr>
     <Layout
       flex
       gap-8
