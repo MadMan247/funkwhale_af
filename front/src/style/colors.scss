@@ -86,7 +86,7 @@
 // Light theme
 
 :root:has(body.theme-light) {
-    --background-color: var(--fw-beige-100);
+  --background-color: var(--fw-beige-100);
 }
 
 :is(body.theme-light, html:not(.dark) > body:not(.theme-dark)),
@@ -333,7 +333,7 @@
 // Dark theme
 
 :root:has(body.theme-dark) {
-    --background-color: var(--fw-gray-960);
+  --background-color: var(--fw-gray-960);
 }
 
 :is(body.theme-dark, html.dark > body:not(.theme-light)),
@@ -342,8 +342,6 @@
   --shadow-color: rgba(0, 0, 0, 0.8);
 
   .default,
-  .funkwhale.default,
-  .funkwhale:not(.primary *):not(.secondary *):not(.primary):not(.secondary),
   .VPDoc {
     --link-color: var(--fw-gray-300);
     --link-hover-color: var(--fw-gray-200);
