@@ -154,14 +154,18 @@ watch(showDeleteModal, (newValue) => {
 </script>
 
 <template>
-  <Loader
-    v-if="isLoading"
-    v-title="labels.title"
-  />
-  <Header
-    v-if="track"
-    :h1="track.title"
-    :action="{
+  <Layout
+    raised
+    main
+  >
+    <Loader
+      v-if="isLoading"
+      v-title="labels.title"
+    />
+    <Header
+      v-if="track"
+      :h1="track.title"
+      :action="{
       text: labels.download,
       // @ts-ignore
       to: downloadUrl,
@@ -174,260 +178,261 @@ watch(showDeleteModal, (newValue) => {
       // @ts-ignore
       lowHeight: true
     }"
-    page-heading
-  >
-    <template #image>
-      <img
-        v-if="track.cover"
-        v-lazy="store.getters['instance/absoluteUrl'](track.cover.urls.large_square_crop)"
-        alt=""
-        class="channel-image"
-      >
-      <img
-        v-if="track.album && track.album.cover"
-        v-lazy="store.getters['instance/absoluteUrl'](track.album.cover.urls.large_square_crop)"
-        alt=""
-        class="channel-image"
-      >
-      <img
-        v-else
-        alt=""
-        class="channel-image"
-        src="../../assets/audio/default-cover.png"
-      >
-    </template>
-    <artist-credit-label
-      :artist-credit="track.artist_credit"
-    />
-    <div class="meta">
-      <span>{{ t('components.library.TrackBase.title') }}</span>
-      <i class="bi bi-dot" />
-      <span>{{ track.album?.title }}</span>
-      <i
-        v-if="totalDuration > 0"
-        class="bi bi-dot"
-      />
-      <human-duration
-        v-if="totalDuration > 0"
-        :duration="totalDuration"
-      />
-    </div>
+      page-heading
+    >
+      <template #image>
+        <img
+          v-if="track.cover"
+          v-lazy="store.getters['instance/absoluteUrl'](track.cover.urls.large_square_crop)"
+          alt=""
+          class="channel-image"
+        />
+        <img
+          v-if="track.album && track.album.cover"
+          v-lazy="store.getters['instance/absoluteUrl'](track.album.cover.urls.large_square_crop)"
+          alt=""
+          class="channel-image"
+        />
+        <img
+          v-else
+          alt=""
+          class="channel-image"
+          src="../../assets/audio/default-cover.png"
+        />
+      </template>
+      <artist-credit-label :artist-credit="track.artist_credit" />
+      <div class="meta">
+        <span>{{ t('components.library.TrackBase.title') }}</span>
+        <i class="bi bi-dot" />
+        <span>{{ track.album?.title }}</span>
+        <i
+          v-if="totalDuration > 0"
+          class="bi bi-dot"
+        />
+        <human-duration
+          v-if="totalDuration > 0"
+          :duration="totalDuration"
+        />
+      </div>
 
-    <Layout flex>
-      <PlayButton
-        :is-playable="track.is_playable"
-        class="vibrant"
-        split
-        :track="track"
-        low-height
-      />
+      <Layout flex>
+        <PlayButton
+          :is-playable="track.is_playable"
+          class="vibrant"
+          split
+          :track="track"
+          low-height
+        />
 
-      <Spacer
-        h
-        grow
-      />
+        <Spacer
+          h
+          grow
+        />
 
-      <TrackFavoriteIcon
-        v-if="store.state.auth.authenticated"
-        :track="track"
-        square-small
-      />
-      <TrackPlaylistIcon
-        v-if="store.state.auth.authenticated"
-        :track="track"
-        square-small
-      />
-      <Popover v-model="open">
-        <template #default="{ toggleOpen }">
-          <OptionsButton
-            is-square-small
-            @click="toggleOpen"
-          />
-        </template>
-        <template #items>
-          <PopoverItem
-            v-if="domain != store.getters['instance/domain']"
-            :to="track.fid"
-            target="_blank"
-            icon="bi-box-arrow-up-right"
-          >
-            {{ t('components.library.TrackBase.link.domain', { domain }) }}
-          </PopoverItem>
+        <TrackFavoriteIcon
+          v-if="store.state.auth.authenticated"
+          :track="track"
+          square-small
+        />
+        <TrackPlaylistIcon
+          v-if="store.state.auth.authenticated"
+          :track="track"
+          square-small
+        />
+        <Popover v-model="open">
+          <template #default="{ toggleOpen }">
+            <OptionsButton
+              is-square-small
+              @click="toggleOpen"
+            />
+          </template>
+          <template #items>
+            <PopoverItem
+              v-if="domain != store.getters['instance/domain']"
+              :to="track.fid"
+              target="_blank"
+              icon="bi-box-arrow-up-right"
+            >
+              {{ t('components.library.TrackBase.link.domain', { domain }) }}
+            </PopoverItem>
 
-          <PopoverItem
-            v-if="isEmbedable"
-            icon="bi-code-slash"
-            @click="showEmbedModal = !showEmbedModal"
-          >
-            {{ t('components.library.TrackBase.button.embed') }}
-          </PopoverItem>
+            <PopoverItem
+              v-if="isEmbedable"
+              icon="bi-code-slash"
+              @click="showEmbedModal = !showEmbedModal"
+            >
+              {{ t('components.library.TrackBase.button.embed') }}
+            </PopoverItem>
 
-          <PopoverItem
-            :to="wikipediaUrl"
-            target="_blank"
-            rel="noreferrer noopener"
-            icon="bi-wikipedia"
-          >
-            {{ t('components.library.TrackBase.link.wikipedia') }}
-          </PopoverItem>
+            <PopoverItem
+              :to="wikipediaUrl"
+              target="_blank"
+              rel="noreferrer noopener"
+              icon="bi-wikipedia"
+            >
+              {{ t('components.library.TrackBase.link.wikipedia') }}
+            </PopoverItem>
 
-          <PopoverItem
-            v-if="discogsUrl"
-            :to="discogsUrl"
-            target="_blank"
-            rel="noreferrer noopener"
-            icon="bi-box-arrow-up-right"
-          >
-            {{ t('components.library.TrackBase.link.discogs') }}
-          </PopoverItem>
+            <PopoverItem
+              v-if="discogsUrl"
+              :to="discogsUrl"
+              target="_blank"
+              rel="noreferrer noopener"
+              icon="bi-box-arrow-up-right"
+            >
+              {{ t('components.library.TrackBase.link.discogs') }}
+            </PopoverItem>
 
-          <PopoverItem
-            v-if="track.is_local"
-            icon="bi-pencil-fill"
-            :to="{ name: 'library.tracks.edit', params: { id: track.id } }"
-          >
-            {{ t('components.library.TrackBase.button.edit') }}
-          </PopoverItem>
+            <PopoverItem
+              v-if="track.is_local"
+              icon="bi-pencil-fill"
+              :to="{ name: 'library.tracks.edit', params: { id: track.id } }"
+            >
+              {{ t('components.library.TrackBase.button.edit') }}
+            </PopoverItem>
 
-          <PopoverItem
-            v-if="artist &&
+            <PopoverItem
+              v-if="artist &&
               store.state.auth.authenticated &&
               artist.channel &&
               artist.attributed_to?.full_username === store.state.auth.fullUsername"
-            icon="bi-trash"
-            @click="showDeleteModal = true"
-          >
-            {{ t('components.library.TrackBase.button.delete') }}
-          </PopoverItem>
+              icon="bi-trash"
+              @click="showDeleteModal = true"
+            >
+              {{ t('components.library.TrackBase.button.delete') }}
+            </PopoverItem>
 
-          <hr>
+            <hr />
 
-          <PopoverItem
-            v-for="obj in getReportableObjects({ track })"
-            :key="obj.target.type + obj.target.id"
-            icon="bi-flag"
-            @click="report(obj)"
-          >
-            {{ obj.label }}
-          </PopoverItem>
+            <PopoverItem
+              v-for="obj in getReportableObjects({ track })"
+              :key="obj.target.type + obj.target.id"
+              icon="bi-flag"
+              @click="report(obj)"
+            >
+              {{ obj.label }}
+            </PopoverItem>
 
-          <hr>
+            <hr />
 
-          <PopoverItem
-            v-if="store.state.auth.availablePermissions['library']"
-            :to="{
+            <PopoverItem
+              v-if="store.state.auth.availablePermissions['library']"
+              :to="{
               name: 'manage.library.tracks.detail',
               params: { id: track.id }
             }"
-            icon="bi-wrench"
-          >
-            {{ t('components.library.TrackBase.link.moderation') }}
-          </PopoverItem>
+              icon="bi-wrench"
+            >
+              {{ t('components.library.TrackBase.link.moderation') }}
+            </PopoverItem>
 
-          <PopoverItem
-            v-if="store.state.auth.profile?.is_superuser"
-            :to="store.getters['instance/absoluteUrl'](`/api/admin/music/track/${track.id}`)"
-            target="_blank"
-            rel="noopener noreferrer"
-            icon="bi-wrench"
-          >
-            {{ t('components.library.TrackBase.link.django') }}
-          </PopoverItem>
-        </template>
-      </Popover>
-    </Layout>
-  </Header>
-  <hr>
-  <Layout
-    flex
-    gap-8
-  >
-    <span v-if="track?.attributed_to">
-      {{ t('components.library.TrackBase.subtitle.with-uploader') }}
-    </span>
-    <span v-else>
-      {{ t('components.library.TrackBase.subtitle.without-uploader') }}
-    </span>
-    <ActorLink
-      v-if="track?.attributed_to"
-      :actor="track?.attributed_to"
-      :avatar="false"
-    />
-
-    <time
-      :title="track?.creation_date"
-      :datetime="track?.creation_date"
+            <PopoverItem
+              v-if="store.state.auth.profile?.is_superuser"
+              :to="store.getters['instance/absoluteUrl'](`/api/admin/music/track/${track.id}`)"
+              target="_blank"
+              rel="noopener noreferrer"
+              icon="bi-wrench"
+            >
+              {{ t('components.library.TrackBase.link.django') }}
+            </PopoverItem>
+          </template>
+        </Popover>
+      </Layout>
+    </Header>
+    <hr />
+    <Layout
+      flex
+      gap-8
     >
-      {{ track?.creation_date ? momentFormat(new Date(track.creation_date), 'LL') : '' }}
-    </time>
-  </Layout>
-  <Spacer :size="64" />
+      <span v-if="track?.attributed_to">
+        {{ t('components.library.TrackBase.subtitle.with-uploader') }}
+      </span>
+      <span v-else>
+        {{ t('components.library.TrackBase.subtitle.without-uploader') }}
+      </span>
+      <ActorLink
+        v-if="track?.attributed_to"
+        :actor="track?.attributed_to"
+        :avatar="false"
+      />
 
-  <Modal
-    v-if="isEmbedable"
-    v-model="showEmbedModal"
-    :title="t('components.library.TrackBase.modal.embed.header')"
-  >
-    <embed-wizard
-      :id="track?.id ?? 0"
-      type="track"
+      <time
+        :title="track?.creation_date"
+        :datetime="track?.creation_date"
+      >
+        {{ track?.creation_date ? momentFormat(new Date(track.creation_date), 'LL') : '' }}
+      </time>
+    </Layout>
+    <Spacer :size="64" />
+
+    <Modal
+      v-if="isEmbedable"
+      v-model="showEmbedModal"
+      :title="t('components.library.TrackBase.modal.embed.header')"
+    >
+      <embed-wizard
+        :id="track?.id ?? 0"
+        type="track"
+      />
+
+      <template #actions>
+        <Button
+          secondary
+          @click="showEmbedModal = false"
+        >
+          {{ t('components.library.TrackBase.button.cancel') }}
+        </Button>
+      </template>
+    </Modal>
+    <Modal
+      v-model="showDeleteModal"
+      :title="t('components.library.TrackBase.modal.delete.header')"
+      destructive
+    >
+      <template #alert>
+        <Alert red>
+          {{ t('components.library.TrackBase.modal.delete.content.warning') }}
+        </Alert>
+      </template>
+
+      <template #actions>
+        <Button
+          secondary
+          @click="showDeleteModal = false"
+        >
+          {{ t('components.library.TrackBase.button.cancel') }}
+        </Button>
+        <Button
+          destructive
+          :is-loading="isLoading"
+          @click="remove()"
+        >
+          {{ t('components.library.TrackBase.button.delete') }}
+        </Button>
+      </template>
+    </Modal>
+    <router-view
+      v-if="track"
+      :key="route.fullPath"
+      :track="track"
+      :object="track"
+      object-type="track"
+      @libraries-loaded="libraries = $event"
     />
-
-    <template #actions>
-      <Button
-        secondary
-        @click="showEmbedModal = false"
-      >
-        {{ t('components.library.TrackBase.button.cancel') }}
-      </Button>
-    </template>
-  </Modal>
-  <Modal
-    v-model="showDeleteModal"
-    :title="t('components.library.TrackBase.modal.delete.header')"
-    destructive
-  >
-    <template #alert>
-      <Alert red>
-        {{ t('components.library.TrackBase.modal.delete.content.warning') }}
-      </Alert>
-    </template>
-
-    <template #actions>
-      <Button
-        secondary
-        @click="showDeleteModal = false"
-      >
-        {{ t('components.library.TrackBase.button.cancel') }}
-      </Button>
-      <Button
-        destructive
-        :is-loading="isLoading"
-        @click="remove()"
-      >
-        {{ t('components.library.TrackBase.button.delete') }}
-      </Button>
-    </template>
-  </Modal>
-  <router-view
-    v-if="track"
-    :key="route.fullPath"
-    :track="track"
-    :object="track"
-    object-type="track"
-    @libraries-loaded="libraries = $event"
-  />
+  </Layout>
 </template>
 
 <style lang="scss" scoped>
-  .meta {
-    font-size: 15px;
-    line-height: 32px;
-    @include light-theme {
-      color: var(--fw-gray-700);
-    }
-    @include dark-theme {
-      color: var(--fw-gray-500);
-    }
+@import '~/style/funkwhale.scss';
+
+.meta {
+  font-size: 15px;
+  line-height: 32px;
+  @include light-theme {
+    color: var(--fw-gray-700);
   }
+  @include dark-theme {
+    color: var(--fw-gray-500);
+  }
+}
 </style>

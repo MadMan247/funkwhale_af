@@ -183,7 +183,9 @@ const trackDetails: {
           <span
             v-else
             class="value"
-          >{{ item.releaseValue }}</span>
+          >
+            {{ item.releaseValue }}
+          </span>
         </Layout>
       </Layout>
 
@@ -216,7 +218,9 @@ const trackDetails: {
           <span
             v-else
             class="value"
-          >{{ item.trackValue }}</span>
+          >
+            {{ item.trackValue }}
+          </span>
         </Layout>
       </Layout>
     </Layout>
@@ -238,6 +242,8 @@ const trackDetails: {
 </template>
 
 <style scoped lang="scss">
+@import '~/style/funkwhale.scss';
+
 .channel-image {
   width: 200px;
   height: 200px;
@@ -278,5 +284,4 @@ const trackDetails: {
     border-bottom: 1px solid;
   }
 }
-
 </style>

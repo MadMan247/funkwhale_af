@@ -20,6 +20,19 @@ defineProps<{
   />
 </template>
 
-<style lang="scss">
-@import './options.scss'
+<style lang="css">
+.funkwhale {
+  &.options-button {
+    will-change: transform;
+    transition: all .2s ease;
+    font-size: 0.6rem !important;
+    padding: 0.6em;
+    &.is-ghost {
+      position: absolute;
+      bottom: 0px;
+      right: 0px;
+    }
+  }
+}
+
 </style>
