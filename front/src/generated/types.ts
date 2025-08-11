@@ -6478,7 +6478,7 @@ export interface components {
             /** Format: uuid */
             uuid?: string;
             artist: components["schemas"]["SimpleChannelArtist"];
-            attributed_to: components["schemas"]["APIActor"];
+            attributed_to: components["schemas"]["FullActor"];
             readonly actor: components["schemas"]["APIActor"];
             /** Format: date-time */
             creation_date?: string;
@@ -6514,7 +6514,7 @@ export interface components {
             /** Format: uuid */
             uuid?: string;
             artist: components["schemas"]["SimpleChannelArtistRequest"];
-            attributed_to: components["schemas"]["APIActorRequest"];
+            attributed_to: components["schemas"]["FullActorRequest"];
             /** Format: date-time */
             creation_date?: string;
             metadata?: unknown;
@@ -6697,6 +6697,26 @@ export interface components {
             user: components["schemas"]["UserBasic"];
             summary: components["schemas"]["Content"];
             icon: components["schemas"]["Attachment"];
+        };
+        FullActorRequest: {
+            /** Format: uri */
+            fid: string;
+            /** Format: uri */
+            url: string;
+            domain: string;
+            /** Format: date-time */
+            creation_date: string;
+            /** Format: date-time */
+            last_fetch_date: string;
+            name: string;
+            preferred_username: string;
+            full_username: string;
+            type: string;
+            is_local: boolean;
+            manually_approves_followers: boolean;
+            user: components["schemas"]["UserBasicRequest"];
+            summary: components["schemas"]["ContentRequest"];
+            icon: components["schemas"]["AttachmentRequest"];
         };
         GlobalPreference: {
             readonly section: string;
@@ -8502,7 +8522,7 @@ export interface components {
             /** Format: uri */
             readonly fid: string;
             name: string;
-            readonly actor: components["schemas"]["APIActor"];
+            readonly actor: components["schemas"]["FullActor"];
             /** Format: date-time */
             readonly modification_date: string;
             /** Format: date-time */

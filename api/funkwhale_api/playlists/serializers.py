@@ -5,7 +5,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
-from funkwhale_api.federation.serializers import APIActorSerializer
+from funkwhale_api.federation.api_serializers import FullActorSerializer
 from funkwhale_api.music import tasks
 from funkwhale_api.music.models import Album, Artist, Track
 from funkwhale_api.music.serializers import TrackSerializer
@@ -33,7 +33,7 @@ class PlaylistSerializer(serializers.ModelSerializer):
     duration = serializers.SerializerMethodField(read_only=True)
     album_covers = serializers.SerializerMethodField(read_only=True)
     is_playable = serializers.SerializerMethodField()
-    actor = APIActorSerializer(read_only=True)
+    actor = FullActorSerializer(read_only=True)
     library = serializers.SerializerMethodField()
     library_followed = serializers.SerializerMethodField()
 

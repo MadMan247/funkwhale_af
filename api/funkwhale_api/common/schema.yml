@@ -20270,7 +20270,7 @@ components:
         artist:
           $ref: '#/components/schemas/SimpleChannelArtist'
         attributed_to:
-          $ref: '#/components/schemas/APIActor'
+          $ref: '#/components/schemas/FullActor'
         actor:
           allOf:
           - $ref: '#/components/schemas/APIActor'
@@ -20375,7 +20375,7 @@ components:
         artist:
           $ref: '#/components/schemas/SimpleChannelArtistRequest'
         attributed_to:
-          $ref: '#/components/schemas/APIActorRequest'
+          $ref: '#/components/schemas/FullActorRequest'
         creation_date:
           type: string
           format: date-time
@@ -20807,6 +20807,63 @@ components:
       - full_username
       - icon
       - is_channel
+      - is_local
+      - last_fetch_date
+      - manually_approves_followers
+      - name
+      - preferred_username
+      - summary
+      - type
+      - url
+      - user
+    FullActorRequest:
+      type: object
+      properties:
+        fid:
+          type: string
+          format: uri
+          minLength: 1
+        url:
+          type: string
+          format: uri
+          minLength: 1
+        domain:
+          type: string
+          minLength: 1
+        creation_date:
+          type: string
+          format: date-time
+        last_fetch_date:
+          type: string
+          format: date-time
+        name:
+          type: string
+          minLength: 1
+        preferred_username:
+          type: string
+          minLength: 1
+        full_username:
+          type: string
+          minLength: 1
+        type:
+          type: string
+          minLength: 1
+        is_local:
+          type: boolean
+        manually_approves_followers:
+          type: boolean
+        user:
+          $ref: '#/components/schemas/UserBasicRequest'
+        summary:
+          $ref: '#/components/schemas/ContentRequest'
+        icon:
+          $ref: '#/components/schemas/AttachmentRequest'
+      required:
+      - creation_date
+      - domain
+      - fid
+      - full_username
+      - icon
       - is_local
       - last_fetch_date
       - manually_approves_followers
@@ -24826,7 +24883,7 @@ components:
           maxLength: 100
         actor:
           allOf:
-          - $ref: '#/components/schemas/APIActor'
+          - $ref: '#/components/schemas/FullActor'
           readOnly: true
         modification_date:
           type: string

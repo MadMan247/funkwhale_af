@@ -1,4 +1,4 @@
-from funkwhale_api.federation import serializers as federation_serializers
+from funkwhale_api.federation import api_serializers as api_serializers
 from funkwhale_api.playlists import serializers
 
 
@@ -82,7 +82,7 @@ def test_playlist_serializer(factories, to_api_date):
         "is_playable": False,
         "creation_date": to_api_date(playlist.creation_date),
         "modification_date": to_api_date(playlist.modification_date),
-        "actor": federation_serializers.APIActorSerializer(actor).data,
+        "actor": api_serializers.FullActorSerializer(actor).data,
         "duration": 0,
         "tracks_count": 0,
         "album_covers": [],

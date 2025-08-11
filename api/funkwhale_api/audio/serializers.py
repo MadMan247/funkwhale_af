@@ -7,6 +7,7 @@ import uuid
 import feedparser
 import requests
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.db.models import Q
 from django.templatetags.static import static
@@ -256,11 +257,37 @@ class SimpleChannelArtistSerializer(serializers.Serializer):
         return getattr(o, "_tracks_count", 0)
 
 
+# same has federation.api_serializer but needed here to avoid circular imports
+class FullActorSerializer(serializers.Serializer):
+    fid = serializers.URLField()
+    url = serializers.URLField()
+    domain = serializers.CharField(source="domain_id")
+    creation_date = serializers.DateTimeField()
+    last_fetch_date = serializers.DateTimeField()
+    name = serializers.CharField()
+    preferred_username = serializers.CharField()
+    full_username = serializers.CharField()
+    type = serializers.CharField()
+    is_local = serializers.BooleanField()
+    is_channel = serializers.SerializerMethodField()
+    manually_approves_followers = serializers.BooleanField()
+    user = users_serializers.UserBasicSerializer()
+    summary = common_serializers.ContentSerializer(source="summary_obj")
+    icon = common_serializers.AttachmentSerializer(source="attachment_icon")
+
+    @extend_schema_field(OpenApiTypes.BOOL)
+    def get_is_channel(self, o):
+        try:
+            return bool(o.channel)
+        except ObjectDoesNotExist:
+            return False
+
+
 class ChannelSerializer(serializers.ModelSerializer):
     artist = SimpleChannelArtistSerializer()
     actor = serializers.SerializerMethodField()
     downloads_count = serializers.SerializerMethodField()
-    attributed_to = federation_serializers.APIActorSerializer()
+    attributed_to = FullActorSerializer()
     rss_url = serializers.CharField(source="get_rss_url")
     url = serializers.SerializerMethodField()
     subscriptions_count = serializers.SerializerMethodField()

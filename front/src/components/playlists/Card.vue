@@ -98,7 +98,7 @@ const updatedAgo = computed(() => moment(props.playlist.modification_date).fromN
         <Spacer :size="8" />
         <ActorLink
           :actor="playlist.actor"
-          :avatar="false"
+          :avatar="true"
           discrete
         />
       </div>

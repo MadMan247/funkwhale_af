@@ -223,9 +223,7 @@ def test_channel_serializer_representation(factories, to_api_date):
         "uuid": str(channel.uuid),
         "creation_date": to_api_date(channel.creation_date),
         "actor": federation_serializers.APIActorSerializer(channel.actor).data,
-        "attributed_to": federation_serializers.APIActorSerializer(
-            channel.attributed_to
-        ).data,
+        "attributed_to": serializers.FullActorSerializer(channel.attributed_to).data,
         "metadata": {},
         "rss_url": channel.get_rss_url(),
         "url": channel.actor.url,
@@ -248,9 +246,7 @@ def test_channel_serializer_external_representation(factories, to_api_date):
         "uuid": str(channel.uuid),
         "creation_date": to_api_date(channel.creation_date),
         "actor": None,
-        "attributed_to": federation_serializers.APIActorSerializer(
-            channel.attributed_to
-        ).data,
+        "attributed_to": serializers.FullActorSerializer(channel.attributed_to).data,
         "metadata": {},
         "rss_url": channel.get_rss_url(),
         "url": channel.actor.url,
