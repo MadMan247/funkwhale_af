@@ -25,7 +25,7 @@ const size = computed(() => (Object.entries(props).find(([key, value]) => value 
 
 <style module>
 /* Any heading */
-:is(h1, h2, h3, h4, h5, h6).heading { margin: 0; padding:0; vertical-align: baseline; align-self: baseline;}
+:is(h1, h2, h3, h4, h5, h6).heading { margin: 0; padding:0; vertical-align: baseline; align-self: baseline; scroll-margin: 1.2em; }
 
 /* Page heading */
 :is(*, .vp-doc h3).pageheading { font-size: 36px; font-weight: 900; letter-spacing: -1px; }
