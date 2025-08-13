@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { type ColorProps, type DefaultProps, color } from '~/composables/color'
-import { watchEffect, ref, nextTick } from 'vue'
+import { watchEffect, ref, nextTick, computed } from 'vue'
 import onKeyboardShortcut from '~/composables/onKeyboardShortcut'
 import { useI18n } from 'vue-i18n'
+import { useWindowSize
+ } from '@vueuse/core'
+
+const { width: screenWidth } = useWindowSize
+()
 
 import Button from '~/components/ui/Button.vue'
 import Spacer from '~/components/ui/Spacer.vue'
@@ -18,11 +23,20 @@ const props = withDefaults(
       isdestructive?: true,
       cancel?: string | true,
       icon?: string,
-      autofocus?: true | 'off'
+      autofocus?: true | 'off',
+      maximizeSize?: true
     } & (ColorProps | DefaultProps)>(),
     { title: '' }
 )
 
+const size = { padding: 32, gap: 32, card: 202 }
+
+const maxWidth = computed(() =>
+  props.maximizeSize
+  ? `${[0, 1, 2, 3, 4, 5, 6, 7, 8].map(n => size.padding*2+(n+1)*size.card+n*size.gap).findLast(n => n< screenWidth.value)}px`
+  : 'min(90vw, 55rem)',
+  { immediate: true }
+)
 
 const isOpen = defineModel<boolean>({ default: false })
 
@@ -97,7 +111,10 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
               section-heading
               :class="{ 'destructive-header': isdestructive }"
             />
-            <Spacer grow />
+            <Spacer
+              v-if="title !== ''"
+              grow
+            />
             <Button
               icon="bi-x-lg"
               ghost
@@ -162,7 +179,7 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
 
   box-shadow: 0 2px 12px 2px var(--shadow-color);
   border-radius: 1rem;
-  max-width: min(90vw, 55rem);
+  max-width: v-bind("maxWidth");
   width: 100%;
 
   display: grid;

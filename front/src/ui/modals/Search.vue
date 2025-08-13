@@ -11,7 +11,6 @@ import { useI18n } from 'vue-i18n'
 import { useModal } from '~/ui/composables/useModal.ts'
 import { useStore } from '~/store'
 import * as RStore from '~/rstore'
-import { idsPerParams } from '~/rstore/plugin.ts'
 
 import ArtistCard from '~/components/artist/Card.vue'
 import PlaylistCard from '~/components/playlists/Card.vue'
@@ -655,8 +654,9 @@ watch(queryDebounced, search, { immediate: true })
     over-popover
     autofocus="off"
     title=""
+    maximize-size
   >
-    <input
+    <!-- <input
       v-model="myPageSize"
       type="number"
       step="1"
@@ -664,17 +664,18 @@ watch(queryDebounced, search, { immediate: true })
       value="1"
     >
     <pre>{{ album?.length }} should be {{ myPageSize }}</pre>
-    <hr>
+    <hr >
     <pre>
         {{ idsPerParams }}
     </pre>
-    <pre>{{ rStore.$cache.getState() }}</pre>
+    <pre>{{ rStore.$cache.getState() }}</pre> -->
     <template #topleft>
       <Input
         v-model="query"
         raised
         :autofocus="openCategories.length===0"
         icon="bi-search"
+        style="flex-grow: 1"
       />
       <RadioButton
         v-if="radioConfig"
@@ -683,7 +684,6 @@ watch(queryDebounced, search, { immediate: true })
         :radio-config="radioConfig"
       />
     </template>
-    <Spacer />
 
     <Loader v-if="isLoading" />
 
@@ -691,21 +691,11 @@ watch(queryDebounced, search, { immediate: true })
       v-for="category in availableCategories"
       :key="category.type + isCategoryQueried(category)"
     >
+      <Spacer size-64 />
       <Section
         align-left
-        :columns-per-item="1"
-        :h3="`${
-          !isCategoryQueried(category)
-            ? '...'
-            : count(category) > 0
-              ? `${count(category)} `
-              : ''
-        }${category.label}`"
-        v-bind="
-          openSections.has(category.type)
-            ? ({ collapse: () => openSections.delete(category.type) })
-            : ({ expand: () => openSections.add(category.type) })
-        "
+        :columns-per-item="3"
+        :h3="category.label"
       >
         <!-- Categories that have one list-style item -->
 
