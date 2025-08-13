@@ -54,6 +54,7 @@
     "nanoid": "5.1.6",
     "pinia": "3.0.3",
     "showdown": "2.1.0",
+    "stable-hash": "0.0.6",
     "stacktrace-js": "2.0.2",
     "standardized-audio-context": "25.3.77",
     "string-similarity-js": "2.1.4",

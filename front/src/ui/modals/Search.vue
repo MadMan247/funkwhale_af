@@ -10,6 +10,8 @@ import useErrorHandler from '~/composables/useErrorHandler'
 import { useI18n } from 'vue-i18n'
 import { useModal } from '~/ui/composables/useModal.ts'
 import { useStore } from '~/store'
+import * as RStore from '~/rstore'
+import { idsPerParams } from '~/rstore/plugin.ts'
 
 import ArtistCard from '~/components/artist/Card.vue'
 import PlaylistCard from '~/components/playlists/Card.vue'
@@ -30,7 +32,208 @@ import Link from '~/components/ui/Link.vue'
 import Loader from '~/components/ui/Loader.vue'
 import Alert from '~/components/ui/Alert.vue'
 
+/*
+
+Strategy
+
+I think the `search` endpoint is for when you want all results at once.
+It's not really useful because it has less functionality than the other things.
+
+- Like v1.4, we don't use the `/search` endpoint. Instead,
+   we query each type with `q=...` and `page_size=3`
+- We stagger the requests by 200ms
+
+- Open question: How do we build filters for cached files?
+  (a) Re-implement the server logic -> This is the correct way because
+        it enables offline-first
+        Token search -- this is so far hard to implement.
+        Open for v2+!
+  (b) Make global `inCurrentSearch: { albums: [1, 3, 4], tags: [], }` lists.
+        Update value any time the parameter `q` is in a search.
+
+        Design for global filter-cache:
+        const filterCache : Map<JSON.stringify({ name: Name, params: params }), Id[] }
+
+        - Each time we run a search query in `plugin.ts`, we say:
+              resultIds.set(
+                JSON.stringify({ name: payload.model.name, key: payload.findOptions?.params }),
+                results.map(item=>item.id)
+              )
+
+        - Each time we use params, we can then already use the cached by finding the correct filter:
+            filter = (query) => (item) =>
+              resultIds.get(JSON.stringify({ name: query.name, params: query.params })).includes(getId(item))
+
+        I think this is particularly nice for paged navigation, where going back and forth can now leverage the cache.
+
+        We still need to find out how to tell rstore to invalidate the results.
+
+        It's a different thing than saying `artist` has n invalidation timeout of 5 minutes.
+
+        We are basically invalidating the parameters!
+
+
+
+        It's very important we implement the naive filter (param identity).
+
+        It's also very important that we
+        - refresh
+
+*/
+
+const myPageSize = ref(2);
+
+// Marker needs to be set!
+
 const { t } = useI18n()
+const rStore = RStore.useStore()
+
+const { data: album, refresh: _refreshAlbum, loading: _loadingAlbum } = rStore.albums.queryMany(() => ({
+  filter: {
+    page: 1,
+    page_size: myPageSize.value
+  }
+}))
+
+// const { data: channel } = rStore.channels.queryMany(()=>({
+//   filter: {
+//     page: 1,
+//     page_size: 1
+//   }
+// }))
+
+// We can add `refresh` and `loading` indicators to all running queries!
+//
+//
+/*
+
+To summarize
+
+- For the search interface, we simply implement a list of sections where each section
+has `data`, `loading`, `refresh`, `error` (and `more` link in case `count` is larger than the local count)
+
+- These refs are generated with `queryMany`
+
+- In a query, we have to keep `filter` and `params` in sync:
+   - `params` is our source of truth. Every time the server responds,
+      we store { count, ids, timestamp } under JSON.stringify({ name, params }).
+      `filter` looks up `ids` under JSON.stringify({ name, params }) and then
+      filters by id.
+
+- We display the number of hits, and we calculate the total, and display all on little badges :-)
+
+
+- Instead of summary/details, we could use tabs that jump to the place.
+   Each tab would be synced with the `type` query in the url (like in krasses.berlin).
+
+
+
+   - For Search and Pagination, the idea is that the `params` are keys to the inclusion&order list.
+
+   - I wonder if rstore preserves the ordering... If not, we simply store the order in the item
+      at receive-time with an Array.map.
+
+   - https://rstore.dev/guide/plugin/hooks.html#custom-cache-filtering
+       Custom filter:
+         1. Type the `params`
+         2. We create additional hooks.
+              Before: queryFirst -> [fetchFirst, __internal_key_compare_filter__]
+              After: queryFirst -> [fetchFirst, cacheFilterFirst]
+          3. We implement the additional hooks:
+              hook('cacheFilterFirst', (payload) => {
+                const { key, findOptions } = payload
+                const item = payload.readItemsFromCache().find((item) =>
+                    ...
+              hook('cacheFilterMany', (payload) => {
+                const { findOptions } = payload
+                const { params } = findOptions
+                const items = payload.getResult().filter(item=>
+                  item.visibleWithParams.includes(createHash([payload.model.name, params]))
+                payload.setResult(items)
+
+              hook('fetchMany', async (payload) => {
+                const { params } = payload.findOptions
+                const paginatedResult = await axios.get(`/api/${payload.model.name}`,
+                  params, etc.
+                )
+                const hash = createHash([payload.model.name, params])
+                const cached = payload.readItemsFromCache()
+                payload.setResult(paginatedResponse.data.results.map(item=>({
+                  ...item,
+                  // Associate each item with all queries that match it
+                  // TODO: Mirror the backend logic here to enable offline-first
+                  visibleWithParams: [
+                    // Preserve associations with other queries, if any
+                    ...(cached.find(citem=>citem.id===item.id)?.visibleWithParams ?? []),
+                    hash
+                  ]
+                  // Finally, if after a refresh the server no longer associates an item
+                  // already in the cache with the given params, then remove the association:
+                  store.$cache.writeItem (etc.)
+
+                  // This seems very complicated, and it pollutes the model.
+                  // Better: We just create a ref<Map<[hash, name], [id]>>([]) for storing and
+                  // invalidating the association `params=>filter`.
+                });
+
+
+
+                //https://mojoauth.com/hashing/fast-hash-in-javascript-in-browser/
+                const createHash = object => {
+                  let hash = 0;
+                  let t = JSON.stringify(object);
+                  for (let i=0; i<t.length; i++)
+                    hash = ((hash << 5) - hash + t.charCodeAt(i)) | 0
+                  return hash >>> 0;
+                }
+
+
+  Future:
+    - For now, we will use fetch-then-cache, and not support features such as search in
+      offline-first.
+    - Later, we can add a UI indication for stale params, with the timestamp being old,
+        and an automatic trigger: while user is still browsing the app, refresh content periodically.
+        When tab gets focus, try to re-fetch.
+    - Thought: `Tracks` and `Tags` have no global pages in the sidebar. So when we search, we may want all?
+       (a) Button `load more` increases items-per-page
+       (b) Show pagination in non-global types (but don't link it to url)
+       I think pagination is straightforward because we have pagination component.
+       So we have a lot of local variables.
+
+
+Can we do it all in template instead of script?
+
+const artistsPage = ref(2);
+const q = useQueryParameter('q') // It's also the ref for the input box
+
+//MAYBE: const debouncedQ = ... // Delay and throttle the search query change response just a bit
+
+const sections =
+  { artists:
+      rStore.artists.queryMany(()=>({
+        filter: () => rStore.,
+        params: {
+          page: artistsPage.value,
+          page_size: 2,
+          q: q.value
+        }
+      }),
+    albums:
+    ...
+
+  }
+
+OR
+
+const { artists, albums, tracks, playlists, radios, tags, podcasts, series } = RStore.useStore()
+
+<Section :h2="t('artists')">
+
+</Section>
+
+
+*/
+
 
 const { isOpen, value: query } = useModal(
   'search', {
@@ -453,6 +656,19 @@ watch(queryDebounced, search, { immediate: true })
     autofocus="off"
     title=""
   >
+    <input
+      v-model="myPageSize"
+      type="number"
+      step="1"
+      max="3"
+      value="1"
+    >
+    <pre>{{ album?.length }} should be {{ myPageSize }}</pre>
+    <hr>
+    <pre>
+        {{ idsPerParams }}
+    </pre>
+    <pre>{{ rStore.$cache.getState() }}</pre>
     <template #topleft>
       <Input
         v-model="query"
@@ -469,9 +685,7 @@ watch(queryDebounced, search, { immediate: true })
     </template>
     <Spacer />
 
-    <Loader
-      v-if="isLoading"
-    />
+    <Loader v-if="isLoading" />
 
     <template
       v-for="category in availableCategories"

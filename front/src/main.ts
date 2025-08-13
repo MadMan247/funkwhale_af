@@ -4,12 +4,13 @@ import VueDOMPurifyHTML from 'vue-dompurify-html'
 
 import store, { key } from '~/store'
 import router from '~/router'
-
+import { rstore } from './rstore'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
 import useLogger from '~/composables/useLogger'
 import useTheme from '~/composables/useTheme'
+
 import App from '~/App.vue'
 
 import '~/api'
@@ -29,6 +30,7 @@ const pinia = createPinia()
 app.use(router)
 app.use(pinia)
 app.use(store, key)
+app.use(rstore)
 app.use(VueDOMPurifyHTML)
 
 const modules: Record<string | 'axios', { install?: InitModule }> = import.meta.glob('./init/*.ts', { eager: true })

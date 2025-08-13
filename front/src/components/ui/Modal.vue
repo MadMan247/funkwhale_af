@@ -267,7 +267,7 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
 
 .funkwhale.overlay:has(.over-popover) {
   /* override z-index */
-  z-index: 999999;
+  z-index: 9999;
 }
 
 .funkwhale.overlay {
