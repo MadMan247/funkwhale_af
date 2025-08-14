@@ -31,7 +31,7 @@ const hasContent = computed(() => {
 const headingProps = computed(() =>
   Object.fromEntries(Object.entries(props).filter(
     ([key, value]) => value
-      && (['page-heading', 'section-heading', 'large-section-heading', 'subsection-heading', 'caption', 'title', 'radio', 'secondary']
+      && (['pageHeading', 'sectionHeading', 'largeSectionHeading', 'subsectionHeading', 'caption', 'title', 'radio', 'secondary']
         .includes(key) || key.startsWith('h'))
   )))
 </script>
@@ -156,7 +156,7 @@ const headingProps = computed(() =>
       `"
       v-bind="columnsPerItem
         ? { grid: 'auto / repeat(auto-fit, 46px)' }
-        : { flex: true }
+  : { stack: true }
       "
     >
       <slot />

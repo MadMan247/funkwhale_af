@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="TOption extends string|number">
-import { nextTick, onMounted, onUnmounted, ref, computed } from 'vue'
+import { nextTick, onMounted, onUnmounted, ref, computed, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { type ColorProps, type VariantProps, type DefaultProps, type RaisedProps, type PastelProps, color } from '~/composables/color.ts'
 
@@ -36,7 +36,7 @@ onUnmounted(() =>
 )
 
 const current = defineModel<TOption | string>('current')
-const options = defineModel<Record<TOption, string>>('options', { required: true })
+const options = defineModel<Record<TOption, string> | Ref<Record<TOption, string> >>('options', { required: true })
 const initial = defineModel<TOption>('initial')
 
 // const selected =computed(()=> current.value ?? props.placeholder ?? initial.value ?? '')
@@ -80,8 +80,8 @@ const reset = () => { current.value = initial.value }
       :autofocus="autofocus || undefined"
     >
       <option
-        v-for="([option, label_], index) in placeholder ? [[placeholder, placeholder], ...Object.entries(options)] : Object.entries(options)"
-        :key="index"
+        v-for="([option, label_]) in placeholder ? [[placeholder, placeholder], ...Object.entries(options)] : Object.entries(options)"
+        :key="option"
         :value="option"
         :disabled="label_ === placeholder"
         :selected="label_ === placeholder"
@@ -89,6 +89,15 @@ const reset = () => { current.value = initial.value }
         {{ label_ }}
       </option>
     </select>
+
+    <!-- Caret icon -->
+
+    <div
+      :class="$style.caret"
+      v-bind="{...$attrs, ...color(props, ['solid', 'secondary'])()}"
+    >
+      <i :class="['bi bi-caret-down-fill']" />
+    </div>
 
     <!-- Left side icon -->
 
@@ -157,7 +166,6 @@ const reset = () => { current.value = initial.value }
       }
     }
 
-
     &:focus {
       box-shadow: inset 0 0 0 3px var(--focus-ring-color);
       border-color: var(--focus-ring-color);
@@ -195,6 +203,24 @@ const reset = () => { current.value = initial.value }
     align-items: center;
     font-size: 14px;
     color: var(--fw-placeholder-color);
+  }
+
+  >.caret {
+      position: absolute;
+      right: 6px;
+      bottom: 6px;
+
+      height: calc(100% - 19px);
+      width: 30px;
+      display: flex;
+
+      > i {
+        font-size:14px;
+        margin: auto;
+      }
+
+      /* Icon prefixes allow click-through; i.e. the user can open the dropdown by clicking the icon */
+      pointer-events: none;
   }
 
   > .prefix {

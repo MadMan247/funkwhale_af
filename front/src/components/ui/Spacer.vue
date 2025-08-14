@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue'
 
-type Size = 'no-size' | `size-${'4' | '8' | '12' | '16' | '32' | '46' | '64'}`
+type Size = 'no-size' | `size-${'4' | '8' | '12' | '16' | '20' | '32' | '46' | '64'}`
 
 const props = defineProps<{
   grow?:true;

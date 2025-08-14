@@ -9,7 +9,7 @@ const props = defineProps<{
   noWrap?: true,
 } & { [P in 'stack' | 'grid' | 'flex' | 'columns' | 'row' | 'page']?: true | string }
   & { [C in 'nav' | 'ul' | 'aside' | 'header' | 'footer' | 'main' | 'label' | 'form' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5']?: true }
-  & { [G in 'no-gap' | `gap-${'4' | '8' | '12' | '16' | '24' | '32' | '48' | '64' | 'auto'}` ]?: true }
+  & { [G in 'no-gap' | `gap-${'4' | '8' | '12' | '16' | '32' | '48' | '64' | '84' | 'auto'}` ]?: true }
   &(PastelProps | ColorProps | DefaultProps)
   & RaisedProps
   & VariantProps
