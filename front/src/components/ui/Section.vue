@@ -12,7 +12,7 @@ import Heading from '~/components/ui/Heading.vue'
 const props = defineProps<{
   columnsPerItem?: 1 | 2 | 3 | 4
   alignLeft?: boolean
-  action?: { text: string } & (ComponentProps<typeof Link> | ComponentProps<typeof Button>)
+  action?: { text: string, id?: string } & (ComponentProps<typeof Link> | ComponentProps<typeof Button>)
   icon?: string
 } & {
   [H in `h${ '1' | '2' | '3' | '4' | '5' | '6' }`]? : string

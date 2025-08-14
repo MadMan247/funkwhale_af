@@ -20,6 +20,7 @@ import HumanDuration from '~/components/common/HumanDuration.vue'
 import PlayButton from '~/components/audio/PlayButton.vue'
 import TagsList from '~/components/tags/List.vue'
 import RadioButton from '~/components/radios/Button.vue'
+import RenderedDescription from '~/components/common/RenderedDescription.vue'
 
 import Loader from '~/components/ui/Loader.vue'
 import Layout from '~/components/ui/Layout.vue'
@@ -161,6 +162,12 @@ const tabs = ref([
     to: { name: 'channels.detail.episodes', params: { id: props.id } }
   }
 ])
+
+const renderedDescription = computed(() => {
+  const description = object.value?.artist?.description
+  return description && ({ text: description.text || undefined, html: description.html })
+}
+)
 </script>
 
 <template>
@@ -262,11 +269,10 @@ const tabs = ref([
           />
         </Layout>
       </Layout>
-      <rendered-description
-        :content="object.artist?.description"
+      <RenderedDescription
+        :content="renderedDescription"
         :update-url="`channels/${object.uuid}/`"
         :can-update="false"
-        @updated="object = $event"
       />
       <Layout
         flex
@@ -411,14 +417,14 @@ const tabs = ref([
             : t('views.channels.DetailBase.header.artistChannel')
           "
         >
-            <Spacer />
-            <channel-form
-              ref="editForm"
-              :object="object"
-              @loading="edit.loading = $event"
-              @submittable="edit.submittable = $event"
-              @updated="fetchData"
-            />
+          <Spacer />
+          <channel-form
+            ref="editForm"
+            :object="object"
+            @loading="edit.loading = $event"
+            @submittable="edit.submittable = $event"
+            @updated="fetchData"
+          />
           <template #actions>
             <Spacer grow />
             <Button
@@ -427,7 +433,7 @@ const tabs = ref([
               low-height
               :is-loading="edit.loading"
               :disabled="!edit.submittable"
-              @click.stop="() => { console.log('EDITF', editForm); editForm?.submit(); /*showEditModal = false;*/ }"
+              @click.stop="() => { editForm?.submit(); }"
             >
               {{ t('views.channels.DetailBase.button.updateChannel') }}
             </Button>

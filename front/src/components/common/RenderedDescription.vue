@@ -11,6 +11,8 @@ import clip from 'text-clipper'
 import Layout from '~/components/ui/Layout.vue'
 import Button from '~/components/ui/Button.vue'
 import Alert from '~/components/ui/Alert.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Section from '~/components/ui/Section.vue'
 
 interface Events {
   (e: 'updated', data: unknown): void
@@ -92,102 +94,105 @@ const submit = async () => {
 </script>
 
 <template>
-  <Layout
-    v-if="content && !isUpdating"
-    flex
-    gap-4
+  <Section
+    :action="isTruncated ? {
+      text:
+        showMore
+          ? t('components.common.RenderedDescription.button.less')
+          : t('components.common.RenderedDescription.button.more'),
+      onClick:() => { showMore = !showMore },
+      style:'color: var(--fw-primary)',
+      id: 'expandOrCollapseButton'
+    } : undefined"
   >
-    <!-- Render the truncated or full description -->
-    <sanitized-html
-      :html="html"
-      :class="['description', isTruncated ? 'truncated' : '']"
-    />
+    <label
+      v-if="content && !isUpdating"
+      for="expandOrCollapseButton"
+    >
+      <!-- Render the truncated or full description -->
+      <sanitized-html
+        :html="html"
+        :class="['description', isTruncated ? 'truncated' : '']"
+      />
+    </label>
+    <span v-else-if="!isUpdating">
+      {{ t('components.common.RenderedDescription.empty.noDescription') }}
+    </span>
 
-    <!-- Display the `show more` / `show less` button -->
+    <!-- [DISABLED] Display an edit form -->
+    <!-- TODO: Check if we want to revive in-situ editing here -->
 
-    <template v-if="isTruncated">
-      <a
-        v-if="showMore === false && props.moreLink !== false"
-        class="more"
-        style="align-self: flex-end; color: var(--fw-primary);"
-        href=""
-        @click.stop.prevent="showMore = true"
+    <form
+      v-if="isUpdating"
+      @submit.prevent="submit()"
+    >
+      <Alert
+        v-if="errors.length > 0"
+        red
+        title="{{ t('components.common.RenderedDescription.header.failure') }}"
+        role="alert"
       >
-        {{ t('components.common.RenderedDescription.button.more') }}
-      </a>
-      <a
-        v-else-if="props.moreLink !== false"
-        class="more"
-        style="align-self: center; color: var(--fw-primary);"
-        href=""
-        @click.stop.prevent="showMore = false"
+        <ul class="list">
+          <li
+            v-for="(error, key) in errors"
+            :key="key"
+          >
+            {{ error }}
+          </li>
+        </ul>
+      </Alert>
+      <content-form
+        v-model="text"
+        :autofocus="true"
+      />
+      <Button
+        class="left floated"
+        solid
+        secondary
+        @click.prevent="isUpdating = false"
       >
-        {{ t('components.common.RenderedDescription.button.less') }}
-      </a>
-    </template>
-  </Layout>
-  <span v-else-if="!isUpdating">
-    {{ t('components.common.RenderedDescription.empty.noDescription') }}
-  </span>
-
-  <!-- [DISABLED] Display an edit form -->
-  <!-- TODO: Check if we want to revive in-situ editing here -->
-
-  <form
-    v-if="isUpdating"
-    @submit.prevent="submit()"
-  >
-    <Alert
-      v-if="errors.length > 0"
-      red
-      title="{{ t('components.common.RenderedDescription.header.failure') }}"
-      role="alert"
-    >
-      <ul class="list">
-        <li
-          v-for="(error, key) in errors"
-          :key="key"
-        >
-          {{ error }}
-        </li>
-      </ul>
-    </Alert>
-    <content-form
-      v-model="text"
-      :autofocus="true"
-    />
-    <Button
-      class="left floated"
-      solid
-      secondary
-      @click.prevent="isUpdating = false"
-    >
-      {{ t('components.common.RenderedDescription.button.cancel') }}
-    </Button>
-    <Button
-      :class="['ui', {'loading': isLoading}, 'right', 'floated', 'button']"
-      type="submit"
-      :disabled="isLoading"
-      solid
-      primary
-    >
-      {{ t('components.common.RenderedDescription.button.update') }}
-    </Button>
-  </form>
+        {{ t('components.common.RenderedDescription.button.cancel') }}
+      </Button>
+      <Button
+        :class="['ui', {'loading': isLoading}, 'right', 'floated', 'button']"
+        type="submit"
+        :disabled="isLoading"
+        solid
+        primary
+      >
+        {{ t('components.common.RenderedDescription.button.update') }}
+      </Button>
+    </form>
+  </Section>
 </template>
 
 <style lang="scss" scoped>
-  .description {
+:has(>.description) {
+    position: relative;
+    align-items: first baseline;
+}
+
+.description {
+  display: flex; flex-direction: column;
+}
+
+.description.truncated {
     overflow: hidden;
     text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    white-space: normal;
-    &.truncated {
-      -webkit-line-clamp: 1; /* Number of lines to show */
-      line-clamp: 1;
-      max-height: 72px;
-      flex-shrink: 1;
-    }
+}
+
+
+/* .description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+  &.truncated {
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    max-height: 72px;
+    flex-shrink: 1;
   }
+} */
 </style>
