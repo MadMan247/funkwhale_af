@@ -14405,6 +14405,7 @@ export interface operations {
         parameters: {
             query?: {
                 format?: "json" | "xspf";
+                index?: number;
             };
             header?: never;
             path: {
@@ -14436,6 +14437,7 @@ export interface operations {
         parameters: {
             query?: {
                 format?: "json" | "xspf";
+                index?: number;
             };
             header?: never;
             path: {
@@ -21406,6 +21408,7 @@ export interface operations {
         parameters: {
             query?: {
                 format?: "json" | "xspf";
+                index?: number;
             };
             header?: never;
             path: {
@@ -21437,6 +21440,7 @@ export interface operations {
         parameters: {
             query?: {
                 format?: "json" | "xspf";
+                index?: number;
             };
             header?: never;
             path: {

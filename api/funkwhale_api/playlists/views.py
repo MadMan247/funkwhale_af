@@ -4,7 +4,7 @@ from itertools import chain
 from django.conf import settings
 from django.db import transaction
 from django.db.models import Count
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiParameter, OpenApiTypes, extend_schema
 from rest_framework import exceptions, mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
@@ -205,7 +205,10 @@ class PlaylistViewSet(
             ),
         )
 
-    @extend_schema(operation_id="remove_from_playlist")
+    @extend_schema(
+        operation_id="remove_from_playlist",
+        parameters=[OpenApiParameter("index", OpenApiTypes.INT, location="query")],
+    )
     @action(methods=["post", "delete"], detail=True)
     @transaction.atomic
     def remove(self, request, *args, **kwargs):
