@@ -306,6 +306,8 @@ const renderedDescription = computed(() => {
           low-height
         />
 
+        <Spacer grow />
+
         <Popover>
           <template #default="{ toggleOpen }">
             <OptionsButton
@@ -347,24 +349,24 @@ const renderedDescription = computed(() => {
               >
                 {{ t('views.channels.DetailBase.button.edit') }}
               </PopoverItem>
-              <dangerous-button
+              <DangerousButton
                 v-if="object"
                 popover-item
                 :title="t('views.channels.DetailBase.button.confirm')"
                 :is-loading="isLoading"
                 icon="bi-trash"
-                @confirm="remove()"
+                @confirm="remove"
               >
-                {{ t('views.channels.DetailBase.button.confirm') }}
-                <template #modal-content>
+                <template #default>
+                  {{ t('views.channels.DetailBase.button.confirm') }}
+                </template>
+                <template #content>
                   {{ t('views.channels.DetailBase.modal.delete.content.warning') }}
                 </template>
-                <template #modal-confirm>
-                  <p>
-                    {{ t('views.channels.DetailBase.button.confirm') }}
-                  </p>
+                <template #confirm>
+                  {{ t('views.channels.DetailBase.button.confirm') }}
                 </template>
-              </dangerous-button>
+              </DangerousButton>
             </template>
             <template v-if="store.state.auth.availablePermissions['library']">
               <hr />
@@ -377,10 +379,6 @@ const renderedDescription = computed(() => {
             </template>
           </template>
         </Popover>
-        <Spacer
-          h
-          grow
-        />
         <subscribe-button
           v-if="store.state.auth.authenticated && object?.attributed_to.full_username !== store.state.auth.fullUsername"
           low-height

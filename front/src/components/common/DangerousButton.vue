@@ -4,6 +4,8 @@ import { useI18n } from 'vue-i18n'
 
 import Button from '~/components/ui/Button.vue'
 import Modal from '~/components/ui/Modal.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Layout from '~/components/ui/Layout.vue'
 import PopoverItem from '~/components/ui/popover/PopoverItem.vue'
 
 interface Events {
@@ -24,6 +26,8 @@ const emit = defineEmits<Events>()
 
 const showModal = ref(false)
 
+const canceled = ref(false)
+
 const confirm = () => {
   showModal.value = false
   emit('confirm')
@@ -34,13 +38,15 @@ const confirm = () => {
 <template>
   <component
     :is="props.popoverItem ? PopoverItem : Button"
+    :keep-open="props.popoverItem"
     destructive
     v-bind="$attrs"
-    @click.prevent.stop="showModal = true"
+    @click.prevent.stop="showModal = !showModal"
   >
+    <!-- default slot: Button content -->
     <slot />
-
     <Modal
+      v-if="!props.popoverItem"
       v-model="showModal"
       destructive
       :title="title || t('components.common.DangerousButton.header.confirm')"
@@ -48,19 +54,58 @@ const confirm = () => {
     >
       <div class="scrolling content">
         <div class="description">
-          <slot name="modal-content" />
+          <slot name="content" />
         </div>
       </div>
       <template #actions>
+        <!-- <Button
+          v-bind="{[{success: 'primary', danger: 'destructive'}[confirmColor || 'danger']]: true}"
+          @click="confirm"
+        >
+          <slot name="confirm">
+            {{ t('components.common.DangerousButton.button.confirm') }}
+          </slot>
+        </Button> -->
+      </template>
+    </Modal>
+  </component>
+  <template v-if="props.popoverItem && showModal">
+    <Layout>
+      <hr />
+      <div
+        v-if="$slots.content"
+        style="font-size: 1rem;"
+      >
+        <slot name="content" />
+      </div>
+      <Layout
+        flex
+        gap-8
+      >
         <Button
           v-bind="{[{success: 'primary', danger: 'destructive'}[confirmColor || 'danger']]: true}"
           @click="confirm"
         >
-          <slot name="modal-confirm">
+          <slot name="confirm">
             {{ t('components.common.DangerousButton.button.confirm') }}
           </slot>
         </Button>
-      </template>
-    </Modal>
-  </component>
+        <Spacer
+          h
+          grow
+        />
+        <Button
+          secondary
+          raised
+          solid
+          autofocus
+          @click="showModal = false; canceled = true;"
+        >
+          <slot name="cancel">
+            {{ t('components.common.DangerousButton.button.cancel') }}
+          </slot>
+        </Button>
+      </Layout>
+    </Layout>
+  </template>
 </template>
