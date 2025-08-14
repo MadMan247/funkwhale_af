@@ -98,12 +98,11 @@ const props = defineProps<{
       <slot />
     </Layout>
   </Layout>
-  <Spacer />
 </template>
 
 <style module lang="scss">
-  // Visually push ghost link and non-solid button to the edge
-  .action:global(.interactive:not(:is(.primary, .solid, .destructive, .secondary)):is(button, a.ghost)) {
-    margin-right: -16px;
-  }
+// Visually push ghost link and non-solid button to the edge
+.action:global(.interactive:not(:is(.primary, .solid, .destructive, .secondary)):is(button, a.ghost)) {
+  margin-right: -16px;
+}
 </style>

@@ -130,13 +130,15 @@ const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value]
 <template>
   <Layout
     v-title="labels.title"
-    stack
     main
+    stack
+    gap-64
   >
     <Header
       :h1="t('components.library.Artists.header.browse')"
       page-heading
     />
+    <Section>
     <Layout
       form
       flex
@@ -242,6 +244,7 @@ const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value]
       />
     </Layout>
     <Loader v-if="isLoading" />
+    <Spacer />
     <Pagination
       v-if="page && result && result.count > paginateBy"
       v-model:page="page"
@@ -289,6 +292,7 @@ const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value]
       v-model:page="page"
       :pages="Math.ceil(result.count / paginateBy)"
     />
+  </Section>
   </Layout>
 </template>
 

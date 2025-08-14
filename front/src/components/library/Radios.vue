@@ -155,19 +155,18 @@ const paginateOptions = computed(() => sortedUniq([12, 25, 50, paginateBy.value]
         :type="'less-listened_library'"
       />
     </Section>
-    <h2>
-      {{ t('components.library.Radios.header.user') }}
-      <Link
-        v-if="store.state.auth.authenticated"
-        class="floated right"
-        solid
-        primary
-        icon="bi-plus"
-        :to="{name: 'library.radios.build'}"
-      >
-        {{ t('components.library.Radios.button.create') }}
-      </Link>
-    </h2>
+    <Section
+    :h2="t('components.library.Radios.header.user')"
+    :action="{
+    to: {name: 'library.radios.build'},
+    text:t('components.library.Radios.button.create'),
+    icon: 'bi-plus',
+    solid: true,
+    primary: true,
+    disabled: !store.state.auth.authenticated || undefined
+    }"
+    >
+    <Spacer no-size />
     <Layout
       flex
       form
@@ -294,5 +293,6 @@ const paginateOptions = computed(() => sortedUniq([12, 25, 50, paginateBy.value]
         :pages="Math.ceil(result.count / paginateBy)"
       />
     </Layout>
+    </Section>
   </Layout>
 </template>

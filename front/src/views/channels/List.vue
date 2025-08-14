@@ -25,12 +25,13 @@ import ChannelsWidget from '~/components/audio/ChannelsWidget.vue'
 import RemoteSearchForm from '~/components/RemoteSearchForm.vue'
 import ChannelForm from '~/components/audio/ChannelForm.vue'
 import Layout from '~/components/ui/Layout.vue'
-import Header from '~/components/ui/Header.vue'
 import Modal from '~/components/ui/Modal.vue'
 import Button from '~/components/ui/Button.vue'
 import Input from '~/components/ui/Input.vue'
 import Pills from '~/components/ui/Pills.vue'
 import Spacer from '~/components/ui/Spacer.vue'
+import Section from '~/components/ui/Section.vue'
+import Select from '~/components/ui/Select.vue'
 
 interface Props extends OrderingProps {
   scope?: 'me' | 'all'
@@ -128,7 +129,41 @@ onOrderingUpdate(() => {
   fetchData()
 })
 
-const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value].sort((a, b) => a - b)))
+const paginateOptions = computed<Record<number, string>>(() =>
+  Object.fromEntries(
+    sortedUniq([12, 30, 50, paginateBy.value].sort((a, b) => a - b))
+      .map(v=>[v,`${v}`])
+  )
+)
+
+
+
+  // ({ ...(sortedUniq([12, 30, 50, paginateBy.value].sort((a, b) => a - b))) }))
+
+/* Options and `refs` for each filter `<Select>` control */
+const searchFilters = ref({
+  'ordering': {
+    label: t('components.manage.library.UploadsTable.ordering.label'),
+    current: ordering,
+    options: {
+      'creation_date': sharedLabels.filters.creation_date,
+      'modification_date': sharedLabels.filters.modification_date
+    } satisfies Partial<Record<OrderingField, string>>
+  },
+  'orderingDirection': {
+    label: t('components.manage.library.UploadsTable.ordering.direction.label'),
+    current: orderingDirection,
+    options: {
+      '+': t('components.manage.library.UploadsTable.ordering.direction.ascending'),
+      '-': t('components.manage.library.UploadsTable.ordering.direction.descending')
+    }
+  },
+  'pagination': {
+    label: t('components.library.Podcasts.pagination.results'),
+    current: paginateBy,
+    options: paginateOptions
+  }
+} as const )
 
 const showSubscribeModal = ref(false)
 const showCreateModal = ref(false)
@@ -138,10 +173,12 @@ const showCreateModal = ref(false)
   <Layout
     stack
     main
+    gap-84
   >
+    <Spacer no-size />
     <!-- TODO: `yarn lint:tsc` doesn't understand the `Prop` type for `Header` while the language server does. It may be a question of typescript version... Investigate and fix! https://dev.funkwhale.audio/funkwhale/funkwhale/-/issues/2437 -->
     <!-- @vue-ignore -->
-    <Header
+    <Section
       v-if="store.state.auth.authenticated"
       :h1="t('views.channels.SubscriptionsList.title')"
       :action="{
@@ -154,57 +191,58 @@ const showCreateModal = ref(false)
         icon: 'bi-plus'
       }"
       large-section-heading
-    />
-    <Modal
-      v-model="showSubscribeModal"
-      :title="t('views.channels.SubscriptionsList.modal.subscription.header')"
     >
-      <div
-        ref="modalContent"
-        class="scrolling content"
+      <Modal
+        v-model="showSubscribeModal"
+        :title="t('views.channels.SubscriptionsList.modal.subscription.header')"
       >
-        <remote-search-form
-          initial-type="both"
-          :show-submit="false"
-          :standalone="false"
-          :redirect="true"
-          @subscribed="showSubscribeModal = false; reloadWidget()"
-        />
-      </div>
-      <template #actions>
-        <Button
-          secondary
-          @click="showSubscribeModal = false"
+        <div
+          ref="modalContent"
+          class="scrolling content"
         >
-          {{ t('views.channels.SubscriptionsList.button.cancel') }}
-        </Button>
-        <Button
-          form="remote-search"
-          type="submit"
-          icon="bi-bookmark-check-fill"
-          primary
-        >
-          {{ t('views.channels.SubscriptionsList.button.subscribe') }}
-        </Button>
-      </template>
-    </Modal>
-
-    <inline-search-bar
-      v-if="store.state.auth.authenticated"
-      v-model="subscribedQuery"
-      :placeholder="labels.searchPlaceholder"
-      @search="reloadWidget"
-    />
-    <channels-widget
-      v-if="store.state.auth.authenticated"
-      :key="widgetKey"
-      :limit="4"
-      :show-modification-date="true"
-      :filters="{q: subscribedQuery, subscribed: 'true'}"
-    />
+          <remote-search-form
+            initial-type="both"
+            :show-submit="false"
+            :standalone="false"
+            :redirect="true"
+            @subscribed="showSubscribeModal = false; reloadWidget()"
+          />
+        </div>
+        <template #actions>
+          <Button
+            secondary
+            @click="showSubscribeModal = false"
+          >
+            {{ t('views.channels.SubscriptionsList.button.cancel') }}
+          </Button>
+          <Button
+            form="remote-search"
+            type="submit"
+            icon="bi-bookmark-check-fill"
+            primary
+          >
+            {{ t('views.channels.SubscriptionsList.button.subscribe') }}
+          </Button>
+        </template>
+      </Modal>
+      <Spacer no-size />
+      <inline-search-bar
+        v-if="store.state.auth.authenticated"
+        v-model="subscribedQuery"
+        :placeholder="labels.searchPlaceholder"
+        @search="reloadWidget"
+      />
+      <channels-widget
+        v-if="store.state.auth.authenticated"
+        :key="widgetKey"
+        :limit="4"
+        :show-modification-date="true"
+        :filters="{q: subscribedQuery, subscribed: 'true'}"
+      />
+    </Section>
     <!-- TODO: `yarn lint:tsc` doesn't understand the `Prop` type for `Header` while the language server does. It may be a question of typescript version... Investigate and fix! https://dev.funkwhale.audio/funkwhale/funkwhale/-/issues/2437 -->
     <!-- @vue-ignore -->
-    <Header
+    <Section
       :h1="t('views.auth.ProfileOverview.header.channels')"
       :action="{
         text: t('views.channels.SubscriptionsList.link.addNew'),
@@ -216,165 +254,105 @@ const showCreateModal = ref(false)
         primary: true
       }"
       large-section-heading
-    />
-    <Layout
-      form
-      flex
-      :class="['ui', {'loading': isLoading}, 'form']"
-      @submit.prevent="search"
     >
-      <!-- TODO: Translations -->
-      <Input
-        id="artist-search"
-        v-model="query"
-        search
-        name="search"
-        :label="t('components.library.Podcasts.label.search')"
-        autofocus
-        :placeholder="labels.searchPlaceholder"
-      />
-      <Pills
-        v-if="typeof tags === 'object'"
-        :get="model => { tags = model.currents.map(({ label }) => label) }"
-        :set="model => ({
+      <Spacer no-size />
+      <Layout
+        form
+        flex
+        @submit.prevent="search"
+      >
+        <!-- TODO: Translations -->
+        <Input
+          id="artist-search"
+          v-model="query"
+          search
+          name="search"
+          :label="t('components.library.Podcasts.label.search')"
+          autofocus
+          :placeholder="labels.searchPlaceholder"
+        />
+        <Pills
+          v-if="typeof tags === 'object'"
+          :get="model => { tags = model.currents.map(({ label }) => label) }"
+          :set="model => ({
           ...model,
           others: [],
           currents: tags.map(tag => ({ type: 'custom' as const, label: tag })),
         })"
-        :label="t('components.library.Podcasts.label.tags')"
-        style="max-width: 350px;"
+          :label="t('components.library.Podcasts.label.tags')"
+          style="max-width: 350px;"
+        />
+        <Select
+          v-for="[id, filter] in Object.entries(searchFilters)"
+          :id="`artist-${id}`"
+          :key="id"
+          v-model:current="filter.current"
+          v-model:options="filter.options"
+          :label="filter.label"
+        />
+      </Layout>
+      <channels-widget
+        :key="widgetKey"
+        :limit="paginateBy"
+        :show-modification-date="true"
+        :filters="{q: subscribedQuery, subscribed: 'false'}"
       />
-      <Layout
-        stack
-        no-gap
-        label
-        for="artist-ordering"
-      >
-        <span class="label">
-          {{ t('components.library.Podcasts.ordering.label') }}
-        </span>
-        <select
-          id="artist-ordering"
-          v-model="ordering"
-          class="dropdown"
-        >
-          <option
-            v-for="(option, key) in orderingOptions"
-            :key="key"
-            :value="option[0]"
-          >
-            {{ sharedLabels.filters[option[1]] }}
-          </option>
-        </select>
-      </Layout>
-      <Layout
-        stack
-        no-gap
-        label
-        for="artist-ordering-direction"
-      >
-        <span class="label">
-          {{ t('components.library.Podcasts.ordering.direction.label') }}
-        </span>
-        <select
-          id="artist-ordering-direction"
-          v-model="orderingDirection"
-          class="dropdown"
-        >
-          <option value="+">
-            {{ t('components.library.Podcasts.ordering.direction.ascending') }}
-          </option>
-          <option value="-">
-            {{ t('components.library.Podcasts.ordering.direction.descending') }}
-          </option>
-        </select>
-      </Layout>
-      <Layout
-        stack
-        no-gap
-        label
-        for="artist-results"
-      >
-        <span class="label">
-          {{ t('components.library.Podcasts.pagination.results') }}
-        </span>
-        <select
-          id="artist-results"
-          v-model="paginateBy"
-          class="dropdown"
-        >
-          <option
-            v-for="opt in paginateOptions"
-            :key="opt"
-            :value="opt"
-          >
-            {{ opt }}
-          </option>
-        </select>
-      </Layout>
-    </Layout>
-    <Spacer />
-    <channels-widget
-      :key="widgetKey"
-      :limit="paginateBy"
-      :show-modification-date="true"
-      :filters="{q: subscribedQuery, subscribed: 'false'}"
-    />
 
-    <Modal
-      v-model="showCreateModal"
-      :title="
+      <Modal
+        v-model="showCreateModal"
+        :title="
         step === 1
           ? t('views.auth.ProfileOverview.modal.createChannel.header')
           : category === 'podcast'
             ? t('views.auth.ProfileOverview.modal.createChannel.podcast.header')
             : t('views.auth.ProfileOverview.modal.createChannel.artist.header')
       "
-    >
-      <channel-form
-        ref="createForm"
-        :object="null"
-        :step="step"
-        @loading="isLoading = $event"
-        @submittable="submittable = $event"
-        @category="category = $event"
-        @errored="modalContent.scrollTop = 0"
-        @created="router.push({name: 'channels.detail', params: {id: $event.actor.preferred_username}})"
-      />
-      <template #actions>
-        <Button
-          secondary
-          autofocus
-          @click="showCreateModal = false"
-        >
-          {{ t('views.auth.ProfileOverview.button.cancel') }}
-        </Button>
-        <Spacer grow />
-        <Button
-          v-if="step > 1"
-          secondary
-          @click.stop.prevent="step -= 1"
-        >
-          {{ t('views.auth.ProfileOverview.button.previous') }}
-        </Button>
-        <Button
-          v-if="step === 1"
-          primary
-          @click.stop.prevent="step += 1"
-        >
-          {{ t('views.auth.ProfileOverview.button.next') }}
-        </Button>
-        <Button
-          v-if="step === 2"
-          primary
-          type="submit"
-          :disabled="!submittable && !isLoading"
-          :is-loading="isLoading"
-          @click.prevent.stop="createForm.submit"
-        >
-          {{ t('views.auth.ProfileOverview.button.createChannel') }}
-        </Button>
-      </template>
-    </Modal>
+      >
+        <channel-form
+          ref="createForm"
+          :object="null"
+          :step="step"
+          @loading="isLoading = $event"
+          @submittable="submittable = $event"
+          @category="category = $event"
+          @errored="modalContent.scrollTop = 0"
+          @created="router.push({name: 'channels.detail', params: {id: $event.actor.preferred_username}})"
+        />
+        <template #actions>
+          <Button
+            secondary
+            autofocus
+            @click="showCreateModal = false"
+          >
+            {{ t('views.auth.ProfileOverview.button.cancel') }}
+          </Button>
+          <Spacer grow />
+          <Button
+            v-if="step > 1"
+            secondary
+            @click.stop.prevent="step -= 1"
+          >
+            {{ t('views.auth.ProfileOverview.button.previous') }}
+          </Button>
+          <Button
+            v-if="step === 1"
+            primary
+            @click.stop.prevent="step += 1"
+          >
+            {{ t('views.auth.ProfileOverview.button.next') }}
+          </Button>
+          <Button
+            v-if="step === 2"
+            primary
+            type="submit"
+            :disabled="!submittable && !isLoading"
+            :is-loading="isLoading"
+            @click.prevent.stop="createForm.submit"
+          >
+            {{ t('views.auth.ProfileOverview.button.createChannel') }}
+          </Button>
+        </template>
+      </Modal>
+    </Section>
   </Layout>
 </template>

@@ -35,15 +35,13 @@ const labels = computed(() => ({
     form
     @submit.stop.prevent="emit('search', value)"
   >
-    <div :class="['ui', 'action', {icon: value}, 'input']">
-      <Input
-        v-model="value"
-        search
-        name="search-query"
-        type="text"
-        :label=" t('components.common.InlineSearchBar.label.search')"
-        :placeholder="placeholder || labels.searchPlaceholder"
-      />
-    </div>
+    <Input
+      v-model="value"
+      search
+      name="search-query"
+      type="text"
+      :label=" t('components.common.InlineSearchBar.label.search')"
+      :placeholder="placeholder || labels.searchPlaceholder"
+    />
   </Layout>
 </template>
