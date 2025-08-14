@@ -213,7 +213,7 @@ defineExpose({
               type="radio"
               name="channel-category"
               :value="choice.value"
-            >
+            />
             <label :for="`category-${choice.value}`">
               <span :class="['right floated', 'placeholder', 'image', 'shifted', {circular: choice.value === 'music'}]" />
               <strong>{{ choice.label }}</strong>
@@ -267,9 +267,7 @@ defineExpose({
           })"
           :label="t('components.audio.ChannelForm.label.tags')"
         />
-        <div
-          v-if="newValues.content_category === 'podcast'"
-        >
+        <div v-if="newValues.content_category === 'podcast'">
           <label for="channel-language">
             {{ t('components.audio.ChannelForm.label.language') }}
           </label>
@@ -298,9 +296,7 @@ defineExpose({
             initial-lines="3"
           />
         </div>
-        <template
-          v-if="newValues.content_category === 'podcast'"
-        >
+        <template v-if="newValues.content_category === 'podcast'">
           <div class="ui required field">
             <label for="channel-itunes-category">
               {{ t('components.audio.ChannelForm.label.category') }}
@@ -346,9 +342,7 @@ defineExpose({
             </select>
           </div>
         </template>
-        <template
-          v-if="newValues.content_category === 'podcast'"
-        >
+        <template v-if="newValues.content_category === 'podcast'">
           <Alert blue>
             <span>
               <i class="bi bi-info-circle-fill" />
@@ -359,7 +353,7 @@ defineExpose({
             <!-- @vue-ignore -->
             <Input
               id="channel-itunes-email"
-              v-model="newValues.metadata.owner_email"
+              v-model="newValues.metadata.owner_email as string"
               name="channel-itunes-email"
               type="email"
               :label="t('components.audio.ChannelForm.label.email')"
@@ -369,7 +363,7 @@ defineExpose({
             <!-- @vue-ignore -->
             <Input
               id="channel-itunes-name"
-              v-model="newValues.metadata.owner_name"
+              v-model="newValues.metadata.owner_name as string"
               name="channel-itunes-name"
               maxlength="255"
               :label="t('components.audio.ChannelForm.label.owner')"

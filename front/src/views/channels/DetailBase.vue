@@ -2,7 +2,7 @@
 import type { Channel } from '~/types'
 
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
-import { computed, ref, reactive, watch, watchEffect } from 'vue'
+import { computed, ref, reactive, watch, watchEffect, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useStore } from '~/store'
 import { useModal } from '~/ui/composables/useModal.ts'
@@ -47,7 +47,7 @@ const { report, getReportableObjects } = useReport()
 const store = useStore()
 
 const object = ref<Channel | null>(null)
-const editForm = ref()
+const editForm = useTemplateRef('editForm')
 const totalTracks = ref(0)
 
 const edit = reactive({
@@ -183,7 +183,7 @@ const tabs = ref([
           alt=""
           :class="['huge', object.artist?.content_category === 'podcast' ? 'podcast-image' : 'channel-image']"
           :src="store.getters['instance/absoluteUrl'](object.artist.cover.urls.large_square_crop)"
-        >
+        />
         <i
           v-else
           class="bi bi-person-circle"
@@ -323,7 +323,7 @@ const tabs = ref([
             >
               {{ t('views.channels.DetailBase.link.domainView', { domain: object.actor.domain }) }}
             </PopoverItem>
-            <hr>
+            <hr />
             <PopoverItem
               v-for="obj in getReportableObjects({ account: object.attributed_to, channel: object })"
               :key="obj.target.type + obj.target.id"
@@ -334,7 +334,7 @@ const tabs = ref([
             </PopoverItem>
 
             <template v-if="isOwner">
-              <hr>
+              <hr />
               <PopoverItem
                 icon="bi-pencil"
                 @click.stop.prevent="showEditModal = true"
@@ -361,7 +361,7 @@ const tabs = ref([
               </dangerous-button>
             </template>
             <template v-if="store.state.auth.availablePermissions['library']">
-              <hr>
+              <hr />
               <PopoverItem
                 :to="{ name: 'manage.channels.detail', params: { id: object.uuid } }"
                 icon="bi-wrench"
@@ -411,7 +411,7 @@ const tabs = ref([
             : t('views.channels.DetailBase.header.artistChannel')
           "
         >
-          <div class="scrolling content">
+            <Spacer />
             <channel-form
               ref="editForm"
               :object="object"
@@ -419,10 +419,19 @@ const tabs = ref([
               @submittable="edit.submittable = $event"
               @updated="fetchData"
             />
-            <div class="ui hidden divider" />
-          </div>
           <template #actions>
+            <Spacer grow />
             <Button
+              primary
+              autofocus
+              low-height
+              :is-loading="edit.loading"
+              :disabled="!edit.submittable"
+              @click.stop="() => { console.log('EDITF', editForm); editForm?.submit(); /*showEditModal = false;*/ }"
+            >
+              {{ t('views.channels.DetailBase.button.updateChannel') }}
+            </Button>
+            <!-- <Button
               primary
               autofocus
               low-height
@@ -431,7 +440,7 @@ const tabs = ref([
               @click.stop="editForm?.submit"
             >
               {{ t('views.channels.DetailBase.button.updateChannel') }}
-            </Button>
+            </Button> -->
           </template>
         </Modal>
         <Button
@@ -474,7 +483,7 @@ const tabs = ref([
         </Modal>
       </Layout>
     </Header>
-    <hr>
+    <hr />
     <TagsList
       v-if="object?.artist?.tags && object?.artist?.tags.length > 0"
       :tags="object?.artist.tags"
