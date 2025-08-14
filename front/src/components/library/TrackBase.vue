@@ -155,8 +155,9 @@ watch(showDeleteModal, (newValue) => {
 
 <template>
   <Layout
-    raised
     main
+    raised
+    stack
   >
     <Loader
       v-if="isLoading"
@@ -186,21 +187,24 @@ watch(showDeleteModal, (newValue) => {
           v-lazy="store.getters['instance/absoluteUrl'](track.cover.urls.large_square_crop)"
           alt=""
           class="channel-image"
-        >
+        />
         <img
           v-if="track.album && track.album.cover"
           v-lazy="store.getters['instance/absoluteUrl'](track.album.cover.urls.large_square_crop)"
           alt=""
           class="channel-image"
-        >
+        />
         <img
           v-else
           alt=""
           class="channel-image"
           src="../../assets/audio/default-cover.png"
-        >
+        />
       </template>
-      <artist-credit-label :artist-credit="track.artist_credit" />
+      <artist-credit-label
+        :artist-credit="track.artist_credit"
+        default raised
+      />
       <div class="meta">
         <span>{{ t('components.library.TrackBase.title') }}</span>
         <i class="bi bi-dot" />
@@ -302,7 +306,7 @@ watch(showDeleteModal, (newValue) => {
               {{ t('components.library.TrackBase.button.delete') }}
             </PopoverItem>
 
-            <hr>
+            <hr />
 
             <PopoverItem
               v-for="obj in getReportableObjects({ track })"
@@ -313,7 +317,7 @@ watch(showDeleteModal, (newValue) => {
               {{ obj.label }}
             </PopoverItem>
 
-            <hr>
+            <hr />
 
             <PopoverItem
               v-if="store.state.auth.availablePermissions['library']"
@@ -339,7 +343,7 @@ watch(showDeleteModal, (newValue) => {
         </Popover>
       </Layout>
     </Header>
-    <hr>
+    <hr />
     <Layout
       flex
       gap-8

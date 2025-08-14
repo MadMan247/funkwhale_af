@@ -12,26 +12,13 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-
-// TODO: Fix getRoute
-
-// TODO: check if still needed:
-/*
-const getRoute = (ac: ArtistCredit) => {
-  return {
-    name: ac.artist.channel ? 'channels.detail' : 'library.artists.detail',
-    params: {
-      id: ac.artist.id.toString()
-    }
-  }
-}
-*/
 </script>
 
 <template>
   <Layout
     flex
     gap-8
+    style="/*2px typographic overshoot compensation+ 4px pill paddings */ margin: 0 -6px;"
   >
     <template
       v-for="ac in props.artistCredit"
@@ -42,14 +29,14 @@ const getRoute = (ac: ArtistCredit) => {
         class="username"
         @click.stop.prevent=""
       >
-        <Pill>
+        <Pill v-bind="$attrs">
           <template #image>
             <img
               v-if="ac.artist.cover && ac.artist.cover.urls.original"
               v-lazy="store.getters['instance/absoluteUrl'](ac.artist.cover.urls.small_square_crop)"
               :alt="ac.artist.name"
               @error="(e) => { e.target && ac.artist.cover ? (e.target as HTMLImageElement).src = store.getters['instance/absoluteUrl'](ac.artist.cover.urls.medium_square_crop) : null }"
-            >
+            />
             <i
               v-else
               class="bi bi-person-circle"

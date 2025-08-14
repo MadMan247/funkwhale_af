@@ -143,9 +143,9 @@ const remove = async () => {
 
 <template>
   <Layout
-    stack
     main
     raised
+    stack
   >
     <Loader
       v-if="isLoading"
@@ -163,49 +163,46 @@ const remove = async () => {
           v-lazy="store.getters['instance/absoluteUrl'](object.cover.urls.large_square_crop)"
           :alt="object.title"
           class="channel-image"
-        >
+        />
         <img
           v-else
           alt=""
           class="channel-image"
           src="../../assets/audio/default-cover.png"
-        >
+        />
       </template>
       <artist-credit-label
         v-if="artistCredit"
         :artist-credit="artistCredit"
+        default raised
       />
       <!-- Metadata: -->
       <Layout
+        flex
         gap-4
-        class="meta"
+        style="line-height: 32px; opacity: .6; font-size: 15px;/* TODO: find more consistent way to express this with layout primitives *?"
       >
-        <Layout
-          flex
-          gap-4
-        >
-          <template v-if="object.release_date">
-            {{ momentFormat(new Date(object.release_date ?? '1970-01-01'), 'Y') }}
-            <i class="bi bi-dot" />
-          </template>
-          <template v-if="totalTracks > 0">
-            <span v-if="isSerie">
-              {{ t('components.library.AlbumBase.meta.episodes', totalTracks) }}
-            </span>
-            <span v-else>
-              {{ t('components.library.AlbumBase.meta.tracks', totalTracks) }}
-            </span>
-          </template>
-          <i
-            v-if="totalDuration > 0"
-            class="bi bi-dot"
-          />
-          <human-duration
-            v-if="totalDuration > 0"
-            :duration="totalDuration"
-          />
-          <!--TODO: License -->
-        </Layout>
+        <template v-if="object.release_date">
+          {{ momentFormat(new Date(object.release_date ?? '1970-01-01'), 'Y') }}
+          <i class="bi bi-dot" />
+        </template>
+        <template v-if="totalTracks > 0">
+          <span v-if="isSerie">
+            {{ t('components.library.AlbumBase.meta.episodes', totalTracks) }}
+          </span>
+          <span v-else>
+            {{ t('components.library.AlbumBase.meta.tracks', totalTracks) }}
+          </span>
+        </template>
+        <i
+          v-if="totalDuration > 0"
+          class="bi bi-dot"
+        />
+        <human-duration
+          v-if="totalDuration > 0"
+          :duration="totalDuration"
+        />
+        <!--TODO: License -->
       </Layout>
       <RenderedDescription
         v-if="object.description"
