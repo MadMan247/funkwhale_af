@@ -77,10 +77,7 @@ watch(page, (_) => {
 })
 </script>
 
-
 <!-- REDESIGN, without custom CSS -->
-
-
 
 <template>
   <nav
@@ -117,9 +114,8 @@ watch(page, (_) => {
         v-for="(i, index) in (renderPages)"
         :key="i"
       >
-        <li>
+        <li v-if="i <= pages && i > 0 && pages > 1">
           <Button
-            v-if="i <= pages && i > 0 && pages > 2"
             square-small
             :aria-label="page !== i ? t('vui.aria.pagination.goToPage', i) : t('vui.aria.pagination.currentPage', page)"
             :secondary="page !== i"
