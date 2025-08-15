@@ -146,6 +146,38 @@ _Only use on top of solid surfaces, else the text may be unreadable!_
   Home
 </Link>
 
+## Add an icon
+
+You can use [Bootstrap Icons](https://icons.getbootstrap.com/) in your link component.
+
+::: info
+
+- Icon links shrink down to the icon size if you don't pass any content. If you want to keep the link at full width with just an icon, add `button-width` as a prop.
+
+:::
+
+```vue-html
+<Link :to  icon="bi-three-dots-vertical" />
+<Link :to primary solid round icon="bi-save"/>
+<Link :to solid destructive icon="bi-trash">
+  Delete
+</Link :to>
+<Link :to low-height icon="bi-chevron-right">
+  Next
+</Link>
+```
+
+<Layout flex>
+<Link :to  icon="bi-three-dots-vertical" />
+<Link :to primary solid round icon="bi-save"/>
+<Link :to solid destructive icon="bi-trash">
+  Delete
+</Link :to>
+<Link :to low-height icon="bi-chevron-right">
+  Next
+</Link>
+</Layout>
+
 ## Set width and alignment
 
 See [Using width](/using-width) and [Using alignment](/using-alignment).

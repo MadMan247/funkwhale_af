@@ -90,7 +90,7 @@ const props = defineProps<{
         </component>
         <div
           v-if="$slots.action"
-          style="align-self: center;"
+          style="align-self: baseline;"
         >
           <slot name="action" />
         </div>

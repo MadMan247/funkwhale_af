@@ -65,6 +65,7 @@ onMounted(() => {
     ref="link"
     :autofocus="autofocus || undefined"
     :class="[
+      $attrs.class,
       $style.link,
       round && $style['is-round'],
       isIconOnly && $style['is-icon-only'],

@@ -118,18 +118,27 @@ const headingProps = computed(() =>
         </template>
 
         <!-- Action! You can either specify `to` or `onClick`. -->
+        <!-- Note: We cannot simplify with  `<component is="action && 'to' in action ? Link : Button"` due to a Vue bug -->
 
-        <component
-          :is="'to' in action ? Link : Button"
-          v-if="action"
-          thin-font
-          min-content
-          align-self="baseline"
-          :class="$style.action"
-          v-bind="action"
-        >
-          {{ action?.text }}
-        </component>
+        <template v-if="action">
+          <Link
+            v-if="'to' in action"
+            :class="$style.action"
+            v-bind="action"
+          >
+            {{ action.text }}
+          </Link>
+          <Button
+            v-else
+            thin-font
+            min-content
+            align-self="baseline"
+            :class="$style.action"
+            v-bind="action"
+          >
+            {{ action.text }}
+          </Button>
+        </template>
       </Layout>
     </Layout>
 

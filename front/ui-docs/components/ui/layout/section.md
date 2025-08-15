@@ -10,6 +10,7 @@ import Spacer from '~/components/ui/Spacer.vue'
 import Pill from '~/components/ui/Pill.vue'
 import Activity from '~/components/ui/Activity.vue'
 import Section from '~/components/ui/Section.vue'
+import Link from '~/components/ui/Link.vue'
 
 const alignLeft = ref(true)
 
@@ -220,26 +221,24 @@ The link or button will be shown on the right side of the header. Use `action.te
 You can use all [`Link` props](../link.md) or [`Button` props](../button.md) inside the `action` prop! Note that the button or link label will be in line with the heading.
 
 ```vue-html
-<Spacer />
-<Layout stack gap-64>
-  <Section
+<Section
     h2="With a link"
     :action="{
       text: 'My library',
       to: '/',
       icon: 'bi-star'
     }"
-  />
-  <Section
-    h2="With a button"
-    :action="{
-        text: 'Say hello!',
-        onClick: ()=>console.log('Hello'),
-        primary: true,
-        solid: true
-    }"
-  />
-</Layout>
+/>
+<Section
+  h2="With a button"
+  :action="{
+      text: 'Say hello!',
+      onClick: ()=>console.log('Hello'),
+      primary: true,
+      solid: true,
+      icon: 'bi-save'
+  }"
+/>
 ```
 
 <Spacer />
@@ -258,7 +257,8 @@ You can use all [`Link` props](../link.md) or [`Button` props](../button.md) ins
         text: 'Say hello!',
         onClick: ()=>console.log('Hello'),
         primary: true,
-        solid: true
+        solid: true,
+        icon: 'bi-save'
     }"
   />
 </Layout>
