@@ -69,6 +69,7 @@ fetchData()
     v-title="labels.title"
     main
     stack
+    gap-84
   >
     <Header
       page-heading
@@ -79,33 +80,28 @@ fetchData()
       :limit="4"
       :title="t('components.library.Home.header.recentlyAdded')"
     />
-    <Spacer />
     <track-widget
       :title="t('components.library.Home.header.recentlyListened')"
       :url="'history/listenings/'"
       :filters="{ scope, ordering: '-creation_date', ...qualityFilters }"
       :websocket-handlers="['Listen']"
     />
-    <Spacer />
     <playlist-widget
       :url="'playlists/'"
       :filters="{scope: scope, playable: true, ordering: '-modification_date', limit: 4}"
       :title="t('components.library.Home.header.playlists')"
     />
-    <Spacer />
     <track-widget
       :title="t('components.library.Home.header.recentlyFavorited')"
       :url="'favorites/tracks/'"
       :filters="{scope: scope, ordering: '-creation_date'}"
     />
-    <Spacer />
     <channels-widget
       :limit="4"
       :filters="{ordering: '-creation_date', external: 'false'}"
       :title="t('components.library.Home.header.newChannels')"
       :show-modification-date="true"
     />
-    <Spacer />
     <artist-widget
       :limit="4"
       :filters="{playable: true, ordering: '-creation_date', include_channels: true, content_category: 'podcast'}"

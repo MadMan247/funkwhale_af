@@ -171,18 +171,13 @@ const showCreateModal = ref(false)
     gap-84
   >
     <Spacer no-size />
-    <!-- TODO: `yarn lint:tsc` doesn't understand the `Prop` type for `Header` while the language server does. It may be a question of typescript version... Investigate and fix! https://dev.funkwhale.audio/funkwhale/funkwhale/-/issues/2437 -->
-    <!-- @vue-ignore -->
     <Section
       v-if="store.state.auth.authenticated"
       :h1="t('views.channels.SubscriptionsList.title')"
       :action="{
         text: t('views.channels.SubscriptionsList.link.addNew'),
-        // @ts-ignore
         onClick: () => { showSubscribeModal = true },
-        // @ts-ignore
         primary: true,
-        // @ts-ignore
         icon: 'bi-plus'
       }"
       large-section-heading

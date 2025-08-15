@@ -146,8 +146,6 @@ const { to: upload } = useModal('upload')
     stack
     main
   >
-    <!-- TODO: Find out why lint:tsc doesn't like `onClick` while language server does -->
-    <!-- @vue-ignore -->
     <Header
       page-heading
       :h1="t('components.library.Podcasts.header.browse')"

@@ -259,9 +259,7 @@ const handleRemovedNote = (uuid: string) => {
         </tr>
       </tbody>
     </table>
-    <template
-      v-if="!isCollapsed"
-    >
+    <template v-if="!isCollapsed">
       <Layout flex>
         <div class="column">
           <h3>

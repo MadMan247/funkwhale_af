@@ -115,6 +115,7 @@ const paginateOptions = computed(() => sortedUniq([12, 25, 50, paginateBy.value]
 
 <template>
   <Layout
+    v-title="labels.title"
     main
     stack
     gap-84
@@ -158,9 +159,8 @@ const paginateOptions = computed(() => sortedUniq([12, 25, 50, paginateBy.value]
     <Section
       :h2="t('components.library.Radios.header.user')"
       align-left
-      :columns-per-item="3"
       :action="{
-        to: {name: 'library.radios.build'},
+        to: { name: 'library.radios.build' },
         text: t('components.library.Radios.button.create'),
         icon: 'bi-plus',
         solid: true,
@@ -168,7 +168,6 @@ const paginateOptions = computed(() => sortedUniq([12, 25, 50, paginateBy.value]
         disabled: !store.state.auth.authenticated || undefined
       }"
     >
-      <Spacer no-size />
       <Layout
         flex
         form
