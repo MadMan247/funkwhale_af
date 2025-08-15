@@ -213,7 +213,7 @@ defineExpose({
               type="radio"
               name="channel-category"
               :value="choice.value"
-            />
+            >
             <label :for="`category-${choice.value}`">
               <span :class="['right floated', 'placeholder', 'image', 'shifted', {circular: choice.value === 'music'}]" />
               <strong>{{ choice.label }}</strong>

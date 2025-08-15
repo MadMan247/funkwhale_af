@@ -163,18 +163,19 @@ const remove = async () => {
           v-lazy="store.getters['instance/absoluteUrl'](object.cover.urls.large_square_crop)"
           :alt="object.title"
           class="channel-image"
-        />
+        >
         <img
           v-else
           alt=""
           class="channel-image"
           src="../../assets/audio/default-cover.png"
-        />
+        >
       </template>
       <artist-credit-label
         v-if="artistCredit"
         :artist-credit="artistCredit"
-        default raised
+        default
+        raised
       />
       <!-- Metadata: -->
       <Layout

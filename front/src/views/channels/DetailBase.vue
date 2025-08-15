@@ -190,7 +190,7 @@ const renderedDescription = computed(() => {
           alt=""
           :class="['huge', object.artist?.content_category === 'podcast' ? 'podcast-image' : 'channel-image']"
           :src="store.getters['instance/absoluteUrl'](object.artist.cover.urls.large_square_crop)"
-        />
+        >
         <i
           v-else
           class="bi bi-person-circle"
@@ -331,7 +331,7 @@ const renderedDescription = computed(() => {
             >
               {{ t('views.channels.DetailBase.link.domainView', { domain: object.actor.domain }) }}
             </PopoverItem>
-            <hr />
+            <hr>
             <PopoverItem
               v-for="obj in getReportableObjects({ account: object.attributed_to, channel: object })"
               :key="obj.target.type + obj.target.id"
@@ -342,7 +342,7 @@ const renderedDescription = computed(() => {
             </PopoverItem>
 
             <template v-if="isOwner">
-              <hr />
+              <hr>
               <PopoverItem
                 icon="bi-pencil"
                 @click.stop.prevent="showEditModal = true"
@@ -369,7 +369,7 @@ const renderedDescription = computed(() => {
               </DangerousButton>
             </template>
             <template v-if="store.state.auth.availablePermissions['library']">
-              <hr />
+              <hr>
               <PopoverItem
                 :to="{ name: 'manage.channels.detail', params: { id: object.uuid } }"
                 icon="bi-wrench"
@@ -487,7 +487,7 @@ const renderedDescription = computed(() => {
         </Modal>
       </Layout>
     </Header>
-    <hr />
+    <hr>
     <TagsList
       v-if="object?.artist?.tags && object?.artist?.tags.length > 0"
       :tags="object?.artist.tags"

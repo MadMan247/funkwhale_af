@@ -71,7 +71,7 @@ const confirm = () => {
   </component>
   <template v-if="props.popoverItem && showModal">
     <Layout>
-      <hr />
+      <hr>
       <div
         v-if="$slots.content"
         style="font-size: 1rem;"

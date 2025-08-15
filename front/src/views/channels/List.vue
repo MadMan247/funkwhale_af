@@ -54,11 +54,6 @@ syncRef(q, query, { direction: 'ltr' })
 
 const result = ref<PaginatedChannelList>()
 
-const orderingOptions: [OrderingField, keyof typeof sharedLabels.filters][] = [
-  ['creation_date', 'creation_date'],
-  ['modification_date', 'modification_date']
-]
-
 const widgetKey = ref(new Date().toLocaleString())
 
 const { t } = useI18n()
@@ -275,10 +270,10 @@ const showCreateModal = ref(false)
           v-if="typeof tags === 'object'"
           :get="model => { tags = model.currents.map(({ label }) => label) }"
           :set="model => ({
-          ...model,
-          others: [],
-          currents: tags.map(tag => ({ type: 'custom' as const, label: tag })),
-        })"
+            ...model,
+            others: [],
+            currents: tags.map(tag => ({ type: 'custom' as const, label: tag })),
+          })"
           :label="t('components.library.Podcasts.label.tags')"
           style="max-width: 350px;"
         />
@@ -301,12 +296,12 @@ const showCreateModal = ref(false)
       <Modal
         v-model="showCreateModal"
         :title="
-        step === 1
-          ? t('views.auth.ProfileOverview.modal.createChannel.header')
-          : category === 'podcast'
-            ? t('views.auth.ProfileOverview.modal.createChannel.podcast.header')
-            : t('views.auth.ProfileOverview.modal.createChannel.artist.header')
-      "
+          step === 1
+            ? t('views.auth.ProfileOverview.modal.createChannel.header')
+            : category === 'podcast'
+              ? t('views.auth.ProfileOverview.modal.createChannel.podcast.header')
+              : t('views.auth.ProfileOverview.modal.createChannel.artist.header')
+        "
       >
         <channel-form
           ref="createForm"

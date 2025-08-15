@@ -156,7 +156,7 @@ const headingProps = computed(() =>
       `"
       v-bind="columnsPerItem
         ? { grid: 'auto / repeat(auto-fit, 46px)' }
-  : { stack: true }
+        : { stack: true }
       "
     >
       <slot />

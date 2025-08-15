@@ -264,9 +264,7 @@ const isOpen = ref(false)
     </div>
     <Spacer :size="8" />
     <div class="extra content">
-      <actor-link
-        :actor="library.actor"
-      />
+      <actor-link :actor="library.actor" />
     </div>
     <Spacer :size="8" />
     <div
@@ -314,9 +312,7 @@ const isOpen = ref(false)
             {{ t('views.content.remote.Card.button.follow') }}
           </button>
           <template v-else-if="!library.follow.approved">
-            <button
-              class="ui disabled button"
-            >
+            <button class="ui disabled button">
               <i class="hourglass icon" />
               {{ t('views.content.remote.Card.button.pending') }}
             </button>
