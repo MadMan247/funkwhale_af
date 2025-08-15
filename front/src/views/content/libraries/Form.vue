@@ -179,10 +179,10 @@ const remove = async () => {
       @confirm="remove"
     >
       {{ t('views.content.libraries.Form.button.delete') }}
-      <template #modal-content>
+      <template #content>
         {{ t('views.content.libraries.Form.modal.delete.content.warning') }}
       </template>
-      <template #modal-confirm>
+      <template #confirm>
         {{ t('views.content.libraries.Form.button.confirm') }}
       </template>
     </dangerous-button>

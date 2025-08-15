@@ -252,10 +252,10 @@ const insertMany = async (insertedTracks: number[], allowDuplicates: boolean) =>
         :title="t('components.playlists.Editor.modal.clearPlaylist.header', { playlist: playlist?.name })"
       >
         {{ t('components.playlists.Editor.button.clear') }}
-        <template #modal-content>
+        <template #content>
           {{ t('components.playlists.Editor.modal.clearPlaylist.content.warning') }}
         </template>
-        <template #modal-confirm>
+        <template #confirm>
           {{ t('components.playlists.Editor.button.clear') }}
         </template>
       </dangerous-button>

@@ -170,10 +170,10 @@ const updateObj = async (attr: string) => {
                     :title="t('views.admin.library.LibraryDetail.modal.delete.header')"
                   >
                     {{ t('views.admin.library.LibraryDetail.button.delete') }}
-                    <template #modal-content>
+                    <template #content>
                       {{ t('views.admin.library.LibraryDetail.modal.delete.content.warning') }}
                     </template>
-                    <template #modal-confirm>
+                    <template #confirm>
                       {{ t('views.admin.library.LibraryDetail.button.delete') }}
                     </template>
                   </dangerous-button>

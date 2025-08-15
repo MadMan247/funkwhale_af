@@ -422,7 +422,7 @@ fetchOwnedApps()
           :title="t('components.auth.Settings.modal.changePassword.header')"
         >
           {{ t('components.auth.Settings.button.password') }}
-          <template #modal-content>
+          <template #content>
             <div>
               <p>
                 {{ t('components.auth.Settings.modal.changePassword.content.warning') }}
@@ -437,7 +437,7 @@ fetchOwnedApps()
               </ul>
             </div>
           </template>
-          <template #modal-confirm>
+          <template #confirm>
             <div>
               {{ t('components.auth.Settings.button.disableSubsonic') }}
             </div>
@@ -564,10 +564,10 @@ fetchOwnedApps()
                 @confirm="revokeApp(app.client_id)"
               >
                 {{ t('components.auth.Settings.button.revoke') }}
-                <template #modal-content>
+                <template #content>
                   {{ t('components.auth.Settings.modal.revokeApp.content.warning') }}
                 </template>
-                <template #modal-confirm>
+                <template #confirm>
                   {{ t('components.auth.Settings.button.revokeAccess') }}
                 </template>
               </dangerous-button>
@@ -650,10 +650,10 @@ fetchOwnedApps()
                 @confirm="deleteApp(app.client_id)"
               >
                 {{ t('components.auth.Settings.button.remove') }}
-                <template #modal-content>
+                <template #content>
                   {{ t('components.auth.Settings.modal.deleteApp.content.warning') }}
                 </template>
-                <template #modal-confirm>
+                <template #confirm>
                   {{ t('components.auth.Settings.button.removeApp') }}
                 </template>
               </DangerousButton>
@@ -803,10 +803,10 @@ fetchOwnedApps()
           :title="t('components.auth.Settings.modal.deleteAccount.header')"
         >
           {{ t('components.auth.Settings.button.deleteAccount') }}
-          <template #modal-content>
+          <template #content>
             {{ t('components.auth.Settings.modal.deleteAccount.content.warning') }}
           </template>
-          <template #modal-confirm>
+          <template #confirm>
             {{ t('components.auth.Settings.button.deleteAccountConfirm') }}
           </template>
         </dangerous-button>

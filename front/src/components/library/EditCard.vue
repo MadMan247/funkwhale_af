@@ -340,10 +340,10 @@ const alertProps = computed(() => {
         :title="t('components.library.EditCard.modal.delete.header')"
       >
         {{ t('components.library.EditCard.button.delete') }}
-        <template #modal-content>
+        <template #content>
           {{ t('components.library.EditCard.modal.content.warning') }}
         </template>
-        <template #modal-confirm>
+        <template #confirm>
           {{ t('components.library.EditCard.button.delete') }}
         </template>
       </dangerous-button>

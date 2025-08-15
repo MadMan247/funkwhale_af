@@ -142,10 +142,10 @@ const displayName = (object: any) => object?.filename ?? object?.source ?? objec
         :title="t('views.admin.library.UploadDetail.modal.delete.header')"
       >
         {{ t('views.admin.library.UploadDetail.button.delete') }}
-        <template #modal-content>
+        <template #content>
           {{ t('views.admin.library.UploadDetail.modal.delete.content.warning') }}
         </template>
-        <template #modal-confirm>
+        <template #confirm>
           {{ t('views.admin.library.UploadDetail.button.delete') }}
         </template>
       </dangerous-button>

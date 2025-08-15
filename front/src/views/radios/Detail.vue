@@ -108,10 +108,10 @@ const deleteRadio = async () => {
           icon="bi-trash"
         >
           {{ t('views.radios.Detail.button.delete') }}
-          <template #modal-content>
+          <template #content>
             {{ t('views.radios.Detail.modal.delete.content.warning') }}
           </template>
-          <template #modal-confirm>
+          <template #confirm>
             {{ t('views.radios.Detail.button.confirm') }}
           </template>
         </dangerous-button>

@@ -172,10 +172,10 @@ const open = ref(false)
         :title="t('views.admin.library.AlbumDetail.modal.delete.header')"
       >
         {{ t('views.admin.library.AlbumDetail.button.delete') }}
-        <template #modal-content>
+        <template #content>
           {{ t('views.admin.library.AlbumDetail.modal.delete.content.warning') }}
         </template>
-        <template #modal-confirm>
+        <template #confirm>
           {{ t('views.admin.library.AlbumDetail.button.delete') }}
         </template>
       </dangerous-button>

@@ -449,10 +449,10 @@ const handleRemovedNote = (uuid: string) => {
             :icon="`${action.iconColor} ${action.icon}`"
           >
             {{ action.label }}
-            <template #modal-content>
+            <template #content>
               {{ action.modalContent }}
             </template>
-            <template #modal-confirm>
+            <template #confirm>
               {{ action.modalConfirmLabel }}
             </template>
           </dangerous-button>

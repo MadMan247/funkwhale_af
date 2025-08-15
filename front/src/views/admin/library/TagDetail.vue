@@ -96,10 +96,10 @@ const getQuery = (field: string, value: string) => `${field}:"${value}"`
         :title="t('views.admin.library.TagDetail.modal.delete.header')"
       >
         {{ t('views.admin.library.TagDetail.button.delete') }}
-        <template #modal-content>
+        <template #content>
           {{ t('views.admin.library.TagDetail.modal.delete.content.warning') }}
         </template>
-        <template #modal-confirm>
+        <template #confirm>
           {{ t('views.admin.library.TagDetail.button.delete') }}
         </template>
       </dangerous-button>

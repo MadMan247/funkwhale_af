@@ -248,10 +248,10 @@ const remove = async () => {
         @confirm="remove"
       >
         {{ t('components.manage.moderation.InstancePolicyForm.button.delete') }}
-        <template #modal-content>
+        <template #content>
           {{ t('components.manage.moderation.InstancePolicyForm.modal.delete.content.warning') }}
         </template>
-        <template #modal-confirm>
+        <template #confirm>
           {{ t('components.manage.moderation.InstancePolicyForm.button.confirm') }}
         </template>
       </dangerous-button>

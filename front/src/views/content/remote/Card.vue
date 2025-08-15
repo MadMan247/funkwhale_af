@@ -329,10 +329,10 @@ const isOpen = ref(false)
               :title="t('views.content.remote.Card.modal.unfollow.header')"
             >
               {{ t('views.content.remote.Card.button.unfollow') }}
-              <template #modal-content>
+              <template #content>
                 {{ t('views.content.remote.Card.modal.unfollow.content.warning') }}
               </template>
-              <template #modal-confirm>
+              <template #confirm>
                 {{ t('views.content.remote.Card.button.unfollow') }}
               </template>
             </dangerous-button>

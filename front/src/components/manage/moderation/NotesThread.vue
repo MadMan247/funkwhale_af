@@ -83,10 +83,10 @@ const remove = async (note: Note) => {
         >
           {{ t('components.manage.moderation.NotesThread.button.delete') }}
 
-          <template #modal-content>
+          <template #content>
             {{ t('components.manage.moderation.NotesThread.modal.delete.content.warning') }}
           </template>
-          <template #modal-confirm>
+          <template #confirm>
             {{ t('components.manage.moderation.NotesThread.button.delete') }}
           </template>
         </dangerous-button>

@@ -120,10 +120,10 @@ const purgeErroredFiles = () => purge('errored')
           :title="t('views.content.libraries.Quota.modal.purgePending.header')"
         >
           {{ t('views.content.libraries.Quota.button.purge') }}
-          <template #modal-content>
+          <template #content>
             {{ t('views.content.libraries.Quota.modal.purgePending.content.description') }}
           </template>
-          <template #modal-confirm>
+          <template #confirm>
             {{ t('views.content.libraries.Quota.button.purge') }}
           </template>
         </dangerous-button>
@@ -157,10 +157,10 @@ const purgeErroredFiles = () => purge('errored')
           :title="t('views.content.libraries.Quota.modal.purgeSkipped.header')"
         >
           {{ t('views.content.libraries.Quota.button.purge') }}
-          <template #modal-content>
+          <template #content>
             {{ t('views.content.libraries.Quota.modal.purgeSkipped.content.description') }}
           </template>
-          <template #modal-confirm>
+          <template #confirm>
             {{ t('views.content.libraries.Quota.button.purge') }}
           </template>
         </dangerous-button>
@@ -194,10 +194,10 @@ const purgeErroredFiles = () => purge('errored')
           :title="t('views.content.libraries.Quota.modal.purgeErrored.header')"
         >
           {{ t('views.content.libraries.Quota.button.purge') }}
-          <template #modal-content>
+          <template #content>
             {{ t('views.content.libraries.Quota.modal.purgeErrored.content.description') }}
           </template>
-          <template #modal-confirm>
+          <template #confirm>
             {{ t('views.content.libraries.Quota.button.purge') }}
           </template>
         </dangerous-button>

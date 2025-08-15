@@ -158,10 +158,10 @@ fetchToken()
         :title="t('components.auth.SubsonicTokenForm.modal.newPassword.header')"
       >
         {{ t('components.auth.SubsonicTokenForm.button.newPassword') }}
-        <template #modal-content>
+        <template #content>
           {{ t('components.auth.SubsonicTokenForm.modal.newPassword.content.warning') }}
         </template>
-        <template #modal-confirm>
+        <template #confirm>
           {{ t('components.auth.SubsonicTokenForm.button.confirmNewPassword') }}
         </template>
       </DangerousButton>
@@ -180,10 +180,10 @@ fetchToken()
         :title="t('components.auth.SubsonicTokenForm.modal.disableSubsonic.header')"
       >
         {{ t('components.auth.SubsonicTokenForm.button.disable') }}
-        <template #modal-content>
+        <template #content>
           {{ t('components.auth.SubsonicTokenForm.modal.disableSubsonic.content.warning') }}
         </template>
-        <template #modal-confirm>
+        <template #confirm>
           {{ t('components.auth.SubsonicTokenForm.button.confirmDisable') }}
         </template>
       </DangerousButton>

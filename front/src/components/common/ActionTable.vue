@@ -250,7 +250,7 @@ const gridColumns = computed(() => {
               @confirm="launchAction"
             >
               {{ t('components.common.ActionTable.button.go') }}
-              <template #modal-content>
+              <template #content>
                 <template v-if="currentAction?.confirmationMessage">
                   {{ currentAction?.confirmationMessage }}
                 </template>
@@ -258,7 +258,7 @@ const gridColumns = computed(() => {
                   {{ t('components.common.ActionTable.modal.performAction.content.warning') }}
                 </span>
               </template>
-              <template #modal-confirm>
+              <template #confirm>
                 <span :aria-label="labels.performAction">
                   {{ t('components.common.ActionTable.button.launch') }}
                 </span>

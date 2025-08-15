@@ -160,10 +160,10 @@ const getQuery = (field: string, value: string) => `${field}:"${value}"`
         :title="t('views.admin.ChannelDetail.modal.delete.header')"
       >
         {{ t('views.admin.ChannelDetail.button.delete') }}
-        <template #modal-content>
+        <template #content>
           {{ t('views.admin.ChannelDetail.modal.delete.content.warning') }}
         </template>
-        <template #modal-confirm>
+        <template #confirm>
           {{ t('views.admin.ChannelDetail.button.delete') }}
         </template>
       </dangerous-button>
