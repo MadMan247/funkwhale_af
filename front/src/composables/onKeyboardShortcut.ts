@@ -56,9 +56,6 @@ export default (key: KeyFilter, handler: () => unknown, prevent = false) => {
 
     // NOTE: Inform about possible combination collision
     for (const [keys, { __location }] of combinations.entries()) {
-      // Allow multiple events on 'escape'
-      if (keys.join('') === 'escape') return;
-
       const collisions = []
       if (isMatch(keys, combination) || isMatch(combination, keys)) {
         collisions.push(`${__location}: ${keys.join(' + ')}`)
