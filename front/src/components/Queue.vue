@@ -202,12 +202,12 @@ if (!isWebGLSupported) {
                   v-if="fullscreen"
                   class="cover-shadow"
                   :src="store.getters['instance/absoluteUrl'](currentTrack.coverUrl)"
-                />
+                >
                 <img
                   ref="cover"
                   alt=""
                   :src="store.getters['instance/absoluteUrl'](currentTrack.coverUrl)"
-                />
+                >
               </template>
               <milk-drop
                 v-else-if="coverType === CoverType.MILK_DROP"

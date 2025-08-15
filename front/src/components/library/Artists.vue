@@ -25,6 +25,7 @@ import Toggle from '~/components/ui/Toggle.vue'
 import Alert from '~/components/ui/Alert.vue'
 import Spacer from '~/components/ui/Spacer.vue'
 import Pills from '~/components/ui/Pills.vue'
+import Section from '~/components/ui/Section.vue'
 import Loader from '~/components/ui/Loader.vue'
 
 import useSharedLabels from '~/composables/locale/useSharedLabels'
