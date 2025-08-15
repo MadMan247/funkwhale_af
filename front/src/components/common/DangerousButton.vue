@@ -39,6 +39,7 @@ const confirm = () => {
   <component
     :is="props.popoverItem ? PopoverItem : Button"
     :keep-open="props.popoverItem"
+    icon="bi-exclamation-octagon-fill"
     destructive
     v-bind="$attrs"
     @click.prevent.stop="showModal = !showModal"
@@ -48,24 +49,33 @@ const confirm = () => {
     <Modal
       v-if="!props.popoverItem"
       v-model="showModal"
-      destructive
       :title="title || t('components.common.DangerousButton.header.confirm')"
       :cancel="t('components.common.DangerousButton.button.cancel')"
     >
-      <div class="scrolling content">
-        <div class="description">
+      <Layout
+        flex
+        style="flex-wrap: nowrap;
+        align-items: center;"
+      >
+        <i
+          class="bi bi-exclamation-octagon  destructive ghost"
+          style="font-size: 6rem;"
+        />
+        <div>
           <slot name="content" />
         </div>
-      </div>
+      </Layout>
       <template #actions>
-        <!-- <Button
+        <Spacer grow />
+        <Button
+          ghost
           v-bind="{[{success: 'primary', danger: 'destructive'}[confirmColor || 'danger']]: true}"
           @click="confirm"
         >
           <slot name="confirm">
             {{ t('components.common.DangerousButton.button.confirm') }}
           </slot>
-        </Button> -->
+        </Button>
       </template>
     </Modal>
   </component>
