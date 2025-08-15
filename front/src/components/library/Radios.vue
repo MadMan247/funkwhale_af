@@ -18,7 +18,6 @@ import Header from '~/components/ui/Header.vue'
 import Section from '~/components/ui/Section.vue'
 import Pagination from '~/components/ui/Pagination.vue'
 import RadioCard from '~/components/radios/Card.vue'
-import Button from '~/components/ui/Button.vue'
 import Alert from '~/components/ui/Alert.vue'
 import Input from '~/components/ui/Input.vue'
 import Link from '~/components/ui/Link.vue'
@@ -118,7 +117,7 @@ const paginateOptions = computed(() => sortedUniq([12, 25, 50, paginateBy.value]
   <Layout
     main
     stack
-    gap-64
+    gap-84
   >
     <Header
       page-heading
@@ -126,6 +125,7 @@ const paginateOptions = computed(() => sortedUniq([12, 25, 50, paginateBy.value]
     />
     <Section
       align-left
+      :columns-per-item="3"
       :h2="t('components.library.Radios.header.instance')"
     >
       <radio-card
@@ -156,143 +156,147 @@ const paginateOptions = computed(() => sortedUniq([12, 25, 50, paginateBy.value]
       />
     </Section>
     <Section
-    :h2="t('components.library.Radios.header.user')"
-    :action="{
-    to: {name: 'library.radios.build'},
-    text:t('components.library.Radios.button.create'),
-    icon: 'bi-plus',
-    solid: true,
-    primary: true,
-    disabled: !store.state.auth.authenticated || undefined
-    }"
+      :h2="t('components.library.Radios.header.user')"
+      align-left
+      :columns-per-item="3"
+      :action="{
+        to: {name: 'library.radios.build'},
+        text: t('components.library.Radios.button.create'),
+        icon: 'bi-plus',
+        solid: true,
+        primary: true,
+        disabled: !store.state.auth.authenticated || undefined
+      }"
     >
-    <Spacer no-size />
-    <Layout
-      flex
-      form
-      :class="['ui', {'loading': isLoading}, 'form']"
-      @submit.prevent="search"
-    >
-      <Input
-        id="radios-search"
-        v-model="query"
-        search
-        name="search"
-        :label="t('components.library.Radios.label.search')"
-        :placeholder="labels.searchPlaceholder"
-      />
+      <Spacer no-size />
       <Layout
-        stack
-        no-gap
-        label
-        for="radios-ordering"
+        flex
+        form
+        full
+        :class="['ui', {'loading': isLoading}, 'form']"
+        @submit.prevent="search"
       >
-        <span class="label">
-          {{ t('components.library.Radios.ordering.label') }}
-        </span>
-        <select
-          id="radios-ordering"
-          v-model="ordering"
-          class="dropdown"
+        <Input
+          id="radios-search"
+          v-model="query"
+          search
+          name="search"
+          :label="t('components.library.Radios.label.search')"
+          :placeholder="labels.searchPlaceholder"
+        />
+        <Layout
+          stack
+          no-gap
+          label
+          for="radios-ordering"
         >
-          <option
-            v-for="(option, key) in orderingOptions"
-            :key="key"
-            :value="option[0]"
+          <span class="label">
+            {{ t('components.library.Radios.ordering.label') }}
+          </span>
+          <select
+            id="radios-ordering"
+            v-model="ordering"
+            class="dropdown"
           >
-            {{ sharedLabels.filters[option[1]] }}
-          </option>
-        </select>
-      </Layout>
-      <Layout
-        stack
-        no-gap
-        label
-        for="radios-ordering-direction"
-      >
-        <span class="label">
-          {{ t('components.library.Radios.ordering.direction.label') }}
-        </span>
-        <select
-          id="radios-ordering-direction"
-          v-model="orderingDirection"
-          class="dropdown"
+            <option
+              v-for="(option, key) in orderingOptions"
+              :key="key"
+              :value="option[0]"
+            >
+              {{ sharedLabels.filters[option[1]] }}
+            </option>
+          </select>
+        </Layout>
+        <Layout
+          stack
+          no-gap
+          label
+          for="radios-ordering-direction"
         >
-          <option value="+">
-            {{ t('components.library.Radios.ordering.direction.ascending') }}
-          </option>
-          <option value="-">
-            {{ t('components.library.Radios.ordering.direction.descending') }}
-          </option>
-        </select>
-      </Layout>
-      <Layout
-        stack
-        no-gap
-        label
-        for="radios-results"
-      >
-        <span class="label">
-          {{ t('components.library.Radios.pagination.results') }}
-        </span>
-        <select
-          id="radios-results"
-          v-model="paginateBy"
-          class="dropdown"
-        >
-          <option
-            v-for="opt in paginateOptions"
-            :key="opt"
-            :value="opt"
+          <span class="label">
+            {{ t('components.library.Radios.ordering.direction.label') }}
+          </span>
+          <select
+            id="radios-ordering-direction"
+            v-model="orderingDirection"
+            class="dropdown"
           >
-            {{ opt }}
-          </option>
-        </select>
+            <option value="+">
+              {{ t('components.library.Radios.ordering.direction.ascending') }}
+            </option>
+            <option value="-">
+              {{ t('components.library.Radios.ordering.direction.descending') }}
+            </option>
+          </select>
+        </Layout>
+        <Layout
+          stack
+          no-gap
+          label
+          for="radios-results"
+        >
+          <span class="label">
+            {{ t('components.library.Radios.pagination.results') }}
+          </span>
+          <select
+            id="radios-results"
+            v-model="paginateBy"
+            class="dropdown"
+          >
+            <option
+              v-for="opt in paginateOptions"
+              :key="opt"
+              :value="opt"
+            >
+              {{ opt }}
+            </option>
+          </select>
+        </Layout>
       </Layout>
-    </Layout>
-    <Alert
-      v-if="result && result.results.length === 0"
-      blue
-      style="align-items: center;"
-    >
-      <i
-        class="bi bi-broadcast-pin"
-        style="font-size: 80px"
-      />
-      <Spacer />
-      {{ t('components.library.Radios.empty.noResults') }}
-      <Spacer />
-      <Button
-        v-if="store.state.auth.authenticated"
-        primary
-        style="align-self:center;"
-        :to="{name: 'library.radios.build'}"
-        icon="bi-boombox-fill"
+      <Alert
+        v-if="result && result.results.length === 0"
+        blue
+        style="align-items: center; grid-column: 1 / -1;"
       >
-        {{ t('components.library.Radios.button.add') }}
-      </Button>
-    </Alert>
-    <Layout
-      v-if="result && result.results.length > 0"
-      flex
-    >
-      <Pagination
-        v-if="page && result && result.count > paginateBy"
-        v-model:page="page"
-        :pages="Math.ceil(result.count / paginateBy)"
-      />
-      <radio-card
-        v-for="radio in result.results"
-        :key="radio.id"
-        type="custom"
-        :custom-radio="radio"
-      />
-      <Pagination
-        v-if="page && result && result.count > paginateBy"
-        v-model:page="page"
-        :pages="Math.ceil(result.count / paginateBy)"
-      />
-    </Layout>
+        <i
+          class="bi bi-broadcast-pin"
+          style="font-size: 80px"
+        />
+        <Spacer />
+        {{ t('components.library.Radios.empty.noResults') }}
+        <Spacer />
+        <Link
+          v-if="store.state.auth.authenticated"
+          primary
+          style="align-self:center;"
+          :to="{name: 'library.radios.build'}"
+          icon="bi-boombox-fill"
+        >
+          {{ t('components.library.Radios.button.add') }}
+        </Link>
+      </Alert>
+      <Layout
+        v-if="result && result.results.length > 0"
+        full
+        flex
+      >
+        <Pagination
+          v-if="page && result && result.count > paginateBy"
+          v-model:page="page"
+          :pages="Math.ceil(result.count / paginateBy)"
+        />
+        <radio-card
+          v-for="radio in result.results"
+          :key="radio.id"
+          type="custom"
+          :custom-radio="radio"
+        />
+        <Pagination
+          v-if="page && result && result.count > paginateBy"
+          v-model:page="page"
+          :pages="Math.ceil(result.count / paginateBy)"
+        />
+      </Layout>
     </Section>
   </Layout>
 </template>

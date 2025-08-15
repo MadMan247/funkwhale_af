@@ -139,160 +139,160 @@ const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value]
       page-heading
     />
     <Section>
-    <Layout
-      form
-      flex
-      :class="['ui', { 'loading': isLoading }, 'form']"
-      @submit.prevent="search"
-    >
-      <Input
-        id="artist-search"
-        v-model="query"
-        search
-        name="search"
-        :label="t('components.library.Artists.label.search')"
-        autofocus
-        :placeholder="labels.searchPlaceholder"
-      />
-      <Pills
-        v-if="typeof tags === 'object'"
-        :get="model => { tags = model.currents.map(({ label }) => label) }"
-        :set="model => ({
-          currents: tags.map(tag => ({ type: 'custom' as const, label: tag })),
-          others: dataStore.tags().value
-            .filter(({ name }) => result?.results?.some((object) => object.tags?.includes(name)) && !tags.includes(name))
-            .map(({ name }) => ({ type: 'preset' as const, label: name })),
-        })"
-        :label="t('components.library.Artists.label.tags')"
-        style="max-width: 350px;"
-      />
       <Layout
-        stack
-        no-gap
-        label
-        for="artist-ordering"
+        form
+        flex
+        :class="['ui', { 'loading': isLoading }, 'form']"
+        @submit.prevent="search"
       >
-        <span class="label">
-          {{ t('components.library.Artists.ordering.label') }}
-        </span>
-        <select
-          id="artist-ordering"
-          v-model="ordering"
-          class="dropdown"
+        <Input
+          id="artist-search"
+          v-model="query"
+          search
+          name="search"
+          :label="t('components.library.Artists.label.search')"
+          autofocus
+          :placeholder="labels.searchPlaceholder"
+        />
+        <Pills
+          v-if="typeof tags === 'object'"
+          :get="model => { tags = model.currents.map(({ label }) => label) }"
+          :set="model => ({
+            currents: tags.map(tag => ({ type: 'custom' as const, label: tag })),
+            others: dataStore.tags().value
+              .filter(({ name }) => result?.results?.some((object) => object.tags?.includes(name)) && !tags.includes(name))
+              .map(({ name }) => ({ type: 'preset' as const, label: name })),
+          })"
+          :label="t('components.library.Artists.label.tags')"
+          style="max-width: 350px;"
+        />
+        <Layout
+          stack
+          no-gap
+          label
+          for="artist-ordering"
         >
-          <option
-            v-for="(option, key) in orderingOptions"
-            :key="key"
-            :value="option[0]"
+          <span class="label">
+            {{ t('components.library.Artists.ordering.label') }}
+          </span>
+          <select
+            id="artist-ordering"
+            v-model="ordering"
+            class="dropdown"
           >
-            {{ sharedLabels.filters[option[1]] }}
-          </option>
-        </select>
-      </Layout>
-      <Layout
-        stack
-        no-gap
-        label
-        for="artist-ordering-direction"
-      >
-        <span class="label">
-          {{ t('components.library.Artists.ordering.direction.label') }}
-        </span>
-        <select
-          id="artist-ordering-direction"
-          v-model="orderingDirection"
-          class="dropdown"
+            <option
+              v-for="(option, key) in orderingOptions"
+              :key="key"
+              :value="option[0]"
+            >
+              {{ sharedLabels.filters[option[1]] }}
+            </option>
+          </select>
+        </Layout>
+        <Layout
+          stack
+          no-gap
+          label
+          for="artist-ordering-direction"
         >
-          <option value="+">
-            {{ t('components.library.Artists.ordering.direction.ascending') }}
-          </option>
-          <option value="-">
-            {{ t('components.library.Artists.ordering.direction.descending') }}
-          </option>
-        </select>
-      </Layout>
-      <Layout
-        stack
-        no-gap
-        label
-        for="artist-results"
-      >
-        <span class="label">
-          {{ t('components.library.Artists.pagination.results') }}
-        </span>
-        <select
-          id="artist-results"
-          v-model="paginateBy"
-          class="dropdown"
-        >
-          <option
-            v-for="opt in paginateOptions"
-            :key="opt"
-            :value="opt"
+          <span class="label">
+            {{ t('components.library.Artists.ordering.direction.label') }}
+          </span>
+          <select
+            id="artist-ordering-direction"
+            v-model="orderingDirection"
+            class="dropdown"
           >
-            {{ opt }}
-          </option>
-        </select>
+            <option value="+">
+              {{ t('components.library.Artists.ordering.direction.ascending') }}
+            </option>
+            <option value="-">
+              {{ t('components.library.Artists.ordering.direction.descending') }}
+            </option>
+          </select>
+        </Layout>
+        <Layout
+          stack
+          no-gap
+          label
+          for="artist-results"
+        >
+          <span class="label">
+            {{ t('components.library.Artists.pagination.results') }}
+          </span>
+          <select
+            id="artist-results"
+            v-model="paginateBy"
+            class="dropdown"
+          >
+            <option
+              v-for="opt in paginateOptions"
+              :key="opt"
+              :value="opt"
+            >
+              {{ opt }}
+            </option>
+          </select>
+        </Layout>
+        <Toggle
+          id="exclude-compilation"
+          v-model="excludeCompilation"
+          :label="t('components.library.Artists.label.excludeCompilation')"
+          true-value="true"
+          false-value="null"
+          type="checkbox"
+        />
       </Layout>
-      <Toggle
-        id="exclude-compilation"
-        v-model="excludeCompilation"
-        :label="t('components.library.Artists.label.excludeCompilation')"
-        true-value="true"
-        false-value="null"
-        type="checkbox"
+      <Loader v-if="isLoading" />
+      <Spacer />
+      <Pagination
+        v-if="page && result && result.count > paginateBy"
+        v-model:page="page"
+        :pages="Math.ceil(result.count / paginateBy)"
       />
-    </Layout>
-    <Loader v-if="isLoading" />
-    <Spacer />
-    <Pagination
-      v-if="page && result && result.count > paginateBy"
-      v-model:page="page"
-      :pages="Math.ceil(result.count / paginateBy)"
-    />
-    <Layout
-      v-if="result && result.results.length > 0"
-      grid
-      style="display:flex; flex-wrap:wrap; gap: 32px; margin-top:32px;"
-    >
-      <ArtistCard
-        v-for="artist in result.results"
-        :key="artist.id"
-        :artist="artist"
-      />
-    </Layout>
-    <Layout
-      v-else-if="result && result.results.length === 0"
-      stack
-    >
-      <Alert yellow>
-        <i class="compact disc icon" />
-        {{ t('components.library.Artists.empty.noResults') }}
-      </Alert>
-      <Card
-        v-if="store.state.auth.authenticated"
-        :title="t('components.library.Artists.button.upload')"
-        solid
-        small
-        primary
-        style="text-align: center;"
-        :to="useModal('upload').to"
+      <Layout
+        v-if="result && result.results.length > 0"
+        grid
+        style="display:flex; flex-wrap:wrap; gap: 32px; margin-top:32px;"
       >
-        <template #image>
-          <i
-            class="bi bi-upload"
-            style="font-size: 100px; position: relative; top: 50px;"
-          />
-        </template>
-      </Card>
-    </Layout>
-    <Spacer grow />
-    <Pagination
-      v-if="page && result && result.count > paginateBy"
-      v-model:page="page"
-      :pages="Math.ceil(result.count / paginateBy)"
-    />
-  </Section>
+        <ArtistCard
+          v-for="artist in result.results"
+          :key="artist.id"
+          :artist="artist"
+        />
+      </Layout>
+      <Layout
+        v-else-if="result && result.results.length === 0"
+        stack
+      >
+        <Alert yellow>
+          <i class="compact disc icon" />
+          {{ t('components.library.Artists.empty.noResults') }}
+        </Alert>
+        <Card
+          v-if="store.state.auth.authenticated"
+          :title="t('components.library.Artists.button.upload')"
+          solid
+          small
+          primary
+          style="text-align: center;"
+          :to="useModal('upload').to"
+        >
+          <template #image>
+            <i
+              class="bi bi-upload"
+              style="font-size: 100px; position: relative; top: 50px;"
+            />
+          </template>
+        </Card>
+      </Layout>
+      <Spacer grow />
+      <Pagination
+        v-if="page && result && result.count > paginateBy"
+        v-model:page="page"
+        :pages="Math.ceil(result.count / paginateBy)"
+      />
+    </Section>
   </Layout>
 </template>
 

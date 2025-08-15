@@ -45,14 +45,15 @@ const isIconOnly = computed(() =>
   )
 )
 
-const button = ref()
+const link = ref()
 
 onMounted(() => {
-  if (props.autofocus) button.value.focus()
+  if (props.autofocus) link.value.focus()
 })
 </script>
 
 <template>
+  {{ isExternalLink? ' ' : '  ' }}
   <component
     :is="isExternalLink ? 'a' : RouterLink"
     v-bind="color(props, ['interactive'])(
@@ -61,7 +62,7 @@ onMounted(() => {
       )(
         align(props, 'solid' in props ? { alignText: 'center' } : {})(
         )))"
-    ref="button"
+    ref="link"
     :autofocus="autofocus || undefined"
     :class="[
       $style.link,

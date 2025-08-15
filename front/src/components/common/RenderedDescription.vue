@@ -8,7 +8,6 @@ import { useI18n } from 'vue-i18n'
 import axios from 'axios'
 import clip from 'text-clipper'
 
-import Layout from '~/components/ui/Layout.vue'
 import Button from '~/components/ui/Button.vue'
 import Alert from '~/components/ui/Alert.vue'
 import Spacer from '~/components/ui/Spacer.vue'
@@ -153,8 +152,9 @@ const submit = async () => {
       >
         {{ t('components.common.RenderedDescription.button.cancel') }}
       </Button>
+      <Spacer grow />
       <Button
-        :class="['ui', {'loading': isLoading}, 'right', 'floated', 'button']"
+        :is-loading
         type="submit"
         :disabled="isLoading"
         solid
@@ -180,19 +180,4 @@ const submit = async () => {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
-
-/* .description {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  white-space: normal;
-  &.truncated {
-    -webkit-line-clamp: 1;
-    line-clamp: 1;
-    max-height: 72px;
-    flex-shrink: 1;
-  }
-} */
 </style>
