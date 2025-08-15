@@ -13,7 +13,6 @@ import AlbumWidget from '~/components/album/Widget.vue'
 import ArtistWidget from '~/components/artist/Widget.vue'
 import Header from '~/components/ui/Header.vue'
 import Layout from '~/components/ui/Layout.vue'
-import Spacer from '~/components/ui/Spacer.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 import useLogger from '~/composables/useLogger'

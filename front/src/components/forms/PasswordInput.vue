@@ -69,14 +69,14 @@ const copyPassword = () => {
 </template>
 
 <style lang="scss" scoped>
-  .funkwhale.input .input-right.copy {
-    position: absolute;
-    background:transparent;
-    border:none;
-    appearance:none;
-    right: 40px;
-    bottom: 12px;
-    font-size: 18px;
-    color: var(--fw-placeholder-color);
-  }
+.funkwhale.input .input-right.copy {
+  position: absolute;
+  background:transparent;
+  border:none;
+  appearance:none;
+  right: 40px;
+  bottom: 12px;
+  font-size: 18px;
+  color: var(--fw-placeholder-color);
+}
 </style>
