@@ -180,7 +180,7 @@ if (!isWebGLSupported) {
 
 <template>
   <section
-    class="main opaque component-queue"
+    class="main opaque component-queue default solid"
     :aria-label="labels.queue"
   >
     <div
@@ -202,12 +202,12 @@ if (!isWebGLSupported) {
                   v-if="fullscreen"
                   class="cover-shadow"
                   :src="store.getters['instance/absoluteUrl'](currentTrack.coverUrl)"
-                >
+                />
                 <img
                   ref="cover"
                   alt=""
                   :src="store.getters['instance/absoluteUrl'](currentTrack.coverUrl)"
-                >
+                />
               </template>
               <milk-drop
                 v-else-if="coverType === CoverType.MILK_DROP"
@@ -401,7 +401,7 @@ if (!isWebGLSupported) {
                 @click="store.commit('ui/queueFocused', null)"
               />
               <Button
-                red
+                destructive
                 outline
                 icon="bi-trash-fill"
                 style="float: right; margin-right: 16px;"

@@ -10,7 +10,7 @@
 }
 
 .queue-controls {
-  @include media("<desktop") {
+  @include media('<desktop') {
     height: $bottom-player-height;
   }
 }
@@ -33,9 +33,8 @@
 }
 
 .component-queue {
-
   .queue-controls {
-    @include media("<desktop") {
+    @include media('<desktop') {
     }
   }
   &.main {
@@ -49,7 +48,7 @@
     top: 1em;
     right: 1em;
     z-index: 9999999;
-    @include media("<desktop") {
+    @include media('<desktop') {
       display: none;
     }
   }
@@ -91,7 +90,7 @@
     width: 40px;
   }
   .queue.segment {
-    @include media("<desktop") {
+    @include media('<desktop') {
       padding: 0;
     }
     > .container {
@@ -99,12 +98,12 @@
     }
   }
   .handle {
-    @include media("<desktop") {
+    @include media('<desktop') {
       display: none;
     }
   }
   .duration-cell {
-    @include media("<tablet") {
+    @include media('<tablet') {
       display: none;
     }
   }
@@ -114,10 +113,10 @@
     left: 0;
     top: 0;
     z-index: 9;
-    @include media("<desktop") {
+    @include media('<desktop') {
       padding: 1em;
     }
-    @include media(">=desktop") {
+    @include media('>=desktop') {
       right: 1em;
       left: 38%;
     }
@@ -144,7 +143,7 @@
       max-height: 50vh;
       max-width: 50vh;
     }
-    @include media("<desktop") {
+    @include media('<desktop') {
       padding: 0.5em;
       font-size: 1.5em;
       width: 100%;
@@ -170,7 +169,8 @@
     border-radius: 0.28571429rem;
     overflow: hidden;
   }
-  .progress-wrapper, .warning.message {
+  .progress-wrapper,
+  .warning.message {
     width: 25em;
   }
   .ui.progress .bar {
@@ -188,8 +188,7 @@
     position: absolute;
     background-color: rgba(255, 255, 255, 0.15);
   }
-  .ui.progress:not(.indeterminate)
-    .bar.position:not(.buffer) {
+  .ui.progress:not(.indeterminate) .bar.position:not(.buffer) {
     background: var(--vibrant-color);
   }
 
@@ -197,13 +196,7 @@
     left: -46px;
     width: 200% !important;
     color: grey;
-    background: repeating-linear-gradient(
-      -55deg,
-      grey 1px,
-      grey 10px,
-      transparent 10px,
-      transparent 20px
-    ) !important;
+    background: repeating-linear-gradient(-55deg, grey 1px, grey 10px, transparent 10px, transparent 20px) !important;
 
     animation-name: MOVE-BG;
     animation-duration: 2s;
@@ -283,7 +276,6 @@
   }
 }
 
-
 // Wvffle's styles
 .theme-light .cover-container.fullscreen {
   background: #fff;
@@ -298,7 +290,7 @@
       position: relative;
     }
 
-    @include media("<desktop") {
+    @include media('<desktop') {
       grid-template-columns: 1fr 0;
       &.show-player {
         #queue {
@@ -400,7 +392,7 @@
             flex-direction: row-reverse;
             pointer-events: none;
 
-            @include media(">tablet") {
+            @include media('>tablet') {
               transition: all 0.2s ease-in-out;
               opacity: 0;
               transform: translateY(0.5em);
@@ -447,7 +439,8 @@
           text-align: left;
           padding: 3em 1em 1em;
 
-          h1, h2 {
+          h1,
+          h2 {
             margin: 0;
           }
         }
@@ -499,7 +492,7 @@
 
     .heart {
       &:not(.pink) {
-        color: rgba(0, 0, 0, 0.2)
+        color: rgba(0, 0, 0, 0.2);
       }
     }
 
@@ -513,8 +506,8 @@
     }
 
     .title.ellipsis {
-      @include media("<tablet") {
-          max-width: 35vw;
+      @include media('<tablet') {
+        max-width: 35vw;
       }
     }
 
@@ -523,25 +516,18 @@
     } */
 
     &.active {
-      background: var(--player-color);
-      color: var(--player-background);
-
-      .button > i {
-        color: var(--player-background);
-      }
-
       /* .button.pink > i {
         color: var(--fw-red-800);
       } */
 
       &:hover .button > i {
-          color: var(--player-color);
-        }
+        color: var(--player-color);
+      }
     }
   }
 }
 
 .drag-container:not(.dragging) .hover .queue-item {
-  background: rgba(0,0,0,.05);
+  background: rgba(0, 0, 0, 0.05);
   color: var(--text-color);
 }

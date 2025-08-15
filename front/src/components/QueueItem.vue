@@ -25,7 +25,7 @@ defineProps<Props>()
 
 <template>
   <div
-    class="queue-item"
+    class="queue-item interactive ghost solid default raised "
     tabindex="0"
   >
     <div class="handle">
@@ -39,7 +39,7 @@ defineProps<Props>()
         class="ui mini image"
         alt=""
         :src="source.coverUrl"
-      >
+      />
     </div>
     <div @click="$emit('play', index)">
       <div
@@ -47,7 +47,8 @@ defineProps<Props>()
         :title="source.title"
         :aria-label="source.labels.selectTrack"
       >
-        <strong>{{ source.title }}</strong><br>
+        <strong>{{ source.title }}</strong
+        ><br />
         <span>
           {{ generateTrackCreditStringFromQueue(source) }}
         </span>
