@@ -9,7 +9,7 @@ import AlbumWidget from '~/components/album/Widget.vue'
 import ArtistWidget from '~/components/artist/Widget.vue'
 import RadioButton from '~/components/radios/Button.vue'
 import Layout from '~/components/ui/Layout.vue'
-import Button from '~/components/ui/Button.vue'
+import Link from '~/components/ui/Link.vue'
 import Spacer from '~/components/ui/Spacer.vue'
 
 interface Props {
@@ -46,14 +46,14 @@ const labels = computed(() => ({
         type="tag"
         :object-id="id"
       />
-      <Button
+      <Link
         v-if="store.state.auth.availablePermissions['library']"
         icon="bi-wrench"
         secondary
         :to="{name: 'manage.library.tags.detail', params: {id: id}}"
       >
         {{ t('components.library.TagDetail.link.moderation') }}
-      </Button>
+      </Link>
     </Layout>
     <Spacer :size="64" />
     <artist-widget
