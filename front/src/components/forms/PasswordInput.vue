@@ -17,6 +17,8 @@ interface Props {
   fieldId: string
 }
 
+// TODO: Migrate `defaultShow` and `copyButton` functionality to ui password component and delete this module
+
 const emit = defineEmits<Events>()
 const props = withDefaults(defineProps<Props>(), {
   defaultShow: false,

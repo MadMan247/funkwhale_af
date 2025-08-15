@@ -97,15 +97,6 @@ const headingProps = computed(() =>
             v
             :size="64"
           />
-          <div
-            v-if="icon"
-            style="display: flex; justify-content: center; align-items: center; width: 48px;"
-          >
-            <i
-              :class="['bi', icon]"
-              style="font-size: 18px;"
-            />
-          </div>
           <slot name="topleft" />
           <Heading
             v-bind="headingProps"
@@ -113,7 +104,16 @@ const headingProps = computed(() =>
               padding: 0 0 24px 0;
               margin: 0;
             "
-          />
+          >
+            <template
+              v-if="icon"
+              #before
+            >
+              <div style="float: left; padding-right: .5em;">
+                <i :class="['bi', icon]" />
+              </div>
+            </template>
+          </Heading>
           <Spacer grow />
         </template>
 

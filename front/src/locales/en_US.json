@@ -854,7 +854,7 @@
         "button": {
           "delete": "Delete",
           "deleteAccount": "Delete my account…",
-          "deleteAccountConfirm": "Delete my account",
+          "deleteAccountConfirm": "I accept the risk. Delete my account",
           "disableSubsonic": "Disable access",
           "edit": "Edit",
           "password": "Change password",

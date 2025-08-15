@@ -21,10 +21,11 @@ import Input from '~/components/ui/Input.vue'
 import Layout from '~/components/ui/Layout.vue'
 import Slider from '~/components/ui/Slider.vue'
 import Alert from '~/components/ui/Alert.vue'
-import Heading from '~/components/ui/Heading.vue'
+import Header from '~/components/ui/Header.vue'
 import Button from '~/components/ui/Button.vue'
 import Link from '~/components/ui/Link.vue'
 import Textarea from '~/components/ui/Textarea.vue'
+import Section from '~/components/ui/Section.vue'
 
 const SETTINGS_ORDER: FieldId[] = ['summary', 'privacy_level']
 
@@ -278,8 +279,9 @@ fetchOwnedApps()
     v-title="labels.title"
     main
     stack
+    gap-84
   >
-    <Heading
+    <Header
       :h1="t('components.auth.Settings.header.accountSettings')"
       page-heading
     />
@@ -343,10 +345,10 @@ fetchOwnedApps()
         {{ t('components.auth.Settings.button.updateSettings') }}
       </Button>
     </Layout>
-    <section class="ui text container">
-      <h2 class="ui header">
-        {{ t('components.auth.Settings.header.avatar') }}
-      </h2>
+    <Section
+      large-section-heading
+      :h2="t('components.auth.Settings.header.avatar')"
+    >
       <Layout form>
         <Alert
           v-if="avatarErrors.length > 0"
@@ -374,12 +376,12 @@ fetchOwnedApps()
           {{ t('components.auth.Settings.label.avatar') }}
         </attachment-input>
       </Layout>
-    </section>
+    </Section>
 
-    <section class="ui text container">
-      <h2 class="ui header">
-        {{ t('components.auth.Settings.header.changePassword') }}
-      </h2>
+    <Section
+      large-section-heading
+      :h2="t('components.auth.Settings.header.changePassword')"
+    >
       <div class="ui message">
         {{ t('components.auth.Settings.description.changePassword.paragraph1') }}&nbsp;{{ t('components.auth.Settings.description.changePassword.paragraph2') }}
       </div>
@@ -400,6 +402,7 @@ fetchOwnedApps()
             </li>
           </ul>
         </Alert>
+        <!-- TODO: Use  -->
         <div class="field">
           <label for="old-password-field">{{ t('components.auth.Settings.label.currentPassword') }}</label>
           <password-input
@@ -446,18 +449,15 @@ fetchOwnedApps()
       </Layout>
       <div class="ui hidden divider" />
       <subsonic-token-form />
-    </section>
+    </Section>
 
-    <section
+    <Section
       id="content-filters"
+      large-section-heading
+      icon="bi-eye-slash"
+      :h2="t('components.auth.Settings.header.contentFilters')"
       class="ui text container"
     >
-      <h2 class="ui header">
-        <i class="bi bi-eye-slash" />
-        <div class="content">
-          {{ t('components.auth.Settings.header.contentFilters') }}
-        </div>
-      </h2>
       <p>
         {{ t('components.auth.Settings.description.contentFilters') }}
       </p>
@@ -508,18 +508,14 @@ fetchOwnedApps()
           </tr>
         </tbody>
       </table>
-    </section>
-    <section
+    </Section>
+    <Section
       id="grants"
+      :h2="t('components.auth.Settings.header.authorizedApps')"
+      large-section-heading
+      icon="bi-unlock-fill"
       class="ui text container"
     >
-      <div class="ui hidden divider" />
-      <h2 class="ui header">
-        <i class="bi bi-unlock-fill" />
-        <div class="content">
-          {{ t('components.auth.Settings.header.authorizedApps') }}
-        </div>
-      </h2>
       <p>
         {{ t('components.auth.Settings.description.authorizedApps') }}
       </p>
@@ -581,18 +577,14 @@ fetchOwnedApps()
         </template>
         {{ t('components.auth.Settings.help.noApps') }}
       </empty-state>
-    </section>
-    <section
+    </Section>
+    <Section
       id="apps"
+      large-section-heading
+      icon="bi-code-slash"
+      :h2="t('components.auth.Settings.header.yourApps')"
       class="ui text container"
     >
-      <div class="ui hidden divider" />
-      <h2 class="ui header">
-        <i class="bi bi-code-slash" />
-        <div class="content">
-          {{ t('components.auth.Settings.header.yourApps') }}
-        </div>
-      </h2>
       <p>
         {{ t('components.auth.Settings.description.yourApps') }}
       </p>
@@ -667,19 +659,15 @@ fetchOwnedApps()
         </template>
         {{ t('components.auth.Settings.help.noPersonalApps') }}
       </empty-state>
-    </section>
+    </Section>
 
-    <section
+    <Section
       id="plugins"
+      large-section-heading
+      icon="bi-code"
+      :h2="t('components.auth.Settings.header.plugins')"
       class="ui text container"
     >
-      <div class="ui hidden divider" />
-      <h2 class="ui header">
-        <i class="bi bi-code" />
-        <div class="content">
-          {{ t('components.auth.Settings.header.plugins') }}
-        </div>
-      </h2>
       <p>
         {{ t('components.auth.Settings.description.plugins') }}
       </p>
@@ -691,15 +679,12 @@ fetchOwnedApps()
       >
         {{ t('components.auth.Settings.link.managePlugins') }}
       </Link>
-    </section>
-    <section class="ui text container">
-      <div class="ui hidden divider" />
-      <h2 class="ui header">
-        <i class="bi bi-envelope-at" />
-        <div class="content">
-          {{ t('components.auth.Settings.header.changeEmail') }}
-        </div>
-      </h2>
+    </Section>
+    <Section
+      large-section-heading
+      icon="bi-envelope-at"
+      :h2="t('components.auth.Settings.header.changeEmail')"
+    >
       <p>
         {{ t('components.auth.Settings.description.changeEmail') }}
       </p>
@@ -751,15 +736,12 @@ fetchOwnedApps()
           {{ t('components.auth.Settings.button.update') }}
         </Button>
       </Layout>
-    </section>
-    <section class="ui text container">
-      <div class="ui hidden divider" />
-      <h2 class="ui header">
-        <i class="bi bi-trash" />
-        <div class="content">
-          {{ t('components.auth.Settings.header.deleteAccount') }}
-        </div>
-      </h2>
+    </Section>
+    <Section
+      large-section-heading
+      :h2="t('components.auth.Settings.header.deleteAccount')"
+      icon="bi-trash"
+    >
       <p>
         {{ t('components.auth.Settings.description.deleteAccount') }}
       </p>
@@ -811,6 +793,6 @@ fetchOwnedApps()
           </template>
         </dangerous-button>
       </Layout>
-    </section>
+    </Section>
   </Layout>
 </template>
