@@ -288,7 +288,7 @@ def test_authorize_view_anonymous(client, factories):
     url = reverse("api:v1:oauth:authorize")
     response = client.post(url, {})
 
-    assert response.status_code == 401
+    assert response.status_code == 302
 
 
 def test_token_view_post(api_client, factories):

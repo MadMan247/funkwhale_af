@@ -3,7 +3,9 @@ import secrets
 import urllib.parse
 
 from django import http
+from django.conf import settings
 from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema
 from oauth2_provider import exceptions as oauth2_exceptions
@@ -220,10 +222,15 @@ class AuthorizeView(views.APIView, oauth_views.AuthorizationView):
             json.dumps(payload), status=status_code, content_type="application/json"
         )
 
-    def handle_no_permission(self):
-        return self.json_payload(
-            {"detail": "Authentication credentials were not provided."}, 401
-        )
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return HttpResponseRedirect(
+                settings.FUNKWHALE_PROTOCOL
+                + "://"
+                + settings.FUNKWHALE_HOSTNAME
+                + "/login"
+            )
+        return super().dispatch(request, *args, **kwargs)
 
 
 class TokenView(oauth_views.TokenView):
