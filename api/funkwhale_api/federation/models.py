@@ -129,6 +129,7 @@ class Domain(models.Model):
     allowed = models.BooleanField(default=None, null=True)
     reachable = models.BooleanField(default=True)
     last_successful_contact = models.DateTimeField(default=None, null=True)
+    reachable_retries = models.PositiveIntegerField(default=0)
     objects = DomainQuerySet.as_manager()
 
     def __str__(self):

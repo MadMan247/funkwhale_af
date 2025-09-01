@@ -634,14 +634,30 @@ def fetch_collection(url, max_pages, channel, is_page=False):
 
 @celery.app.task(name="federation.check_all_remote_instance_availability")
 def check_all_remote_instance_availability():
-    domains = models.Domain.objects.all().prefetch_related()
-    for domain in domains:
+    base_interval = 3600
+    factor = 1.15
+
+    for domain in models.Domain.objects.all():
         if domain.name == settings.FUNKWHALE_HOSTNAME:
-            # No need to check the instance itself: Its always reachable
-            domain.reachable = True
-            domain.last_successful_contact = timezone.now()
-        else:
-            check_single_remote_instance_availability(domain)
+            continue
+
+        attempt = domain.reachable_retries or 0
+        last_success = domain.last_successful_contact or domain.creation_date
+
+        delay_seconds = base_interval * (factor**attempt)
+        delay = datetime.timedelta(seconds=delay_seconds)
+
+        next_check_due = last_success + delay
+        now = timezone.now()
+
+        if domain.reachable is False and now < next_check_due:
+            logger.info(
+                f"[{domain.name}] Skipping check. Last successful: {last_success}, "
+                f"attempt #{attempt}, next check due in {delay} at {next_check_due}"
+            )
+            continue
+
+        check_single_remote_instance_availability(domain)
 
 
 @celery.app.task(name="federation.check_single_remote_instance_availability")
@@ -654,12 +670,14 @@ def check_single_remote_instance_availability(domain):
             Setting domain as unreachable."
         )
         domain.reachable = False
+        domain.reachable_retries += 1
         domain.save()
         return domain.reachable
 
     if "version" in nodeinfo.keys():
         domain.reachable = True
         domain.last_successful_contact = timezone.now()
+        domain.reachable_retries = 0
         domain.save()
         return domain.reachable
     else:
@@ -667,6 +685,7 @@ def check_single_remote_instance_availability(domain):
             f"Domain {domain.name} is not reachable at the moment. Setting domain as unreachable."
         )
         domain.reachable = False
+        domain.reachable_retries += 1
         domain.save()
         return domain.reachable
 
