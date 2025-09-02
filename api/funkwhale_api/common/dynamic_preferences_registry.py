@@ -1,3 +1,4 @@
+from django.conf import settings
 from dynamic_preferences import types
 from dynamic_preferences.registries import global_preferences_registry
 
@@ -9,7 +10,7 @@ class APIAutenticationRequired(types.BooleanPreference):
     section = common
     name = "api_authentication_required"
     verbose_name = "API Requires authentication"
-    default = True
+    default = settings.API_AUTHENTICATION_REQUIRED
     help_text = (
         "If disabled, anonymous users will be able to query the API "
         "and access music data (as well as other data exposed in the API "

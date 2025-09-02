@@ -1237,6 +1237,8 @@ Example:
 
 - ``signup=5/d,password-reset=2/d,anonymous-reports=5/d``
 """
+API_AUTHENTICATION_REQUIRED = env.bool("API_AUTHENTICATION_REQUIRED", default=False)
+"""used by APIAutenticationRequired to allow or not access without authentication"""
 
 BROWSABLE_API_ENABLED = env.bool("BROWSABLE_API_ENABLED", default=False)
 if BROWSABLE_API_ENABLED:
