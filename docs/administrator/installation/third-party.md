@@ -9,3 +9,4 @@ These installation methods are not provided by the Funkwhale project. If you hav
 - [HomelabOS](https://homelabos.com/docs/software/funkwhale/)
 - [Docker swarm](https://github.com/fedeb95/funkwhale-swarm)
 - [MASH playbook](https://github.com/mother-of-all-self-hosting/mash-playbook): an Ansible playbook for self-hosting FOSS projects. Check [their Funkwhale documentation](https://github.com/mother-of-all-self-hosting/mash-playbook/blob/main/docs/services/funkwhale.md) for setup information.
+- Gentoo Linux: emerge a package "www-misc/funkwhale" from [gentooplusplus](https://github.com/Eugeniusz-Gienek/gentooplusplus) repository [(how to enable a repository)](https://wiki.gentoo.org/wiki/Ebuild_repository#Installing_packages_from_other_repositories)
