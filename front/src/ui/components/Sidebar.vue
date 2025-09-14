@@ -1,22 +1,26 @@
 <script setup lang="ts">
-import { ref, onMounted, watch, computed, nextTick } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import { useUploadsStore } from '../stores/upload'
 import { useI18n } from 'vue-i18n'
 import { useStore } from '~/store'
 import { useModal } from '~/ui/composables/useModal.ts'
-
-import onKeyboardShortcut from '~/composables/onKeyboardShortcut'
+import { defineAsyncComponent } from 'vue'
 
 import Logo from '~/components/Logo.vue'
-import Input from '~/components/ui/Input.vue'
-import Link from '~/components/ui/Link.vue'
 import UserMenu from './UserMenu.vue'
+
+import Link from '~/components/ui/Link.vue'
 import Popover from '~/components/ui/Popover.vue'
 import PopoverItem from '~/components/ui/popover/PopoverItem.vue'
 import Button from '~/components/ui/Button.vue'
 import Layout from '~/components/ui/Layout.vue'
 import Spacer from '~/components/ui/Spacer.vue'
 import { useRoute } from 'vue-router'
+
+// simple usage
+const SearchModal = defineAsyncComponent({
+  loader: () => import('~/ui/modals/Search.vue')
+})
 
 const isCollapsed = ref(true)
 
@@ -29,26 +33,12 @@ onMounted(() => {
 })
 
 const { t } = useI18n()
-const { value: searchParameter } = useModal('search')
 
 const store = useStore()
 const uploads = useUploadsStore()
 const logoUrl = computed(() => store.state.auth.authenticated ? 'library.index' : 'index')
 
 const isOpen = ref(false)
-
-// Search bar focus
-
-const isFocusingSearch = ref<true | undefined>(undefined)
-const focusSearch = () => {
-  isFocusingSearch.value = undefined
-  nextTick(() => {
-    isFocusingSearch.value = true
-  })
-}
-onKeyboardShortcut(['shift', 'f'], focusSearch, true)
-onKeyboardShortcut(['ctrl', 'k'], focusSearch, true)
-onKeyboardShortcut(['/'], focusSearch, true)
 
 // Admin notifications
 
@@ -209,16 +199,18 @@ const moderationNotifications = computed(() =>
       stack
       :class="[$style['menu-links'], isCollapsed && 'hide-on-mobile']"
     >
-      <Input
-        :key="isFocusingSearch ? 1 : 0"
+      <!-- The search input will live next to the search modal. It needs  -->
+      <!-- <Input
+        ref="globalSearchInput"
         v-model="searchParameter"
-        :autofocus="isFocusingSearch"
         raised
         autocomplete="search"
         type="search"
         icon="bi-search"
         :placeholder="t('components.audio.SearchBar.placeholder.search')"
-      />
+      /> -->
+
+      <SearchModal />
 
       <Spacer />
 
