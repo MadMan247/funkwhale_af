@@ -1,16 +1,20 @@
 <script setup lang="ts">
 import type { paths, components } from '~/generated/types.ts'
 import type { RadioConfig } from '~/store/radios'
+
 import axios from 'axios'
-import { ref, watch, computed } from 'vue'
-import { refDebounced } from '@vueuse/core'
-import { trim, uniqBy } from 'lodash-es'
+import { ref, computed, type ShallowRef, useTemplateRef } from 'vue'
+import { refDebounced, watchDebounced } from '@vueuse/core'
+import { trim } from 'lodash-es'
+import { vElementBounding } from '@vueuse/components'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 import { useI18n } from 'vue-i18n'
 import { useModal } from '~/ui/composables/useModal.ts'
 import { useStore } from '~/store'
+import { getKey } from '~/rstore/model'
 import * as RStore from '~/rstore'
+import useQuery from '~/query.ts'
 
 import ArtistCard from '~/components/artist/Card.vue'
 import PlaylistCard from '~/components/playlists/Card.vue'
@@ -20,219 +24,47 @@ import TrackTable from '~/components/audio/track/Table.vue'
 import AlbumCard from '~/components/album/Card.vue'
 import RadioCard from '~/components/radios/Card.vue'
 import RadioButton from '~/components/radios/Button.vue'
+import onKeyboardShortcut from '~/composables/onKeyboardShortcut'
+
 import TagsList from '~/components/tags/List.vue'
 import EmptyState from '~/components/common/EmptyState.vue'
 
 import Modal from '~/components/ui/Modal.vue'
 import Spacer from '~/components/ui/Spacer.vue'
 import Input from '~/components/ui/Input.vue'
+import Card from '~/components/ui/Card.vue'
 import Section from '~/components/ui/Section.vue'
 import Link from '~/components/ui/Link.vue'
 import Loader from '~/components/ui/Loader.vue'
 import Alert from '~/components/ui/Alert.vue'
 
-/*
-
-Strategy
-
-I think the `search` endpoint is for when you want all results at once.
-It's not really useful because it has less functionality than the other things.
-
-- Like v1.4, we don't use the `/search` endpoint. Instead,
-   we query each type with `q=...` and `page_size=3`
-- We stagger the requests by 200ms
-
-- Open question: How do we build filters for cached files?
-  (a) Re-implement the server logic -> This is the correct way because
-        it enables offline-first
-        Token search -- this is so far hard to implement.
-        Open for v2+!
-  (b) Make global `inCurrentSearch: { albums: [1, 3, 4], tags: [], }` lists.
-        Update value any time the parameter `q` is in a search.
-
-        Design for global filter-cache:
-        const filterCache : Map<JSON.stringify({ name: Name, params: params }), Id[] }
-
-        - Each time we run a search query in `plugin.ts`, we say:
-              resultIds.set(
-                JSON.stringify({ name: payload.model.name, key: payload.findOptions?.params }),
-                results.map(item=>item.id)
-              )
-
-        - Each time we use params, we can then already use the cached by finding the correct filter:
-            filter = (query) => (item) =>
-              resultIds.get(JSON.stringify({ name: query.name, params: query.params })).includes(getId(item))
-
-        I think this is particularly nice for paged navigation, where going back and forth can now leverage the cache.
-
-        We still need to find out how to tell rstore to invalidate the results.
-
-        It's a different thing than saying `artist` has n invalidation timeout of 5 minutes.
-
-        We are basically invalidating the parameters!
-
-
-
-        It's very important we implement the naive filter (param identity).
-
-        It's also very important that we
-        - refresh
-
-*/
-
-const myPageSize = ref(2);
-
-// Marker needs to be set!
-
 const { t } = useI18n()
 const rStore = RStore.useStore()
-
-const { data: album, refresh: _refreshAlbum, loading: _loadingAlbum } = rStore.albums.queryMany(() => ({
-  filter: {
-    page: 1,
-    page_size: myPageSize.value
-  }
-}))
-
-// const { data: channel } = rStore.channels.queryMany(()=>({
-//   filter: {
-//     page: 1,
-//     page_size: 1
-//   }
-// }))
-
-// We can add `refresh` and `loading` indicators to all running queries!
-//
-//
 /*
-
-To summarize
-
-- For the search interface, we simply implement a list of sections where each section
-has `data`, `loading`, `refresh`, `error` (and `more` link in case `count` is larger than the local count)
-
-- These refs are generated with `queryMany`
-
-- In a query, we have to keep `filter` and `params` in sync:
-   - `params` is our source of truth. Every time the server responds,
-      we store { count, ids, timestamp } under JSON.stringify({ name, params }).
-      `filter` looks up `ids` under JSON.stringify({ name, params }) and then
-      filters by id.
-
-- We display the number of hits, and we calculate the total, and display all on little badges :-)
-
-
-- Instead of summary/details, we could use tabs that jump to the place.
-   Each tab would be synced with the `type` query in the url (like in krasses.berlin).
-
-
-
-   - For Search and Pagination, the idea is that the `params` are keys to the inclusion&order list.
-
-   - I wonder if rstore preserves the ordering... If not, we simply store the order in the item
-      at receive-time with an Array.map.
-
-   - https://rstore.dev/guide/plugin/hooks.html#custom-cache-filtering
-       Custom filter:
-         1. Type the `params`
-         2. We create additional hooks.
-              Before: queryFirst -> [fetchFirst, __internal_key_compare_filter__]
-              After: queryFirst -> [fetchFirst, cacheFilterFirst]
-          3. We implement the additional hooks:
-              hook('cacheFilterFirst', (payload) => {
-                const { key, findOptions } = payload
-                const item = payload.readItemsFromCache().find((item) =>
-                    ...
-              hook('cacheFilterMany', (payload) => {
-                const { findOptions } = payload
-                const { params } = findOptions
-                const items = payload.getResult().filter(item=>
-                  item.visibleWithParams.includes(createHash([payload.model.name, params]))
-                payload.setResult(items)
-
-              hook('fetchMany', async (payload) => {
-                const { params } = payload.findOptions
-                const paginatedResult = await axios.get(`/api/${payload.model.name}`,
-                  params, etc.
-                )
-                const hash = createHash([payload.model.name, params])
-                const cached = payload.readItemsFromCache()
-                payload.setResult(paginatedResponse.data.results.map(item=>({
-                  ...item,
-                  // Associate each item with all queries that match it
-                  // TODO: Mirror the backend logic here to enable offline-first
-                  visibleWithParams: [
-                    // Preserve associations with other queries, if any
-                    ...(cached.find(citem=>citem.id===item.id)?.visibleWithParams ?? []),
-                    hash
-                  ]
-                  // Finally, if after a refresh the server no longer associates an item
-                  // already in the cache with the given params, then remove the association:
-                  store.$cache.writeItem (etc.)
-
-                  // This seems very complicated, and it pollutes the model.
-                  // Better: We just create a ref<Map<[hash, name], [id]>>([]) for storing and
-                  // invalidating the association `params=>filter`.
-                });
-
-
-
-                //https://mojoauth.com/hashing/fast-hash-in-javascript-in-browser/
-                const createHash = object => {
-                  let hash = 0;
-                  let t = JSON.stringify(object);
-                  for (let i=0; i<t.length; i++)
-                    hash = ((hash << 5) - hash + t.charCodeAt(i)) | 0
-                  return hash >>> 0;
-                }
-
-
   Future:
     - For now, we will use fetch-then-cache, and not support features such as search in
-      offline-first.
-    - Later, we can add a UI indication for stale params, with the timestamp being old,
+      offline-first. Later, we can add a UI indication for stale params, with the timestamp being old,
         and an automatic trigger: while user is still browsing the app, refresh content periodically.
         When tab gets focus, try to re-fetch.
-    - Thought: `Tracks` and `Tags` have no global pages in the sidebar. So when we search, we may want all?
-       (a) Button `load more` increases items-per-page
-       (b) Show pagination in non-global types (but don't link it to url)
-       I think pagination is straightforward because we have pagination component.
-       So we have a lot of local variables.
-
-
-Can we do it all in template instead of script?
-
-const artistsPage = ref(2);
-const q = useQueryParameter('q') // It's also the ref for the input box
-
-//MAYBE: const debouncedQ = ... // Delay and throttle the search query change response just a bit
-
-const sections =
-  { artists:
-      rStore.artists.queryMany(()=>({
-        filter: () => rStore.,
-        params: {
-          page: artistsPage.value,
-          page_size: 2,
-          q: q.value
-        }
-      }),
-    albums:
-    ...
-
-  }
-
-OR
-
-const { artists, albums, tracks, playlists, radios, tags, podcasts, series } = RStore.useStore()
-
-<Section :h2="t('artists')">
-
-</Section>
-
-
 */
 
+// Search input sizing
+const style = ref<{ inner: string, outer: string }>({ inner: '', outer: '' })
+
+const setBoundingBox = (placeholder: 'inner' | 'outer') => ({ left, width, top }: Record<string, ShallowRef<number>>) => {
+  style.value[placeholder] = `left: ${left.value}px; top: ${top.value}px; width: ${width.value}px;`
+  }
+
+
+const globalSearchInput = useTemplateRef('globalSearchInput')
+
+const focusSearch = () => {
+  globalSearchInput.value?.focus();
+}
+
+onKeyboardShortcut(['shift', 'f'], focusSearch, true)
+onKeyboardShortcut(['ctrl', 'k'], focusSearch, true)
+onKeyboardShortcut(['/'], focusSearch, true)
 
 const { isOpen, value: query } = useModal(
   'search', {
@@ -240,85 +72,26 @@ const { isOpen, value: query } = useModal(
     isOn: (value) => value !== undefined && value !== ''
 })
 
-// TODO:
-// - Limit search results to 4
-// - Add Link to specific search pages in each section where it applies
-// - Read out the count from `result` (instead of the max. 4 visible results)
-
-/*
-
-- Categories (an Array of all categories) <- static configuration
-  |
-  | filter according to search query
-  v
-- Available Categories (also an Array of category configs)
-  |
-  | make sure that `open sections` is a
-  | subset of available category types
-  |
-* Open Sections (a Set of category types)    <- user can expand/collapse sections
-  |                                          <- new results can also open a category:
-  |                                             if all were closed or none had results
-  v
-- Open Categories (this value is just computed, based on open sections)
-
-*/
-
-/* TODO: Refactor */
-// 1. Move fetching logic to `data.ts` (useDataStore)
-//     - Use caching
-//     - Debounce from input by 500ms
-//     - Load modal on keydown; show empty state while fetching
-// 2. Debug content loading logic
-// 3. Make colors subtler
-//      -
-// 4. Make layout nicer
-//     - Sections fill the modal
-//     - Optimize space use
-//     - Disable opening empty sections; deemphasize them (disable attribute)
-//     - Make the headers transparent by default (ghost: only show background on hover)
-//     - When Modal closes, delete customly closed categories (open them again as they appear in search results)
-//
-// Only show `View More` if there are actually more
-
 // Search query
 
-const queryDebounced = refDebounced(query, 500)
+const queryDebounced = refDebounced(query, 400)
 const trimmedQuery = computed(() => trim(trim(queryDebounced.value), '@'))
 const isFetch = computed(() => ((trimmedQuery.value.startsWith('http://') || trimmedQuery.value.startsWith('https://')) || trimmedQuery.value.includes('@')) && !isRss.value)
 const isRss = computed(() => trimmedQuery.value.includes('.rss') || trimmedQuery.value.includes('.xml'))
 
 const isLoading = ref(false)
 
-// Filter
+// RSS and Federation (remote object) search
 
-type Category = 'artists' | 'albums' | 'tracks' | 'playlists' | 'tags' | 'radios' | 'podcasts' | 'series' | 'rss' | 'federation'
-
-type SearchResponse = paths['/api/v2/search']['get']['responses']['200']['content']['application/json']
+type Category = 'rss' | 'federation'
 
 type Response = {
-  artists: SearchResponse,
-  albums: SearchResponse,
-  tracks: SearchResponse,
-  tags: SearchResponse,
-  playlists: paths['/api/v2/playlists/']['get']['responses']['200']['content']['application/json'],
-  radios: paths['/api/v2/radios/radios/']['get']['responses']['200']['content']['application/json'],
-  podcasts: paths['/api/v2/artists/']['get']['responses']['200']['content']['application/json'],
-  series: paths['/api/v2/albums/']['get']['responses']['200']['content']['application/json'],
   rss: paths['/api/v2/channels/rss-subscribe/']['post']['responses']['200']['content']['application/json'],
   federation: paths['/api/v2/federation/fetches/']['post']['responses']['201']['content']['application/json']
 }
 
 /** Note that `federation` is a singleton list so that each result is a list */
 type Results = {
-  artists: SearchResponse['artists'],
-  albums: SearchResponse['albums'],
-  tracks: SearchResponse['tracks'],
-  tags: SearchResponse['tags'],
-  playlists: Response['playlists']['results'],
-  radios: Response['radios']['results'],
-  podcasts: Response['podcasts']['results'],
-  series: Response['series']['results'],
   rss: [Response['rss']],
   federation: [Response['federation']],
   type: Category
@@ -328,87 +101,6 @@ const responses = ref<Partial<Response>>({})
 const results = ref<Partial<Results>>({})
 
 const categories = computed(() => [
-  {
-    type: 'artists',
-    label: t('views.Search.label.artists'),
-    more: '/library/artists',
-    endpoint: '/search',
-    params: {
-      contentCategory: 'music',
-      includeChannels: 'true',
-      page: 1,
-      page_size: 4
-    }
-  },
-  {
-    type: 'albums',
-    label: t('views.Search.label.albums'),
-    more: '/library/albums',
-    endpoint: '/search',
-    params: {
-      contentCategory: 'music',
-      includeChannels: 'true',
-      page: 1,
-      page_size: 4
-    }
-  },
-  {
-    type: 'tracks',
-    label: t('views.Search.label.tracks'),
-    endpoint: '/search',
-    params: {
-      page: 1,
-      page_size: 24
-    }
-  },
-  {
-    type: 'tags',
-    label: t('views.Search.label.tags'),
-    endpoint: '/search',
-    params: {
-      page: 1,
-      page_size: 24
-    }
-  },
-  {
-    type: 'playlists',
-    label: t('views.Search.label.playlists'),
-    more: '/library/playlists/',
-    endpoint: '/playlists'
-  },
-  {
-    type: 'radios',
-    label: t('views.Search.label.radios'),
-    more: '/library/radios',
-    endpoint: '/radios/radios/',
-    params: {
-      page: 1,
-      page_size: 4
-    }
-  },
-  {
-    type: 'podcasts',
-    label: t('views.Search.label.podcasts'),
-    more: '/library/podcasts',
-    endpoint: '/artists/',
-    params: {
-      contentCategory: 'podcast',
-      includeChannels: 'true',
-      page: 1,
-      page_size: 4
-    }
-  },
-  {
-    type: 'series',
-    label: t('views.Search.label.series'),
-    endpoint: '/albums/',
-    params: {
-      contentCategory: 'podcast',
-      includeChannels: 'true',
-      page: 1,
-      page_size: 4
-    }
-  },
   {
     type: 'rss',
     label: t('views.Search.header.rss'),
@@ -431,7 +123,6 @@ const categories = computed(() => [
   type: Category
   label: string
   post?: true
-  more?: string
   params?: {
     [key: string]: string | number
   }
@@ -445,14 +136,7 @@ const availableCategories = computed(() =>
     isFetch.value ? type === 'federation'
       : isRss.value ? type === 'rss'
         : type !== 'federation' && type !== 'rss'
-  )
-)
-
-// Whenever available categories change, if there is exactly one, open it
-watch(availableCategories, () => {
-  if (availableCategories.value.length === 1)
-    openSections.value = new Set(availableCategories.value.map(category => category.type))
-})
+  ))
 
 /**
  * Get a list of the loaded results for a given category (max. 4)
@@ -471,40 +155,11 @@ const count = <C extends Category>(category: { type: C }) => (
   response => response && 'count' in response ? response.count : resultsPerCategory(category).length
 )(responses.value[category.type])
 
-/**
- * Find out whether a category has been queried before
- * @param category The category to which may have been queried
- */
-const isCategoryQueried = <C extends Category>(category: { type: C }) =>
-  results.value[category.type] ? true : false
-
-// Display
-
-const openCategories = computed(() =>
-  categories.value.filter(({ type }) => openSections.value.has(type))
-)
-
-// Sections can be manually or automatically toggled
-
-const openSections = ref<Set<Category>>(new Set())
-
-/**
- * If no results are in currently expanded categories but some collapsed have results, show those
-*/
-watch(results, () => {
-  if (openCategories.value.some(category => count(category) > 0)) return
-
-  const categoriesWithResults
-    = availableCategories.value.filter(category => count(category) > 0)
-
-  if (categoriesWithResults.length === 0) return
-
-  openSections.value = new Set(categoriesWithResults.map(({ type }) => type))
-})
-
 // Subscribe to an RSS feed
 
 const store = useStore()
+
+const rssError = ref()
 
 /**
  * Subscribe to an RSS feed and return the route for the subscribed channel
@@ -517,6 +172,8 @@ const rssSubscribe = async (url: string) => {
     store.commit('channels/subscriptions', { uuid: response.data.channel.uuid, value: true })
     return response.data.channel
   } catch (error) {
+    //@ts-expect-error TODO: type this correctly
+    rssError.value=[error.message, ...error.backendErrors].join(' – ')
     useErrorHandler(error as Error)
     return null
   }
@@ -524,7 +181,14 @@ const rssSubscribe = async (url: string) => {
 
 // Search
 
+const federationError = ref()
+
 const search = async () => {
+  // We are searching for RSS or for federated objects only. Fetches for other objects are handled by rstore.
+  // TODO: Now that we use imperative axios calls only for the POST operations, the abstraction
+  // into a list makes no sense any more. We'll see how the backend develops (GET for rss and fetches),
+  // and the rstore plugin will support POST, PATCH etc. at some point
+  if (availableCategories.value.length == 0) return;
 
   // Close if query is empty
   if (trimmedQuery.value.length < 1) {
@@ -532,39 +196,12 @@ const search = async () => {
     return
   }
 
-  const params = new URLSearchParams({
-    q: queryDebounced.value,
-    ...(openCategories.value && 'params' in openCategories.value && openCategories.value.params
-      ? openCategories.value.params
-      : {}
-    )
-  })
-
   // Only query category that are open / available. Omit duplicate queries (`uniqBy`).
-  const categories
-    = uniqBy(
-      openCategories.value.length > 0
-        ? openCategories.value
-        : availableCategories.value,
-      (category => category.endpoint + ('params' in category && JSON.stringify(category.params)))
-    )
 
   isLoading.value = true
 
-  for (const category of categories) {
+  for (const category of availableCategories.value) {
     try {
-      if (category.endpoint === '/search') {
-        const response = await axios.get<Response[typeof category.type]>(
-          category.endpoint,
-          { params }
-        )
-        // Store the four search results
-        results.value = {
-          ...results.value,
-          ...response.data
-        }
-        responses.value[category.type] = response.data
-      } else {
         // TODO: add (@)type key to Response type
         if (category.type === 'rss') {
           const channel = await rssSubscribe(trimmedQuery.value)
@@ -579,41 +216,17 @@ const search = async () => {
           results.value.type = category.type
           results.value.federation = [response.data]
           responses.value[category.type] = response.data
-        } else if (category.type === 'playlists') {
-          const response = await axios.get<Response['playlists']>(
-            category.endpoint,
-            { params }
-          )
-          results.value.type = category.type
-          results.value.playlists = response.data.results
-          responses.value[category.type] = response.data
-        } else if (category.type === 'podcasts') {
-          const response = await axios.get<Response['podcasts']>(
-            category.endpoint,
-            { params }
-          )
-          results.value.type = category.type
-          results.value.podcasts = response.data.results
-          responses.value[category.type] = response.data
-        } else if (category.type === 'radios') {
-          const response = await axios.get<Response['radios']>(
-            category.endpoint,
-            { params }
-          )
-          results.value.type = category.type
-          results.value.radios = response.data.results
-          responses.value[category.type] = response.data
-        } else if (category.type === 'series') {
-          const response = await axios.get<Response['series']>(
-            category.endpoint,
-            { params }
-          )
-          results.value.type = category.type
-          results.value.series = response.data.results
-          responses.value[category.type] = response.data
+
+          // Interesting: If a federation url is empty, the request returns the local user, but with status errored.
+
+          if (response.data.status === 'errored') {
+            //@ts-expect-error TODO: type this correctly
+            federationError.value=response?.data?.detail?.message
+          }
         }
-      }
     } catch (error) {
+      //@ts-expect-error TODO: type this correctly
+      federationError.value=[error?.message, ...(error?.backendErrors || [])].join(' – ')
       useErrorHandler(error as Error)
     }
 
@@ -623,183 +236,577 @@ const search = async () => {
 
 // Configure the radio
 
-const radioConfig = computed<RadioConfig | null>(() =>
-  count({ type: 'tags' }) > 0
-    ? ({
-      type: 'tag',
-      names: resultsPerCategory({ type: 'tags' })
-        .map((({ name }) => name))
-    })
-    : count({ type: 'playlists' }) > 0
-      ? ({
-          type: 'playlist',
-          ids: resultsPerCategory({ type: 'playlists' }).map(({ uuid }) => uuid.toString())
-        })
-      : count({ type: 'artists' }) > 0
-        ? ({
-          type: 'artist',
-          ids: resultsPerCategory({ type: 'artists' }).map(({ id }) => id.toString())
-        })
-        : null
-)
+// const radioConfig = computed<RadioConfig | null>(() =>
+//   count({ type: 'tags' }) > 0
+//     ? ({
+//       type: 'tag',
+//       names: resultsPerCategory({ type: 'tags' })
+//         .map((({ name }) => name))
+//     })
+//     : count({ type: 'playlists' }) > 0
+//       ? ({
+//           type: 'playlist',
+//           ids: resultsPerCategory({ type: 'playlists' }).map(({ uuid }) => uuid.toString())
+//         })
+//       : count({ type: 'artists' }) > 0
+//         ? ({
+//           type: 'artist',
+//           ids: resultsPerCategory({ type: 'artists' }).map(({ id }) => id.toString())
+//         })
+//         : null
+// )
 
 // Start the search
 
-watch(queryDebounced, search, { immediate: true })
+watchDebounced(queryDebounced, search, {
+  debounce: 1000, maxWait: 10000, immediate: true
+})
 </script>
 
 <template>
+  <div
+    v-element-bounding="[setBoundingBox('outer'), { updateTiming: 'sync', immediate: true }]"
+    :class="[$style.placeholder, 'secondary raised interactive solid']"
+  />
   <Modal
     v-model="isOpen"
-    over-popover
     autofocus="off"
     title=""
     maximize-size
   >
-    <!-- <input
-      v-model="myPageSize"
-      type="number"
-      step="1"
-      max="3"
-      value="1"
-    >
-    <pre>{{ album?.length }} should be {{ myPageSize }}</pre>
-    <hr >
-    <pre>
-        {{ idsPerParams }}
-    </pre>
-    <pre>{{ rStore.$cache.getState() }}</pre> -->
     <template #topleft>
-      <Input
-        v-model="query"
-        raised
-        :autofocus="openCategories.length===0"
-        icon="bi-search"
-        style="flex-grow: 1"
+      <!-- The following is a placeholder for the original input element and contributes only its position and dimensions-->
+      <div
+        v-element-bounding="[setBoundingBox('inner'), { updateTiming: 'sync', immediate: true }]"
+        :class="[$style.placeholder, 'secondary raised interactive solid']"
+        style="opacity: 0; position: relative; top: -4px;"
       />
-      <RadioButton
+      <!-- <RadioButtona
         v-if="radioConfig"
         class="ui right floated medium button"
         type="custom_multiple"
         :radio-config="radioConfig"
-      />
+      /> -->
     </template>
-
-    <Loader v-if="isLoading" />
 
     <template
-      v-for="category in availableCategories"
-      :key="category.type + isCategoryQueried(category)"
+      v-if="isFetch"
+      #default
     >
-      <Spacer size-64 />
+      <Spacer size-46 />
       <Section
-        align-left
         :columns-per-item="3"
-        :h3="category.label"
+        align-left
       >
-        <!-- Categories that have one list-style item -->
-
-        <TrackTable
-          v-if="category.type === 'tracks'"
-          style="grid-column: 1 / -1"
-          :tracks="resultsPerCategory(category)"
-        />
-        <TagsList
-          v-else-if="category.type === 'tags'"
-          style="grid-column: 1 / -1"
-          :truncate-size="200"
-          :limit="category.params.page_size"
-          :tags="(resultsPerCategory(category)).map(t => t.name)"
-        />
-
-        <!-- Categories that show individual cards -->
-        <template
-          v-for="(_, index) in (resultsPerCategory(category))"
-          :key="category.type + index"
+        <Card
+          full
+          red
+          :title="t('views.Search.header.remote')"
         >
-          <ArtistCard
-            v-if="(category.type === 'artists' || category.type === 'podcasts')"
-            :artist="resultsPerCategory(category)[index]!"
-          />
-
-          <AlbumCard
-            v-else-if="category.type === 'albums' || category.type === 'series'"
-            :album="resultsPerCategory(category)[index]!"
-          />
-
-          <PlaylistCard
-            v-else-if="category.type === 'playlists'"
-            :playlist="resultsPerCategory(category)[index]!"
-          />
-
-          <RadioCard
-            v-else-if="category.type === 'radios'"
-            type="custom"
-            :custom-radio="resultsPerCategory(category)[index]"
-          />
-        </template>
-
-        <template v-if="category.type === 'rss' && count(category) > 0">
-          <Alert
-            blue
-            style="grid-column: 1 / -1"
-          >
-            {{ t('modals.search.tryAgain') }}
-          </Alert>
-          <channel-card
-            v-if="results.rss && results.rss[0]"
-            :key="results.rss[0].uuid"
-            :object="results.rss[0]"
-          />
-        </template>
-
-        <span v-else-if="category.type === 'federation' && count(category) > 0">
           <template
-            v-for="result in resultsPerCategory(category)"
-            :key="result.id"
+            v-if="federationError"
+            #alert
           >
-            <ActorLink
-              v-if="result.object && result.type === 'account'"
-              :actor="result.object as components['schemas']['APIActor']"
-            />
-            <ChannelCard
-              v-else-if="result.object && result.type === 'channel'"
-              :object="result.object as components['schemas']['Channel']"
-            />
-            <ArtistCard
-              v-else-if="result.object && result.type === 'artist'"
-              :artist="result.object as components['schemas']['Artist']"
-            />
-            <AlbumCard
-              v-else-if="result.object && result.type === 'album'"
-              :album="result.object as components['schemas']['Album']"
-            />
-            <PlaylistCard
-              v-else-if="result.object && result.type === 'playlist'"
-              :playlist="result.object as components['schemas']['Playlist']"
-            />
-            <TrackTable
-              v-else-if="result.object && result.type === 'track'"
-              :tracks="[result.object] as components['schemas']['Track'][]"
-            />
+            {{ federationError }}
           </template>
-        </span>
-
-        <EmptyState
-          v-if="count(category) === 0"
-          style="grid-column: 1 / -1"
-          :refresh="true"
-          @refresh="search"
-        />
-        <Link
-          v-else-if="'more' in category"
-          solid
-          secondary
-          :to="category.more"
+          <Loader v-if="isLoading" />
+          <EmptyState
+            v-else-if="count({type: 'federation'}) === 0"
+            :refresh="true"
+            @refresh="search"
+          />
+        </Card>
+        <template
+          v-for="result in resultsPerCategory({type: 'federation'})"
+          :key="result.id"
         >
-          {{ t('components.Home.link.viewMore') }}
-        </Link>
+          <ActorLink
+            v-if="result.object && result.type === 'account'"
+            :actor="result.object as components['schemas']['APIActor']"
+          />
+          <ChannelCard
+            v-else-if="result.object && result.type === 'channel'"
+            :object="result.object as components['schemas']['Channel']"
+          />
+          <ArtistCard
+            v-else-if="result.object && result.type === 'artist'"
+            :artist="result.object as components['schemas']['Artist']"
+          />
+          <AlbumCard
+            v-else-if="result.object && result.type === 'album'"
+            :album="result.object as components['schemas']['Album']"
+          />
+          <PlaylistCard
+            v-else-if="result.object && result.type === 'playlist'"
+            :playlist="result.object as components['schemas']['Playlist']"
+          />
+          <TrackTable
+            v-else-if="result.object && result.type === 'track'"
+            :tracks="[result.object] as components['schemas']['Track'][]"
+          />
+        </template>
       </Section>
     </template>
+    <template
+      v-else-if="isRss"
+      #default
+    >
+      <channel-card
+        v-if="results.rss && results.rss[0]"
+        :key="results.rss[0].uuid"
+        :object="results.rss[0]"
+      />
+      <Card
+        v-if="rssError"
+        full
+        red
+        :title="t('views.Search.header.rss')"
+      >
+        <template #alert>
+          {{ rssError }}
+        </template>
+      </Card>
+    </template>
+    <template
+      v-else
+      #default="{ columns, cardsPerRow }"
+    >
+      <Spacer size-46 />
+
+      <!-- DEBUG: CACHE -->
+
+      <!-- <pre :key="allCaches.map(m=>Array.from(m).join('')).join('')">
+      {{ allCaches[0] }}
+      </pre> -->
+
+      <!-- Artists -->
+
+      <Section
+        v-for="{ state, refetch } in [useQuery.artists({
+          q: query,
+          page: 1,
+          page_size: cardsPerRow() - 1,
+          contentCategory: 'music',
+          includeChannels: 'true'
+        })()]"
+        :key="state?.value.status"
+        :columns-per-item="3"
+        :action="{
+          text: 'refresh',
+          icon: 'bi-arrow-clockwise',
+          onClick: refetch as () => void
+        }"
+        align-left
+      >
+        <Card
+          :title="t('artists', state?.value.data?.count || 0)"
+          :to="{name: 'library.artists.browse', query: { query }}"
+          category
+          small
+          flat
+          yellow
+          solid
+        >
+          <Alert v-if="state?.value.error">
+            {{ state.value.error }}
+          </Alert>
+          <template #footer>
+            <Spacer grow />
+            <Loader v-if="state?.value.status==='pending'" />
+            <label>
+              {{ t('components.Home.link.viewMore') }}
+            </label>
+          </template>
+        </Card>
+
+        <ArtistCard
+          v-for="(artist) in state.value.data?.results"
+          :key="getKey(artist)"
+          :artist
+        />
+      </Section>
+
+      <Spacer size-46 />
+
+      <!-- Albums -->
+
+      <Section
+        v-for="({ loading, error, data, refresh }, key)
+          in [rStore.albums.queryMany(() => ({ filter: {
+            q: query,
+            page: 1,
+            page_size: cardsPerRow() - 1,
+            playable:'true',
+            contentCategory: 'music',
+            includeChannels: 'true'
+          }}))]"
+        :key
+        :columns-per-item="3"
+        :action="{
+          text: 'refresh',
+          icon: 'bi-arrow-clockwise',
+          onClick: refresh as () => void
+        }"
+        align-left
+      >
+        <Card
+          :title="t('albums', data.value[0]?.totalResults || 0)"
+          :to="{name: 'library.albums.browse', query: { query }}"
+          category
+          small
+          flat
+          blue
+          solid
+        >
+          <Alert v-if="error.value">
+            {{ error.value }}
+          </Alert>
+          <template #footer>
+            <Spacer grow />
+            <Loader v-if="loading.value || !loading" />
+            <label>
+              {{ t('components.Home.link.viewMore') }}
+            </label>
+          </template>
+        </Card>
+
+        <AlbumCard
+          v-for="(album) in data.value"
+          :key="getKey(album)"
+          :album
+        />
+      </Section>
+
+      <Spacer size-46 />
+
+      <!-- Tracks -->
+
+      <Section
+        v-for="({ loading, error, data, refresh }, key)
+          in [rStore.tracks.queryMany(() => ({ filter: {
+            q: query,
+            page: 1,
+            page_size: 4,
+          }}))]"
+        :key
+        :columns-per-item="3"
+        :action="{
+          text: 'refresh',
+          icon: 'bi-arrow-clockwise',
+          onClick: refresh as () => void
+        }"
+        align-left
+      >
+        <Card
+          :title="t('tracks', data.value[0]?.totalResults || 0)"
+          category
+          small
+          flat
+          green
+          solid
+          :style="`grid-column: 1 / ${columns > 10 ? 4 : -1}`"
+        >
+          <Alert v-if="error.value">
+            {{ error.value }}
+          </Alert>
+          <template #footer>
+            <Spacer grow />
+            <Loader v-if="loading.value || !loading" />
+          </template>
+        </Card>
+
+        <TrackTable
+          :tracks="data.value"
+          :style="`grid-column: ${columns > 10 ? 4 : 1} / -1`"
+        />
+      </Section>
+      <Spacer size-46 />
+
+      <!-- Tags -->
+
+      <!-- TODO: `Tracks` and `Tags` have no global pages in the sidebar.
+      So the user has no way to see all when searching.
+      If this is an actual use case, I see 2 ways to implement it easily:
+         (a) Button `load more` increases items-per-page
+         (b) Use pagination (page and page_size stored in query params
+               `tags_page` and `tags_page_size`) with Pagination component
+         -->
+
+      <Section
+        v-for="({ loading, error, data, refresh }, key)
+          in [rStore.tags.queryMany(() => ({ filter: {
+            q: query,
+            page: 1,
+            page_size: 20,
+          }}))]"
+        :key
+        :columns-per-item="3"
+        :action="{
+          text: 'refresh',
+          icon: 'bi-arrow-clockwise',
+          onClick: refresh as () => void
+        }"
+        align-left
+      >
+        <Card
+          :title="t('tags', data.value[0]?.totalResults || 0)"
+          category
+          small
+          flat
+          secondary
+          solid
+        >
+          <Alert v-if="error.value">
+            {{ error.value }}
+          </Alert>
+          <template #footer>
+            <Spacer grow />
+            <Loader v-if="loading.value || !loading" />
+          </template>
+        </Card>
+
+        <TagsList
+          :style="`grid-column: ${columns > 3 ? 4 : 1} / -1`"
+          :truncate-size="200"
+          :limit="20"
+          :tags="data.value?.map(t => t.name)"
+        />
+      </Section>
+
+      <Spacer size-46 />
+
+      <!-- Playlists -->
+
+      <Section
+        v-for="({ loading, error, data, refresh }, key)
+          in [rStore.playlists.queryMany(() => ({ filter: {
+            q: query,
+            page: 1,
+            page_size: cardsPerRow() - 1,
+          }}))]"
+        :key
+        :columns-per-item="3"
+        :action="{
+          text: 'refresh',
+          icon: 'bi-arrow-clockwise',
+          onClick: refresh as () => void
+        }"
+        align-left
+      >
+        <Card
+          :title="t('playlists', data.value[0]?.totalResults || 0)"
+          :to="{name: 'library.playlists.browse', query: { query }}"
+          category
+          small
+          flat
+          purple
+          solid
+        >
+          <Alert v-if="error.value">
+            {{ error.value }}
+          </Alert>
+          <template #footer>
+            <Spacer grow />
+            <Loader v-if="loading.value || !loading" />
+            <label>
+              {{ t('components.Home.link.viewMore') }}
+            </label>
+          </template>
+        </Card>
+
+        <PlaylistCard
+          v-for="(playlist) in data.value"
+          :key="getKey(playlist)"
+          :playlist
+        />
+      </Section>
+
+      <Spacer size-46 />
+
+      <!-- Radios -->
+
+      <Section
+        v-for="({ loading, error, data, refresh }, key)
+          in [rStore['radios/radios'].queryMany(() => ({ filter: {
+            q: query,
+            page: 1,
+            page_size: cardsPerRow() - 1,
+          }}))]"
+        :key
+        :columns-per-item="3"
+        :action="{
+          text: 'refresh',
+          icon: 'bi-arrow-clockwise',
+          onClick: refresh as () => void
+        }"
+        align-left
+      >
+        <Card
+          :title="t('radios', data.value[0]?.totalResults || 0)"
+          :to="{name: 'library.radios.browse', query: { query }}"
+          category
+          small
+          flat
+          red
+          solid
+        >
+          <Alert v-if="error.value">
+            {{ error.value }}
+          </Alert>
+          <template #footer>
+            <Spacer grow />
+            <Loader v-if="loading.value || !loading" />
+            <label>
+              {{ t('components.Home.link.viewMore') }}
+            </label>
+          </template>
+        </Card>
+
+        <RadioCard
+          v-for="(radio) in data.value"
+          :key="getKey(radio)"
+          type="custom"
+          :custom-radio="radio"
+        />
+      </Section>
+
+      <Spacer size-46 />
+
+      <!-- Podcasts -->
+
+      <Section
+        v-for="({ loading, error, data, refresh }, key)
+          in [rStore['artists'].queryMany(() => ({ filter: {
+            q: query,
+            contentCategory: 'podcast',
+            includeChannels: 'true',
+            page: 1,
+            page_size: cardsPerRow() - 1,
+          }}))]"
+        :key
+        :columns-per-item="3"
+        :action="{
+          text: 'refresh',
+          icon: 'bi-arrow-clockwise',
+          onClick: refresh as () => void
+        }"
+        align-left
+      >
+        <Card
+          :title="t('podcasts', data.value[0]?.totalResults)"
+          :to="{name: 'library.podcasts.browse', query: { query }}"
+          category
+          small
+          flat
+          primary
+          solid
+        >
+          <Alert v-if="error.value">
+            {{ error.value }}
+          </Alert>
+          <template #footer>
+            <Spacer grow />
+            <Loader v-if="loading.value || !loading" />
+            <label>
+              {{ t('components.Home.link.viewMore') }}
+            </label>
+          </template>
+        </Card>
+
+        <ArtistCard
+          v-for="(artist) in data.value"
+          :key="getKey(artist)"
+          :artist
+        />
+      </Section>
+
+      <Spacer size-46 />
+
+      <!-- Series -->
+
+      <!-- <Section
+        v-for="({ loading, error, data, refresh }, key)
+          in [rStore['albums'].queryMany(() => ({ filter: {
+            q: query,
+            contentCategory: 'podcast',
+            includeChannels: 'true',
+            page: 1,
+            page_size: cardsPerRow() - 1,
+          }}))]"
+        :key
+        :columns-per-item="3"
+        :action="{
+          text: 'refresh',
+          icon: 'bi-arrow-clockwise',
+          onClick: refresh as () => void
+        }"
+        align-left
+      >
+        <Card
+          :title="t('series', data.value[0]?.totalResults)"
+          category
+          small
+          flat
+          primary
+          raised
+          solid
+        >
+          <Alert v-if="error.value">
+            {{ error.value }}
+          </Alert>
+          <template #footer>
+            <Spacer grow />
+            <Loader v-if="loading.value || !loading" />
+          </template>
+        </Card>
+
+        <AlbumCard
+          v-for="(album) in data.value"
+          :key="getKey(album)"
+          :album
+        />
+      </Section> -->
+    </template>
   </Modal>
+
+  <Teleport to="body">
+    <div
+      :style="isOpen ? style.inner : style.outer"
+      :class="[$style.input, 'solid secondary']"
+    >
+      <Input
+        ref="globalSearchInput"
+        v-model="query"
+        raised
+        autocomplete="search"
+        type="search"
+        icon="bi-search"
+        :placeholder="t('components.audio.SearchBar.placeholder.search')"
+        :autofocus="isOpen || undefined"
+      />
+    </div>
+  </Teleport>
 </template>
+
+<style module>
+.placeholder {
+    position: relative;
+    top: 0;
+    flex-grow: 1;
+    border: none;
+    border-radius: 8px;
+    height: 48px;
+    flex-shrink: 0;
+    opacity: .2;
+    transition: all .2s;
+}
+.input.input.input {
+    height: 48px;
+    z-index: 99999;
+    position: fixed;
+    &> * {
+        z-index: 99999;
+    }
+    transition: width .2s, top .3s, left .4s;
+}
+</style>
