@@ -1,24 +1,19 @@
 import type { paths } from '~/generated/types'
 
-import { ref } from 'vue'
 import { definePlugin } from '@rstore/vue'
 
 import axios from 'axios'
 import hash from 'stable-hash'
 
 import useLogger from '~/composables/useLogger'
+import { useRateLimiter, isRateLimiterError } from './useRateLimiter'
+import { useCache } from './useCache'
+
+// TODO: Do not return an empty list from the cache if query has not yet been fetched (then we get no loading state)
 
 const logger = useLogger()
 
 import { type Name, type Item, getKey } from './model.ts'
-
-/** Debouncing (Rate limiting) for individual query parameters such as
-search term, pagination and ordering.
-This is the time the cache retains a specific query before re-fetching if.
-For example, if the user clicks "refresh" three times within this period,
-the fetch will happen twice: once at the start of the period and once at the end.
-*/
-const waitTimeBetweenFetches = 1000;
 
 // Paginated lists
 type PathMany<N extends Name> = `/api/v2/${N}/` // Has trailing slash in API
@@ -29,56 +24,44 @@ type KeyType<N extends Name> = N extends 'albums' ? 'albums/{id}' : N extends 'c
 type PathFirst<N extends Name> = `/api/v2/${KeyType<N>}/` // Has trailing slash in API
 type GetFirstResponse<N extends Name> = paths[PathFirst<N>]['get']['responses'][200]['content']['application/json']
 
+// API request rate is limited and stale requests are skipped
+
+/**Global rate limiting for any Api call */
+const rateLimiter = useRateLimiter<[Name, object | undefined]>({
+  // Minimum waiting time between consecutive calls
+  cooldown: 500,
+
+  // While the user is typing in a search field, only send the last call generated during a cooldown period
+  supersedeWhen: ([newName, newFilter], [oldName, oldFilter]) =>
+    newName === oldName && newFilter !== undefined && oldFilter !== undefined,
+
+  // Use `hash` can normalize and compare objects deeply.
+  equalWhen: (newTask, oldTask) =>
+    hash(newTask) === hash(oldTask)
+})
+
+// Search requests are cached and expire after 1 minute
+
 /** Stores the latest sorted search/pagination results for each request.
+ * This is necessary because we only model final types in rstore (TODO: model search results)
 Note that paths are compressed to names, and items to id,
 mirroring the equality rules in the normalized _rstore_.
 In addition, we normalize and hash the params to remove variations in
-field order and to make JS compare them by value
+field order and to make JS compare them by value.
 */
-export const idsPerParams = ref<Map<string, { keys: string[], lastUpdated: number, scheduledForUpdate: boolean }>>(new Map())
 
-/** No ids, never updated */
-const initialValue = { keys: [], lastUpdated: 0, scheduledForUpdate: false }
+/** We have to cache search results (as lists of item keys) because we cannot reproduce search locally (yet) */
+const cache = useCache<string, string[]>({
+  retention: 60000
+});
 
-/** @returns true if item of `type` with `key` has been found by backend given `params` */
-const isAssociated = (type: Name, params: object = {}) =>
-  (key: string) =>
-    idsPerParams.value.get(hash([type, params]))?.keys?.includes(key)
-
-/** @returns backend-sorted index  of item of `type` with `key` given `params` */
-export const index = (type: Name, params: object = {}) =>
-  (key: string) =>
-    idsPerParams.value.get(hash([type, params]))?.keys?.indexOf(key)
-
-/** Associate a search/pagination request with its sorted results list and remove the `scheduledForUpdate` lock */
-const update = (type: Name, params: object = {}) =>
-  (results: Item[]) => {
-    idsPerParams.value.set(hash([type, params]), { keys: results.map(getKey), lastUpdated: Date.now(), scheduledForUpdate: false })
-  }
-
-/** Mark the call as scheduled, for example to debounce or throttle fetches*/
-const markAsScheduledForUpdate = (type: Name, params: object = {}) => {
-  const lookupKey = hash([type, params]);
-  const currentValue = idsPerParams.value.get(lookupKey) ?? initialValue
-  idsPerParams.value.set(lookupKey, { ...currentValue, scheduledForUpdate: true })
-}
-
-/** @returns 'stale' if older than maxAge, 'scheduledForUpdate' if an update will happen soon, or the milliseconds until maxAge will be reached if fresh */
-const freshness = (type: Name, params: object = {}) =>
-  (maxAge: number) => {
-    const { lastUpdated, scheduledForUpdate } = idsPerParams.value.get(hash([type, params])) ?? { lastUpdated: 0, scheduledForUpdate: false }
-    // console.log("        DO  scheduledForUpdate? ", scheduledForUpdate)
-    // console.log("        DO  stale? ", lastUpdated + maxAge, '<', Date.now(), lastUpdated + maxAge < Date.now())
-    // console.log("        DO  fresh? ", lastUpdated + maxAge - Date.now(), 'of remaining ms; <', maxAge)
-    return scheduledForUpdate
-      ? 'scheduledForUpdate'
-      : lastUpdated + maxAge < Date.now()
-        ? 'stale'
-        : lastUpdated + maxAge - Date.now()
-  }
-
-const sleep = (ms: number) =>
-  new Promise(resolve => setTimeout(resolve, ms));
+/**
+ * @param name: The model name (Artist, Album, ...)
+ * @param filter: The search filter object used to reproduce search results locally
+ * @returns the keys of the items returned by the API
+ */
+const keysFor = (name: Name | string, filter: object | undefined) =>
+  cache(hash([name, filter]))
 
 export default definePlugin({
   name: 'funkwhale',
@@ -87,18 +70,14 @@ export default definePlugin({
 
     /** Ask the cache for the first match for a given query/key per modelName */
     hook('cacheFilterFirst', ({ key, findOptions, model, readItemsFromCache, setResult }) => {
-      console.log('DO cacheFilterFirst', model.name, "🔍", JSON.stringify(findOptions?.filter))
 
-      const matchingKey = (item: Item) =>
-        key
-          ? key === getKey(item)
-          : true
+      const matchingKey = (item: Item) => key
+        ? key === getKey(item)
+        : true
 
       const matchingParams = (item: Item) =>
-        findOptions
-          ? isAssociated(model.name as Name, findOptions?.filter)(getKey(item))
-          : true
-
+        keysFor(model.name, findOptions?.filter)?.value?.includes(getKey(item))
+        || true
       const itemsInCache = readItemsFromCache()
 
       if (itemsInCache) {
@@ -111,11 +90,9 @@ export default definePlugin({
       }
     })
 
-    /** Ask the server for the first match for a given query/key per modelName
-
-    TODO: Implement debouncing (rate-limiting) for first-match fetches
-    */
+    /** Ask the server for the first match for a given query/key per modelName */
     hook('fetchFirst', async ({ key, findOptions, setResult, model }) => {
+
       try {
         const response = await axios.get<GetFirstResponse<Name>>(
           `${model.name}/${key}`,
@@ -132,55 +109,82 @@ export default definePlugin({
 
     /** Ask the cache for the ordered matches for a given query per modelName */
     hook('cacheFilterMany', ({ findOptions, getResult, setResult, model }) => {
-      const matchingParams = (item: Item) =>
-        findOptions
-          ? isAssociated(model.name as Name, findOptions.filter)(getKey(item))
-          : true
+      console.log("cacheFilterMany ----------", model.name, "---------------")
+      const cachedItems = getResult() // List of items
 
-      const cachedItems = getResult()
+      const keys = keysFor(model.name, findOptions?.filter)?.value
 
-      if (cachedItems) {
-        setResult(cachedItems.filter(matchingParams))
+      console.log("cacheFilterMany XXX", model.name, findOptions?.filter)
+      console.log("cacheFilterMany XXX cached items", model.name, cachedItems)
+      console.log("cacheFilterMany XXX keys in cache", model.name, keys)
+
+      if (keys && cachedItems) {
+        const filteredCachedItems = cachedItems.filter(
+          item => keys.includes(getKey(item))
+        )
+
+        console.log("cacheFilterMany XXX setResult(filteredCachedItems):", model.name, filteredCachedItems)
+        setResult(filteredCachedItems)
+      } else {
+
+        console.log("cacheFilterMany XXX failed", model.name)
+
       }
     })
 
-    /** Ask the server for the ordered matches for a given query per modelName, and associate the name/params tuple with the response
+    /** Ask the server for the ordered matches for a given query per modelName,
+     * and associate the name/params tuple with the response */
+    hook('fetchMany', async ({ findOptions, setResult, model, getResult }) => {
+      console.log("fetchMany ----------", model.name, "---------------")
+      console.log("fetchMany XXX...", model.name, findOptions?.filter)
 
-    Note that fetches are debounced (rate-limited), so manual refreshes may be delayed
-    */
-    hook('fetchMany', async ({ findOptions, setResult, model }) => {
+      try {
+        await rateLimiter.greenlight([model.name as Name, findOptions?.filter])
 
-      // Debounce
-      const freshness_ = freshness(model.name as Name, findOptions?.filter)(waitTimeBetweenFetches);
+        console.log("fetchMany XXX...greenlit", model.name, findOptions?.filter)
 
-      const fetchNow = async () => {
-        try {
-          const paginatedResponse = await axios.get<GetPaginatedResponses<Name>>(
-            model.name,
-            { params: findOptions?.filter }
-          );
-          update(model.name as Name, findOptions?.filter)(paginatedResponse.data.results)
-          if (paginatedResponse.data.results) {
-            setResult(paginatedResponse.data.results);
-          }
-        } catch (error) {
-          logger.error(`Error fetching multiple ${model.name} with filter/params ${JSON.stringify(findOptions?.filter)}:`, error);
+        const paginatedResponse = await axios.get<GetPaginatedResponses<Name>>(
+          model.name,
+          { params: findOptions?.filter }
+        )
+
+        console.log("fetchMany XXX...fetched", model.name, findOptions?.filter)
+
+        const { results, count } = paginatedResponse.data
+
+        console.log("fetchMany XXX results", model.name, results)
+        console.log("fetchManyXXX count", model.name, count)
+
+        setResult(results.map(r => ({
+          ...r,
+          totalResults: count
+        })));
+
+        console.log("fetchMany XXX result is set", model.name)
+
+        // Update the cache of filters
+
+        keysFor(model.name, findOptions?.filter).value = results.map(getKey)
+
+        console.log("cache updated with", model.name, findOptions?.filter, "=>",  results.map(getKey))
+
+      } catch (error) {
+
+        console.log("fetchMany XXX...fetch errored", model.name, error)
+
+        if (isRateLimiterError(error as Error)) logger.info(error)
+        else logger.error(`Error fetching multiple ${model.name} with filter/params ${JSON.stringify(findOptions?.filter)}:`, error);
+
+        console.log("fetchMany XXX getResults instead of setResults", model.name, getResult())
+
+        // I don't know if the following is necessary... yes it is. Otherwise, findMany.ts:128 'item is undefined'
+        if (getResult() === undefined) {
+          setResult([])
         }
       }
-
-      switch (freshness_) {
-        case 'scheduledForUpdate':
-          break;
-        case 'stale':
-          markAsScheduledForUpdate(model.name as Name, findOptions?.filter);
-          await fetchNow();
-          break;
-        default:
-          markAsScheduledForUpdate(model.name as Name, findOptions?.filter)
-          await sleep(freshness_);
-          await fetchNow();
-      }
     })
+
+    /* Mutations */
 
     // TODO: Implement!
     hook('createItem', async (payload) => {

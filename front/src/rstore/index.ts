@@ -33,8 +33,6 @@ export async function rstore(app: App) {
     }
   })
 
-  store.$cache.clear()
-
   app.provide(injectStoreKey, store)
 }
 

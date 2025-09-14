@@ -16,16 +16,17 @@ Note: The search endpoint is not in use. Instead, use param `q` in other endpoin
 TODO: Describe relations (perhaps wait for OpenAPI plugin)
 */
 export const models = [
+  defineItemType<components['schemas']['ArtistWithAlbums']>().model({ name: 'artists', getKey }),
   defineItemType<components['schemas']['Album']>().model({ name: 'albums', getKey }),
   defineItemType<components['schemas']['Channel']>().model({ name: 'channels', getKey }),
   defineItemType<components['schemas']['Track']>().model({ name: 'tracks', getKey }),
   defineItemType<components['schemas']['Playlist']>().model({ name: 'playlists', getKey }),
-  defineItemType<components['schemas']['Radio']>().model({ name: 'radios', getKey }),
-  defineItemType<components['schemas']['Tag']>().model({ name: 'tags', getKey }),
+  defineItemType<components['schemas']['Radio']>().model({ name: 'radios/radios', getKey }),
+  defineItemType<components['schemas']['Tag']>().model({ name: 'tags', getKey })
 ] as const satisfies
   ModelList satisfies
   // Assert that the name is always the third segment in the API path:
-  { name: Exclude<Split<keyof paths, '/'>[3], 'search'> }[]
+  { name: Exclude<Split<keyof paths, '/'>[3], 'search'> | 'radios/radios' }[]
 
 export type Name = typeof models[number]['name']
 export type Item = typeof models[number]['~item']
