@@ -430,6 +430,16 @@ const sections = ref([false, false, false])
   />
 </Section>
 
+## Add a badge
+
+- Add `badge="loading"` to show a spinner after the heading
+- Add `badge="1" to show an encircled number after the heading
+
+<Section
+  h1="Heading"
+  badge="1"
+/>
+
 ## Responsivity
 
 - Cards and Activities snap to the grid columns. They have intrinsic widths, expressed in the number of columns they span. For `Card`, it is `3` and for `Activity`, it is `4`.

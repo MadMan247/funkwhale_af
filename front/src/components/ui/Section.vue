@@ -8,12 +8,14 @@ import Spacer from '~/components/ui/Spacer.vue'
 import Button from '~/components/ui/Button.vue'
 import Link from '~/components/ui/Link.vue'
 import Heading from '~/components/ui/Heading.vue'
+import Loader from '~/components/ui/Loader.vue'
 
 const props = defineProps<{
   columnsPerItem?: 1 | 2 | 3 | 4
   alignLeft?: boolean
   action?: { text: string, id?: string } & (ComponentProps<typeof Link> | ComponentProps<typeof Button>)
   icon?: string
+  badge?: 'loading' | number
 } & {
   [H in `h${ '1' | '2' | '3' | '4' | '5' | '6' }`]? : string
 } & {
@@ -113,6 +115,18 @@ const headingProps = computed(() =>
                 <i :class="['bi', icon]" />
               </div>
             </template>
+            <template
+              v-if="badge"
+              #after
+            >
+              <Loader v-if="badge==='loading'" />
+              <div
+                v-else
+                :class="['solid', $style.badge]"
+              >
+                {{ badge }}
+              </div>
+            </template>
           </Heading>
           <Spacer grow />
         </template>
@@ -174,6 +188,23 @@ const headingProps = computed(() =>
 </template>
 
 <style module lang="scss">
+.badge.badge.badge.badge {
+    font-weight: 1000;
+    border-radius: 100%;
+    height: 21px;
+    min-width: 21px;
+    display: inline-block;
+    font-size: 11px;
+    text-align: center;
+    vertical-align: text-top;
+    line-height: 20px;
+    pointer-events: none;
+    background-color: var(--color);
+    color: var(--background-color);
+    border: none;
+}
+
+
 // Thank you, css, for offering this weird alternative to !important
 header.left.left {
   justify-content: start;
