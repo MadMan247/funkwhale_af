@@ -7,6 +7,7 @@ import router from '~/router'
 import { rstore } from './rstore'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import { PiniaColada } from '@pinia/colada'
 
 import useLogger from '~/composables/useLogger'
 import useTheme from '~/composables/useTheme'
@@ -29,6 +30,15 @@ const pinia = createPinia()
 
 app.use(router)
 app.use(pinia)
+console.log('Installed Pinia')
+
+try {
+  app.use(PiniaColada, {})
+  console.log('Installed PiniaColada successfully')
+} catch (error) {
+  console.error('Failed to install PiniaColada:', error)
+}
+
 app.use(store, key)
 app.use(rstore)
 app.use(VueDOMPurifyHTML)
