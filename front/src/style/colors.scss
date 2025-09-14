@@ -105,7 +105,7 @@
 
     --hover-color: var(--fw-gray-800);
     --hover-background-color: var(--fw-beige-400);
-    --hover-border-color: var(--fw-gray-500);
+    --hover-border-color: var(--hover-background-color);
 
     --active-color: var(--fw-gray-900);
     --active-background-color: var(--fw-beige-600);
@@ -243,6 +243,7 @@
     --color: var(--fw-blue-900);
     --color-over-transparent: var(--background-color);
     --background-color: var(--fw-pastel-blue-1);
+    --hover-background-color: var(--fw-pastel-blue-2);
     &.raised,
     .action > button {
       --background-color: var(--fw-pastel-blue-2);
@@ -261,6 +262,7 @@
     --color: var(--fw-red-900);
     --color-over-transparent: var(--background-color);
     --background-color: var(--fw-pastel-red-2);
+    --hover-background-color: var(--fw-pastel-red-3);
     &.raised,
     .action > button {
       --background-color: var(--fw-pastel-red-2);
@@ -279,6 +281,7 @@
     --color: var(--fw-gray-970);
     --color-over-transparent: var(--background-color);
     --background-color: var(--fw-pastel-purple-1);
+    --hover-background-color: var(--fw-pastel-purple-2);
     &.raised,
     .action > button {
       --background-color: var(--fw-pastel-purple-2);
@@ -297,6 +300,7 @@
     --color: var(--fw-gray-900);
     --color-over-transparent: var(--background-color);
     --background-color: var(--fw-pastel-green-1);
+    --hover-background-color: var(--fw-pastel-green-2);
     &.raised,
     .action > button {
       --background-color: var(--fw-pastel-green-2);
@@ -315,6 +319,7 @@
     --color: var(--fw-gray-900);
     --color-over-transparent: var(--background-color);
     --background-color: var(--fw-pastel-yellow-1);
+    --hover-background-color: var(--fw-pastel-yellow-2);
     &.raised,
     .action > button {
       --background-color: var(--fw-pastel-yellow-2);
@@ -482,7 +487,9 @@
   .blue {
     --color: var(--fw-pastel-blue-1);
     --color-over-transparent: var(--background-color);
+    --hover-color: var(--fw-pastel-blue-2);
     --background-color: color-mix(in oklab, black 60%, var(--fw-pastel-blue-1));
+    --hover-background-color: color-mix(in oklab, var(--background-color) 83%, var(--hover-color));
     &.raised,
     .action > button {
       --background-color: color-mix(in oklab, black 65%, var(--fw-pastel-blue-2));
@@ -498,6 +505,8 @@
     --color: var(--fw-pastel-red-1);
     --color-over-transparent: var(--background-color);
     --background-color: color-mix(in oklab, black 60%, var(--fw-pastel-red-2));
+    --hover-color: var(--fw-pastel-red-3);
+    --hover-background-color: color-mix(in oklab, var(--background-color) 83%, var(--hover-color));
     &.raised,
     .action > button {
       --background-color: color-mix(in oklab, black 65%, var(--fw-pastel-red-2));
@@ -512,7 +521,9 @@
   .purple {
     --color: var(--fw-gray-100);
     --color-over-transparent: var(--background-color);
+    --hover-color: var(--fw-pastel-purple-1);
     --background-color: color-mix(in oklab, black 50%, var(--fw-pastel-purple-1));
+    --hover-background-color: color-mix(in oklab, var(--background-color) 83%, var(--hover-color));
     &.raised,
     .action > button {
       --background-color: color-mix(in oklab, black 61%, var(--fw-pastel-purple-2));
@@ -527,7 +538,9 @@
   .green {
     --color: var(--fw-pastel-green-1);
     --color-over-transparent: var(--background-color);
+    --hover-color: var(--fw-pastel-green-2);
     --background-color: color-mix(in oklab, black 55%, var(--fw-pastel-green-1));
+    --hover-background-color: color-mix(in oklab, var(--background-color) 83%, var(--hover-color));
     &.raised,
     .action > button {
       --background-color: color-mix(in oklab, black 60%, var(--fw-pastel-green-2));
@@ -542,7 +555,9 @@
   .yellow {
     --color: var(--fw-pastel-yellow-1);
     --color-over-transparent: var(--background-color);
+    --hover-color: var(--fw-pastel-yellow-3);
     --background-color: color-mix(in oklab, black 53%, var(--fw-pastel-yellow-3));
+    --hover-background-color: color-mix(in oklab, var(--background-color) 83%, var(--hover-color));
     &.raised,
     .action > button {
       --background-color: color-mix(in oklab, black 45%, var(--fw-pastel-yellow-3));
