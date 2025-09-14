@@ -12,10 +12,6 @@
     "pressKeyToAction": "Press {key} to {action}",
     "preview": "Preview",
     "resetTo": "Reset to {previousValue}",
-    "radio": "Radio",
-    "albums": "{n} album | {n} albums",
-    "tracks": "{n} track | {n} tracks",
-    "episodes": "{n} episode | {n} episodes",
     "by-user": "by {username}",
     "pagination": {
       "previous": "Previous",
@@ -54,6 +50,24 @@
       }
     }
   },
+  "artist": "Artist",
+  "artists": "No artists | 1 artist | {n} artists",
+  "album": "Album",
+  "albums": "No albums | 1 album | {n} albums",
+  "track": "Track",
+  "tracks": "No tracks | 1 track | {n} tracks",
+  "tag": "Tag",
+  "tags": "No tags | 1 tag | {n} tags",
+  "playlist": "Playlist",
+  "playlists": "No playlists | 1 playlist | {n} playlists",
+  "radio": "Radio",
+  "radios": "No radios | 1 radio | {n} radios",
+  "podcast": "Podcast",
+  "podcasts": "No podcasts | 1 podcast | {n} podcasts",
+  "serie": "Series",
+  "series": "No series | 1 series | {n} series",
+  "episode": "Episode",
+  "episodes": "No episodes | 1 episode | {n} episodes",
   "components": {
     "About": {
       "description": {

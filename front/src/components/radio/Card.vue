@@ -25,7 +25,7 @@ const { radio, small, ...cardProps } = defineProps<{
   >
     <template #image>
       <div class="cover-name">
-        {{ t('vui.radio') }}
+        {{ t('radio') }}
       </div>
     </template>
 
