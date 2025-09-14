@@ -3,8 +3,7 @@ import { type ColorProps, type DefaultProps, color } from '~/composables/color'
 import { watchEffect, ref, nextTick, computed } from 'vue'
 import onKeyboardShortcut from '~/composables/onKeyboardShortcut'
 import { useI18n } from 'vue-i18n'
-import { useWindowSize
- } from '@vueuse/core'
+import { useWindowSize } from '@vueuse/core'
 
 const { width: screenWidth } = useWindowSize
 ()
@@ -40,6 +39,21 @@ const maxWidth = computed(() =>
 
 const isOpen = defineModel<boolean>({ default: false })
 
+// maxWidth: the maximum width of the modal, given the current screen size
+const width = computed(() => {
+  const padding = 32, gap = 32, column= 46, minMargin=4
+  const maxColumnsPerScreen = Math.trunc((screenWidth.value - 2*padding -2*minMargin + gap) / (column + gap))
+
+  const maxNumberOfCards = props.maximizeSize ? 10 : 4
+  const cardsThatFitOnScreen = Math.trunc(maxColumnsPerScreen/3)
+
+  const columns = Math.min( maxNumberOfCards, cardsThatFitOnScreen)*3
+
+  const max = `${columns * column + (columns - 1) * gap + padding * 2}px`
+
+  return ({ columns, max })
+},{ immediate: true })
+
 const previouslyFocusedElement = ref()
 
 // Handle focus and inertness of the elements behind the modal
@@ -47,7 +61,9 @@ watchEffect(() => {
   if (isOpen.value) {
     nextTick(() => {
       previouslyFocusedElement.value = document.activeElement
-      previouslyFocusedElement.value?.blur()
+      if(props.autofocus !== 'off'){
+        previouslyFocusedElement.value?.blur()
+      }
       document.querySelector('#app')?.setAttribute('inert', 'true')
     })
   } else {
@@ -64,7 +80,7 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
 
 <template>
   <Teleport to="body">
-    <Transition mode="out-in">
+    <Transition>
       <div
         v-if="isOpen"
         class="funkwhale overlay"
@@ -141,7 +157,11 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
               </div>
             </Transition>
 
-            <slot />
+            <slot
+              :columns="width.columns"
+              :cards-per-row="(numberOfColumns = 3)=> Math.trunc(width.columns/numberOfColumns)"
+              :activities-per-row="(numberOfColumns = 4)=> Math.trunc(width.columns/numberOfColumns)"
+            />
 
             <Spacer v-if="!$slots.actions" />
           </div>
@@ -179,11 +199,12 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
 
   box-shadow: 0 2px 12px 2px var(--shadow-color);
   border-radius: 1rem;
-  max-width: v-bind("maxWidth");
+  max-width: v-bind("width.max");
   width: 100%;
 
   display: grid;
   max-height: 90vh;
+  min-height: v-bind("maximizeSize?'90vh':'2rem'");
   grid-template-rows: auto 1fr auto;
 
   position: relative;
