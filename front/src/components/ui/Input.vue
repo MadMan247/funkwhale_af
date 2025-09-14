@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, defineExpose } from 'vue'
 import { useI18n } from 'vue-i18n'
 import onKeyboardShortcut from '~/composables/onKeyboardShortcut'
 import { type ColorProps, type VariantProps, type DefaultProps, type RaisedProps, type PastelProps, color } from '~/composables/color.ts'
@@ -43,6 +43,10 @@ const attributes = computed(() => ({
 const { t } = useI18n()
 
 const input = ref()
+
+defineExpose({
+  focus: () => input.value.focus()
+})
 
 const previouslyFocusedElement = ref()
 
@@ -162,9 +166,7 @@ const model = defineModel<string | number>({ required: true })
   </Layout>
 </template>
 
-<style lang="scss">
-@use '~/style/funkwhale.scss';
-
+<style>
 .funkwhale.input {
   position: relative;
   flex-grow: 1;
@@ -182,12 +184,12 @@ const model = defineModel<string | number>({ required: true })
     border-radius: var(--fw-border-radius);
     cursor: text;
 
-    @include funkwhale.light-theme {
+    /*@include light-theme {
         &.raised {
           background-color: #ffffff;
           border-color: var(--border-color);
         }
-    }
+    }*/
 
     &:hover {
       box-shadow: inset 0 0 0 4px var(--border-color);
@@ -221,14 +223,14 @@ const model = defineModel<string | number>({ required: true })
       content: ' *';
   }
 
-  > .prefix,
-  > .input-right {
+  & > .prefix,
+  & > .input-right {
     align-items: center;
     font-size: 14px;
     color: var(--fw-placeholder-color);
   }
 
-  > .prefix {
+  & > .prefix {
     position: absolute;
     left: 0;
     bottom: 0;
@@ -236,8 +238,9 @@ const model = defineModel<string | number>({ required: true })
     height: calc(100% - var(--input-label-gap));
     min-width: 48px;
     display: flex;
+    color: var(--color);
 
-    > i {
+    & > i {
       font-size:18px;
       margin: auto;
     }
@@ -247,7 +250,7 @@ const model = defineModel<string | number>({ required: true })
     padding-left: 40px;
   }
 
-  > .input-right {
+  & > .input-right {
     position: absolute;
     right: 0px;
     bottom: 0px;
@@ -272,7 +275,7 @@ const model = defineModel<string | number>({ required: true })
 
   }
 
-  > .search {
+  & > .search {
     > i {
       font-size:18px;
     }
@@ -285,18 +288,18 @@ const model = defineModel<string | number>({ required: true })
     padding-right: 140px;
   }
 
-  > .show-password {
+  & > .show-password {
     justify-content:center;
   }
   &:has(>.show-password)>input {
     padding-right: 40px;
   }
 
-  >.reset {
+  &>.reset {
     min-width: auto;
     margin: 4px;
 
-    // Make button fit snuggly into rounded border
+    /* Make button fit snuggly into rounded border */
     border-radius: 4px;
   }
 }

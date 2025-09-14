@@ -137,19 +137,19 @@ watch(() => props.websocketHandlers.includes('Listen'), (to) => {
     >
       <div class="activity-image">
         <img
-          v-if="object.track.album && object.track.album.cover"
+          v-if="object.track?.album && object.track?.album.cover"
           v-lazy="store.getters['instance/absoluteUrl'](object.track.album.cover.urls.small_square_crop)"
           alt=""
           @error="(e) => { e.target && object.track.album.cover ? (e.target as HTMLImageElement).src = store.getters['instance/absoluteUrl'](object.track.album.cover.urls.medium_square_crop) : null }"
         >
         <img
-          v-else-if="object.track.cover"
+          v-else-if="object.track?.cover"
           v-lazy="store.getters['instance/absoluteUrl'](object.track.cover.urls.small_square_crop)"
           alt=""
           @error="(e) => { e.target && object.track.cover ? (e.target as HTMLImageElement).src = store.getters['instance/absoluteUrl'](object.track.cover.urls.medium_square_crop) : null }"
         >
         <img
-          v-else-if="object.track.artist_credit && object.track.artist_credit.length > 1"
+          v-else-if="object.track?.artist_credit && object.track.artist_credit.length > 1"
           v-lazy="getArtistCoverUrl(object.track.artist_credit)"
           alt=""
         >

@@ -74,10 +74,10 @@ const waitForImportantModules = async () => {
 
 waitForImportantModules()
   .then(() => logger.debug('Loading rest of the modules'))
-  // NOTE: We load the modules in parallel
+// NOTE: We load the modules in parallel
   .then(() => Promise.all(Object.values(modules).map(module => module.install?.(moduleContext))))
   .catch(error => logger.error('Failed to load modules:', error))
-  // NOTE: We need to mount the app after all modules are loaded
+// NOTE: We need to mount the app after all modules are loaded
   .finally(() => {
     logger.debug('Mounting app')
     app.mount('#app')

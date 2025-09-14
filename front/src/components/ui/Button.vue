@@ -156,6 +156,9 @@ onUnmounted(() =>
       <i :class="['bi', splitIcon]" />
     </button>
   </div>
+
+  <!-- Not a split button -->
+
   <button
     v-else
     ref="button"
@@ -188,10 +191,15 @@ onUnmounted(() =>
       v-if="icon && icon.startsWith('right ')"
       :class="['bi', icon.replace('right ', '')]"
     />
-    <Loader
+    <div
       v-if="isLoading"
-      :container="false"
-    />
+      style="position: relative;"
+    >
+      <Loader
+        :container="false"
+        style="position: absolute;"
+      />
+    </div>
   </button>
 </template>
 

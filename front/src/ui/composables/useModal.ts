@@ -1,10 +1,10 @@
 import { computed } from 'vue'
 import { useRouter, type RouteLocationRaw, type LocationQuery } from 'vue-router'
 
-type Assignment<T> = { on: (value : T | null) => string | null, isOn: (value: LocationQuery[string]) => boolean }
+type Assignment<T> = { on: (value: T | null) => string | null, isOn: (value: LocationQuery[string]) => boolean }
 
-export const exactlyNull:Assignment<unknown> = ({ on: (_) => null, isOn: (value) => value === null })
-export const notUndefined:Assignment<unknown> = ({ on: (_) => null, isOn: (value) => value !== undefined })
+export const exactlyNull: Assignment<unknown> = ({ on: (_) => null, isOn: (value) => value === null })
+export const notUndefined: Assignment<unknown> = ({ on: (_) => null, isOn: (value) => value !== undefined })
 
 /**
  * Bind a modal to a single query parameter in the URL (and vice versa)
@@ -16,7 +16,7 @@ export const notUndefined:Assignment<unknown> = ({ on: (_) => null, isOn: (value
  *
  * This functionality completely independent from the `router` modules.
  */
-export const useModal = <T> (
+export const useModal = <T>(
   flag: string,
   assignment: Assignment<T> = exactlyNull
 ) => {
@@ -52,7 +52,7 @@ export const useModal = <T> (
     get () {
       return flag in query.value && assignment.isOn(query.value[flag]!)
     },
-    set (newValue: boolean) {
+    set(newValue: boolean) {
       router?.push({
         query: {
           ...query.value,
@@ -77,8 +77,8 @@ export const useModal = <T> (
       const flagValue = flag in query.value ? query.value[flag]! : ''
       return typeof flagValue === 'string' ? flagValue : flagValue === null ? '' : flagValue.join(' ')
     },
-    set (newValue: string) {
-      router?.push({
+    set(newValue: string) {
+      router?.replace({
         query: {
           ...query.value,
           [flag]: newValue
@@ -119,7 +119,7 @@ export const useModal = <T> (
 }
 
 /* All possible useModals that produce a given `RouterLink` destination */
-export const fromProps = <T>({ to } : { to?: RouteLocationRaw }, assignment: Assignment<T> = exactlyNull): ReturnType<typeof useModal>[] =>
+export const fromProps = <T>({ to }: { to?: RouteLocationRaw }, assignment: Assignment<T> = exactlyNull): ReturnType<typeof useModal>[] =>
   to && typeof to !== 'string' && 'query' in to && to.query
     ? Object.keys(to.query).map(k => useModal(k, assignment))
     : []

@@ -11,6 +11,8 @@ import { generateTrackCreditStringFromQueue } from '~/utils/utils'
 
 import '~/style/funkwhale.scss'
 
+import { PiniaColadaDevtools } from '@pinia/colada-devtools'
+
 import PlaylistModal from '~/components/playlists/PlaylistModal.vue'
 import FilterModal from '~/components/moderation/FilterModal.vue'
 import ReportModal from '~/components/moderation/ReportModal.vue'
@@ -20,7 +22,6 @@ import Queue from '~/components/Queue.vue'
 import Sidebar from '~/ui/components/Sidebar.vue'
 import ShortcutsModal from '~/ui/modals/Shortcuts.vue'
 import LanguagesModal from '~/ui/modals/Language.vue'
-import SearchModal from '~/ui/modals/Search.vue'
 import UploadModal from '~/ui/modals/Upload.vue'
 import Loader from '~/components/ui/Loader.vue'
 
@@ -116,7 +117,7 @@ store.dispatch('auth/fetchUser')
   <FilterModal v-if="store.state.auth.authenticated" />
   <ReportModal />
   <UploadModal v-if="store.state.auth.authenticated" />
-  <SearchModal />
+  <PiniaColadaDevtools />
 </template>
 
 <style scoped>
