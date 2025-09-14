@@ -408,15 +408,27 @@ Instead, use the [action area](#add-an-action) to offer the primary link:
 
 <!-- prettier-ignore-end -->
 
-## Add color
+## Differentiate mixed cards visually
+
+Consider differentiating cards by color, size and shadow when mixing several of the following types:
+
+- Cards used for organizing the page spatially
+- Cards that represent objects
+- Interactive cards (buttons or links)
+
+### Add color
 
 - Choose a color: `default`, `primary`, `secondary`, `destructive`, or a Pastel (red, yellow, purple, green or blue)
 - Choose a variant: `raised`, `solid`, `outline`,...
 
 Read more: [Using Color](/using-color)
 
-## Set size
+### Set size
 
 `large` (304px), `medium` (208px), `auto`, `small`, ...
 
 Read more: [Using Width](/using-width)
+
+### Remove shadow
+
+Use the `flat` attribute to remove the automatic shadow. This helps reduce visual noise and differentiates cards.

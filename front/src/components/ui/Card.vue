@@ -19,6 +19,8 @@ const props = defineProps<{
   image?: string | { src: string, style?: 'withPadding' }
   icon?: string
 
+  flat?: true
+
   alertProps?: AlertProps
 } & Partial<RouterLinkProps>
   &(PastelProps | ColorProps | DefaultProps)
@@ -186,11 +188,10 @@ const attributes = computed(() =>
 
   color: var(--fw-text-color);
   background-color: var(--fw-bg-color);
-  box-shadow: 0px 2px 8px 0px var(--shadow-color);
+  box-shadow: 0px 2px 8px 0px v-bind("flat?'transparent':'var(--shadow-color)'");
 
   border-radius: var(--fw-border-radius);
   font-size: 1rem;
-  overflow: hidden;
 
   >.covering {
     position: absolute;
@@ -282,6 +283,7 @@ const attributes = computed(() =>
   }
 
   >.content {
+    overflow: hidden;
     padding: 0 var(--fw-card-padding);
     /* Consider making all line height, vertical paddings, margins and borders,
     a multiple of a global vertical rhythm so that side-by-side lines coincide */
