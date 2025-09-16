@@ -43,7 +43,8 @@ const fetchData = async (url = props.url) => {
     const params = {
       ...props.filters,
       page: page.value,
-      page_size: props.filters.limit ?? 4
+      page_size: props.filters.limit ?? 4,
+      playable: false
     }
 
     const response = await axios.get(url, { params })
