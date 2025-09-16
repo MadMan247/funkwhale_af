@@ -3,9 +3,10 @@ import { computed, ref } from 'vue'
 export const allCaches = ref<Map<unknown, unknown>[]>([]);
 
 /**
- * Forgetful, reactive key-value store.
+ * Initialize a forgetful, reactive key-value store.
  *
- * @param retention: Milliseconds until a datum expires
+ * @param retention: Milliseconds until a datum is deleted
+ * @returns a factory for reactive values by key
  */
 export const useCache = <K, V>({ retention }: { retention: number }) => {
   const cache = new Map<K, V>()

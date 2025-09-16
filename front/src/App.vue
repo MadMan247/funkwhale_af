@@ -11,8 +11,6 @@ import { generateTrackCreditStringFromQueue } from '~/utils/utils'
 
 import '~/style/funkwhale.scss'
 
-import { PiniaColadaDevtools } from '@pinia/colada-devtools'
-
 import PlaylistModal from '~/components/playlists/PlaylistModal.vue'
 import FilterModal from '~/components/moderation/FilterModal.vue'
 import ReportModal from '~/components/moderation/ReportModal.vue'
@@ -117,7 +115,6 @@ store.dispatch('auth/fetchUser')
   <FilterModal v-if="store.state.auth.authenticated" />
   <ReportModal />
   <UploadModal v-if="store.state.auth.authenticated" />
-  <PiniaColadaDevtools />
 </template>
 
 <style scoped>

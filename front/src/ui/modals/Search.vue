@@ -13,8 +13,7 @@ import { useI18n } from 'vue-i18n'
 import { useModal } from '~/ui/composables/useModal.ts'
 import { useStore } from '~/store'
 import { getKey } from '~/rstore/model'
-import * as RStore from '~/rstore'
-import useQuery from '~/query.ts'
+import { useDataStore } from '~/ui/stores/data'
 
 import ArtistCard from '~/components/artist/Card.vue'
 import PlaylistCard from '~/components/playlists/Card.vue'
@@ -39,7 +38,6 @@ import Loader from '~/components/ui/Loader.vue'
 import Alert from '~/components/ui/Alert.vue'
 
 const { t } = useI18n()
-const rStore = RStore.useStore()
 /*
   Future:
     - For now, we will use fetch-then-cache, and not support features such as search in
@@ -47,6 +45,7 @@ const rStore = RStore.useStore()
         and an automatic trigger: while user is still browsing the app, refresh content periodically.
         When tab gets focus, try to re-fetch.
 */
+const dataStore = useDataStore()
 
 // Search input sizing
 const style = ref<{ inner: string, outer: string }>({ inner: '', outer: '' })
@@ -382,24 +381,24 @@ watchDebounced(queryDebounced, search, {
       <!-- Artists -->
 
       <Section
-        v-for="{ state, refetch } in [useQuery.artists({
+        v-for="{ value: { refetch, status, data, error, key } } in [dataStore.artists({
           q: query,
           page: 1,
           page_size: cardsPerRow() - 1,
-          contentCategory: 'music',
-          includeChannels: 'true'
-        })()]"
-        :key="state?.value.status"
+          content_category: 'music',
+          include_channels: true
+        })]"
+        :key
         :columns-per-item="3"
         :action="{
           text: 'refresh',
           icon: 'bi-arrow-clockwise',
-          onClick: refetch as () => void
+          onClick: refetch
         }"
         align-left
       >
         <Card
-          :title="t('artists', state?.value.data?.count || 0)"
+          :title="status === 'pending' ? ' ' : t('artists', data?.count || 0)"
           :to="{name: 'library.artists.browse', query: { query }}"
           category
           small
@@ -407,12 +406,12 @@ watchDebounced(queryDebounced, search, {
           yellow
           solid
         >
-          <Alert v-if="state?.value.error">
-            {{ state.value.error }}
+          <Alert v-if="status==='error'">
+            {{ error }}
           </Alert>
           <template #footer>
             <Spacer grow />
-            <Loader v-if="state?.value.status==='pending'" />
+            <Loader v-if="status==='pending'" />
             <label>
               {{ t('components.Home.link.viewMore') }}
             </label>
@@ -420,7 +419,7 @@ watchDebounced(queryDebounced, search, {
         </Card>
 
         <ArtistCard
-          v-for="(artist) in state.value.data?.results"
+          v-for="(artist) in (data?.results || [])"
           :key="getKey(artist)"
           :artist
         />
@@ -431,26 +430,25 @@ watchDebounced(queryDebounced, search, {
       <!-- Albums -->
 
       <Section
-        v-for="({ loading, error, data, refresh }, key)
-          in [rStore.albums.queryMany(() => ({ filter: {
-            q: query,
-            page: 1,
-            page_size: cardsPerRow() - 1,
-            playable:'true',
-            contentCategory: 'music',
-            includeChannels: 'true'
-          }}))]"
+        v-for="{ value: { refetch, status, data, error, key } } in [dataStore.albums({
+          q: query,
+          page: 1,
+          page_size: cardsPerRow() - 1,
+          playable: true,
+          content_category: 'music',
+          include_channels: true
+        })]"
         :key
         :columns-per-item="3"
         :action="{
           text: 'refresh',
           icon: 'bi-arrow-clockwise',
-          onClick: refresh as () => void
+          onClick: refetch
         }"
         align-left
       >
         <Card
-          :title="t('albums', data.value[0]?.totalResults || 0)"
+          :title="status === 'pending' ? ' ' : t('albums', data?.count || 0)"
           :to="{name: 'library.albums.browse', query: { query }}"
           category
           small
@@ -458,12 +456,12 @@ watchDebounced(queryDebounced, search, {
           blue
           solid
         >
-          <Alert v-if="error.value">
-            {{ error.value }}
+          <Alert v-if="error">
+            {{ error }}
           </Alert>
           <template #footer>
             <Spacer grow />
-            <Loader v-if="loading.value || !loading" />
+            <Loader v-if="status === 'pending'" />
             <label>
               {{ t('components.Home.link.viewMore') }}
             </label>
@@ -471,7 +469,7 @@ watchDebounced(queryDebounced, search, {
         </Card>
 
         <AlbumCard
-          v-for="(album) in data.value"
+          v-for="(album) in (data?.results || [])"
           :key="getKey(album)"
           :album
         />
@@ -482,23 +480,22 @@ watchDebounced(queryDebounced, search, {
       <!-- Tracks -->
 
       <Section
-        v-for="({ loading, error, data, refresh }, key)
-          in [rStore.tracks.queryMany(() => ({ filter: {
-            q: query,
-            page: 1,
-            page_size: 4,
-          }}))]"
+        v-for="{ value: { refetch, status, data, error, key } } in [dataStore.tracks({
+          q: query,
+          page: 1,
+          page_size: 4,
+        })]"
         :key
         :columns-per-item="3"
         :action="{
           text: 'refresh',
           icon: 'bi-arrow-clockwise',
-          onClick: refresh as () => void
+          onClick: refetch
         }"
         align-left
       >
         <Card
-          :title="t('tracks', data.value[0]?.totalResults || 0)"
+          :title="status === 'pending' ? ' ' : t('tracks', data?.count || 0)"
           category
           small
           flat
@@ -506,17 +503,17 @@ watchDebounced(queryDebounced, search, {
           solid
           :style="`grid-column: 1 / ${columns > 10 ? 4 : -1}`"
         >
-          <Alert v-if="error.value">
-            {{ error.value }}
+          <Alert v-if="error">
+            {{ error }}
           </Alert>
           <template #footer>
             <Spacer grow />
-            <Loader v-if="loading.value || !loading" />
+            <Loader v-if="status === 'pending'" />
           </template>
         </Card>
 
         <TrackTable
-          :tracks="data.value"
+          :tracks="data?.results || []"
           :style="`grid-column: ${columns > 10 ? 4 : 1} / -1`"
         />
       </Section>
@@ -533,35 +530,34 @@ watchDebounced(queryDebounced, search, {
          -->
 
       <Section
-        v-for="({ loading, error, data, refresh }, key)
-          in [rStore.tags.queryMany(() => ({ filter: {
+        v-for="{ value: { refetch, status, data, error, key } } in [dataStore.tags_({
             q: query,
             page: 1,
             page_size: 20,
-          }}))]"
+          })]"
         :key
         :columns-per-item="3"
         :action="{
           text: 'refresh',
           icon: 'bi-arrow-clockwise',
-          onClick: refresh as () => void
+          onClick: refetch
         }"
         align-left
       >
         <Card
-          :title="t('tags', data.value[0]?.totalResults || 0)"
+          :title="status === 'pending' ? ' ' : t('tags', data?.count || 0)"
           category
           small
           flat
           secondary
           solid
         >
-          <Alert v-if="error.value">
-            {{ error.value }}
+          <Alert v-if="error">
+            {{ error }}
           </Alert>
           <template #footer>
             <Spacer grow />
-            <Loader v-if="loading.value || !loading" />
+            <Loader v-if="status==='pending'" />
           </template>
         </Card>
 
@@ -569,7 +565,7 @@ watchDebounced(queryDebounced, search, {
           :style="`grid-column: ${columns > 3 ? 4 : 1} / -1`"
           :truncate-size="200"
           :limit="20"
-          :tags="data.value?.map(t => t.name)"
+          :tags="data?.results.map(t => t.name) || []"
         />
       </Section>
 
@@ -578,23 +574,22 @@ watchDebounced(queryDebounced, search, {
       <!-- Playlists -->
 
       <Section
-        v-for="({ loading, error, data, refresh }, key)
-          in [rStore.playlists.queryMany(() => ({ filter: {
-            q: query,
-            page: 1,
-            page_size: cardsPerRow() - 1,
-          }}))]"
+        v-for="{ value: { refetch, status, data, error, key } } in [dataStore.playlists({
+        q: query,
+        page: 1,
+        page_size: cardsPerRow() - 1,
+        })]"
         :key
         :columns-per-item="3"
         :action="{
           text: 'refresh',
           icon: 'bi-arrow-clockwise',
-          onClick: refresh as () => void
+          onClick: refetch
         }"
         align-left
       >
         <Card
-          :title="t('playlists', data.value[0]?.totalResults || 0)"
+          :title="status === 'pending' ? ' ' : t('playlists', data?.count || 0)"
           :to="{name: 'library.playlists.browse', query: { query }}"
           category
           small
@@ -602,12 +597,12 @@ watchDebounced(queryDebounced, search, {
           purple
           solid
         >
-          <Alert v-if="error.value">
-            {{ error.value }}
+          <Alert v-if="error">
+            {{ error }}
           </Alert>
           <template #footer>
             <Spacer grow />
-            <Loader v-if="loading.value || !loading" />
+            <Loader v-if="status === 'pending'" />
             <label>
               {{ t('components.Home.link.viewMore') }}
             </label>
@@ -615,7 +610,7 @@ watchDebounced(queryDebounced, search, {
         </Card>
 
         <PlaylistCard
-          v-for="(playlist) in data.value"
+          v-for="(playlist) in data?.results || []"
           :key="getKey(playlist)"
           :playlist
         />
@@ -626,23 +621,22 @@ watchDebounced(queryDebounced, search, {
       <!-- Radios -->
 
       <Section
-        v-for="({ loading, error, data, refresh }, key)
-          in [rStore['radios/radios'].queryMany(() => ({ filter: {
+        v-for="{ value: { refetch, status, data, error, key } } in [dataStore.radios({
             q: query,
             page: 1,
             page_size: cardsPerRow() - 1,
-          }}))]"
+          })]"
         :key
         :columns-per-item="3"
         :action="{
           text: 'refresh',
           icon: 'bi-arrow-clockwise',
-          onClick: refresh as () => void
+          onClick: refetch
         }"
         align-left
       >
         <Card
-          :title="t('radios', data.value[0]?.totalResults || 0)"
+          :title="status === 'pending' ? ' ' : t('radios', data?.count || 0)"
           :to="{name: 'library.radios.browse', query: { query }}"
           category
           small
@@ -650,12 +644,12 @@ watchDebounced(queryDebounced, search, {
           red
           solid
         >
-          <Alert v-if="error.value">
-            {{ error.value }}
+          <Alert v-if="error">
+            {{ error }}
           </Alert>
           <template #footer>
             <Spacer grow />
-            <Loader v-if="loading.value || !loading" />
+            <Loader v-if="status === 'pending'" />
             <label>
               {{ t('components.Home.link.viewMore') }}
             </label>
@@ -663,7 +657,7 @@ watchDebounced(queryDebounced, search, {
         </Card>
 
         <RadioCard
-          v-for="(radio) in data.value"
+          v-for="(radio) in data?.results || []"
           :key="getKey(radio)"
           type="custom"
           :custom-radio="radio"
@@ -675,25 +669,24 @@ watchDebounced(queryDebounced, search, {
       <!-- Podcasts -->
 
       <Section
-        v-for="({ loading, error, data, refresh }, key)
-          in [rStore['artists'].queryMany(() => ({ filter: {
+        v-for="{ value: { refetch, status, data, error, key } } in [dataStore.artists({
             q: query,
-            contentCategory: 'podcast',
-            includeChannels: 'true',
+            content_category: 'podcast',
+            include_channels: true,
             page: 1,
             page_size: cardsPerRow() - 1,
-          }}))]"
+          })]"
         :key
         :columns-per-item="3"
         :action="{
           text: 'refresh',
           icon: 'bi-arrow-clockwise',
-          onClick: refresh as () => void
+          onClick: refetch
         }"
         align-left
       >
         <Card
-          :title="t('podcasts', data.value[0]?.totalResults)"
+          :title="status === 'pending' ? ' ' : t('podcasts', data?.count || 0)"
           :to="{name: 'library.podcasts.browse', query: { query }}"
           category
           small
@@ -701,12 +694,12 @@ watchDebounced(queryDebounced, search, {
           primary
           solid
         >
-          <Alert v-if="error.value">
-            {{ error.value }}
+          <Alert v-if="error">
+            {{ error }}
           </Alert>
           <template #footer>
             <Spacer grow />
-            <Loader v-if="loading.value || !loading" />
+            <Loader v-if="status === 'pending'" />
             <label>
               {{ t('components.Home.link.viewMore') }}
             </label>
@@ -714,7 +707,7 @@ watchDebounced(queryDebounced, search, {
         </Card>
 
         <ArtistCard
-          v-for="(artist) in data.value"
+          v-for="(artist) in data?.results || []"
           :key="getKey(artist)"
           :artist
         />
@@ -724,26 +717,25 @@ watchDebounced(queryDebounced, search, {
 
       <!-- Series -->
 
-      <!-- <Section
-        v-for="({ loading, error, data, refresh }, key)
-          in [rStore['albums'].queryMany(() => ({ filter: {
+      <Section
+        v-for="{ value: { refetch, status, data, error, key } } in [dataStore.albums({
             q: query,
-            contentCategory: 'podcast',
-            includeChannels: 'true',
+            content_category: 'podcast',
+            include_channels: true,
             page: 1,
             page_size: cardsPerRow() - 1,
-          }}))]"
+          })]"
         :key
         :columns-per-item="3"
         :action="{
           text: 'refresh',
           icon: 'bi-arrow-clockwise',
-          onClick: refresh as () => void
+          onClick: refetch
         }"
         align-left
       >
         <Card
-          :title="t('series', data.value[0]?.totalResults)"
+          :title="status === 'pending' ? ' ' : t('series', data?.count || 0)"
           category
           small
           flat
@@ -751,21 +743,21 @@ watchDebounced(queryDebounced, search, {
           raised
           solid
         >
-          <Alert v-if="error.value">
-            {{ error.value }}
+          <Alert v-if="error">
+            {{ error }}
           </Alert>
           <template #footer>
             <Spacer grow />
-            <Loader v-if="loading.value || !loading" />
+            <Loader v-if="status === 'pending'" />
           </template>
         </Card>
 
         <AlbumCard
-          v-for="(album) in data.value"
+          v-for="(album) in data?.results || []"
           :key="getKey(album)"
           :album
         />
-      </Section> -->
+      </Section>
     </template>
   </Modal>
 

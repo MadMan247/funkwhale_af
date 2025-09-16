@@ -60,7 +60,7 @@ export const useRateLimiter = <T>({ cooldown, supersedeWhen, equalWhen }: {
     while (queue.at(0) !== task) {
       if (!queue.find(t => equalWhen(task, t))) throw ({
         name: 'RateLimitedTaskSuperseded',
-        message: `Task ${task} has been superseded by a newer task`
+        message: `Task ${task} has been superseded by a newer task. Queue is now: ${queue}`
       } satisfies RateLimiterError)
       await wait(cooldown);
     }
