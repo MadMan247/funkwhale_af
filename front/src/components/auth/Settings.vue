@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { BackendError, Application, PrivacyLevel } from '~/types'
+import type { BackendError, Application, PrivacyLevelEnum } from '~/types'
 import type { $ElementType } from 'utility-types'
 
 import axios from 'axios'
@@ -30,7 +30,7 @@ import Section from '~/components/ui/Section.vue'
 const SETTINGS_ORDER: FieldId[] = ['summary', 'privacy_level']
 
 type Field = { id: 'summary', type: 'content', value: { text: string, content_type: 'text/markdown' } }
-  | { id: 'privacy_level', type: 'dropdown', choices: PrivacyLevel[], value: string }
+  | { id: 'privacy_level', type: 'dropdown', choices: PrivacyLevelEnum[], value: string }
 type FieldId = $ElementType<Field, 'id'>
 
 interface Settings {
@@ -59,7 +59,7 @@ const settings = reactive({
       id: 'privacy_level',
       type: 'dropdown',
       value: store.state.auth.profile?.privacy_level,
-      choices: ['me', 'instance', 'everyone']
+      choices: ['me', 'instance', 'followers', 'everyone']
     }
   }
 } as Settings)

@@ -57,6 +57,7 @@ export type Listening = components['schemas']['Listening']
 export type Playlist = components['schemas']['Playlist']
 export type PlaylistTrack = components['schemas']['PlaylistTrack']
 export type PrivacyLevelEnum = components['schemas']['PrivacyLevelEnum']
+export type LibraryPrivacyLevelEnum = components['schemas']['LibraryPrivacyLevelEnum']
 export type Radio = components['schemas']['Radio']
 export type SearchResult = components['schemas']['SearchResult']
 export type Tag = components['schemas']['Tag']
@@ -72,7 +73,6 @@ export type UserTrackFavorite = components['schemas']['UserTrackFavorite']
 
 export type Artist = components['schemas']['Artist']
 
-export type PrivacyLevel = components['schemas']['LibraryPrivacyLevelEnum']
 
 export type ImportStatus = components['schemas']['ImportStatusEnum']
 
@@ -187,7 +187,7 @@ export interface User {
   instance_support_message_display_date: string
   funkwhale_support_message_display_date: string
   is_superuser: boolean
-  privacy_level: PrivacyLevel
+  privacy_level: PrivacyLevelEnum
 }
 
 // Settings stuff

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ImportStatus, PrivacyLevel, Upload, BackendResponse } from '~/types'
+import type { ImportStatus, LibraryPrivacyLevelEnum, Upload, BackendResponse } from '~/types'
 import type { SmartSearchProps } from '~/composables/navigation/useSmartSearch'
 import type { OrderingProps } from '~/composables/navigation/useOrdering'
 import type { RouteRecordName } from 'vue-router'
@@ -120,7 +120,7 @@ const getImportStatusChoice = (importStatus: ImportStatus) => {
   return sharedLabels.fields.import_status.choices[importStatus]
 }
 
-const getPrivacyLevelChoice = (privacyLevel: PrivacyLevel) => {
+const getPrivacyLevelChoice = (privacyLevel: LibraryPrivacyLevelEnum) => {
   return sharedLabels.fields.privacy_level.shortChoices[privacyLevel]
 }
 </script>

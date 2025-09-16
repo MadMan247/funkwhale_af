@@ -3,7 +3,7 @@ import type { SmartSearchProps } from '~/composables/navigation/useSmartSearch'
 import type { OrderingProps } from '~/composables/navigation/useOrdering'
 import type { RouteRecordName } from 'vue-router'
 import type { OrderingField } from '~/store/ui'
-import type { PrivacyLevel } from '~/types'
+import type { LibraryPrivacyLevelEnum } from '~/types'
 
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -102,7 +102,7 @@ const labels = computed(() => ({
   searchPlaceholder: t('components.manage.library.LibrariesTable.placeholder.search')
 }))
 
-const getPrivacyLevelChoice = (privacyLevel: PrivacyLevel) => {
+const getPrivacyLevelChoice = (privacyLevel: LibraryPrivacyLevelEnum) => {
   return sharedLabels.fields.privacy_level.shortChoices[privacyLevel]
 }
 </script>

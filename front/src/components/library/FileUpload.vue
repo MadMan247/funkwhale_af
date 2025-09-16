@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { BackendError, FileSystem, Library, PrivacyLevel } from '~/types'
+import type { BackendError, FileSystem, Library, LibraryPrivacyLevelEnum } from '~/types'
 import type { VueUploadItem } from 'vue-upload-component'
 import type { paths } from '~/generated/types'
 
@@ -79,9 +79,9 @@ const options = {
   me: sharedLabels.fields.privacy_level.choices.me,
   instance: sharedLabels.fields.privacy_level.choices.instance,
   everyone: sharedLabels.fields.privacy_level.choices.everyone
-} as const satisfies Record<PrivacyLevel, string>
+} as const satisfies Record<LibraryPrivacyLevelEnum, string>
 
-const privacyLevel = defineModel<PrivacyLevel | undefined>({ required: true })
+const privacyLevel = defineModel<LibraryPrivacyLevelEnum | undefined>({ required: true })
 
 const library = ref<Library>()
 
