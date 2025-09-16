@@ -4,7 +4,6 @@ import { useUploadsStore } from '../stores/upload'
 import { useI18n } from 'vue-i18n'
 import { useStore } from '~/store'
 import { useModal } from '~/ui/composables/useModal.ts'
-import { defineAsyncComponent } from 'vue'
 
 import Logo from '~/components/Logo.vue'
 import UserMenu from './UserMenu.vue'
@@ -15,12 +14,8 @@ import PopoverItem from '~/components/ui/popover/PopoverItem.vue'
 import Button from '~/components/ui/Button.vue'
 import Layout from '~/components/ui/Layout.vue'
 import Spacer from '~/components/ui/Spacer.vue'
+import SearchModal from '~/ui/modals/Search.vue'
 import { useRoute } from 'vue-router'
-
-// simple usage
-const SearchModal = defineAsyncComponent({
-  loader: () => import('~/ui/modals/Search.vue')
-})
 
 const isCollapsed = ref(true)
 

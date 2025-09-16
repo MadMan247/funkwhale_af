@@ -14,6 +14,11 @@ import type { Album, Artist, Tag, Track } from '~/types'
 
 const logger = useLogger()
 
+/** @returns the most unique identifier available per item, assuming every item has at least one key field */
+export const getKey = (item: { fid: string } | { artist: { fid: string } } | { id: number } | { name: string }) =>
+  'fid' in item ? item.fid : 'artist' in item ? item.artist.fid : 'id' in item ? item.id.toString() : item.name
+
+
 // ======================================================================
 // Object names
 const names = [
