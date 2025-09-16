@@ -14,6 +14,7 @@ from funkwhale_api.favorites import models as favorites_models
 from funkwhale_api.federation import utils as federation_utils
 from funkwhale_api.history import models as history_models
 from funkwhale_api.moderation import models as moderation_models
+from funkwhale_api.music import filters as music_filters
 from funkwhale_api.music import models as music_models
 from funkwhale_api.music import utils as music_utils
 from funkwhale_api.playlists import models as playlists_models
@@ -380,7 +381,10 @@ def has_playlist_access(request, playlist):
 
 
 class MusicLibraryViewSet(
-    FederationMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
+    FederationMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet,
+    mixins.ListModelMixin,
 ):
     authentication_classes = [authentication.SignatureAuthentication]
     renderer_classes = renderers.get_ap_renderers()
@@ -391,6 +395,8 @@ class MusicLibraryViewSet(
         .select_related("actor")
         .filter(channel=None)
     )
+
+    filterset_class = music_filters.LibraryFilter
     lookup_field = "uuid"
 
     def retrieve(self, request, *args, **kwargs):

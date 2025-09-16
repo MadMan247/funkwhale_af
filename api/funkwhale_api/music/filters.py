@@ -387,7 +387,18 @@ class LibraryFilter(filters.FilterSet):
         distinct=True,
         library_field="pk",
     )
+    actor = filters.CharFilter(method="filter_actor")
 
     class Meta:
         model = models.Library
         fields = ["privacy_level"]
+
+    def filter_actor(self, queryset, name, value):
+        # supports username or username@domain
+        if "@" in value:
+            username, domain = value.split("@", 1)
+            return queryset.filter(
+                actor__preferred_username=username,
+                actor__domain_id=domain,
+            )
+        return queryset.filter(actor__preferred_username=value)

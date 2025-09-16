@@ -290,7 +290,52 @@ def can_manage(obj_owner, actor):
     return False
 
 
+<<<<<<< HEAD
 def update_actor_privacy(actor, privacy_level):
     actor.track_favorites.update(privacy_level=privacy_level)
     actor.listenings.update(privacy_level=privacy_level)
     # to do : trigger federation privacy_level downgrade #2336
+=======
+class BuildInLibException(Exception):
+    pass
+
+
+def get_or_create_builtin_actor_library(actor, privacy_level):
+    from funkwhale_api.music import models as music_models
+
+    from . import actors
+
+    service_actor = actors.get_service_actor()
+    auth = signing.get_auth(service_actor.private_key, service_actor.private_key_id)
+    response = session.get_session().get(
+        f"https://{actor.domain}/api/v2/federation/music/libraries",
+        auth=auth,
+        params={
+            "actor": actor.preferred_username,
+            "privacy_level": privacy_level,
+            "name": privacy_level,
+        },
+        headers={
+            "Accept": "application/activity+json",
+            "Content-Type": "application/activity+json",
+        },
+    )
+    response.raise_for_status()
+    data = response.json()
+    if len(data["results"]) == 0:
+        raise BuildInLibException(
+            f"Could not find built-in lib  {privacy_level} for actor {actor}"
+        )
+    elif not len(data["results"]) == 1:
+        raise BuildInLibException(
+            f"Too many built-in lib {privacy_level} for actor {actor}"
+        )
+    else:
+        lib, created = music_models.Library.objects.get_or_create(
+            actor=actor,
+            playlist__isnull=True,
+            privacy_level="everyone",
+            name="everyone",
+        )
+        return lib
+>>>>>>> afc77ed5e (feat(back):trigger public library follow on user follow)

@@ -1,9 +1,17 @@
 import datetime
+from unittest.mock import Mock
 
 import pytest
 from django.urls import reverse
 
-from funkwhale_api.federation import api_serializers, serializers, tasks, views
+from funkwhale_api.federation import (
+    actors,
+    api_serializers,
+    models,
+    serializers,
+    tasks,
+    views,
+)
 
 
 def test_user_can_list_their_library_follows(factories, logged_in_api_client):
@@ -456,4 +464,34 @@ def test_user_can_accept_or_reject_own_received_follows(
 
     mocked_dispatch.assert_called_once_with(
         {"type": action.title()}, context={"follow": follow}
+    )
+
+
+def test_following_using_trigger_service_actor_lib_follow(
+    factories, logged_in_api_client, mocker
+):
+    target_actor = factories["federation.Actor"]()
+    lib = factories["music.Library"](actor=target_actor, privacy_level="everyone")
+    mocked_dispatch = mocker.patch(
+        "funkwhale_api.federation.activity.OutboxRouter.dispatch"
+    )
+    mock_session = Mock()
+    mock_response = Mock()
+    mock_response.raise_for_status.return_value = None
+    mock_response.json.side_effect = [
+        {"results": [serializers.LibrarySerializer(lib).data]}
+    ]
+    mock_session.get.return_value = mock_response
+    mocker.patch(
+        "funkwhale_api.federation.utils.session.get_session",
+        return_value=mock_session,
+    )
+    lib.delete()
+    url = reverse("api:v1:federation:user-follows-list")
+    logged_in_api_client.user.create_actor()
+    logged_in_api_client.post(url, {"target": target_actor.fid})
+
+    service_follow = models.LibraryFollow.objects.get(actor=actors.get_service_actor())
+    mocked_dispatch.assert_called_with(
+        {"type": "Follow"}, context={"follow": service_follow}
     )

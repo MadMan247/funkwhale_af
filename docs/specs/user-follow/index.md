@@ -204,6 +204,22 @@ sequenceDiagram
 
 When a **requesting user** unfollows a **target user**, the UI must update to visually indicate that the action has succeeded. All activities relating to the **target user** must be visually hidden.
 
+### Get user upload to remote pod
+
+When you follow a user you expect to have access to its public and followers content.
+
+#### Public content (#2422)
+
+- When create a `UserFollow` we also send a `LibraryFollow` for the public user Library, using the service actor of the local pod. This will allow the remote pod to get access to the content.
+- When deleting a `UserFollow` we keep the service actor follow, in case other users in the pod use the remote metadata.
+
+#### Followers content (#2536)
+
+As a user I want to share uploads with all my followers.
+
+- Create a new built-in library with `followers` privacy_level
+- Add the `followers` privacy_level in `ManageUploads` vue component
+
 ## Availability
 
 - [x] App frontend

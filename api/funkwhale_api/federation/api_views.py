@@ -9,6 +9,7 @@ from rest_framework.exceptions import NotFound as RestNotFound
 from funkwhale_api.common import preferences
 from funkwhale_api.common import utils as common_utils
 from funkwhale_api.common.permissions import ConditionalAuthentication
+from funkwhale_api.federation import actors
 from funkwhale_api.music import models as music_models
 from funkwhale_api.music import serializers as music_serializers
 from funkwhale_api.music import views as music_views
@@ -359,6 +360,15 @@ class UserFollowViewSet(
     def perform_create(self, serializer):
         follow = serializer.save(actor=self.request.user.actor)
         routes.outbox.dispatch({"type": "Follow"}, context={"follow": follow})
+        if not follow.target.is_local:
+            public_lib = utils.get_or_create_buildin_actor_library(
+                follow.target, privacy_level="everyone"
+            )
+            lib_follow = models.LibraryFollow.objects.create(
+                actor=actors.get_service_actor(),
+                target=public_lib,
+            )
+            routes.outbox.dispatch({"type": "Follow"}, context={"follow": lib_follow})
 
     @transaction.atomic
     def perform_destroy(self, instance):
