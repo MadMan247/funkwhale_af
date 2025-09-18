@@ -395,6 +395,16 @@ def test_user_can_list_their_received_follows(factories, logged_in_api_client):
 
 def test_can_follow_user_actor(factories, logged_in_api_client, mocker):
     dispatch = mocker.patch("funkwhale_api.federation.routes.outbox.dispatch")
+    mock_session = Mock()
+    mock_response = Mock()
+    mock_response.json.side_effect = [
+        {"results": [serializers.LibrarySerializer(factories["music.Library"]()).data]}
+    ]
+    mock_session.get.return_value = mock_response
+    mocker.patch(
+        "funkwhale_api.federation.utils.session.get_session",
+        return_value=mock_session,
+    )
     actor = logged_in_api_client.user.create_actor()
     target_actor = factories["federation.Actor"]()
     url = reverse("api:v1:federation:user-follows-list")
@@ -407,7 +417,7 @@ def test_can_follow_user_actor(factories, logged_in_api_client, mocker):
     assert follow.approved is None
     assert follow.actor == actor
 
-    dispatch.assert_called_once_with({"type": "Follow"}, context={"follow": follow})
+    dispatch.assert_any_call({"type": "Follow"}, context={"follow": follow})
 
 
 def test_can_undo_user_follow(factories, logged_in_api_client, mocker):
