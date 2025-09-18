@@ -361,7 +361,7 @@ class UserFollowViewSet(
         follow = serializer.save(actor=self.request.user.actor)
         routes.outbox.dispatch({"type": "Follow"}, context={"follow": follow})
         if not follow.target.is_local:
-            public_lib = utils.get_or_create_buildin_actor_library(
+            public_lib = utils.get_or_create_builtin_actor_library(
                 follow.target, privacy_level="everyone"
             )
             lib_follow = models.LibraryFollow.objects.create(
