@@ -10,7 +10,7 @@ import Layout from '~/components/ui/Layout.vue'
 import Spacer from '~/components/ui/Spacer.vue'
 import Card from '~/components/ui/Card.vue'
 
-import type { Channel, PrivacyLevel } from '~/types'
+import type { Channel, LibraryPrivacyLevelEnum } from '~/types'
 import ChannelUpload from '~/components/channels/UploadForm.vue'
 import LibraryUpload from '~/components/library/FileUpload.vue'
 
@@ -65,7 +65,7 @@ watch(state, ({ page }, oldValue) => {
 // Step 1.1
 
 // Load the library for the chosen privacy level
-const privacyLevel = ref<PrivacyLevel>('me')
+const privacyLevel = ref<LibraryPrivacyLevelEnum>('me')
 
 const modalTitle = computed(() =>
   ({ selectDestination: 'Upload', uploadFiles: 'Select files for upload', uploadsInProgress: 'Uploading...' }

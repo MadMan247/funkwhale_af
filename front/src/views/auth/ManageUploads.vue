@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PrivacyLevel, Upload } from '~/types'
+import type { LibraryPrivacyLevelEnum, Upload } from '~/types'
 import type { SmartSearchProps } from '~/composables/navigation/useSmartSearch'
 import type { OrderingProps } from '~/composables/navigation/useOrdering'
 import type { RouteRecordName } from 'vue-router'
@@ -99,7 +99,7 @@ const isAllSelected = computed<boolean | 'mixed'>({
 // For privacy slider and <select>
 
 // Model for use in global slider `privacy_level`
-const globalPrivacyLevel = computed<PrivacyLevel | undefined>({
+const globalPrivacyLevel = computed<LibraryPrivacyLevelEnum | undefined>({
   get () {
     return selectedItems.value.length === 0
       ? undefined
@@ -181,7 +181,7 @@ const privacyOptions = {
   me: sharedLabels.fields.privacy_level.choices.me,
   instance: sharedLabels.fields.privacy_level.choices.instance,
   everyone: sharedLabels.fields.privacy_level.choices.everyone
-} as const satisfies Record<PrivacyLevel, string>
+} as const satisfies Record<LibraryPrivacyLevelEnum, string>
 
 
 // Current logic:
@@ -478,7 +478,7 @@ fetchData()
       <Pill
         :title="t('components.manage.library.UploadsTable.table.upload.header.visibility')"
         v-bind="item.privacy_level
-          ? { onClick: () => { token('privacy_level').value = item.privacy_level as PrivacyLevel } }
+          ? { onClick: () => { token('privacy_level').value = item.privacy_level as LibraryPrivacyLevelEnum } }
           : { disabled: true }
         "
       >

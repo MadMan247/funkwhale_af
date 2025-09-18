@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Library, BackendError, PrivacyLevel } from '~/types'
+import type { Library, BackendError, PrivacyLevelEnum } from '~/types'
 
 import { useI18n } from 'vue-i18n'
 import { computed, ref } from 'vue'
@@ -11,7 +11,7 @@ import useSharedLabels from '~/composables/locale/useSharedLabels'
 
 import DangerousButton from '~/components/common/DangerousButton.vue'
 
-const PRIVACY_LEVELS = ['me', 'instance', 'everyone'] as PrivacyLevel[]
+const PRIVACY_LEVELS = ['me', 'instance', 'everyone'] as PrivacyLevelEnum[]
 
 interface Events {
   (e: 'updated', data: Library): void

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PrivacyLevel } from '~/types'
+import type { PrivacyLevelEnum } from '~/types'
 
 import { humanSize, truncate } from '~/utils/filters'
 import { useI18n } from 'vue-i18n'
@@ -15,7 +15,7 @@ import useLogger from '~/composables/useLogger'
 
 import DangerousButton from '~/components/common/DangerousButton.vue'
 
-const PRIVACY_LEVELS = ['me', 'instance', 'everyone'] as PrivacyLevel[]
+const PRIVACY_LEVELS = ['me', 'instance', 'everyone'] as PrivacyLevelEnum[]
 
 interface Props {
   id: number
@@ -226,7 +226,7 @@ const updateObj = async (attr: string) => {
                         </option>
                       </select>
                       <template v-else>
-                        {{ sharedLabels.fields.privacy_level.shortChoices[object.privacy_level as PrivacyLevel] }}
+                        {{ sharedLabels.fields.privacy_level.shortChoices[object.privacy_level as PrivacyLevelEnum] }}
                       </template>
                     </td>
                   </tr>

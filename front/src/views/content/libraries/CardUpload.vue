@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Library, PrivacyLevel } from '~/types'
+import type { Library, PrivacyLevelEnum } from '~/types'
 
 import { useI18n } from 'vue-i18n'
 import { computed } from 'vue'
@@ -26,7 +26,7 @@ const sharedLabels = useSharedLabels()
 // TODO: Check if this is still needed:
 // const sizeLabel = computed(() => t('views.content.libraries.Card.label.size'))
 
-const privacyTooltips = (level: PrivacyLevel) => `Visibility: ${sharedLabels.fields.privacy_level.choices[level].toLowerCase()}`
+const privacyTooltips = (level: PrivacyLevelEnum) => `Visibility: ${sharedLabels.fields.privacy_level.choices[level].toLowerCase()}`
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PrivacyLevel, ImportStatus } from '~/types'
+import type { PrivacyLevelEnum, ImportStatus } from '~/types'
 
 import { humanSize, truncate } from '~/utils/filters'
 import { useRouter } from 'vue-router'
@@ -46,7 +46,7 @@ const showUploadDetailModal = ref(false)
 const open = ref(false)
 
 const privacyLevels = computed(() =>
-  sharedLabels.fields.privacy_level.shortChoices[object.value?.library?.privacy_level as PrivacyLevel]
+  sharedLabels.fields.privacy_level.shortChoices[object.value?.library?.privacy_level as PrivacyLevelEnum]
 )
 const importStatus = computed(() =>
   sharedLabels.fields.import_status.choices[object.value?.import_status as ImportStatus]?.label
