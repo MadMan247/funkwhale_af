@@ -270,22 +270,22 @@ const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value]
           <i class="compact disc icon" />
           {{ t('components.library.Artists.empty.noResults') }}
         </Alert>
-        <Card
-          v-if="store.state.auth.authenticated"
-          :title="t('components.library.Artists.button.upload')"
-          solid
-          small
-          primary
-          style="text-align: center;"
-          :to="useModal('upload').to"
-        >
-          <template #image>
-            <i
-              class="bi bi-upload"
-              style="font-size: 100px; position: relative; top: 50px;"
-            />
-          </template>
-        </Card>
+        <Layout flex>
+          <Card
+            v-if="store.state.auth.authenticated"
+            :title="t('components.library.Artists.button.upload')"
+            primary
+            style="text-align: center;"
+            :to="useModal('upload').to"
+          >
+            <template #image>
+              <i
+                class="bi bi-upload"
+                style="font-size: 100px; position: relative; top: 50px;"
+              />
+            </template>
+          </Card>
+        </Layout>
       </Layout>
       <Spacer grow />
       <Pagination

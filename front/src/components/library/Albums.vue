@@ -258,22 +258,22 @@ const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value]
         <i class="bi bi-disc" />
         {{ t('components.library.Albums.empty.noResults') }}
       </Alert>
-      <Card
-        v-if="store.state.auth.authenticated"
-        :title="t('components.library.Albums.link.addMusic')"
-        solid
-        small
-        primary
-        style="text-align: center;"
-        :to="useModal('upload').to"
-      >
-        <template #image>
-          <i
-            class="bi bi-upload"
-            style="font-size: 100px; position: relative; top: 50px;"
-          />
-        </template>
-      </Card>
+      <Layout flex>
+        <Card
+          v-if="store.state.auth.authenticated"
+          :title="t('components.library.Albums.link.addMusic')"
+          primary
+          style="text-align: center;"
+          :to="useModal('upload').to"
+        >
+          <template #image>
+            <i
+              class="bi bi-upload"
+              style="font-size: 100px; position: relative; top: 50px;"
+            />
+          </template>
+        </Card>
+      </Layout>
     </Layout>
     <Spacer grow />
     <Pagination
