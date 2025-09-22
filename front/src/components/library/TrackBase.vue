@@ -156,7 +156,6 @@ watch(showDeleteModal, (newValue) => {
 <template>
   <Layout
     main
-    raised
     stack
   >
     <Loader
@@ -203,8 +202,6 @@ watch(showDeleteModal, (newValue) => {
       </template>
       <artist-credit-label
         :artist-credit="track.artist_credit"
-        default
-        raised
       />
       <div class="meta">
         <span>{{ t('components.library.TrackBase.title') }}</span>
@@ -238,16 +235,19 @@ watch(showDeleteModal, (newValue) => {
           v-if="store.state.auth.authenticated"
           :track="track"
           square-small
+          raised
         />
         <TrackPlaylistIcon
           v-if="store.state.auth.authenticated"
           :track="track"
           square-small
+          raised
         />
         <Popover v-model="open">
           <template #default="{ toggleOpen }">
             <OptionsButton
               is-square-small
+              raised
               @click="toggleOpen"
             />
           </template>
@@ -360,7 +360,6 @@ watch(showDeleteModal, (newValue) => {
         :actor="track?.attributed_to"
         :avatar="false"
       />
-
       <time
         :title="track?.creation_date"
         :datetime="track?.creation_date"

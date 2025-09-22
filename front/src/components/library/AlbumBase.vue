@@ -144,7 +144,6 @@ const remove = async () => {
 <template>
   <Layout
     main
-    raised
     stack
   >
     <Loader
@@ -174,8 +173,6 @@ const remove = async () => {
       <artist-credit-label
         v-if="artistCredit"
         :artist-credit="artistCredit"
-        default
-        raised
       />
       <!-- Metadata: -->
       <Layout

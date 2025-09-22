@@ -313,6 +313,7 @@ const renderedDescription = computed(() => {
             <OptionsButton
               is-square-small
               @click="toggleOpen"
+              raised
             />
           </template>
           <template #items>
@@ -449,6 +450,7 @@ const renderedDescription = computed(() => {
         </Modal>
         <Button
           secondary
+          raised
           icon="bi-rss"
           square-small
           @click.stop.prevent="showSubscribeModal = true"

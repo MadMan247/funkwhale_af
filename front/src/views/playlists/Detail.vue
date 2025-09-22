@@ -154,7 +154,6 @@ const shuffle = () => { }
 
 <template>
   <Layout
-    raised
     main
   >
     <Loader

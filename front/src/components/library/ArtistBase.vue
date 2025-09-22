@@ -137,7 +137,6 @@ const isOpen = useModal('artist-description').isOpen
   <Layout
     stack
     main
-    raised
   >
     <Loader v-if="isLoading" />
     <Header
