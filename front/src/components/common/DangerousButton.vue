@@ -49,6 +49,7 @@ const confirm = () => {
     <Modal
       v-if="!props.popoverItem"
       v-model="showModal"
+      isDestructive
       :title="title || t('components.common.DangerousButton.header.confirm')"
       :cancel="t('components.common.DangerousButton.button.cancel')"
     >
@@ -58,7 +59,7 @@ const confirm = () => {
         align-items: center;"
       >
         <i
-          class="bi bi-exclamation-octagon  destructive ghost"
+          class="bi bi-exclamation-octagon destructive ghost"
           style="font-size: 6rem;"
         />
         <div>
@@ -68,7 +69,7 @@ const confirm = () => {
       <template #actions>
         <Spacer grow />
         <Button
-          ghost
+          destructive
           v-bind="{[{success: 'primary', danger: 'destructive'}[confirmColor || 'danger']]: true}"
           @click="confirm"
         >

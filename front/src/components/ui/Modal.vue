@@ -14,7 +14,7 @@ const { t } = useI18n()
 const props = defineProps<{
   title: string,
   overPopover?: true,
-  destructive?: true,
+  isDestructive?: true,
   cancel?: string | true,
   icon?: string,
   autofocus?: true | 'off'
@@ -56,7 +56,7 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
           class="funkwhale modal"
           :class="[
             {
-              'is-destructive': destructive,
+              'isDestructive': isDestructive,
               'has-alert': !!$slots.alert,
               'over-popover': overPopover,
             }
@@ -167,7 +167,7 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
 
   position: relative;
 
-  &.is-destructive {
+  &.isDestructive {
     border-top: 24px solid var(--fw-red-400);
 
     > h2 {
