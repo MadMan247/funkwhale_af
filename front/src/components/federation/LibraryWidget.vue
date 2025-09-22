@@ -81,6 +81,7 @@ watch(() => props.url, () => {
     <Layout
       v-if="!isLoading && libraries.length > 0"
       flex
+      no-gap
     >
       {{ t('components.federation.LibraryWidget.main') }}
       <template
@@ -90,6 +91,7 @@ watch(() => props.url, () => {
         <ActorLink
           :actor="library.actor"
           discrete
+          raised
         />
       </template>
     </Layout>
