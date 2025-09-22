@@ -49,6 +49,7 @@ const labels = computed(() => ({
       <Link
         v-if="store.state.auth.availablePermissions['library']"
         icon="bi-wrench"
+        solid
         secondary
         :to="{name: 'manage.library.tags.detail', params: {id: id}}"
       >
