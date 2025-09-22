@@ -460,7 +460,7 @@ watchDebounced(queryDebounced, search, {
           </Alert>
           <template #footer>
             <Spacer grow />
-            <Loader v-if="status === 'pending'" />
+            <Loader v-if="status === 'loading'" />
             <label>
               {{ t('components.Home.link.viewMore') }}
             </label>
@@ -507,7 +507,7 @@ watchDebounced(queryDebounced, search, {
           </Alert>
           <template #footer>
             <Spacer grow />
-            <Loader v-if="status === 'pending'" />
+            <Loader v-if="status === 'loading'" />
           </template>
         </Card>
 
@@ -530,10 +530,10 @@ watchDebounced(queryDebounced, search, {
 
       <Section
         v-for="{ value: { refetch, status, data, error, key } } in [dataStore.tags_({
-            q: query,
-            page: 1,
-            page_size: 20,
-          })]"
+          q: query,
+          page: 1,
+          page_size: 20,
+         })]"
         :key
         :columns-per-item="3"
         :action="{
@@ -574,9 +574,9 @@ watchDebounced(queryDebounced, search, {
 
       <Section
         v-for="{ value: { refetch, status, data, error, key } } in [dataStore.playlists({
-        q: query,
-        page: 1,
-        page_size: cardsPerRow() - 1,
+          q: query,
+          page: 1,
+          page_size: cardsPerRow() - 1,
         })]"
         :key
         :columns-per-item="3"
@@ -601,7 +601,7 @@ watchDebounced(queryDebounced, search, {
           </Alert>
           <template #footer>
             <Spacer grow />
-            <Loader v-if="status === 'pending'" />
+            <Loader v-if="status === 'loading'" />
             <label>
               {{ t('components.Home.link.viewMore') }}
             </label>
@@ -621,10 +621,10 @@ watchDebounced(queryDebounced, search, {
 
       <Section
         v-for="{ value: { refetch, status, data, error, key } } in [dataStore.radios({
-            q: query,
-            page: 1,
-            page_size: cardsPerRow() - 1,
-          })]"
+          q: query,
+          page: 1,
+          page_size: cardsPerRow() - 1,
+        })]"
         :key
         :columns-per-item="3"
         :action="{
@@ -648,7 +648,7 @@ watchDebounced(queryDebounced, search, {
           </Alert>
           <template #footer>
             <Spacer grow />
-            <Loader v-if="status === 'pending'" />
+            <Loader v-if="status === 'loading'" />
             <label>
               {{ t('components.Home.link.viewMore') }}
             </label>
@@ -669,12 +669,12 @@ watchDebounced(queryDebounced, search, {
 
       <Section
         v-for="{ value: { refetch, status, data, error, key } } in [dataStore.artists({
-            q: query,
-            content_category: 'podcast',
-            include_channels: true,
-            page: 1,
-            page_size: cardsPerRow() - 1,
-          })]"
+          q: query,
+          content_category: 'podcast',
+          include_channels: true,
+          page: 1,
+          page_size: cardsPerRow() - 1,
+        })]"
         :key
         :columns-per-item="3"
         :action="{
@@ -698,7 +698,7 @@ watchDebounced(queryDebounced, search, {
           </Alert>
           <template #footer>
             <Spacer grow />
-            <Loader v-if="status === 'pending'" />
+            <Loader v-if="status === 'loading'" />
             <label>
               {{ t('components.Home.link.viewMore') }}
             </label>
@@ -718,12 +718,12 @@ watchDebounced(queryDebounced, search, {
 
       <Section
         v-for="{ value: { refetch, status, data, error, key } } in [dataStore.albums({
-            q: query,
-            content_category: 'podcast',
-            include_channels: true,
-            page: 1,
-            page_size: cardsPerRow() - 1,
-          })]"
+          q: query,
+          content_category: 'podcast',
+          include_channels: true,
+          page: 1,
+          page_size: cardsPerRow() - 1,
+        })]"
         :key
         :columns-per-item="3"
         :action="{
@@ -747,7 +747,7 @@ watchDebounced(queryDebounced, search, {
           </Alert>
           <template #footer>
             <Spacer grow />
-            <Loader v-if="status === 'pending'" />
+            <Loader v-if="status === 'loading'" />
           </template>
         </Card>
 

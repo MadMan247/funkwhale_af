@@ -54,13 +54,30 @@ export type GetFirstResponse<N extends Name> = paths[PathFirst<N>]['get']['respo
 
 // ======================================================================
 // Remote data
-type Data<T> = Ref<
-  | { status: "success",  error?: null,data: T , lastUpdated: number }
-  | { status: "error", error: Error, data?: T, lastUpdated: number }
-  | { status: "pending", error?: null, data?: T, lastUpdated: number }
->
+type Data<T> =
+  | { status: 'notAsked', error?: null, data?: T }
+  | { status: 'pending', error?: null, data?: T, lastUpdated: number }
+  | { status: 'loading', error?: null, data?: T, lastUpdated: number }
+  | { status: 'success',  error?: null, data: T , lastUpdated: number }
+  | { status: 'error', error: Error, data?: T, lastUpdated: number }
 
+const notAsked = () => ({ status: 'notAsked' } as const)
 
+const setPending = <T>(remoteData: Data<T>):Data<T> & {status: 'pending'} => ({
+  ...remoteData, status: 'pending', error: null, lastUpdated: Date.now()
+} as const)
+
+const setLoading = <T>(remoteData: Data<T> & { status: 'pending' | 'success' | 'error' }):Data<T> & {status: 'loading'}  => ({
+    ...remoteData, status: 'loading', error: null, lastUpdated: Date.now()
+} as const)
+
+const setSuccess = <T>(remoteData: Data<T> & { status: 'loading' }, data: T):Data<T> & {status: 'success'} => ({
+   ...remoteData, status: 'success', data, error: null, lastUpdated: Date.now()
+} as const)
+
+const setError = <T>(remoteData: Data<T> & { status: 'loading' }, error: Error):Data<T> & {status: 'error'} => ({
+  ...remoteData, status: 'error', error, lastUpdated: Date.now()
+} as const)
 
 // ======================================================================
 // Search results
@@ -200,52 +217,46 @@ export const useDataStore
       tags: new Map<Key, Data<GetPaginatedResponses<'tags'>>>()
     } as const )
 
-    const items = <N extends Name>( name: N) => ( params: Params<N>) => {
-      // console.log("CREATE ITEM QUERY")
+    const maxAge = 5*60000 // Invalidate searches every 5 minutes
+
+    const createResource = <N extends Name>( name: N) => ( params: Params<N>) => {
       const key = hash(params)
+      const cached = computed<Data<GetPaginatedResponses<N>>>({
+        get: () => searches.value[name].get(key) || notAsked(),
+        set: (value) => (searches.value[name] as Map<Key, Data<GetPaginatedResponses<N>>>).set(key, value)
+      })
 
-      const inCache: Data<GetPaginatedResponses<N>>
-        = searches.value[name].get(key)
-        ?? ref({ status: 'pending', lastUpdated: Date.now() } as const)
+      const isStale
+        = () => cached.value.status === 'notAsked'
+        || cached.value.lastUpdated < Date.now() - maxAge
 
-      if (!searches.value[name].has(key)) {
-        (searches.value[name] as Map<Key, Data<GetPaginatedResponses<N>>>).set(key, inCache )
-      }
+      const fetch = async () => {
 
-      if (inCache.value.lastUpdated < Date.now() - 2000) {
-        // console.log("AUTOFETCH STALE DATA")
-      (async () => { try {
-        await rateLimiter.greenlight([name, params]);
-        const { data } = await axios.get<GetPaginatedResponses<N>>(name, { params })
-        inCache.value = { status: 'success', data, lastUpdated: Date.now() };
+            try {
+              cached.value = setPending(cached.value)
+              await rateLimiter.greenlight([name, params])
+              cached.value = setLoading(cached.value as Data<GetPaginatedResponses<N>> & {status: 'pending'})
+              const { data } = await axios.get<GetPaginatedResponses<N>>(name, { params })
+              cached.value = setSuccess(cached.value as Data<GetPaginatedResponses<N>> & {status: 'loading'}, data)
+            } catch (error) {
+              if (isRateLimiterError(error as Error)) {
+                logger.info(error)
+              } else {
+                logger.error(`Error fetching multiple ${name} with filter/params ${JSON.stringify(params)}:`, error);
+                if (cached.value.status === 'loading')
+                  cached.value = setError(cached.value, error as Error)
+              }
+            }
+          }
 
-      } catch (error) {
-        if (isRateLimiterError(error as Error)) {
-          logger.info(error)
-        } else {
-          logger.error(`Error fetching multiple ${name} with filter/params ${JSON.stringify(params)}:`, error);
-          inCache.value = { ...inCache.value, status: 'error', error: error as Error };
-        }
-      } })()
-      } else {
-        // console.log("ABORT CREATION OF ITEM QUERY")
-      }
+      if (isStale()) fetch()
 
-      const refetch = () => {
-        // console.log("REFETCH")
-        axios.get<GetPaginatedResponses<N>>(name, { params })
-          .then(({data}) => {
-            inCache.value = { status: 'success', data, lastUpdated: Date.now() }
-        }).catch (error => {
-          logger.error(`Error refetching multiple ${name} with filter/params ${JSON.stringify(params)} (skipping rate limiter):`, error);
-          inCache.value = { ...inCache.value, status: 'error', error: error as Error };
-        })
-      }
-
+      // Add `key` and `refetch` to the reactive object
       return computed(()=> ({
-        ...(searches.value[name].get(key) as Data<GetPaginatedResponses<N>>).value,
-        key: hash([name, params]),
-        refetch
+        ...searches.value[name].get(key) as Data<GetPaginatedResponses<N>>,
+        // key: hash([name, params]),
+        key: 'key',
+        refetch: fetch
       }))
     }
 
@@ -254,49 +265,49 @@ export const useDataStore
      * @returns a reactive object with fields `status` (`error`, `success` or `pending`) and nullable fields `data` and `error`
      * as well as a `refetch` method (skipping the rate limiter) and a unique `key` (for use with v-for)
      */
-    const artists = items('artists')
+    const artists = createResource('artists')
 
     /**
      * @param params - filter to find the albums
      * @returns a reactive object with fields `status` (`error`, `success` or `pending`) and nullable fields `data` and `error`
      * as well as a `refetch` method (skipping the rate limiter) and a unique `key` (for use with v-for)
      */
-    const albums = items('albums')
+    const albums = createResource('albums')
 
     /**
      * @param params - filter to find the tracks
      * @returns a reactive object with fields `status` (`error`, `success` or `pending`) and nullable fields `data` and `error`
      * as well as a `refetch` method (skipping the rate limiter) and a unique `key` (for use with v-for)
      */
-    const tracks = items('tracks')
+    const tracks = createResource('tracks')
 
     /**
      * @param params - filter to find the channels
      * @returns a reactive object with fields `status` (`error`, `success` or `pending`) and nullable fields `data` and `error`
      * as well as a `refetch` method (skipping the rate limiter) and a unique `key` (for use with v-for)
      */
-    const channels = items('channels')
+    const channels = createResource('channels')
 
     /**
      * @param params - filter to find the radios
      * @returns a reactive object with fields `status` (`error`, `success` or `pending`) and nullable fields `data` and `error`
      * as well as a `refetch` method (skipping the rate limiter) and a unique `key` (for use with v-for)
      */
-    const radios = items('radios/radios')
+    const radios = createResource('radios/radios')
 
     /**
      * @param params - filter to find the tags
      * @returns a reactive object with fields `status` (`error`, `success` or `pending`) and nullable fields `data` and `error`
      * as well as a `refetch` method (skipping the rate limiter) and a unique `key` (for use with v-for)
      */
-    const tags_ = items('tags')
+    const tags_ = createResource('tags')
 
     /**
      * @param params - filter to find the playlists
      * @returns a reactive object with fields `status` (`error`, `success` or `pending`) and nullable fields `data` and `error`
      * as well as a `refetch` method (skipping the rate limiter) and a unique `key` (for use with v-for)
      */
-    const playlists = items('playlists')
+    const playlists = createResource('playlists')
 
     return {
       data,
