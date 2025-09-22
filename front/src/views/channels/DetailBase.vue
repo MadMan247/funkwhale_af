@@ -312,8 +312,8 @@ const renderedDescription = computed(() => {
           <template #default="{ toggleOpen }">
             <OptionsButton
               is-square-small
-              @click="toggleOpen"
               raised
+              @click="toggleOpen"
             />
           </template>
           <template #items>

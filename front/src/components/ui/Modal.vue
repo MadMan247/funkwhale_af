@@ -14,7 +14,7 @@ const { t } = useI18n()
 const props = defineProps<{
   title: string,
   overPopover?: true,
-  isDestructive?: true,
+  isdestructive?: true,
   cancel?: string | true,
   icon?: string,
   autofocus?: true | 'off'
@@ -56,7 +56,7 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
           class="funkwhale modal"
           :class="[
             {
-              'isDestructive': isDestructive,
+              'isdestructive': isdestructive,
               'has-alert': !!$slots.alert,
               'over-popover': overPopover,
             }
@@ -91,7 +91,7 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
               v-if="title !== ''"
               :h2="title"
               section-heading
-              :class="{ 'destructive-header': destructive }"
+              :class="{ 'destructive-header': isdestructive }"
             />
             <Spacer grow />
             <Button
@@ -167,7 +167,7 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
 
   position: relative;
 
-  &.isDestructive {
+  &.isdestructive {
     border-top: 24px solid var(--fw-red-400);
 
     > h2 {

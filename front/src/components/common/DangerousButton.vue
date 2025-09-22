@@ -49,7 +49,7 @@ const confirm = () => {
     <Modal
       v-if="!props.popoverItem"
       v-model="showModal"
-      isDestructive
+      isdestructive
       :title="title || t('components.common.DangerousButton.header.confirm')"
       :cancel="t('components.common.DangerousButton.button.cancel')"
     >
