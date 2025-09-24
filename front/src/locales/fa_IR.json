@@ -3,6 +3,12 @@
     "loading": "بار کردن…"
   },
   "components": {
+    "About": {
+      "header": {
+        "aboutPod": "درباره این پاد",
+        "findApp": "یک کارهٔ پیدا کنید"
+      }
+    },
     "Home": {
       "header": {
         "links": "لینک های مفید"
@@ -356,6 +362,11 @@
         "link": {
           "domain": "به روز شده در { date }"
         }
+      }
+    },
+    "radios": {
+      "Detail": {
+        "title": "رادیو"
       }
     }
   },
