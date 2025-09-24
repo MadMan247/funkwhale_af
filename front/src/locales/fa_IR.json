@@ -6,7 +6,75 @@
     "About": {
       "header": {
         "aboutPod": "درباره این پاد",
-        "findApp": "یک کارهٔ پیدا کنید"
+        "findApp": "یک کارهٔ پیدا کنید",
+        "funkwhale": "یک پلتفرم اجتماعی، برای لذت بردن و به اشتراک گذاشتن موسیقی",
+        "publicContent": "مرور محتوای عمومی",
+        "signup": "نام‌نویسی"
+      },
+      "help": {
+        "closedRegistrations": "نام‌نویسی در این پاد بسته شده است. می‌توانید با استفاده از نشانی زیر در پاد دیگری نام‌نویسی کنید."
+      },
+      "link": {
+        "findOtherPod": "یافتن پاد دیگر",
+        "learnMore": "بیشتر بدانید"
+      },
+      "message": {
+        "greeting": "درود {username}",
+        "loggedIn": "شما قبلاً وارد سیستم شده‌اید!"
+      },
+      "placeholder": {
+        "noDescription": "شرح موجود نیست"
+      },
+      "stat": {
+        "activeUsers": "بدون کاربر فعال | {n} کاربر فعال | {n} کاربر فعال",
+        "hoursOfMusic": "0 ساعت موسیقی | {n} ساعت موسیقی | {n} ساعت موسیقی"
+      },
+      "title": "درباره"
+    },
+    "AboutPod": {
+      "feature": {
+        "allowList": "سیاهه-مجاز",
+        "anonymousAccess": "دسترسی ناشناس",
+        "federation": "فدراسیون",
+        "quota": "سهمیه بارگذاری",
+        "registrations": "نام‌نویسی‌ها",
+        "status": {
+          "closed": "بسته شد",
+          "disabled": "غیرفعال شده",
+          "enabled": "فعال شده",
+          "open": "باز‌کن"
+        },
+        "version": "نسخهٔ فانک‌وال"
+      },
+      "header": {
+        "about": "‫درباره این پاد",
+        "contact": "تماس",
+        "features": "ویژگی‌ها",
+        "rules": "شرایط همزیستی",
+        "statistics": "آمار",
+        "terms": "شرایط و ضوابط و سیاست حفظ حریم خصوصی"
+      },
+      "link": {
+        "about": "درباره این پاد",
+        "features": "ویژگی‌ها",
+        "introduction": "مقدمهٔ",
+        "rules": "شرایط همزیستی",
+        "statistics": "آمار",
+        "terms": "شرایط و ضوابط و سیاست حفظ حریم خصوصی"
+      },
+      "message": {
+        "contact": "برای ما رایانامهٔ ارسال کنید: { contactEmail }"
+      },
+      "notApplicable": "ن/آ",
+      "placeholder": {
+        "noDescription": "توضیحات موجود نیست",
+        "noRules": "هیچ شرایط همزیستی در دسترس نیست",
+        "noTerms": "هیچ شرایطی موجود نیست"
+      },
+      "stat": {
+        "activeUsers": "بدون کاربر فعال | {n} کاربر فعال | {n} کاربر فعال",
+        "albumsCount": "0 جُنگ‌ها | {n} جُنگ | {n} جُنگ‌ها",
+        "artistsCount": "0 هنرمندان | {n} هنرمند | {n} هنرمندان"
       }
     },
     "Home": {
