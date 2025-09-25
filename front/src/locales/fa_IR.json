@@ -75,11 +75,99 @@
         "activeUsers": "بدون کاربر فعال | {n} کاربر فعال | {n} کاربر فعال",
         "albumsCount": "0 جُنگ‌ها | {n} جُنگ | {n} جُنگ‌ها",
         "artistsCount": "0 هنرمندان | {n} هنرمند | {n} هنرمندان"
-      }
+      },
+      "title": "درباره"
     },
     "Home": {
       "header": {
-        "links": "لینک های مفید"
+        "aboutFunkwhale": "درباره فانک‌وال",
+        "contact": "تماس",
+        "links": "لینک های مفید",
+        "login": "ورود",
+        "newAlbums": "جُنگهای به تازگی اضافه شده",
+        "newChannels": "کانال‌های جدید",
+        "signup": "نام‌نویسی",
+        "statistics": "آمار"
+      },
+      "link": {
+        "funkwhale": "به funkwhale.audio مراجعه کنید",
+        "learnMore": "بیشتر یادبگیرید",
+        "mobileApps": {
+          "label": "کاره‌های موبایل"
+        },
+        "publicContent": {
+          "label": "مرور محتوای عمومی"
+        },
+        "rules": "شرایط همزیستی کارساز",
+        "userGuides": {
+          "label": "راهنماهای کاربر"
+        },
+        "viewMore": "مشاهده بیشتر…"
+      },
+      "placeholder": {
+        "noDescription": "توضیحات موجود نیست"
+      },
+      "title": "خانه"
+    },
+    "PageNotFound": {
+      "header": {
+        "pageNotFound": "صفحهٔ یافت نشد!"
+      },
+      "link": {
+        "home": "رفتن به صفحه خانه"
+      },
+      "title": "صفحه یافت نشد"
+    },
+    "Queue": {
+      "button": {
+        "clear": "زدودن",
+        "close": "بستن",
+        "stopRadio": "بازایستادن رادیو"
+      },
+      "header": {
+        "failure": "اثر قابل بارگیری نیست",
+        "noSources": "این اثر هیچ منبع در دسترسی ندارد.",
+        "radio": "شما یک رادیو در حال پخش دارید"
+      },
+      "label": {
+        "duration": "مدت‌زمان",
+        "enterFullscreen": "حالت تمام‏پرده",
+        "exitFullscreen": "خارج از حالت تمام‏پرده",
+        "favorite": "اثر مورد علاقه",
+        "next": "اثر بعدی",
+        "pause": "وقفه",
+        "play": "اجرا",
+        "populatingRadio": "در حال کشیدن اثر رادیویی…",
+        "previous": "اثر قبلی",
+        "queue": "نشانی",
+        "remove": "برداشتن",
+        "restart": "شروع مجدد اثر",
+        "selectTrack": "انتخاب اثر",
+        "showCoverArt": "نمایش طرح جلد"
+      },
+      "meta": {
+        "end": "پایان",
+        "startTime": "00:00",
+        "unknownAlbum": "جُنگ ناشناخته",
+        "unknownArtist": "هنرمند ناشناخته"
+      }
+    },
+    "RemoteSearchForm": {
+      "button": {
+        "fediverse": "فدیورِس",
+        "rss": "جارزن",
+        "search": "جست‌و‌جو"
+      },
+      "label": {
+        "rss": {
+          "fieldLabel": "مکان جارزن هم‌بس",
+          "title": "در جارزن هم‌بس پادپخش، مشترک شوید"
+        }
+      }
+    },
+    "ShortcutsModal": {
+      "button": {
+        "close": "بستن"
       }
     },
     "Sidebar": {
@@ -443,6 +531,15 @@
     "albums": "{n} جُنگ | {n} جُنگ‌ها",
     "aria": {
       "close": "بستن",
+      "pagination": {
+        "gotoNext": "رفتن به صفحه بعدی",
+        "gotoPrevious": "رفتن به صفحه پیشین",
+        "nav": "پادکنش ناوبری صفحه‌بندی"
+      },
+      "password": {
+        "hide": "پنهان کردن گذرواژه",
+        "show": "نمایش گذرواژه"
+      },
       "text": {
         "heading1": "عنوان۱",
         "heading2": "عنوان۲",
@@ -450,6 +547,7 @@
         "heading4": "عنوان۴",
         "heading5": "‎عنوان۵",
         "heading6": "عنوان۶",
+        "link": "پیوندٔ",
         "orderedList": "سیاهه مرتب شده",
         "paragraph": "بند",
         "quote": "نقل قول",
@@ -467,9 +565,10 @@
       "next": "بعدی",
       "previous": "قبلی"
     },
+    "pressKey": "فشار{key}",
     "preview": "پیش‌نمایش",
     "radio": "رادیو",
-    "resetTo": "تنظیم مجدد به {مقدار قبلی}",
+    "resetTo": "بازنشانی مجدد به {مقدار قبلی}",
     "tracks": "{n} اثر | {n} اثر‌ها"
   }
 }
