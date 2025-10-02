@@ -101,7 +101,7 @@
         "contact": "تماس",
         "links": "لینک های مفید",
         "login": "ورود",
-        "newAlbums": "جُنگهای به تازگی اضافه شده",
+        "newAlbums": "جُنگ های به تازگی اضافه شده",
         "newChannels": "کانال‌های جدید",
         "signup": "نام‌نویسی",
         "statistics": "آمار",
@@ -190,6 +190,7 @@
     },
     "Sidebar": {
       "link": {
+        "albums": "جُنگ ها",
         "users": "کاربرها"
       }
     },
@@ -214,10 +215,35 @@
           "owner": "نام کاربری"
         }
       },
+      "Search": {
+        "header": {
+          "albums": "جُنگ‌ها"
+        }
+      },
+      "SearchBar": {
+        "label": {
+          "album": "جُنگ"
+        }
+      },
+      "album": {
+        "Widget": {
+          "button": {
+            "more": "نمایش بیشتر"
+          }
+        }
+      },
+      "podcast": {
+        "Modal": {
+          "button": {
+            "albumDetails": "مشاهده جٌنگ"
+          }
+        }
+      },
       "track": {
         "Table": {
           "table": {
             "header": {
+              "album": "جُنگ",
               "title": "عنوان"
             }
           }
@@ -264,6 +290,24 @@
           "albumTitle": "عنوان"
         }
       },
+      "AlbumModal": {
+        "button": {
+          "cancel": "لغو",
+          "create": "ایجاد"
+        },
+        "header": {
+          "newAlbum": "جُنگ جدید"
+        }
+      },
+      "AlbumSelect": {
+        "add": "اضافهٔ کردن آلبوم",
+        "label": {
+          "album": "جُنگ"
+        },
+        "option": {
+          "none": "هیچ‌کدام"
+        }
+      },
       "UploadMetadataForm": {
         "label": {
           "title": "عنوان"
@@ -302,10 +346,49 @@
       }
     },
     "library": {
+      "AlbumBase": {
+        "link": {
+          "addDescription": "اضافه کردن توضیحات…"
+        },
+        "title": "جُنگ"
+      },
+      "AlbumDetail": {
+        "header": {
+          "episodes": "قسمت‌ها"
+        }
+      },
       "AlbumDropdown": {
+        "button": {
+          "cancel": "لغو",
+          "delete": "برداشتن",
+          "edit": "ویرایش",
+          "embed": "جاسازی",
+          "more": "بیشتر…"
+        },
         "link": {
           "domain": "به روز شده در { date }"
         }
+      },
+      "AlbumEdit": {
+        "header": {
+          "edit": "ویرایش این جُنگ"
+        }
+      },
+      "Albums": {
+        "button": {
+          "search": "جست‌و‌جو"
+        },
+        "header": {
+          "browse": "مرور آلبوم‌ها..."
+        },
+        "label": {
+          "search": "جست‌و‌جو",
+          "tags": "برچسب‌ها"
+        },
+        "placeholder": {
+          "search": "عنوان جُنگ را وارد کنید…"
+        },
+        "title": "جُنگ‌ها"
       },
       "ArtistBase": {
         "link": {
@@ -554,7 +637,7 @@
         "gotoNext": "رفتن به صفحه بعدی",
         "gotoPage": "رفتن به صفحه {n}",
         "gotoPrevious": "رفتن به صفحه پیشین",
-        "nav": "پادکنش ناوبری صفحه‌بندی"
+        "nav": "پیمایش صفحه‌ای"
       },
       "password": {
         "hide": "پنهان کردن گذرواژه",
@@ -574,7 +657,7 @@
         "paragraph": "بند",
         "quote": "نقل قول",
         "strikethrough": "خط خورده",
-        "unorderedList": "فهرست نامرتب"
+        "unorderedList": "سیاهه نامرتب"
       }
     },
     "by-user": "توسط {username}",
