@@ -296,7 +296,7 @@ def update_actor_privacy(actor, privacy_level):
     # to do : trigger federation privacy_level downgrade #2336
 
 
-class BuildInLibException(Exception):
+class BuiltInLibException(Exception):
     pass
 
 
@@ -323,18 +323,20 @@ def get_or_create_builtin_actor_library(actor, privacy_level):
     response.raise_for_status()
     data = response.json()
     if len(data["results"]) == 0:
-        raise BuildInLibException(
+        raise BuiltInLibException(
             f"Could not find built-in lib  {privacy_level} for actor {actor}"
         )
     elif not len(data["results"]) == 1:
-        raise BuildInLibException(
+        raise BuiltInLibException(
             f"Too many built-in lib {privacy_level} for actor {actor}"
         )
     else:
         lib, created = music_models.Library.objects.get_or_create(
             actor=actor,
             playlist__isnull=True,
-            privacy_level="everyone",
-            name="everyone",
+            privacy_level=privacy_level,
+            name=privacy_level,
+            uuid=data["results"][0]["id"].split("/")[-1],
+            fid=data["results"][0]["id"],
         )
         return lib

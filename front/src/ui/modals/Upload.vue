@@ -10,7 +10,7 @@ import Layout from '~/components/ui/Layout.vue'
 import Spacer from '~/components/ui/Spacer.vue'
 import Card from '~/components/ui/Card.vue'
 
-import type { Channel, LibraryPrivacyLevelEnum } from '~/types'
+import type { Channel, PrivacyLevelEnum } from '~/types'
 import ChannelUpload from '~/components/channels/UploadForm.vue'
 import LibraryUpload from '~/components/library/FileUpload.vue'
 
@@ -24,7 +24,7 @@ type UploadDestination =
   | { type: 'library' }
 
 type State =
-    { uploadDestination? : UploadDestination, page: typeof pages[number], files?: string[] }
+  { uploadDestination?: UploadDestination, page: typeof pages[number], files?: string[] }
 
 // initial state
 const init = () => (
@@ -65,87 +65,46 @@ watch(state, ({ page }, oldValue) => {
 // Step 1.1
 
 // Load the library for the chosen privacy level
-const privacyLevel = ref<LibraryPrivacyLevelEnum>('me')
+const privacyLevel = ref<PrivacyLevelEnum>('me')
 
 const modalTitle = computed(() =>
-  ({ selectDestination: 'Upload', uploadFiles: 'Select files for upload', uploadsInProgress: 'Uploading...' }
-    [state.value.page])
+({ selectDestination: 'Upload', uploadFiles: 'Select files for upload', uploadsInProgress: 'Uploading...' }
+[state.value.page])
 )
 
 const channelUpload = ref()
 </script>
 
 <template>
-  <Modal
-    v-model="isOpen"
-    :title="modalTitle"
-  >
-    <template
-      v-if="goBack"
-      #topleft
-    >
-      <Button
-        icon="bi-chevron-compact-left"
-        :title="t('components.channels.UploadModal.button.previous')"
-        @click="goBack"
-      />
+  <Modal v-model="isOpen" :title="modalTitle">
+    <template v-if="goBack" #topleft>
+      <Button icon="bi-chevron-compact-left" :title="t('components.channels.UploadModal.button.previous')"
+        @click="goBack" />
       <Spacer grow />
     </template>
 
-    <Transition
-      mode="out-in"
-      :class="direction"
-    >
+    <Transition mode="out-in" :class="direction">
       <!-- Page content -->
       <!-- Page 1 -->
 
-      <Layout
-        v-if="state.page === 'selectDestination'"
-        flex
-        style="place-content:center"
-      >
-        <Card
-          small
-          solid
-          title="Music"
-          icon="bi-upload"
-          @click="destinationSelected({ type: 'library' })"
-        >
+      <Layout v-if="state.page === 'selectDestination'" flex style="place-content:center">
+        <Card small solid title="Music" icon="bi-upload" @click="destinationSelected({ type: 'library' })">
           <template #image>
-            <i
-              class="bi bi-headphones solid secondary raised"
-              :class="$style.icon"
-            />
+            <i class="bi bi-headphones solid secondary raised" :class="$style.icon" />
           </template>
           {{ t('modals.upload.library') }}
         </Card>
-        <Card
-          small
-          solid
-          title="Music"
-          icon="bi-upload primary solid"
-          @click="destinationSelected({ type: 'channel', filter: 'music' })"
-        >
+        <Card small solid title="Music" icon="bi-upload primary solid"
+          @click="destinationSelected({ type: 'channel', filter: 'music' })">
           <template #image>
-            <i
-              class="bi bi-music-note-beamed solid primary"
-              :class="$style.icon"
-            />
+            <i class="bi bi-music-note-beamed solid primary" :class="$style.icon" />
           </template>
           {{ t('modals.upload.musicChannel') }}
         </Card>
-        <Card
-          small
-          solid
-          title="Podcast"
-          icon="bi-upload primary solid"
-          @click="destinationSelected({ type: 'channel', filter: 'podcast' })"
-        >
+        <Card small solid title="Podcast" icon="bi-upload primary solid"
+          @click="destinationSelected({ type: 'channel', filter: 'podcast' })">
           <template #image>
-            <i
-              class="bi bi-mic-fill solid primary"
-              :class="$style.icon"
-            />
+            <i class="bi bi-mic-fill solid primary" :class="$style.icon" />
           </template>
           {{ t('modals.upload.podcastChannel') }}
         </Card>
@@ -153,42 +112,21 @@ const channelUpload = ref()
 
       <!-- Page 2 -->
 
-      <Layout
-        v-else-if="state.page === 'uploadFiles'"
-        stack
-      >
-        <ChannelUpload
-          v-if="state.uploadDestination?.type === 'channel'"
-          ref="channelUpload"
-          :filter="state.uploadDestination.filter"
-          :channel="state.uploadDestination?.channel || null"
-        />
+      <Layout v-else-if="state.page === 'uploadFiles'" stack>
+        <ChannelUpload v-if="state.uploadDestination?.type === 'channel'" ref="channelUpload"
+          :filter="state.uploadDestination.filter" :channel="state.uploadDestination?.channel || null" />
 
-        <LibraryUpload
-          v-if="state.uploadDestination?.type === 'library'"
-          v-model="privacyLevel"
-        />
+        <LibraryUpload v-if="state.uploadDestination?.type === 'library'" v-model="privacyLevel" />
         {{ state.files }}
       </Layout>
     </Transition>
 
     <template #actions>
-      <Spacer
-        h
-        grow
-      />
-      <Button
-        v-if="state.page === 'uploadFiles' && !channelUpload"
-        primary
-        @click="() => { isOpen = false }"
-      >
+      <Spacer h grow />
+      <Button v-if="state.page === 'uploadFiles' && !channelUpload" primary @click="() => { isOpen = false }">
         {{ t('components.channels.UploadModal.button.finishLater') }}
       </Button>
-      <Button
-        v-if="channelUpload"
-        primary
-        @click="() => { channelUpload.publish(); isOpen = false }"
-      >
+      <Button v-if="channelUpload" primary @click="() => { channelUpload.publish(); isOpen = false }">
         {{ t('components.channels.UploadModal.button.publish') }}
       </Button>
     </template>
@@ -197,10 +135,10 @@ const channelUpload = ref()
 
 <style module>
 .icon {
-  font-size:100px;
-  padding:28px;
-  inset:0;
-  display:block;
+  font-size: 100px;
+  padding: 28px;
+  inset: 0;
+  display: block;
   text-align: center;
 }
 </style>
@@ -209,23 +147,27 @@ const channelUpload = ref()
 .v-leave-active {
   transition: all 0.5s ease;
 }
+
 .v-enter-from,
 .v-leave-to {
   opacity: 0;
+
   &.forward {
-      transform: translateX(100%);
+    transform: translateX(100%);
   }
+
   &.backward {
-      transform: translateX(-100%);
+    transform: translateX(-100%);
   }
 }
 
 .v-leave-to {
-    &.forward {
-        transform: translateX(100%);
-    }
-    &.backward {
-        transform: translateX(-100%);
-    }
+  &.forward {
+    transform: translateX(100%);
+  }
+
+  &.backward {
+    transform: translateX(-100%);
+  }
 }
 </style>

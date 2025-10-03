@@ -781,3 +781,36 @@ def test_update_library_privacy_level_create_entries(
 def test_save_upload_quality(factories, mimetype, bitrate, quality):
     upload = factories["music.Upload"](mimetype=mimetype, bitrate=bitrate)
     assert upload.quality == quality
+
+
+def test_viewable_by_followers(factories):
+    library = factories["music.Library"](
+        privacy_level="followers", name="followers", actor__local=False
+    )
+    upload = factories["music.Upload"](
+        library=library, import_status="finished", playable=True
+    )
+    follower = factories["federation.Actor"](local=True)
+    factories["federation.Follow"](target=library.actor, actor=follower, approved=True)
+    assert (
+        models.Upload.objects.filter(pk=upload.pk).playable_by(follower).exists()
+        is True
+    )
+    assert models.Track.objects.all().playable_by(follower).exists() is True
+    assert models.Album.objects.all().playable_by(follower).exists() is True
+
+
+def test_trackactor_create_entries(factories):
+    library = factories["music.Library"](
+        privacy_level="followers", name="followers", actor__local=False
+    )
+    upload = factories["music.Upload"](
+        library=library, import_status="finished", playable=True
+    )
+    follower = factories["federation.Actor"](local=True)
+    factories["federation.Follow"](target=library.actor, actor=follower, approved=True)
+    models.TrackActor.create_entries(library)
+
+    assert (
+        models.TrackActor.objects.filter(upload=upload, actor=follower).exists() is True
+    )

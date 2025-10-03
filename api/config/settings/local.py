@@ -127,7 +127,6 @@ SPECTACULAR_SETTINGS = {
         "FederationChoiceEnum": "funkwhale_api.federation.models.TYPE_CHOICES",
         "ReportTypeEnum": "funkwhale_api.moderation.models.REPORT_TYPES",
         "PrivacyLevelEnum": "funkwhale_api.common.fields.PRIVACY_LEVEL_CHOICES",
-        "LibraryPrivacyLevelEnum": "funkwhale_api.music.models.LIBRARY_PRIVACY_LEVEL_CHOICES",
     },
     "COMPONENT_SPLIT_REQUEST": True,
 }

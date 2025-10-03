@@ -1,5 +1,6 @@
 import io
 import uuid
+from unittest.mock import Mock
 
 import pytest
 from django.core.paginator import Paginator
@@ -18,6 +19,7 @@ from funkwhale_api.federation import (
 )
 from funkwhale_api.moderation import serializers as moderation_serializers
 from funkwhale_api.music import licenses
+from funkwhale_api.music import models as music_models
 
 
 def test_actor_serializer_from_ap(db):
@@ -2060,3 +2062,30 @@ def test_artist_credit_serializer_to_ap(factories):
     }
 
     assert serializer.data == expected
+
+
+def test_accept_follow_trigger_built_in_lib_creation(factories, mocker):
+    lib = factories["music.Library"](privacy_level="everyone")
+    lib_followers = factories["music.Library"](privacy_level="followers")
+    mocker.patch("funkwhale_api.federation.activity.OutboxRouter.dispatch")
+    mock_session = Mock()
+    mock_response = Mock()
+    # first response is for everyone lib, second for followers
+    mock_response.json.side_effect = [
+        {"results": [serializers.LibrarySerializer(lib).data]},
+        {"results": [serializers.LibrarySerializer(lib_followers).data]},
+    ]
+    mock_session.get.return_value = mock_response
+    mocker.patch(
+        "funkwhale_api.federation.utils.session.get_session",
+        return_value=mock_session,
+    )
+    lib.delete()
+    lib_followers.delete()
+
+    follow = factories["federation.Follow"](approved=None, target__local=False)
+    lib_data = serializers.AcceptFollowSerializer(follow).data
+    serializer = serializers.AcceptFollowSerializer(data=lib_data)
+    serializer.is_valid()
+    serializer.save()
+    assert music_models.Library.objects.filter(actor=follow.target).count() == 2

@@ -3,8 +3,8 @@ import datetime
 import pytest
 from django.urls import reverse
 
+from funkwhale_api.common import fields
 from funkwhale_api.federation import utils as federation_utils
-from funkwhale_api.music import models as music_models
 from funkwhale_api.users import models
 
 
@@ -186,7 +186,7 @@ def test_creating_actor_from_user(factories, settings):
 def test_creating_libraries_from_user(factories, settings):
     user = factories["users.User"](username="Hello M. world", with_actor=True)
     models.create_user_libraries(user)
-    for privacy_level, desc in music_models.LIBRARY_PRIVACY_LEVEL_CHOICES:
+    for privacy_level, desc in fields.PRIVACY_LEVEL_CHOICES:
         assert (
             user.actor.libraries.filter(
                 name=privacy_level, privacy_level=privacy_level, actor=user.actor

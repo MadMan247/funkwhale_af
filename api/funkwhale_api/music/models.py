@@ -1293,11 +1293,6 @@ class ImportJob(models.Model):
         return super().save(**kwargs)
 
 
-LIBRARY_PRIVACY_LEVEL_CHOICES = [
-    (k, l) for k, l in fields.PRIVACY_LEVEL_CHOICES if k != "followers"
-]
-
-
 class LibraryQuerySet(models.QuerySet):
     def local(self, include=True):
         query = models.Q(actor__domain_id=settings.FEDERATION_HOSTNAME)
@@ -1320,7 +1315,7 @@ class LibraryQuerySet(models.QuerySet):
         if actor is None:
             return self.filter(privacy_level="everyone")
 
-        me_query = models.Q(privacy_level="me", actor=actor)
+        me_query = models.Q(privacy_level__in=["me", "followers"], actor=actor)
         instance_query = models.Q(privacy_level="instance", actor__domain=actor.domain)
         followed_libraries = LibraryFollow.objects.filter(
             actor=actor, approved=True
@@ -1337,12 +1332,17 @@ class LibraryQuerySet(models.QuerySet):
             reachable=True
         ) | federation_models.Domain.objects.filter(name=settings.FUNKWHALE_HOSTNAME)
 
+        # User follow
+        followed_actors = Follow.objects.filter(actor=actor, approved=True).values_list(
+            "target", flat=True
+        )
         return self.filter(
             me_query
             | instance_query
             | models.Q(privacy_level="everyone")
             | models.Q(pk__in=followed_libraries)
             | models.Q(pk__in=followed_channels_libraries)
+            | models.Q(actor__in=followed_actors, privacy_level="followers")
             & models.Q(actor__domain__in=domains_reachable)
         )
 
@@ -1355,7 +1355,7 @@ class Library(federation_models.FederationMixin):
     creation_date = models.DateTimeField(default=timezone.now)
     name = models.CharField(max_length=100)
     privacy_level = models.CharField(
-        choices=LIBRARY_PRIVACY_LEVEL_CHOICES, default="me", max_length=25
+        choices=fields.PRIVACY_LEVEL_CHOICES, default="me", max_length=25
     )
     uploads_count = models.PositiveIntegerField(default=0)
     objects = LibraryQuerySet.as_manager()
@@ -1489,7 +1489,19 @@ class TrackActor(models.Model):
                     objs.append(
                         cls(actor_id=actor_id, track_id=track_id, upload_id=upload_id)
                     )
-
+        elif library.privacy_level == "followers":
+            follow_queryset = library.actor.received_follows
+            follow_queryset = follow_queryset.filter(approved=True).exclude(
+                actor__user__isnull=True
+            )
+            if actor_ids:
+                follow_queryset = follow_queryset.filter(actor__pk__in=actor_ids)
+            final_actor_ids = list(follow_queryset.values_list("actor", flat=True))
+            for actor_id in final_actor_ids:
+                for upload_id, track_id in upload_and_track_ids:
+                    objs.append(
+                        cls(actor_id=actor_id, track_id=track_id, upload_id=upload_id)
+                    )
         elif library.privacy_level == "instance":
             for upload_id, track_id in upload_and_track_ids:
                 objs.append(

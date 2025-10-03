@@ -6813,7 +6813,7 @@ export interface components {
             /** Format: date-time */
             creation_date?: string;
             readonly uploads_count: number;
-            privacy_level?: components["schemas"]["LibraryPrivacyLevelEnum"];
+            privacy_level?: components["schemas"]["PrivacyLevelEnum"];
             follow?: components["schemas"]["NestedLibraryFollow"] | null;
             latest_scan?: components["schemas"]["LibraryScan"] | null;
         };
@@ -6835,7 +6835,7 @@ export interface components {
             /** Format: uri */
             readonly fid: string;
             name: string;
-            privacy_level?: components["schemas"]["LibraryPrivacyLevelEnum"];
+            privacy_level?: components["schemas"]["PrivacyLevelEnum"];
             readonly uploads_count: number;
             readonly size: number;
             /** Format: date-time */
@@ -6844,15 +6844,8 @@ export interface components {
         };
         LibraryForOwnerRequest: {
             name: string;
-            privacy_level?: components["schemas"]["LibraryPrivacyLevelEnum"];
+            privacy_level?: components["schemas"]["PrivacyLevelEnum"];
         };
-        /**
-         * @description * `me` - Only me
-         *     * `instance` - Everyone on my instance, and my followers
-         *     * `everyone` - Everyone, including people on other instances
-         * @enum {string}
-         */
-        LibraryPrivacyLevelEnum: "me" | "instance" | "everyone";
         LibraryRequest: {
             /** Format: uri */
             fid: string;
@@ -6862,7 +6855,7 @@ export interface components {
             name: string;
             /** Format: date-time */
             creation_date?: string;
-            privacy_level?: components["schemas"]["LibraryPrivacyLevelEnum"];
+            privacy_level?: components["schemas"]["PrivacyLevelEnum"];
             follow?: components["schemas"]["NestedLibraryFollowRequest"] | null;
             latest_scan?: components["schemas"]["LibraryScanRequest"] | null;
         };
@@ -7190,14 +7183,14 @@ export interface components {
             readonly is_local: boolean;
             /** Format: date-time */
             readonly creation_date: string;
-            privacy_level?: components["schemas"]["LibraryPrivacyLevelEnum"];
+            privacy_level?: components["schemas"]["PrivacyLevelEnum"];
             readonly uploads_count: number;
             actor: components["schemas"]["ManageBaseActor"];
         };
         ManageLibraryRequest: {
             name: string;
             domain: string;
-            privacy_level?: components["schemas"]["LibraryPrivacyLevelEnum"];
+            privacy_level?: components["schemas"]["PrivacyLevelEnum"];
             actor: components["schemas"]["ManageBaseActorRequest"];
         };
         ManageNestedArtist: {
@@ -7241,7 +7234,7 @@ export interface components {
             readonly is_local: boolean;
             /** Format: date-time */
             creation_date?: string;
-            privacy_level?: components["schemas"]["LibraryPrivacyLevelEnum"];
+            privacy_level?: components["schemas"]["PrivacyLevelEnum"];
             actor: components["schemas"]["ManageBaseActor"];
         };
         ManageNestedLibraryRequest: {
@@ -7255,7 +7248,7 @@ export interface components {
             domain: string;
             /** Format: date-time */
             creation_date?: string;
-            privacy_level?: components["schemas"]["LibraryPrivacyLevelEnum"];
+            privacy_level?: components["schemas"]["PrivacyLevelEnum"];
             actor: components["schemas"]["ManageBaseActorRequest"];
         };
         ManageNestedTrack: {
@@ -8434,7 +8427,7 @@ export interface components {
         PatchedManageLibraryRequest: {
             name?: string;
             domain?: string;
-            privacy_level?: components["schemas"]["LibraryPrivacyLevelEnum"];
+            privacy_level?: components["schemas"]["PrivacyLevelEnum"];
             actor?: components["schemas"]["ManageBaseActorRequest"];
         };
         PatchedManageReportRequest: {
@@ -8491,7 +8484,7 @@ export interface components {
             channel?: string;
             /** @default pending */
             import_status: components["schemas"]["ImportStatusEnum"];
-            privacy_level?: components["schemas"]["LibraryPrivacyLevelEnum"];
+            privacy_level?: components["schemas"]["PrivacyLevelEnum"];
             import_metadata?: components["schemas"]["ImportMetadataRequest"];
             import_reference?: string;
             source?: string | null;
@@ -8893,7 +8886,7 @@ export interface components {
         UploadBulkUpdateRequest: {
             /** Format: uuid */
             uuid: string;
-            privacy_level: components["schemas"]["LibraryPrivacyLevelEnum"];
+            privacy_level: components["schemas"]["PrivacyLevelEnum"];
         };
         UploadForOwner: {
             /** Format: uuid */
@@ -8912,7 +8905,7 @@ export interface components {
             readonly import_date: string | null;
             /** @default pending */
             import_status: components["schemas"]["ImportStatusEnum"];
-            privacy_level?: components["schemas"]["LibraryPrivacyLevelEnum"];
+            privacy_level?: components["schemas"]["PrivacyLevelEnum"];
             readonly import_details: unknown;
             import_metadata?: components["schemas"]["ImportMetadata"];
             import_reference?: string;
@@ -8926,7 +8919,7 @@ export interface components {
             channel?: string;
             /** @default pending */
             import_status: components["schemas"]["ImportStatusEnum"];
-            privacy_level?: components["schemas"]["LibraryPrivacyLevelEnum"];
+            privacy_level?: components["schemas"]["PrivacyLevelEnum"];
             import_metadata?: components["schemas"]["ImportMetadataRequest"];
             import_reference?: string;
             source?: string | null;
@@ -11463,6 +11456,7 @@ export interface operations {
     get_libraries: {
         parameters: {
             query?: {
+                actor?: string;
                 /** @description Which field to use when ordering the results. */
                 ordering?: string;
                 /** @description A page number within the paginated result set. */
@@ -11470,9 +11464,10 @@ export interface operations {
                 /** @description Number of results to return per page. */
                 page_size?: number;
                 /** @description * `me` - Only me
+                 *     * `followers` - Me and my followers
                  *     * `instance` - Everyone on my instance, and my followers
                  *     * `everyone` - Everyone, including people on other instances */
-                privacy_level?: "everyone" | "instance" | "me";
+                privacy_level?: "everyone" | "followers" | "instance" | "me";
                 q?: string;
                 scope?: string;
             };
@@ -12309,9 +12304,10 @@ export interface operations {
                 /** @description Number of results to return per page. */
                 page_size?: number;
                 /** @description * `me` - Only me
+                 *     * `followers` - Me and my followers
                  *     * `instance` - Everyone on my instance, and my followers
                  *     * `everyone` - Everyone, including people on other instances */
-                privacy_level?: "everyone" | "instance" | "me";
+                privacy_level?: "everyone" | "followers" | "instance" | "me";
                 q?: string;
             };
             header?: never;
@@ -18412,6 +18408,7 @@ export interface operations {
     get_libraries_2: {
         parameters: {
             query?: {
+                actor?: string;
                 /** @description Which field to use when ordering the results. */
                 ordering?: string;
                 /** @description A page number within the paginated result set. */
@@ -18419,9 +18416,10 @@ export interface operations {
                 /** @description Number of results to return per page. */
                 page_size?: number;
                 /** @description * `me` - Only me
+                 *     * `followers` - Me and my followers
                  *     * `instance` - Everyone on my instance, and my followers
                  *     * `everyone` - Everyone, including people on other instances */
-                privacy_level?: "everyone" | "instance" | "me";
+                privacy_level?: "everyone" | "followers" | "instance" | "me";
                 q?: string;
                 scope?: string;
             };
@@ -19258,9 +19256,10 @@ export interface operations {
                 /** @description Number of results to return per page. */
                 page_size?: number;
                 /** @description * `me` - Only me
+                 *     * `followers` - Me and my followers
                  *     * `instance` - Everyone on my instance, and my followers
                  *     * `everyone` - Everyone, including people on other instances */
-                privacy_level?: "everyone" | "instance" | "me";
+                privacy_level?: "everyone" | "followers" | "instance" | "me";
                 q?: string;
             };
             header?: never;

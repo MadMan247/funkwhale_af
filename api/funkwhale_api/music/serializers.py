@@ -10,6 +10,7 @@ from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from funkwhale_api.activity import serializers as activity_serializers
+from funkwhale_api.common import fields
 from funkwhale_api.common import models as common_models
 from funkwhale_api.common import serializers as common_serializers
 from funkwhale_api.common import utils as common_utils
@@ -375,7 +376,7 @@ class UploadSerializer(serializers.ModelSerializer):
         filters=lambda context: {"actor": context["user"].actor},
     )
     privacy_level = serializers.ChoiceField(
-        choices=models.LIBRARY_PRIVACY_LEVEL_CHOICES, required=False
+        choices=fields.PRIVACY_LEVEL_CHOICES, required=False
     )
     channel = common_serializers.RelatedField(
         "uuid",
@@ -546,9 +547,7 @@ class UploadForOwnerSerializer(UploadSerializer):
 
 class UploadBulkUpdateSerializer(serializers.Serializer):
     uuid = serializers.UUIDField()
-    privacy_level = serializers.ChoiceField(
-        choices=models.LIBRARY_PRIVACY_LEVEL_CHOICES
-    )
+    privacy_level = serializers.ChoiceField(choices=fields.PRIVACY_LEVEL_CHOICES)
 
     def validate(self, data):
         try:

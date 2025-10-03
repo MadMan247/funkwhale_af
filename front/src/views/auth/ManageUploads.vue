@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { LibraryPrivacyLevelEnum, Upload } from '~/types'
+import type { PrivacyLevelEnum, Upload } from '~/types'
 import type { SmartSearchProps } from '~/composables/navigation/useSmartSearch'
 import type { OrderingProps } from '~/composables/navigation/useOrdering'
 import type { RouteRecordName } from 'vue-router'
@@ -73,9 +73,9 @@ const selectedItems = computed(() =>
 watch(result, r => {
   items.value = r
     ? r.results.map((result, index) => ({
-        ...result,
-        selected: items.value.at(index)?.selected || false
-      }))
+      ...result,
+      selected: items.value.at(index)?.selected || false
+    }))
     : []
 })
 
@@ -86,7 +86,7 @@ const isAllSelected = computed<boolean | 'mixed'>({
       ? true
       : items.value.some(({ selected }) => selected)
         ? 'mixed'
-          : false,
+        : false,
   set: function (isTrue) {
     items.value
       = items.value.map(item => ({
@@ -99,18 +99,18 @@ const isAllSelected = computed<boolean | 'mixed'>({
 // For privacy slider and <select>
 
 // Model for use in global slider `privacy_level`
-const globalPrivacyLevel = computed<LibraryPrivacyLevelEnum | undefined>({
-  get () {
+const globalPrivacyLevel = computed<PrivacyLevelEnum | undefined>({
+  get() {
     return selectedItems.value.length === 0
       ? undefined
       : selectedItems.value.map(({ privacy_level }) => privacy_level)
         .reduce((acc, item) =>
           acc === item
-          ? acc
-          : undefined
+            ? acc
+            : undefined
         )
-    },
-  set (level) {
+  },
+  set(level) {
     if (level === undefined) return
 
     const changes = []
@@ -147,14 +147,16 @@ const isLoading = ref(false)
 const fetchData = async () => {
   isLoading.value = true
   try {
-    const response = await axios.get<paths['/api/v2/uploads/']['get']['responses']['200']['content']['application/json']>('/uploads/', { params: {
-      scope: 'me',
-      page: page.value,
-      page_size: paginateBy.value,
-      ordering: orderingString.value,
-      ...Object.fromEntries(tokens.get()),
-      ...props.filters
-    }})
+    const response = await axios.get<paths['/api/v2/uploads/']['get']['responses']['200']['content']['application/json']>('/uploads/', {
+      params: {
+        scope: 'me',
+        page: page.value,
+        page_size: paginateBy.value,
+        ordering: orderingString.value,
+        ...Object.fromEntries(tokens.get()),
+        ...props.filters
+      }
+    })
 
     result.value = response.data
   } catch (error) {
@@ -180,8 +182,9 @@ const showUploadDetailModal = ref(false)
 const privacyOptions = {
   me: sharedLabels.fields.privacy_level.choices.me,
   instance: sharedLabels.fields.privacy_level.choices.instance,
+  followers: sharedLabels.fields.privacy_level.choices.followers,
   everyone: sharedLabels.fields.privacy_level.choices.everyone
-} as const satisfies Record<LibraryPrivacyLevelEnum, string>
+} as const satisfies Record<PrivacyLevelEnum, string>
 
 
 // Current logic:
@@ -249,8 +252,7 @@ const query = useRouteQuery<string>('query', '')
 // syncRef(q, query, { direction: 'ltr' })
 
 /* Go to first page whenever the query parameters change  */
-watch([query, ordering], () =>
-  { page.value = 1 }
+watch([query, ordering], () => { page.value = 1 }
 )
 
 /* Represent the `q` parameter of the Url as a Map of tokens.
@@ -276,7 +278,7 @@ const tokens = {
   set: (dict: Map<string, string>) => {
     const fullText = dict.get('q') ?? ''
     const keyValuePairs = Array.from(dict)
-      .filter(([key, value]) => key !== 'q' )
+      .filter(([key, value]) => key !== 'q')
       .map(([key, value]) => `${key}:${value}`)
 
     query.value = [fullText, ...keyValuePairs].filter(part => part.trim()).join(' ')
@@ -354,35 +356,20 @@ fetchData()
 
 <template>
   <Spacer />
-  <Layout
-    form
-    flex
-    @submit.prevent="fetchData"
-  >
+  <Layout form flex @submit.prevent="fetchData">
     <!-- Enter a search string and start the search -->
 
     <!-- TODO (2.0.0+): Replace with `Pills` component and allow editing all tokens (filters) -->
 
-    <Input
-      v-model="search"
-      :label="t('components.manage.library.UploadsTable.label.search')"
-      :placeholder="labels.searchPlaceholder"
-      search
-      style="min-width: min(100%, 520px)"
-    />
+    <Input v-model="search" :label="t('components.manage.library.UploadsTable.label.search')"
+      :placeholder="labels.searchPlaceholder" search style="min-width: min(100%, 520px)" />
 
     <!-- Filter the search results -->
 
     <!-- TODO (2.0.0+): Integrate these filters as `Pills` into above control -->
 
-    <Select
-      v-for="[id, filter] in Object.entries(searchFilters)"
-      :id="`uploads-${id}`"
-      :key="id"
-      v-model:current="filter.current"
-      v-model:options="filter.options"
-      :label="filter.label"
-    />
+    <Select v-for="[id, filter] in Object.entries(searchFilters)" :id="`uploads-${id}`" :key="id"
+      v-model:current="filter.current" v-model:options="filter.options" :label="filter.label" />
   </Layout>
 
   <Spacer />
@@ -391,12 +378,8 @@ fetchData()
 
   <div :class="['default solid raised', $style.toolbox]">
     <Spacer />
-    <Slider
-      v-model="globalPrivacyLevel"
-      :disabled="selectedItems.length === 0 ? true : undefined"
-      :options="privacyOptions"
-      :label="`Privacy level (${ selectedItems.length } items)`"
-    />
+    <Slider v-model="globalPrivacyLevel" :disabled="selectedItems.length === 0 ? true : undefined"
+      :options="privacyOptions" :label="`Privacy level (${selectedItems.length} items)`" />
   </div>
 
   <!-- Select my items -->
@@ -404,28 +387,15 @@ fetchData()
   <!-- TODO (wvffle): Check if :upload shouldn't be v-model:upload -->
   <!-- Alternative design: v-model of type components['schemas']['UploadForOwner'] | null (:show would be non-null) -->
   <!-- TODO (2.0.0+): Check if we can safely upgrade from type Upload to type components['schemas']['UploadForOwner'] -->
-  <import-status-modal
-    v-if="detailedUpload"
-    v-model:show="showUploadDetailModal"
-    :upload="detailedUpload as unknown as Upload"
-  />
-  <Loader
-    v-if="isLoading"
-    style="height: 0;"
-  />
+  <import-status-modal v-if="detailedUpload" v-model:show="showUploadDetailModal"
+    :upload="detailedUpload as unknown as Upload" />
+  <Loader v-if="isLoading" style="height: 0;" />
 
-  <Table
-    v-if="result"
-    :grid-template-columns="['auto', 'auto', 'auto', 'auto', 'auto', 'auto']"
-  >
+  <Table v-if="result" :grid-template-columns="['auto', 'auto', 'auto', 'auto', 'auto', 'auto']">
     <template #header>
       <!-- 0. select -->
       <b>
-        <input
-          v-model="isAllSelected"
-          type="checkbox"
-          title="Select/Deselect all"
-        >
+        <input v-model="isAllSelected" type="checkbox" title="Select/Deselect all">
       </b>
       <!-- 1. filename -->
       <b>
@@ -448,66 +418,46 @@ fetchData()
         {{ t('components.manage.library.UploadsTable.table.upload.header.creationDate') }}
       </b>
     </template>
-    <template
-      v-for="item in items"
-      :key="item.uuid"
-    >
+    <template v-for="item in items" :key="item.uuid">
       <!-- 0. select -->
 
       <b>
-        <input
-          v-model="item.selected"
-          type="checkbox"
-          title="Select"
-        >
+        <input v-model="item.selected" type="checkbox" title="Select">
       </b>
 
       <!-- 1. filename -->
 
-      <Link
-        :to="{
-          name: 'manage.library.uploads.detail',
-          params: { id: item.uuid }
-        }"
-      >
-        {{ truncate(displayName(item), 30, undefined, true) }}
+      <Link :to="{
+        name: 'manage.library.uploads.detail',
+        params: { id: item.uuid }
+      }">
+      {{ truncate(displayName(item), 30, undefined, true) }}
       </Link>
 
       <!-- 2. privacy_level -->
 
-      <Pill
-        :title="t('components.manage.library.UploadsTable.table.upload.header.visibility')"
-        v-bind="item.privacy_level
-          ? { onClick: () => { token('privacy_level').value = item.privacy_level as LibraryPrivacyLevelEnum } }
-          : { disabled: true }
-        "
-      >
+      <Pill :title="t('components.manage.library.UploadsTable.table.upload.header.visibility')" v-bind="item.privacy_level
+        ? { onClick: () => { token('privacy_level').value = item.privacy_level as PrivacyLevelEnum } }
+        : { disabled: true }
+        ">
         {{ item.privacy_level }}
       </Pill>
 
       <!-- 3. import_status -->
 
-      <Pill
-        :title="t('components.manage.library.UploadsTable.table.upload.header.importStatus')"
-        v-bind="{ [{
+      <Pill :title="t('components.manage.library.UploadsTable.table.upload.header.importStatus')" v-bind="{
+        [{
           draft: 'yellow',
           pending: 'blue',
           finished: 'green',
           errored: 'red',
           skipped: 'purple',
-        }[item.import_status]]: true }"
-        @click="() => { token('import_status').value = item.import_status }"
-      >
+        }[item.import_status]]: true
+      }" @click="() => { token('import_status').value = item.import_status }">
         {{ item.import_status }}
         <template #action>
-          <Button
-            ghost
-            primary
-            round
-            icon="bi-info-circle-fill"
-            :title="sharedLabels.fields.import_status.label"
-            @click="detailedUpload = item; showUploadDetailModal = true"
-          />
+          <Button ghost primary round icon="bi-info-circle-fill" :title="sharedLabels.fields.import_status.label"
+            @click="detailedUpload = item; showUploadDetailModal = true" />
         </template>
       </Pill>
 
@@ -522,37 +472,35 @@ fetchData()
 
       <!-- 5. date -->
 
-      <human-date
-        v-if="item.import_date"
-        :date="item.import_date"
-      />
+      <human-date v-if="item.import_date" :date="item.import_date" />
       <span v-else>
         {{ t('components.manage.library.UploadsTable.notApplicable') }}
       </span>
     </template>
   </Table>
 
-  <Pagination
-    v-if="page && result && result.count > paginateBy"
-    v-model:page="page"
-    :pages="Math.ceil(result.count / paginateBy)"
-  />
+  <Pagination v-if="page && result && result.count > paginateBy" v-model:page="page"
+    :pages="Math.ceil(result.count / paginateBy)" />
 
   <span v-if="page && result && result.results.length > 0">
-    {{ t('components.manage.library.UploadsTable.pagination.results', { start: ((page-1) * paginateBy) + 1, end: ((page-1) * paginateBy) + result.results.length, total: result.count }) }}
+    {{ t('components.manage.library.UploadsTable.pagination.results', {
+      start: ((page - 1) * paginateBy) + 1, end:
+        ((page - 1)
+          * paginateBy) + result.results.length, total: result.count
+    }) }}
   </span>
 </template>
 
 <style module>
 .toolbox {
-    margin: 0 -32px;
-    padding: 32px;
-    max-height: 20em;
-    transition: opacity 0.2s ease-in-out;
+  margin: 0 -32px;
+  padding: 32px;
+  max-height: 20em;
+  transition: opacity 0.2s ease-in-out;
 
-    &:has([disabled]) {
-      opacity: 0.5;
-      pointer-events: none;
-    }
+  &:has([disabled]) {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 }
 </style>

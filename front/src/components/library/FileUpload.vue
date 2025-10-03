@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { BackendError, FileSystem, Library, LibraryPrivacyLevelEnum } from '~/types'
+import type { BackendError, FileSystem, Library, PrivacyLevelEnum } from '~/types'
 import type { VueUploadItem } from 'vue-upload-component'
 import type { paths } from '~/generated/types'
 
@@ -31,7 +31,7 @@ import Layout from '~/components/ui/Layout.vue'
 import Table from '~/components/ui/Table.vue'
 
 interface Events {
-  (e: 'uploads-finished', delta: number):void
+  (e: 'uploads-finished', delta: number): void
 }
 
 interface Props {
@@ -78,10 +78,11 @@ const sharedLabels = useSharedLabels()
 const options = {
   me: sharedLabels.fields.privacy_level.choices.me,
   instance: sharedLabels.fields.privacy_level.choices.instance,
+  followers: sharedLabels.fields.privacy_level.choices.followers,
   everyone: sharedLabels.fields.privacy_level.choices.everyone
-} as const satisfies Record<LibraryPrivacyLevelEnum, string>
+} as const satisfies Record<PrivacyLevelEnum, string>
 
-const privacyLevel = defineModel<LibraryPrivacyLevelEnum | undefined>({ required: true })
+const privacyLevel = defineModel<PrivacyLevelEnum | undefined>({ required: true })
 
 const library = ref<Library>()
 
@@ -352,8 +353,9 @@ const isServerDisclosureOpen = ref(false)
 </script>
 
 <template>
-  <div :class="{loading: isLoadingQuota}">
-    <div :class="['ui', {red: remainingSpace === 0}, {warning: remainingSpace > 0 && remainingSpace <= 50}, 'small', 'statistic']">
+  <div :class="{ loading: isLoadingQuota }">
+    <div
+      :class="['ui', { red: remainingSpace === 0 }, { warning: remainingSpace > 0 && remainingSpace <= 50 }, 'small', 'statistic']">
       <div class="label">
         {{ t('components.library.FileUpload.label.remainingSpace') }}
       </div>
@@ -362,11 +364,8 @@ const isServerDisclosureOpen = ref(false)
       </div>
     </div>
   </div>
-  <Slider
-    v-model="privacyLevel"
-    :options="options"
-    :label="t('components.manage.library.UploadsTable.label.visibility')"
-  />
+  <Slider v-model="privacyLevel" :options="options"
+    :label="t('components.manage.library.UploadsTable.label.visibility')" />
 
   <Alert blue>
     <p>
@@ -378,10 +377,8 @@ const isServerDisclosureOpen = ref(false)
       </li>
       <li>
         {{ t('components.library.FileUpload.message.local.tag') }}&nbsp;
-        <a
-          href="http://picard.musicbrainz.org/"
-          target="_blank"
-        >{{ t('components.library.FileUpload.link.picard') }}</a>
+        <a href="http://picard.musicbrainz.org/" target="_blank">{{ t('components.library.FileUpload.link.picard')
+          }}</a>
       </li>
       <li>
         {{ t('components.library.FileUpload.message.local.format') }}
@@ -389,68 +386,48 @@ const isServerDisclosureOpen = ref(false)
     </ul>
   </Alert>
 
-  <file-upload-widget
-    ref="upload"
-    v-model="files"
-    :class="$style.uploader"
-    :data="uploadData"
-    @input-file="inputFile"
-  >
-    <Button
-      primary
-      icon="bi bi-upload"
-    >
+  <file-upload-widget ref="upload" v-model="files" :class="$style.uploader" :data="uploadData" @input-file="inputFile">
+    <Button primary icon="bi bi-upload">
       {{ t('components.library.FileUpload.label.uploadWidget') }}
     </Button>
     <p>
-      {{ t('components.library.FileUpload.label.extensions', {extensions: supportedExtensions.join(', ')}) }}
+      {{ t('components.library.FileUpload.label.extensions', { extensions: supportedExtensions.join(', ') }) }}
     </p>
   </file-upload-widget>
 
   <!-- Show how many files are uploading and processing -->
 
-  <Layout
-    v-if="files.length > 0"
-    flex
-  >
-    <Layout
-      flex
-      gap-8
-    >
+  <Layout v-if="files.length > 0" flex>
+    <Layout flex gap-8>
       <label>{{ t('components.library.FileUpload.link.uploading') }}</label>
-      <Pill
-        v-bind="{
-          'green': erroredFilesCount === 0,
-          'red': erroredFilesCount > 0,
-          'yellow': files.length > uploadedFilesCount + erroredFilesCount
-        }"
-      >
-        {{ t('components.library.FileUpload.table.upload.progressNum', {current: uploadedFilesCount + erroredFilesCount, total: files.length}) }}
+      <Pill v-bind="{
+        'green': erroredFilesCount === 0,
+        'red': erroredFilesCount > 0,
+        'yellow': files.length > uploadedFilesCount + erroredFilesCount
+      }">
+        {{ t('components.library.FileUpload.table.upload.progressNum', {
+          current: uploadedFilesCount + erroredFilesCount,
+          total: files.length
+        }) }}
       </Pill>
     </Layout>
-    <Layout
-      flex
-      gap-8
-    >
+    <Layout flex gap-8>
       <label>{{ t('components.library.FileUpload.link.processing') }}</label>
       <Pill>
-        {{ t('components.library.FileUpload.table.upload.progressNum', {current: processedFilesCount, total: processableFiles}) }}
+        {{ t('components.library.FileUpload.table.upload.progressNum', {
+          current: processedFilesCount, total:
+            processableFiles
+        }) }}
       </Pill>
     </Layout>
   </Layout>
 
-  <Alert
-    v-if="fsErrors.length > 0"
-    red
-  >
+  <Alert v-if="fsErrors.length > 0" red>
     <h3 class="header">
       {{ t('components.library.FileUpload.header.failure') }}
     </h3>
     <ul class="list">
-      <li
-        v-for="(error, key) in fsErrors"
-        :key="key"
-      >
+      <li v-for="(error, key) in fsErrors" :key="key">
         {{ error }}
       </li>
     </ul>
@@ -458,21 +435,13 @@ const isServerDisclosureOpen = ref(false)
 
   <!-- Show list of processed files -->
 
-  <library-files-table
-    :needs-refresh="needsRefresh"
-    ordering-config-name="library.detail.upload"
-    :filters="{import_reference: importReference}"
-    :custom-objects="Object.values(uploads.objects)"
-    @fetch-start="needsRefresh = false"
-  />
+  <library-files-table :needs-refresh="needsRefresh" ordering-config-name="library.detail.upload"
+    :filters="{ import_reference: importReference }" :custom-objects="Object.values(uploads.objects)"
+    @fetch-start="needsRefresh = false" />
 
   <!-- Edit the metadata of uploaded files -->
 
-  <Table
-    v-if="files.length > 0"
-    :class="$style.table"
-    :grid-template-columns="['1fr', 'auto', 'auto', 'auto']"
-  >
+  <Table v-if="files.length > 0" :class="$style.table" :grid-template-columns="['1fr', 'auto', 'auto', 'auto']">
     <template #header>
       <b class="ten wide">
         {{ t('components.library.FileUpload.table.upload.header.filename') }}
@@ -494,57 +463,39 @@ const isServerDisclosureOpen = ref(false)
       <b />
       <b />
       <b>
-        <Button
-          auto
-          primary
-          @click.prevent="retry(retryableFiles)"
-        >
+        <Button auto primary @click.prevent="retry(retryableFiles)">
           {{ t('components.library.FileUpload.button.retry') }}
         </Button>
       </b>
     </template>
 
     <!-- Rows for each file -->
-    <template
-      v-for="file in sortedFiles"
-      :key="file.id"
-    >
+    <template v-for="file in sortedFiles" :key="file.id">
       <b :title="file.name">
         {{ truncate(file.name ?? '', 60) }}
       </b>
       <b>{{ humanSize(file.size ?? 0) }}</b>
       <b>
-        <span
-          v-if="typeof file.error === 'string' && file.error"
-          class="ui tooltip"
-          :data-tooltip="labels.tooltips[file.error]"
-        >
+        <span v-if="typeof file.error === 'string' && file.error" class="ui tooltip"
+          :data-tooltip="labels.tooltips[file.error]">
           <span class="ui danger icon label">
             <i class="bi bi-question-circle-fill" /> {{ file.error }}
           </span>
         </span>
-        <span
-          v-else-if="file.success"
-          class="ui success label"
-        >
+        <span v-else-if="file.success" class="ui success label">
           <span key="1">
             {{ t('components.library.FileUpload.table.upload.status.uploaded') }}
           </span>
         </span>
-        <span
-          v-else-if="file.active"
-          class="ui warning label"
-        >
+        <span v-else-if="file.active" class="ui warning label">
           <span key="2">
             {{ t('components.library.FileUpload.table.upload.status.uploading') }}
           </span>
 
-          {{ t('components.library.FileUpload.table.upload.progress', {percent: parseFloat(file.progress ?? '0.00')}) }}
+          {{ t('components.library.FileUpload.table.upload.progress', { percent: parseFloat(file.progress ?? '0.00') })
+          }}
         </span>
-        <span
-          v-else
-          class="ui label"
-        >
+        <span v-else class="ui label">
           <span key="3">
             {{ t('components.library.FileUpload.table.upload.status.pending') }}
           </span>
@@ -552,22 +503,11 @@ const isServerDisclosureOpen = ref(false)
       </b>
       <b>
         <template v-if="file.error">
-          <Button
-            v-if="retryableFiles.includes(file)"
-            square
-            secondary
-            :title="labels.tooltips.retry"
-            icon="bi-arrow-clockwise"
-            @click.prevent="retry([file])"
-          />
+          <Button v-if="retryableFiles.includes(file)" square secondary :title="labels.tooltips.retry"
+            icon="bi-arrow-clockwise" @click.prevent="retry([file])" />
         </template>
         <template v-else-if="!file.success">
-          <Button
-            square-small
-            destructive
-            icon="bi-trash-fill"
-            @click.prevent="upload.remove(file)"
-          />
+          <Button square-small destructive icon="bi-trash-fill" @click.prevent="upload.remove(file)" />
         </template>
       </b>
     </template>
@@ -575,22 +515,12 @@ const isServerDisclosureOpen = ref(false)
 
   <!-- Progressive disclosure: Import from server -->
 
-  <Section
-    :h2="t('components.library.FileUpload.header.server')"
-    align-left
-    v-bind="
-      isServerDisclosureOpen
-        ? { collapse: () => { isServerDisclosureOpen = false } }
-        : { expand: () => { isServerDisclosureOpen = true } }
-    "
-  >
+  <Section :h2="t('components.library.FileUpload.header.server')" align-left v-bind="isServerDisclosureOpen
+    ? { collapse: () => { isServerDisclosureOpen = false } }
+    : { expand: () => { isServerDisclosureOpen = true } }
+    ">
     <div style="grid-column: 1 / -1">
-      <fs-browser
-        v-model="fsPath"
-        :loading="isLoadingFs"
-        :data="fsStatus"
-        @import="importFs"
-      />
+      <fs-browser v-model="fsPath" :loading="isLoadingFs" :data="fsStatus" @import="importFs" />
       <template v-if="fsStatus && fsStatus.import">
         <h3 class="ui header">
           {{ t('components.library.FileUpload.header.status') }}
@@ -602,11 +532,8 @@ const isServerDisclosureOpen = ref(false)
           {{ t('components.library.FileUpload.description.import') }}
         </p>
 
-        <Button
-          v-if="fsStatus.import.status === 'started' || fsStatus.import.status === 'pending'"
-          secondary
-          @click="cancelFsScan"
-        >
+        <Button v-if="fsStatus.import.status === 'started' || fsStatus.import.status === 'pending'" secondary
+          @click="cancelFsScan">
           {{ t('components.library.FileUpload.button.cancel') }}
         </Button>
         <fs-logs :data="fsStatus.import" />
@@ -616,12 +543,15 @@ const isServerDisclosureOpen = ref(false)
 </template>
 
 <style module lang="scss">
-  .uploader {
-    padding: 32px;
-    border-radius: var(--fw-border-radius);
-    border: 2px dashed var(--border-color);
+.uploader {
+  padding: 32px;
+  border-radius: var(--fw-border-radius);
+  border: 2px dashed var(--border-color);
+}
+
+.table {
+  b {
+    padding: 0 6px;
   }
-  .table {
-    b { padding: 0 6px; }
-  }
+}
 </style>

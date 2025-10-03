@@ -474,7 +474,7 @@ def create_actor(user, **kwargs):
 
 
 def create_user_libraries(user):
-    for privacy_level, l in music_models.LIBRARY_PRIVACY_LEVEL_CHOICES:
+    for privacy_level, l in fields.PRIVACY_LEVEL_CHOICES:
         music_models.Library.objects.create(
             actor=user.actor,
             privacy_level=privacy_level,

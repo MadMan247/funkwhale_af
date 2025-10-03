@@ -3464,6 +3464,10 @@ paths:
     get:
       operationId: get_libraries
       parameters:
+      - in: query
+        name: actor
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -3488,10 +3492,12 @@ paths:
           type: string
           enum:
           - everyone
+          - followers
           - instance
           - me
         description: |-
           * `me` - Only me
+          * `followers` - Me and my followers
           * `instance` - Everyone on my instance, and my followers
           * `everyone` - Everyone, including people on other instances
       - in: query
@@ -4549,10 +4555,12 @@ paths:
           type: string
           enum:
           - everyone
+          - followers
           - instance
           - me
         description: |-
           * `me` - Only me
+          * `followers` - Me and my followers
           * `instance` - Everyone on my instance, and my followers
           * `everyone` - Everyone, including people on other instances
       - in: query
@@ -12982,6 +12990,10 @@ paths:
     get:
       operationId: get_libraries_2
       parameters:
+      - in: query
+        name: actor
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -13006,10 +13018,12 @@ paths:
           type: string
           enum:
           - everyone
+          - followers
           - instance
           - me
         description: |-
           * `me` - Only me
+          * `followers` - Me and my followers
           * `instance` - Everyone on my instance, and my followers
           * `everyone` - Everyone, including people on other instances
       - in: query
@@ -14067,10 +14081,12 @@ paths:
           type: string
           enum:
           - everyone
+          - followers
           - instance
           - me
         description: |-
           * `me` - Only me
+          * `followers` - Me and my followers
           * `instance` - Everyone on my instance, and my followers
           * `everyone` - Everyone, including people on other instances
       - in: query
@@ -21142,7 +21158,7 @@ components:
           type: integer
           readOnly: true
         privacy_level:
-          $ref: '#/components/schemas/LibraryPrivacyLevelEnum'
+          $ref: '#/components/schemas/PrivacyLevelEnum'
         follow:
           allOf:
           - $ref: '#/components/schemas/NestedLibraryFollow'
@@ -21205,7 +21221,7 @@ components:
           type: string
           maxLength: 100
         privacy_level:
-          $ref: '#/components/schemas/LibraryPrivacyLevelEnum'
+          $ref: '#/components/schemas/PrivacyLevelEnum'
         uploads_count:
           type: integer
           readOnly: true
@@ -21236,19 +21252,9 @@ components:
           minLength: 1
           maxLength: 100
         privacy_level:
-          $ref: '#/components/schemas/LibraryPrivacyLevelEnum'
+          $ref: '#/components/schemas/PrivacyLevelEnum'
       required:
       - name
-    LibraryPrivacyLevelEnum:
-      enum:
-      - me
-      - instance
-      - everyone
-      type: string
-      description: |-
-        * `me` - Only me
-        * `instance` - Everyone on my instance, and my followers
-        * `everyone` - Everyone, including people on other instances
     LibraryRequest:
       type: object
       properties:
@@ -21270,7 +21276,7 @@ components:
           type: string
           format: date-time
         privacy_level:
-          $ref: '#/components/schemas/LibraryPrivacyLevelEnum'
+          $ref: '#/components/schemas/PrivacyLevelEnum'
         follow:
           allOf:
           - $ref: '#/components/schemas/NestedLibraryFollowRequest'
@@ -22179,7 +22185,7 @@ components:
           format: date-time
           readOnly: true
         privacy_level:
-          $ref: '#/components/schemas/LibraryPrivacyLevelEnum'
+          $ref: '#/components/schemas/PrivacyLevelEnum'
         uploads_count:
           type: integer
           readOnly: true
@@ -22207,7 +22213,7 @@ components:
           type: string
           minLength: 1
         privacy_level:
-          $ref: '#/components/schemas/LibraryPrivacyLevelEnum'
+          $ref: '#/components/schemas/PrivacyLevelEnum'
         actor:
           $ref: '#/components/schemas/ManageBaseActorRequest'
       required:
@@ -22313,7 +22319,7 @@ components:
           type: string
           format: date-time
         privacy_level:
-          $ref: '#/components/schemas/LibraryPrivacyLevelEnum'
+          $ref: '#/components/schemas/PrivacyLevelEnum'
         actor:
           $ref: '#/components/schemas/ManageBaseActor'
       required:
@@ -22350,7 +22356,7 @@ components:
           type: string
           format: date-time
         privacy_level:
-          $ref: '#/components/schemas/LibraryPrivacyLevelEnum'
+          $ref: '#/components/schemas/PrivacyLevelEnum'
         actor:
           $ref: '#/components/schemas/ManageBaseActorRequest'
       required:
@@ -24722,7 +24728,7 @@ components:
           type: string
           minLength: 1
         privacy_level:
-          $ref: '#/components/schemas/LibraryPrivacyLevelEnum'
+          $ref: '#/components/schemas/PrivacyLevelEnum'
         actor:
           $ref: '#/components/schemas/ManageBaseActorRequest'
     PatchedManageReportRequest:
@@ -24826,7 +24832,7 @@ components:
           - $ref: '#/components/schemas/ImportStatusEnum'
           default: pending
         privacy_level:
-          $ref: '#/components/schemas/LibraryPrivacyLevelEnum'
+          $ref: '#/components/schemas/PrivacyLevelEnum'
         import_metadata:
           $ref: '#/components/schemas/ImportMetadataRequest'
         import_reference:
@@ -25916,7 +25922,7 @@ components:
           type: string
           format: uuid
         privacy_level:
-          $ref: '#/components/schemas/LibraryPrivacyLevelEnum'
+          $ref: '#/components/schemas/PrivacyLevelEnum'
       required:
       - privacy_level
       - uuid
@@ -25967,7 +25973,7 @@ components:
           - $ref: '#/components/schemas/ImportStatusEnum'
           default: pending
         privacy_level:
-          $ref: '#/components/schemas/LibraryPrivacyLevelEnum'
+          $ref: '#/components/schemas/PrivacyLevelEnum'
         import_details:
           readOnly: true
         import_metadata:
@@ -26010,7 +26016,7 @@ components:
           - $ref: '#/components/schemas/ImportStatusEnum'
           default: pending
         privacy_level:
-          $ref: '#/components/schemas/LibraryPrivacyLevelEnum'
+          $ref: '#/components/schemas/PrivacyLevelEnum'
         import_metadata:
           $ref: '#/components/schemas/ImportMetadataRequest'
         import_reference:
