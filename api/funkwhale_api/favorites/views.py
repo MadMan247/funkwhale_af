@@ -69,7 +69,7 @@ class TrackFavoriteViewSet(
         queryset = super().get_queryset()
         queryset = queryset.filter(
             fields.privacy_level_query(
-                self.request.user, "actor__user__privacy_level", "actor__user"
+                self.request.user, "privacy_level", "actor__user"
             )
         )
         tracks = (

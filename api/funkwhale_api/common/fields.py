@@ -25,7 +25,7 @@ def privacy_level_query(user, lookup_field="privacy_level", user_field="user"):
     followers_query = models.Q(
         **{
             f"{lookup_field}": "followers",
-            f"{user_field}__actor__in": user.actor.get_approved_followings(),
+            "actor__in": user.actor.get_approved_followings(),
         }
     )
     return (

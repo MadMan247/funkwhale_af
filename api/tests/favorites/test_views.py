@@ -6,7 +6,7 @@ from django.urls import reverse
 def test_privacy_filter(preferences, level, factories, api_client):
     preferences["common__api_authentication_required"] = False
     user = factories["users.User"](privacy_level=level, with_actor=True)
-    factories["favorites.TrackFavorite"](actor=user.actor)
+    factories["favorites.TrackFavorite"](actor=user.actor, privacy_level=level)
     url = reverse("api:v1:favorites:tracks-list")
     response = api_client.get(url)
     assert response.status_code == 200
