@@ -7601,7 +7601,7 @@ export interface components {
             date_joined?: string;
             /** Format: date-time */
             last_activity?: string | null;
-            privacy_level: components["schemas"]["PrivacyLevelEnum"];
+            privacy_level?: components["schemas"]["PrivacyLevelEnum"];
             upload_quota?: number | null;
         };
         ManageUserSimpleRequest: {
@@ -7633,7 +7633,7 @@ export interface components {
             date_joined?: string;
             /** Format: date-time */
             last_activity?: string | null;
-            privacy_level: components["schemas"]["PrivacyLevelEnum"];
+            privacy_level?: components["schemas"]["PrivacyLevelEnum"];
             upload_quota?: number | null;
         };
         Metadata20: {
@@ -9009,7 +9009,7 @@ export interface components {
         UserWrite: {
             /** Name of User */
             name?: string;
-            privacy_level: components["schemas"]["PrivacyLevelEnum"];
+            privacy_level?: components["schemas"]["PrivacyLevelEnum"];
             /** Format: date-time */
             instance_support_message_display_date?: string | null;
             /** Format: date-time */
@@ -9019,7 +9019,7 @@ export interface components {
         UserWriteRequest: {
             /** Name of User */
             name?: string;
-            privacy_level: components["schemas"]["PrivacyLevelEnum"];
+            privacy_level?: components["schemas"]["PrivacyLevelEnum"];
             avatar: string;
             /** Format: date-time */
             instance_support_message_display_date?: string | null;

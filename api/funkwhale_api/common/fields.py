@@ -15,10 +15,7 @@ PRIVACY_LEVEL_CHOICES = [
 
 
 def get_privacy_field():
-    return models.CharField(
-        max_length=30,
-        choices=PRIVACY_LEVEL_CHOICES,
-    )
+    return models.CharField(max_length=30, choices=PRIVACY_LEVEL_CHOICES, default="me")
 
 
 def privacy_level_query(user, lookup_field="privacy_level", user_field="user"):

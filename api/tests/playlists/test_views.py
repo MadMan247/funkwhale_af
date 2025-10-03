@@ -42,7 +42,7 @@ def test_serializer_includes_tracks_count_986(factories, logged_in_api_client):
 
 def test_serializer_includes_is_playable(factories, logged_in_api_client):
     logged_in_api_client.user.create_actor()
-    playlist = factories["playlists.Playlist"]()
+    playlist = factories["playlists.Playlist"](privacy_level="everyone")
     factories["playlists.PlaylistTrack"](playlist=playlist)
 
     url = reverse("api:v1:playlists-detail", kwargs={"uuid": playlist.uuid})

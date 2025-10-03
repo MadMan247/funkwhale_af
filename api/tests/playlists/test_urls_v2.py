@@ -7,7 +7,7 @@ from django.urls import reverse
 
 def test_can_get_playlist_list(factories, logged_in_api_client):
     logged_in_api_client.user.create_actor()
-    factories["playlists.Playlist"].create_batch(5)
+    factories["playlists.Playlist"].create_batch(5, privacy_level="everyone")
     url = reverse("api:v2:playlists-list")
     headers = {"Content-Type": "application/json"}
     response = logged_in_api_client.get(url, headers=headers)
@@ -19,7 +19,7 @@ def test_can_get_playlist_list(factories, logged_in_api_client):
 
 def test_can_get_playlists_octet_stream(factories, logged_in_api_client):
     logged_in_api_client.user.create_actor()
-    pl = factories["playlists.Playlist"]()
+    pl = factories["playlists.Playlist"](privacy_level="everyone")
     factories["playlists.PlaylistTrack"](playlist=pl)
     factories["playlists.PlaylistTrack"](playlist=pl)
     factories["playlists.PlaylistTrack"](playlist=pl)
@@ -35,7 +35,7 @@ def test_can_get_playlists_octet_stream(factories, logged_in_api_client):
 
 def test_can_get_playlists_json(factories, logged_in_api_client):
     logged_in_api_client.user.create_actor()
-    pl = factories["playlists.Playlist"]()
+    pl = factories["playlists.Playlist"](privacy_level="everyone")
     url = reverse("api:v2:playlists-detail", kwargs={"uuid": pl.uuid})
     response = logged_in_api_client.get(url, format="json")
     assert response.status_code == 200
@@ -45,7 +45,7 @@ def test_can_get_playlists_json(factories, logged_in_api_client):
 def test_can_get_user_playlists_list(factories, logged_in_api_client):
     logged_in_api_client.user.create_actor()
     user = factories["users.User"](with_actor=True)
-    factories["playlists.Playlist"](actor=user.actor)
+    factories["playlists.Playlist"](actor=user.actor, privacy_level="everyone")
 
     url = reverse("api:v2:playlists-list")
     url = resolve_url(url) + "?user=me"
@@ -97,7 +97,9 @@ def test_can_post_playlists_octet_stream_invalid_track(factories, logged_in_api_
 
 def test_can_patch_playlists_octet_stream(factories, logged_in_api_client):
     logged_in_api_client.user.create_actor()
-    pl = factories["playlists.Playlist"](actor=logged_in_api_client.user.actor)
+    pl = factories["playlists.Playlist"](
+        actor=logged_in_api_client.user.actor, privacy_level="everyone"
+    )
     artist = factories["music.Artist"](name="Davinhor")
     album = factories["music.Album"](
         title="Racisme en pls", artist_credit__artist=artist
@@ -116,7 +118,7 @@ def test_can_patch_playlists_octet_stream(factories, logged_in_api_client):
 
 def test_can_get_playlists_track(factories, logged_in_api_client):
     logged_in_api_client.user.create_actor()
-    pl = factories["playlists.Playlist"]()
+    pl = factories["playlists.Playlist"](privacy_level="everyone")
     plt = factories["playlists.PlaylistTrack"](playlist=pl)
     url = reverse("api:v2:playlists-tracks", kwargs={"uuid": pl.uuid})
     response = logged_in_api_client.get(url)
@@ -128,7 +130,7 @@ def test_can_get_playlists_track(factories, logged_in_api_client):
 
 def test_can_get_playlists_releases(factories, logged_in_api_client):
     logged_in_api_client.user.create_actor()
-    playlist = factories["playlists.Playlist"]()
+    playlist = factories["playlists.Playlist"](privacy_level="everyone")
     plt = factories["playlists.PlaylistTrack"](playlist=playlist)
     url = reverse("api:v2:playlists-albums", kwargs={"uuid": playlist.uuid})
     response = logged_in_api_client.get(url)
@@ -139,7 +141,7 @@ def test_can_get_playlists_releases(factories, logged_in_api_client):
 
 def test_can_get_playlists_artists(factories, logged_in_api_client):
     logged_in_api_client.user.create_actor()
-    playlist = factories["playlists.Playlist"]()
+    playlist = factories["playlists.Playlist"](privacy_level="everyone")
     plt = factories["playlists.PlaylistTrack"](playlist=playlist)
     url = reverse("api:v2:playlists-artists", kwargs={"uuid": playlist.uuid})
     response = logged_in_api_client.get(url)
