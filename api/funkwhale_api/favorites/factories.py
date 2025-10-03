@@ -13,6 +13,7 @@ class TrackFavorite(NoUpdateOnCreate, factory.django.DjangoModelFactory):
     actor = factory.SubFactory(ActorFactory)
     fid = factory.Faker("federation_url")
     uuid = factory.Faker("uuid4")
+    privacy_level = "everyone"
 
     class Meta:
         model = "favorites.TrackFavorite"

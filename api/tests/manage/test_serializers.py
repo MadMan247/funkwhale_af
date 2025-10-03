@@ -86,9 +86,9 @@ def test_manage_actor_serializer(factories, now, to_api_date):
         "preferred_username": actor.preferred_username,
         "manually_approves_followers": actor.manually_approves_followers,
         "full_username": actor.full_username,
-        "user": None,
         "instance_policy": None,
         "is_local": False,
+        "user": serializers.ManageUserSerializer(actor.user).data,
     }
     s = serializers.ManageActorSerializer(actor)
 

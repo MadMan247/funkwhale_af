@@ -10,10 +10,6 @@ from funkwhale_api.federation import models as federation_models
 from funkwhale_api.federation import utils as federation_utils
 from funkwhale_api.music.models import Track
 
-FAVORITE_PRIVACY_LEVEL_CHOICES = [
-    (k, l) for k, l in fields.PRIVACY_LEVEL_CHOICES if k != "followers"
-]
-
 
 class TrackFavoriteQuerySet(models.QuerySet, common_models.LocalFromFidQuerySet):
     def viewable_by(self, actor):
@@ -49,6 +45,7 @@ class TrackFavorite(federation_models.FederationMixin):
         null=False,
         blank=False,
     )
+    privacy_level = fields.get_privacy_field()
     track = models.ForeignKey(
         Track, related_name="track_favorites", on_delete=models.CASCADE
     )
@@ -87,5 +84,6 @@ class TrackFavorite(federation_models.FederationMixin):
     def save(self, **kwargs):
         if not self.pk and not self.fid:
             self.fid = self.get_federation_id()
-
+        if not self.privacy_level:
+            self.privacy_level = self.actor.user.privacy_level
         return super().save(**kwargs)

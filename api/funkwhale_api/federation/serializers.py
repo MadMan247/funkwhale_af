@@ -2220,11 +2220,13 @@ class TrackFavoriteSerializer(jsonld.JsonLdSerializer):
     id = serializers.URLField(max_length=500)
     object = serializers.URLField(max_length=500)
     actor = serializers.URLField(max_length=500)
+    audience = serializers.CharField(max_length=500)
 
     class Meta:
         jsonld_mapping = {
             "object": jsonld.first_id(contexts.AS.object),
             "actor": jsonld.first_id(contexts.AS.actor),
+            "audience": jsonld.first_id(contexts.AS.audience),
         }
 
     def to_representation(self, favorite):
@@ -2233,6 +2235,7 @@ class TrackFavoriteSerializer(jsonld.JsonLdSerializer):
             "id": favorite.fid,
             "actor": favorite.actor.fid,
             "object": favorite.track.fid,
+            "audience": favorite.privacy_level,
         }
         if self.context.get("include_ap_context", True):
             payload["@context"] = jsonld.get_default_context()
@@ -2250,6 +2253,7 @@ class TrackFavoriteSerializer(jsonld.JsonLdSerializer):
             uuid=uuid.uuid4(),
             actor=actor,
             track=track,
+            privacy_level=validated_data["audience"],
         )
 
 
@@ -2258,11 +2262,13 @@ class ListeningSerializer(jsonld.JsonLdSerializer):
     id = serializers.URLField(max_length=500)
     object = serializers.URLField(max_length=500)
     actor = serializers.URLField(max_length=500)
+    audience = serializers.CharField(max_length=500)
 
     class Meta:
         jsonld_mapping = {
             "object": jsonld.first_id(contexts.AS.object),
             "actor": jsonld.first_id(contexts.AS.actor),
+            "audience": jsonld.first_id(contexts.AS.audience),
         }
 
     def to_representation(self, listening):
@@ -2271,6 +2277,7 @@ class ListeningSerializer(jsonld.JsonLdSerializer):
             "id": listening.fid,
             "actor": listening.actor.fid,
             "object": listening.track.fid,
+            "audience": listening.privacy_level,
         }
         if self.context.get("include_ap_context", True):
             payload["@context"] = jsonld.get_default_context()
@@ -2288,6 +2295,7 @@ class ListeningSerializer(jsonld.JsonLdSerializer):
             uuid=validated_data["id"].rstrip("/").split("/")[-1],
             actor=actor,
             track=track,
+            privacy_level=validated_data["audience"],
         )
 
 

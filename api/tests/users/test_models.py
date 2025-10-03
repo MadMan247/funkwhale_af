@@ -292,3 +292,13 @@ def test_set_settings(factories):
         "foo": "bar",
         "hello": "world",
     }
+
+
+def test_updating_privacy_level_update_listenings_and_favorites(factories):
+    user = factories["users.User"](privacy_level="instance", with_actor=True)
+    listening = factories["history.Listening"](actor=user.actor)
+    favorite = factories["favorites.TrackFavorite"](actor=user.actor)
+    user.privacy_level = "everyone"
+    user.save()
+    assert listening.privacy_level == "everyone"
+    assert favorite.privacy_level == "everyone"

@@ -311,6 +311,7 @@ def test_creating_user_creates_actor_as_well(
     api_client, factories, mocker, preferences
 ):
     actor = factories["federation.Actor"]()
+    actor.user.delete()
     url = reverse("rest_register")
     data = {
         "username": "test1",

@@ -4,6 +4,7 @@ from django_auth_ldap import backend
 
 def test_ldap_user_creation_also_creates_actor(settings, factories, mocker):
     actor = factories["federation.Actor"]()
+    actor.user.delete()
     mocker.patch("funkwhale_api.users.models.create_actor", return_value=actor)
     mocker.patch(
         "django_auth_ldap.backend.LDAPBackend.ldap_to_django_username",

@@ -1076,6 +1076,7 @@ def test_outbox_create_track_favorite(factories, mocker):
             "type": "Like",
             "id": favorite.fid,
             "object": {"type": "Track", "id": favorite.track.fid},
+            "audience": favorite.privacy_level,
         }
     )
     expected = serializer.data
@@ -1126,6 +1127,7 @@ def test_outbox_create_listening(factories, mocker):
             "type": "Listen",
             "id": listening.fid,
             "object": {"type": "Track", "id": listening.track.fid},
+            "audience": listening.privacy_level,
         }
     )
     expected = serializer.data

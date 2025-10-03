@@ -362,6 +362,7 @@ def test_undo_follow_serializer_representation(factories):
 )
 def test_undo_follow_serializer_save(factories, followed_name, follow_factory):
     follow = factories[follow_factory](approved=True)
+    follow.target.user.delete()
     factories[followed_name](actor=follow.target)
 
     data = {

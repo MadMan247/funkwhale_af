@@ -16,7 +16,8 @@ PRIVACY_LEVEL_CHOICES = [
 
 def get_privacy_field():
     return models.CharField(
-        max_length=30, choices=PRIVACY_LEVEL_CHOICES, default="instance"
+        max_length=30,
+        choices=PRIVACY_LEVEL_CHOICES,
     )
 
 
@@ -30,15 +31,10 @@ def privacy_level_query(user, lookup_field="privacy_level", user_field="user"):
             f"{user_field}__actor__in": user.actor.get_approved_followings(),
         }
     )
-    # Federated TrackFavorite don't have an user associated with the trackfavorite.actor
-    # to do : if we implement the followers privacy_level this will become a problem
-    no_user_query = models.Q(**{f"{user_field}__isnull": True})
-
     return (
         models.Q(**{f"{lookup_field}__in": ["instance", "everyone"]})
         | models.Q(**{lookup_field: "me", user_field: user})
         | followers_query
-        | no_user_query
     )
 
 

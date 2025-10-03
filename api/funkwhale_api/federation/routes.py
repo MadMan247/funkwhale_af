@@ -626,6 +626,7 @@ def outbox_create_track_favorite(context):
             "type": "Like",
             "id": context["id"],
             "object": {"type": "Track", "id": track.fid},
+            "audience": actor.user.privacy_level,
         }
     )
     yield {
@@ -689,6 +690,7 @@ def outbox_create_listening(context):
             "type": "Listen",
             "id": context["id"],
             "object": {"type": "Track", "id": track.fid},
+            "audience": actor.user.privacy_level,
         }
     )
     yield {

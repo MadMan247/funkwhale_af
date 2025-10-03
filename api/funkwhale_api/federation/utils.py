@@ -288,3 +288,9 @@ def can_manage(obj_owner, actor):
         return True
 
     return False
+
+
+def update_actor_privacy(actor, privacy_level):
+    actor.track_favorites.update(privacy_level=privacy_level)
+    actor.listenings.update(privacy_level=privacy_level)
+    # to do : trigger federation privacy_level downgrade #2336

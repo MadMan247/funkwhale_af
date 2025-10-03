@@ -261,6 +261,17 @@ class User(AbstractUser):
         self.save(update_fields=["actor"])
         return self.actor
 
+    def save(self, **kwargs):
+        if not self.pk and not self.privacy_level:
+            self.privacy_level = "me"
+        elif self.pk:
+            # could use django-model-util to avoid the extra query but not worth it
+            old = type(self).objects.only("privacy_level").get(pk=self.pk).privacy_level
+            if old != self.privacy_level:
+                # privacy level changed, update all related objects
+                federation_utils.update_actor_privacy(self.actor, self.privacy_level)
+        return super().save(**kwargs)
+
     def get_upload_quota(self):
         return (
             self.upload_quota

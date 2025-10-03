@@ -741,14 +741,9 @@ def test_get_playlists(f, db, logged_in_api_client, factories):
         playlist__privacy_level="instance"
     ).playlist
     # private
-    plt = factories["playlists.PlaylistTrack"](playlist__privacy_level="me")
+    factories["playlists.PlaylistTrack"](playlist__privacy_level="me")
     # no track
-    playlist4 = factories["playlists.Playlist"](privacy_level="everyone")
-
-    factories["users.User"](actor=playlist2.actor)
-    factories["users.User"](actor=playlist3.actor)
-    factories["users.User"](actor=playlist4.actor)
-    factories["users.User"](actor=plt.playlist.actor)
+    factories["playlists.Playlist"](privacy_level="everyone")
 
     response = logged_in_api_client.get(url, {"f": f})
 

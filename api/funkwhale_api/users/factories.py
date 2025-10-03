@@ -86,6 +86,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     subsonic_api_token = None
     groups = ManyToManyFromList("groups")
     avatar = factory.django.ImageField()
+    privacy_level = "everyone"
 
     class Meta:
         model = "users.User"

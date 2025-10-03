@@ -23197,6 +23197,7 @@ components:
           nullable: true
       required:
       - id
+      - privacy_level
       - username
     ManageUserSimpleRequest:
       type: object
@@ -23246,6 +23247,7 @@ components:
           minimum: 0
           nullable: true
       required:
+      - privacy_level
       - username
     Metadata20:
       type: object
@@ -26228,6 +26230,8 @@ components:
           allOf:
           - $ref: '#/components/schemas/Content'
           nullable: true
+      required:
+      - privacy_level
     UserWriteRequest:
       type: object
       properties:
@@ -26254,6 +26258,7 @@ components:
           nullable: true
       required:
       - avatar
+      - privacy_level
     UsersUsage:
       type: object
       properties:

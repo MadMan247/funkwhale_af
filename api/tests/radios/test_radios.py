@@ -350,7 +350,7 @@ def test_similar_radio_track(factories):
     factories["music.Track"].create_batch(5)
 
     # one user listened to this track
-    l1user = factories["users.User"](with_actor=True)
+    l1user = factories["users.User"](with_actor=True, privacy_level="everyone")
     l1 = factories["history.Listening"](track=seed, actor=l1user.actor)
 
     expected_next = factories["music.Track"]()

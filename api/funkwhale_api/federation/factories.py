@@ -147,10 +147,6 @@ class ActorFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
         if extracted and hasattr(extracted, "pk"):
             extracted.actor = self
             extracted.save(update_fields=["user"])
-        else:
-            user = UserFactory(actor=self, **kwargs)
-            user.actor = self
-            user.save()
 
     @factory.post_generation
     def user(self, create, extracted, **kwargs):
@@ -158,6 +154,8 @@ class ActorFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
         Handle the creation or assignment of the related user instance.
         If `actor__user` is passed, it will be linked; otherwise, no user is created.
         """
+        from funkwhale_api.users.factories import UserFactory
+
         if not create:
             return
 
@@ -165,10 +163,10 @@ class ActorFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
             extracted.actor = self
             extracted.save(update_fields=["actor"])
         elif kwargs:
-            from funkwhale_api.users.factories import UserFactory
-
             # Create a User linked to this Actor
             self.user = UserFactory(actor=self, **kwargs)
+        else:
+            self.user = UserFactory(actor=self)
 
 
 @registry.register

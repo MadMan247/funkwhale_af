@@ -59,8 +59,9 @@ def test_user_can_fetch_playlist_library_using_url(
 
 
 def test_user_can_schedule_library_scan(mocker, factories, logged_in_api_client):
-    actor = logged_in_api_client.user.create_actor()
+    actor = logged_in_api_client.user.actor
     library = factories["music.Library"](privacy_level="everyone")
+    library.actor.user.delete()  # make sure library is not local
 
     schedule_scan = mocker.patch(
         "funkwhale_api.music.models.Library.schedule_scan", return_value=True

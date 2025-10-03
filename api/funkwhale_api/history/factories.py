@@ -13,6 +13,7 @@ class ListeningFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
     track = factory.SubFactory(factories.TrackFactory)
     fid = factory.Faker("federation_url")
     uuid = factory.Faker("uuid4")
+    privacy_level = "everyone"
 
     class Meta:
         model = "history.Listening"

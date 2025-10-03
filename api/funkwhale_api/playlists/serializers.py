@@ -5,6 +5,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
+from funkwhale_api.common.fields import PRIVACY_LEVEL_CHOICES
 from funkwhale_api.federation.api_serializers import FullActorSerializer
 from funkwhale_api.music import tasks
 from funkwhale_api.music.models import Album, Artist, Track
@@ -36,6 +37,9 @@ class PlaylistSerializer(serializers.ModelSerializer):
     actor = FullActorSerializer(read_only=True)
     library = serializers.SerializerMethodField()
     library_followed = serializers.SerializerMethodField()
+    privacy_level = serializers.ChoiceField(
+        choices=PRIVACY_LEVEL_CHOICES, required=False
+    )
 
     class Meta:
         model = models.Playlist

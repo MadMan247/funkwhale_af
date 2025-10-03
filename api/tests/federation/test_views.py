@@ -729,7 +729,9 @@ def test_get_listenings_honours_privacy_level(
 )
 def test_get_favorite(factories, logged_in_api_client, privacy_level, expected):
     user = factories["users.User"](with_actor=True, privacy_level=privacy_level)
-    favorite = factories["favorites.TrackFavorite"](actor=user.actor, local=True)
+    favorite = factories["favorites.TrackFavorite"](
+        actor=user.actor, local=True, privacy_level=privacy_level
+    )
     url = reverse(
         "federation:music:likes-detail",
         kwargs={"uuid": favorite.uuid},
@@ -743,7 +745,9 @@ def test_get_favorite(factories, logged_in_api_client, privacy_level, expected):
 )
 def test_get_favorite_anonymous(factories, api_client, privacy_level, expected):
     user = factories["users.User"](with_actor=True, privacy_level=privacy_level)
-    favorite = factories["favorites.TrackFavorite"](actor=user.actor, local=True)
+    favorite = factories["favorites.TrackFavorite"](
+        actor=user.actor, local=True, privacy_level=privacy_level
+    )
     url = reverse(
         "federation:music:likes-detail",
         kwargs={"uuid": favorite.uuid},
@@ -757,7 +761,9 @@ def test_get_favorite_anonymous(factories, api_client, privacy_level, expected):
 )
 def test_get_listening(factories, logged_in_api_client, privacy_level, expected):
     user = factories["users.User"](with_actor=True, privacy_level=privacy_level)
-    listening = factories["history.Listening"](actor=user.actor, local=True)
+    listening = factories["history.Listening"](
+        actor=user.actor, local=True, privacy_level=privacy_level
+    )
     url = reverse(
         "federation:music:listenings-detail",
         kwargs={"uuid": listening.uuid},
