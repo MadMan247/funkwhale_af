@@ -127,7 +127,12 @@ def test_dispatch_outbox_disabled_federation(factories, mocker, preferences):
 
 
 def test_deliver_to_remote_success_mark_as_delivered(factories, r_mock, now):
-    delivery = factories["federation.Delivery"]()
+    recipient = factories["federation.Actor"](domain__reachable=True)
+    activity = factories["federation.Activity"](actor__local=True, type=type)
+    activity.recipients.add(recipient)
+    delivery = factories["federation.Delivery"](
+        activity=activity, inbox_url=recipient.fid
+    )
     r_mock.post(delivery.inbox_url)
     tasks.deliver_to_remote(delivery_id=delivery.pk)
 
@@ -145,11 +150,33 @@ def test_deliver_to_remote_success_mark_as_delivered(factories, r_mock, now):
 
 
 def test_deliver_to_remote_error(factories, r_mock, now):
-    delivery = factories["federation.Delivery"]()
+    recipient = factories["federation.Actor"](domain__reachable=True)
+    activity = factories["federation.Activity"](actor__local=True, type=type)
+    activity.recipients.add(recipient)
+    delivery = factories["federation.Delivery"](
+        activity=activity, inbox_url=recipient.fid
+    )
     r_mock.post(delivery.inbox_url, status_code=404)
 
     with pytest.raises(tasks.RequestException):
         tasks.deliver_to_remote(delivery_id=delivery.pk)
+
+    delivery.refresh_from_db()
+
+    assert delivery.is_delivered is False
+    assert delivery.attempts == 1
+    assert delivery.last_attempt_date == now
+
+
+def test_deliver_to_remote_filter_unreachable_domain(factories, now):
+    recipient = factories["federation.Actor"](domain__reachable=False)
+    activity = factories["federation.Activity"](actor__local=True, type=type)
+    activity.recipients.add(recipient)
+    delivery = factories["federation.Delivery"](
+        activity=activity, inbox_url=recipient.fid
+    )
+
+    tasks.deliver_to_remote(delivery_id=delivery.pk)
 
     delivery.refresh_from_db()
 

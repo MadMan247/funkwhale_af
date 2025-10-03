@@ -481,7 +481,7 @@ class OutboxRouter(Router):
             )
 
             for a in activities:
-                logger.info(f"[federation] OUtbox sending activity : {a.pk}")
+                logger.info(f"[federation] Outbox sending activity : {a.pk}")
                 funkwhale_utils.on_commit(tasks.dispatch_outbox.delay, activity_id=a.pk)
             return activities
 

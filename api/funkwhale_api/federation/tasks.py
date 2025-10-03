@@ -2,6 +2,7 @@ import datetime
 import json
 import logging
 import os
+from urllib.parse import urlparse
 
 import requests
 from django.conf import settings
@@ -143,6 +144,19 @@ def dispatch_outbox(activity):
 def deliver_to_remote(delivery):
     if not preferences.get("federation__enabled"):
         # federation is disabled, we only deliver to local recipients
+        return
+
+    # we check the domain is still reachable before attempting delivery
+    if (
+        models.Domain.objects.get(name=urlparse(delivery.inbox_url).netloc).reachable
+        is False
+    ):
+        delivery.last_attempt_date = timezone.now()
+        delivery.attempts = F("attempts") + 1
+        delivery.save(update_fields=["last_attempt_date", "attempts"])
+        logger.info(
+            f"Skipping delivery to {delivery.inbox_url} as its domain is unreachable",
+        )
         return
 
     actor = delivery.activity.actor
