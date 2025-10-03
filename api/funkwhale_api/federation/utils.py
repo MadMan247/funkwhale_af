@@ -290,12 +290,12 @@ def can_manage(obj_owner, actor):
     return False
 
 
-<<<<<<< HEAD
 def update_actor_privacy(actor, privacy_level):
     actor.track_favorites.update(privacy_level=privacy_level)
     actor.listenings.update(privacy_level=privacy_level)
     # to do : trigger federation privacy_level downgrade #2336
-=======
+
+
 class BuildInLibException(Exception):
     pass
 
@@ -338,4 +338,3 @@ def get_or_create_builtin_actor_library(actor, privacy_level):
             name="everyone",
         )
         return lib
->>>>>>> afc77ed5e (feat(back):trigger public library follow on user follow)
