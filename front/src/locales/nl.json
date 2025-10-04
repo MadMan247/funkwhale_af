@@ -4617,8 +4617,8 @@
     "aria": {
       "pagination": {
         "currentPage": "Huidige pagina, pagina {n}",
-        "gotoNext": "Ga naar Volgende Pagina",
         "goToPage": "Ga naar pagina {n}",
+        "gotoNext": "Ga naar Volgende Pagina",
         "gotoPrevious": "Ga naar Vorige Pagina",
         "nav": "Pagina navigatie"
       }
