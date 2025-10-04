@@ -638,6 +638,7 @@ def update_denormalization_follow_approved(sender, instance, created, **kwargs):
 
 
 @receiver(post_delete, sender=LibraryFollow)
+@receiver(post_delete, sender=Follow)
 def update_denormalization_follow_deleted(sender, instance, **kwargs):
     from funkwhale_api.music import models as music_models
 
