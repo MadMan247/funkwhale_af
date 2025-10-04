@@ -40,7 +40,8 @@ const labels = computed(() => ({
   git: t('components.common.UserMenu.link.git'),
   login: t('components.common.UserMenu.link.login'),
   signup: t('components.common.UserMenu.link.signup'),
-  notifications: t('components.common.UserMenu.link.notifications')
+  notifications: t('components.common.UserMenu.link.notifications'),
+  uploads: t('views.auth.ProfileBase.link.manageUploads')
 }))
 </script>
 
@@ -103,6 +104,13 @@ const labels = computed(() => ({
         >
           {{ store.state.ui.notifications.inbox }}
         </div>
+      </PopoverItem>
+      <PopoverItem
+        v-if="store.state.auth.authenticated"
+        :to="{ name: 'profile.manageUploads', params: { username: store.state.auth.username },}"
+      >
+        <i class="bi bi-cloud-upload-fill" />
+        {{ labels.uploads }}
       </PopoverItem>
       <PopoverItem
         v-if="store.state.auth.authenticated"
