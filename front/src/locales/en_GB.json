@@ -4690,54 +4690,54 @@
   },
   "vui": {
     "addItem": "Add {item}",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "deselect": "Deselect",
-    "deletItem": "Delete {item}",
-    "pressKey": "Press {key}",
-    "pressKeyToAction": "Press {key} to {action}",
-    "preview": "Preview",
-    "resetTo": "Reset to {previousValue}",
-    "radio": "Radio",
     "albums": "{n} album | {n} albums",
-    "tracks": "{n} track | {n} tracks",
-    "episodes": "{n} episode | {n} episodes",
-    "by-user": "by {username}",
-    "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "ellipsis": "…",
-      "enterPageNumber": "Go to page…"
-    },
     "aria": {
       "close": "Close",
+      "pagination": {
+        "currentPage": "Current Page, Page {n}",
+        "goToPage": "Go to Page {n}",
+        "gotoNext": "Go to Next Page",
+        "gotoPrevious": "Go to Previous Page",
+        "nav": "Pagination Navigation"
+      },
+      "password": {
+        "hide": "Hide password",
+        "show": "Show password"
+      },
       "text": {
-        "paragraph": "paragraph",
+        "bold": "bold",
         "heading1": "heading1",
         "heading2": "heading2",
         "heading3": "heading3",
         "heading4": "heading4",
         "heading5": "heading5",
         "heading6": "heading6",
-        "quote": "quote",
-        "orderedList": "ordered list",
-        "unorderedList": "unordered list",
-        "bold": "bold",
         "italic": "italic",
+        "link": "link",
+        "orderedList": "ordered list",
+        "paragraph": "paragraph",
+        "quote": "quote",
         "strikethrough": "strikethrough",
-        "link": "link"
-      },
-      "password": {
-        "show": "Show password",
-        "hide": "Hide password"
-      },
-      "pagination": {
-        "nav": "Pagination Navigation",
-        "goToPage": "Go to Page {n}",
-        "gotoPrevious": "Go to Previous Page",
-        "gotoNext": "Go to Next Page",
-        "currentPage": "Current Page, Page {n}"
+        "unorderedList": "unordered list"
       }
-    }
+    },
+    "by-user": "by {username}",
+    "cancel": "Cancel",
+    "deletItem": "Delete {item}",
+    "delete": "Delete",
+    "deselect": "Deselect",
+    "episodes": "{n} episode | {n} episodes",
+    "pagination": {
+      "ellipsis": "…",
+      "enterPageNumber": "Go to page…",
+      "next": "Next",
+      "previous": "Previous"
+    },
+    "pressKey": "Press {key}",
+    "pressKeyToAction": "Press {key} to {action}",
+    "preview": "Preview",
+    "radio": "Radio",
+    "resetTo": "Reset to {previousValue}",
+    "tracks": "{n} track | {n} tracks"
   }
 }
