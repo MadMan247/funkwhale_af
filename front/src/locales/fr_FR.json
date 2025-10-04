@@ -4635,8 +4635,8 @@
     "aria": {
       "pagination": {
         "currentPage": "Page Actuelle, Page {n}",
-        "gotoNext": "Aller à la Page Suivante",
         "goToPage": "Aller à la Page {n}",
+        "gotoNext": "Aller à la Page Suivante",
         "gotoPrevious": "Aller à la Page Précédente",
         "nav": "Navigation par Pagination"
       }
