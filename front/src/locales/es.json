@@ -4428,8 +4428,8 @@
     "aria": {
       "pagination": {
         "currentPage": "Página corriente, Página {n}",
-        "gotoNext": "Ir a la página siguiente",
         "goToPage": "Ir a la página {n}",
+        "gotoNext": "Ir a la página siguiente",
         "gotoPrevious": "Ir a la página anterior",
         "nav": "Paginación Navegación"
       }
