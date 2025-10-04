@@ -2242,8 +2242,8 @@
     "aria": {
       "pagination": {
         "currentPage": "Geçerli Sayfa, Sayfa {n}",
-        "gotoNext": "Sonraki Sayfaya Git",
         "goToPage": "Sayfaya Git {n}",
+        "gotoNext": "Sonraki Sayfaya Git",
         "gotoPrevious": "Önceki Sayfaya Git",
         "nav": "Sayfalandırma Navigasyonu"
       }
