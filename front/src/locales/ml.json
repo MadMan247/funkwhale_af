@@ -1,113 +1,138 @@
 {
   "components": {
     "About": {
-      "stat": {
-        "activeUsers": "% { n } സജീവ ഉപയോക്താവ് | % { n } സജീവ ഉപയോക്താക്കൾ"
-      },
-      "title": "കുറിച്ച്",
       "header": {
         "aboutPod": "ഈ പോഡിനെ കുറിച്ച്"
-      }
-    },
-    "Home": {
+      },
       "stat": {
         "activeUsers": "% { n } സജീവ ഉപയോക്താവ് | % { n } സജീവ ഉപയോക്താക്കൾ"
       },
+      "title": "കുറിച്ച്"
+    },
+    "AboutPod": {
+      "feature": {
+        "status": {
+          "closed": "അടച്ചു",
+          "open": "തുറക്കുക"
+        }
+      },
       "header": {
-        "aboutFunkwhale": "Funkwhale നെ കുറിച്ച്",
+        "about": "ഈ പോഡിനെ കുറിച്ച്",
+        "contact": "ബന്ധപ്പെടുക",
+        "statistics": "അവസ്ഥ"
+      },
+      "link": {
+        "about": "ഈ പോഡിനെ കുറിച്ച്",
+        "introduction": "ക്ഷണങ്ങൾ",
+        "statistics": "അവസ്ഥ"
+      },
+      "stat": {
+        "activeUsers": "% { n } സജീവ ഉപയോക്താവ് | % { n } സജീവ ഉപയോക്താക്കൾ",
+        "albumsCount": "ആൽബം | ആൽബം",
+        "artistsCount": "കലാകാരൻ | കലാകാരൻ",
+        "tracksCount": "ട്രാക്ക് ചേർക്കുക | ട്രാക്ക് ചേർക്കുക"
+      },
+      "title": "കുറിച്ച്"
+    },
+    "Home": {
+      "header": {
         "about": "ഈ Funkwhale പോഡിനെ കുറിച്ച്",
+        "aboutFunkwhale": "Funkwhale നെ കുറിച്ച്",
         "contact": "ബന്ധപ്പെടുക"
+      },
+      "stat": {
+        "activeUsers": "% { n } സജീവ ഉപയോക്താവ് | % { n } സജീവ ഉപയോക്താക്കൾ"
       },
       "title": "ഹോം"
     },
-    "audio": {
-      "artist": {
-        "Card": {
-          "meta": {
-            "episodes": "{ n } എപ്പിസോഡ് | { n } എപ്പിസോഡുകൾ"
-          }
+    "Queue": {
+      "button": {
+        "clear": "മായ്ക്കുക",
+        "close": "അടയ്ക്കുക"
+      },
+      "label": {
+        "duration": "വിവരണം"
+      }
+    },
+    "RemoteSearchForm": {
+      "button": {
+        "search": "തിരയുക"
+      }
+    },
+    "ShortcutsModal": {
+      "button": {
+        "close": "അടയ്ക്കുക"
+      }
+    },
+    "Sidebar": {
+      "header": {
+        "more": "കൂടുതൽ"
+      },
+      "label": {
+        "language": "ഭാഷ"
+      },
+      "link": {
+        "about": "ഈ പോഡിനെ കുറിച്ച്",
+        "albums": "ആൽബങ്ങളും",
+        "artists": "കലാകാരന്മാര്‍",
+        "browse": "കണ്ടെത്തുക",
+        "channels": "ചാനലുകൾ",
+        "home": "ഹോം",
+        "library": "ലൈബ്രറി",
+        "login": "പ്രവേശിക്കുക",
+        "playlists": "പ്ലേലിസ്റ്റുകൾ",
+        "podcasts": "പോഡ്‌കാസ്റ്റുകൾ",
+        "radios": "റേഡിയോകൾ",
+        "search": "തിരയുക",
+        "settings": "ക്രമീകരണങ്ങൾ"
+      }
+    },
+    "admin": {
+      "SettingsGroup": {
+        "button": {
+          "save": "സംരക്ഷിക്കുക"
         }
       },
+      "SignupFormBuilder": {
+        "button": {
+          "add": "ഒരു പുതിയ ഫീൽഡ് ചേർക്കുക"
+        },
+        "label": {
+          "delete": "ഇല്ലാതാക്കുക"
+        },
+        "table": {
+          "additionalFields": {
+            "required": {
+              "false": "ഇല്ല"
+            }
+          }
+        }
+      }
+    },
+    "audio": {
       "ChannelCard": {
         "meta": {
           "episodes": "{ n } എപ്പിസോഡ് | { n } എപ്പിസോഡുകൾ"
         }
       },
-      "ChannelSerieCard": {
-        "meta": {
-          "episodes": "{ n } എപ്പിസോഡ് | { n } എപ്പിസോഡുകൾ"
-        }
-      },
-      "podcast": {
-        "Modal": {
-          "button": {
-            "addToPlaylist": "പ്ലേലിസ്റ്റിലേക്ക് ചേർക്കുക…",
-            "episodeDetails": "എപ്പിസോഡുകൾ",
-            "startRadio": "റേഡിയോ ഇല്ലാതാക്കുക",
-            "artistDetails": "അൽബം കലാകാരൻ",
-            "channelDetails": "കലാകരന്റെ ചാനൽ"
-          }
-        }
-      },
-      "track": {
-        "Modal": {
-          "button": {
-            "addToPlaylist": "പ്ലേലിസ്റ്റിലേക്ക് ചേർക്കുക…",
-            "episodeDetails": "എപ്പിസോഡുകൾ",
-            "startRadio": "റേഡിയോ ഇല്ലാതാക്കുക",
-            "artistDetails": "അൽബം കലാകാരൻ",
-            "channelDetails": "കലാകരന്റെ ചാനൽ"
-          }
-        },
-        "Table": {
-          "table": {
-            "header": {
-              "album": "ആൽബം",
-              "artist": "കലാകാരൻ"
-            }
-          }
-        }
-      },
-      "PlayButton": {
-        "button": {
-          "addToPlaylist": "പ്ലേലിസ്റ്റിലേക്ക് ചേർക്കുക…",
-          "episodeDetails": "എപ്പിസോഡുകൾ"
-        },
-        "title": {
-          "more": "കൂടുതൽ…"
-        }
-      },
-      "SearchBar": {
-        "label": {
-          "album": "ആൽബം",
-          "artist": "കലാകാരൻ",
-          "category": {
-            "podcasts": "പോഡ്‌കാസ്റ്റുകൾ"
-          }
-        }
-      },
-      "Search": {
-        "header": {
-          "albums": "ആൽബങ്ങളും",
-          "artists": "കലാകാരന്മാർ"
-        },
-        "placeholder": {
-          "search": "കലാകാരൻ, ആൽബം, ട്രാക്ക്…"
-        }
-      },
       "ChannelForm": {
         "label": {
           "category": "വിഭാഗം",
-          "image": "ചാനൽ ചിത്രം",
           "description": "വിവരണം",
+          "email": "എൻ്റെ ഇമെയിൽ വിലാസം മാറ്റുക",
+          "image": "ചാനൽ ചിത്രം",
           "language": "ഭാഷ",
           "name": "പേര്",
-          "email": "എൻ്റെ ഇമെയിൽ വിലാസം മാറ്റുക",
           "podcast": "പോഡ്‌കാസ്റ്റുകൾ",
           "subcategory": "ഉപവിഭാഗം"
         },
         "loader": {
           "loading": "ലഭ്യമാക്കുന്നു"
+        }
+      },
+      "ChannelSerieCard": {
+        "meta": {
+          "episodes": "{ n } എപ്പിസോഡ് | { n } എപ്പിസോഡുകൾ"
         }
       },
       "EmbedWizard": {
@@ -120,142 +145,303 @@
           "follow": "പിന്തുടരുക"
         }
       },
+      "PlayButton": {
+        "button": {
+          "addToPlaylist": "പ്ലേലിസ്റ്റിലേക്ക് ചേർക്കുക…",
+          "episodeDetails": "എപ്പിസോഡുകൾ"
+        },
+        "title": {
+          "more": "കൂടുതൽ…"
+        }
+      },
       "Player": {
         "label": {
           "play": "പ്ലേലിസ്റ്റ്"
         }
-      }
-    },
-    "library": {
-      "AlbumBase": {
-        "meta": {
-          "episodes": "{ n } എപ്പിസോഡ് | { n } എപ്പിസോഡുകൾ"
-        },
-        "link": {
-          "addDescription": "ഒരു വിവരണം ചേർക്കുക…"
-        }
       },
-      "TrackDetail": {
-        "table": {
-          "release": {
-            "album": "ആൽബം",
-            "artist": "കലാകാരൻ"
-          },
-          "track": {
-            "bitrate": {
-              "label": "ബിറ്റ്റേറ്റ്"
-            }
-          }
-        }
-      },
-      "Albums": {
-        "title": "ആൽബങ്ങളും",
-        "ordering": {
-          "direction": {
-            "ascending": "ആരോഹണം"
-          }
-        },
-        "label": {
-          "search": "തിരയുക"
-        },
-        "button": {
-          "search": "തിരയുക"
-        }
-      },
-      "TagDetail": {
-        "link": {
+      "Search": {
+        "header": {
           "albums": "ആൽബങ്ങളും",
           "artists": "കലാകാരന്മാർ"
         },
+        "placeholder": {
+          "search": "കലാകാരൻ, ആൽബം, ട്രാക്ക്…"
+        }
+      },
+      "SearchBar": {
+        "label": {
+          "album": "ആൽബം",
+          "artist": "കലാകാരൻ",
+          "category": {
+            "podcasts": "പോഡ്‌കാസ്റ്റുകൾ"
+          }
+        }
+      },
+      "artist": {
+        "Card": {
+          "meta": {
+            "episodes": "{ n } എപ്പിസോഡ് | { n } എപ്പിസോഡുകൾ"
+          }
+        }
+      },
+      "podcast": {
+        "Modal": {
+          "button": {
+            "addToPlaylist": "പ്ലേലിസ്റ്റിലേക്ക് ചേർക്കുക…",
+            "artistDetails": "അൽബം കലാകാരൻ",
+            "channelDetails": "കലാകരന്റെ ചാനൽ",
+            "episodeDetails": "എപ്പിസോഡുകൾ",
+            "startRadio": "റേഡിയോ ഇല്ലാതാക്കുക"
+          }
+        }
+      },
+      "track": {
+        "Modal": {
+          "button": {
+            "addToPlaylist": "പ്ലേലിസ്റ്റിലേക്ക് ചേർക്കുക…",
+            "artistDetails": "അൽബം കലാകാരൻ",
+            "channelDetails": "കലാകരന്റെ ചാനൽ",
+            "episodeDetails": "എപ്പിസോഡുകൾ",
+            "startRadio": "റേഡിയോ ഇല്ലാതാക്കുക"
+          }
+        },
+        "Table": {
+          "table": {
+            "header": {
+              "album": "ആൽബം",
+              "artist": "കലാകാരൻ"
+            }
+          }
+        }
+      }
+    },
+    "auth": {
+      "ApplicationForm": {
+        "label": {
+          "name": "പേര്"
+        }
+      },
+      "Authorize": {
+        "button": {
+          "authorize": "{ app } അനുവദിക്കുക"
+        }
+      },
+      "LoginForm": {
+        "button": {
+          "login": "പ്രവേശിക്കുക"
+        },
+        "label": {
+          "username": "നിങ്ങളുടെ ഇ-മെയിൽ വിലാസം ഉറപ്പാക്കുക"
+        },
+        "placeholder": {
+          "username": "നിങ്ങളുടെ ഇ-മെയിൽ വിലാസം ഉറപ്പാക്കുക"
+        }
+      },
+      "Logout": {
         "header": {
-          "channels": "ചാനലുകൾ"
+          "confirm": "നിങ്ങൾക്ക് പുറത്ത് കടക്കാൻ ആഗ്രഹം ഉണ്ടോ?"
         }
       },
-      "EditCard": {
+      "Plugin": {
         "button": {
-          "approve": "അംഗീകരിക്കുക",
+          "save": "സംരക്ഷിക്കുക"
+        },
+        "label": {
+          "library": "ലൈബ്രറി"
+        }
+      },
+      "Settings": {
+        "button": {
           "delete": "ഇല്ലാതാക്കുക",
-          "reject": "നിരസിക്കുക"
-        },
-        "status": {
-          "approved": "അംഗീകരിച്ചു",
-          "rejected": "നിരസിച്ചു"
-        }
-      },
-      "ArtistBase": {
-        "title": "കലാകാരൻ",
-        "button": {
-          "cancel": "റദ്ദാക്കുക",
+          "deleteAccount": "എന്റെ അക്കൗണ്ട് ഇല്ലാതാക്കുക…",
+          "deleteAccountConfirm": "എന്റെ അക്കൗണ്ട് ഇല്ലാതാക്കുക",
           "edit": "തിരുത്തുക",
-          "more": "കൂടുതൽ…"
-        }
-      },
-      "Artists": {
-        "label": {
-          "search": "കലാകാരന്റെ പേര്"
+          "refresh": "പുതുക്കുക"
         },
-        "title": "കലാകാരന്മാർ",
-        "ordering": {
-          "direction": {
-            "ascending": "ആരോഹണം"
+        "header": {
+          "accountSettings": "അക്കൗണ്ട് ക്രമീകരണങ്ങൾ",
+          "avatar": "അവതാർ",
+          "changeEmail": "എൻ്റെ ഇമെയിൽ വിലാസം മാറ്റുക",
+          "deleteAccount": "എന്റെ അക്കൗണ്ട് ഇല്ലാതാക്കുക",
+          "emailFailure": "എൻ്റെ ഇമെയിൽ വിലാസം മാറ്റുക"
+        },
+        "label": {
+          "avatar": "അവതാർ",
+          "currentPassword": "നിലവിലെ ഉപയോഗം",
+          "newEmail": "ഇമെയിൽ വിലാസം"
+        },
+        "table": {
+          "artists": {
+            "header": {
+              "name": "പേര്"
+            }
+          },
+          "authorizedApps": {
+            "header": {
+              "permissions": "അനുമതികൾ"
+            }
           }
         },
-        "button": {
-          "search": "തിരയുക"
+        "title": "അക്കൗണ്ട് ക്രമീകരണങ്ങൾ"
+      },
+      "SignupForm": {
+        "label": {
+          "email": "ഇമെയിൽ വിലാസം"
         },
         "placeholder": {
-          "search": "തിരയുക…"
+          "email": "നിങ്ങളുടെ ഇ-മെയിൽ വിലാസം ഉറപ്പാക്കുക"
         }
-      },
-      "Podcasts": {
-        "ordering": {
-          "direction": {
-            "ascending": "ആരോഹണം"
-          }
-        },
+      }
+    },
+    "channels": {
+      "AlbumModal": {
         "button": {
           "cancel": "റദ്ദാക്കുക",
-          "channel": "ഒരു ചാനൽ സൃഷ്ടിക്കുക",
-          "search": "തിരയുക"
+          "create": "സൃഷ്ടിക്കുക"
+        }
+      },
+      "AlbumSelect": {
+        "label": {
+          "album": "ആൽബം"
+        }
+      },
+      "LicenseSelect": {
+        "link": {
+          "license": "ഈ ലൈസൻസിനെ കുറിച്ച്"
+        }
+      },
+      "UploadForm": {
+        "button": {
+          "edit": "തിരുത്തുക",
+          "retry": "വീണ്ടും ശ്രമിക്കുക"
         },
         "label": {
-          "search": "പോഡ്‌കാസ്റ്റ്"
+          "channel": "ചാനൽ"
+        }
+      },
+      "UploadMetadataForm": {
+        "label": {
+          "description": "വിവരണം"
+        }
+      },
+      "UploadModal": {
+        "button": {
+          "cancel": "റദ്ദാക്കുക",
+          "close": "അടയ്ക്കുക"
         },
-        "title": "പോഡ്‌കാസ്റ്റുകൾ",
+        "meta": {
+          "files": "{ n } ഫയൽ | { n } ഫയലുകൾ"
+        }
+      }
+    },
+    "common": {
+      "CollapseLink": {
+        "button": {
+          "collapse": "ചുരുക്കുക"
+        }
+      },
+      "CopyInput": {
+        "button": {
+          "copy": "പകർത്തുക"
+        }
+      },
+      "DangerousButton": {
+        "button": {
+          "cancel": "റദ്ദാക്കുക",
+          "confirm": "ഉറപ്പാക്കുക"
+        }
+      },
+      "Duration": {
+        "meta": {
+          "minutes": "{ minutes } മിനിറ്റ്"
+        }
+      },
+      "EmptyState": {
+        "button": {
+          "refresh": "പുതുക്കുക"
+        }
+      },
+      "InlineSearchBar": {
+        "button": {
+          "clear": "മായ്ക്കുക"
+        },
+        "label": {
+          "search": "തിരയുക"
+        },
         "placeholder": {
           "search": "തിരയുക…"
         }
       },
-      "Radios": {
+      "RenderedDescription": {
+        "button": {
+          "cancel": "റദ്ദാക്കുക",
+          "edit": "തിരുത്തുക"
+        }
+      },
+      "UserMenu": {
+        "label": {
+          "language": "ഭാഷ"
+        },
+        "link": {
+          "about": "കുറിച്ച്",
+          "chat": "ചാറ്റ് റൂം",
+          "notifications": "അറിയിപ്പുകൾ",
+          "profile": "പ്രൊഫൈൽ",
+          "settings": "ക്രമീകരണങ്ങൾ"
+        }
+      },
+      "UserModal": {
+        "header": {
+          "options": "പ്രവർത്തന"
+        },
+        "label": {
+          "language": "ഭാഷ"
+        },
+        "link": {
+          "about": "കുറിച്ച്",
+          "chat": "ചാറ്റ് റൂം",
+          "notifications": "അറിയിപ്പുകൾ",
+          "profile": "പ്രൊഫൈൽ",
+          "settings": "ക്രമീകരണങ്ങൾ"
+        }
+      }
+    },
+    "favorites": {
+      "List": {
         "ordering": {
           "direction": {
             "ascending": "ആരോഹണം",
             "label": "ക്രമം"
           }
+        }
+      }
+    },
+    "federation": {
+      "FetchButton": {
+        "button": {
+          "close": "അടയ്ക്കുക"
+        }
+      }
+    },
+    "forms": {
+      "PasswordInput": {
+        "button": {
+          "copy": "പകർത്തുക"
+        }
+      }
+    },
+    "library": {
+      "AlbumBase": {
+        "link": {
+          "addDescription": "ഒരു വിവരണം ചേർക്കുക…"
         },
-        "title": "റേഡിയോകൾ",
-        "label": {
-          "search": "തിരയുക"
+        "meta": {
+          "episodes": "{ n } എപ്പിസോഡ് | { n } എപ്പിസോഡുകൾ"
         }
       },
-      "radios": {
-        "Filter": {
-          "cancelButton": "റദ്ദാക്കുക"
-        },
-        "Builder": {
-          "table": {
-            "filter": {
-              "header": {
-                "candidates": "സ്ഥാനാർത്ഥികൾ"
-              }
-            }
-          },
-          "label": {
-            "description": "വിവരണം"
-          },
-          "button": {
-            "save": "സംരക്ഷിക്കുക"
-          }
+      "AlbumDetail": {
+        "header": {
+          "episodes": "എപ്പിസോഡുകൾ"
         }
       },
       "AlbumDropdown": {
@@ -269,6 +455,61 @@
           "delete": {
             "header": "ഈ ആൽബം ഇല്ലാതാക്കണോ?"
           }
+        }
+      },
+      "AlbumEdit": {
+        "header": {
+          "edit": "ഈ അൽബം തിരുത്തുക"
+        }
+      },
+      "Albums": {
+        "button": {
+          "search": "തിരയുക"
+        },
+        "label": {
+          "search": "തിരയുക"
+        },
+        "ordering": {
+          "direction": {
+            "ascending": "ആരോഹണം"
+          }
+        },
+        "title": "ആൽബങ്ങളും"
+      },
+      "ArtistBase": {
+        "button": {
+          "cancel": "റദ്ദാക്കുക",
+          "edit": "തിരുത്തുക",
+          "more": "കൂടുതൽ…"
+        },
+        "title": "കലാകാരൻ"
+      },
+      "Artists": {
+        "button": {
+          "search": "തിരയുക"
+        },
+        "label": {
+          "search": "കലാകാരന്റെ പേര്"
+        },
+        "ordering": {
+          "direction": {
+            "ascending": "ആരോഹണം"
+          }
+        },
+        "placeholder": {
+          "search": "തിരയുക…"
+        },
+        "title": "കലാകാരന്മാർ"
+      },
+      "EditCard": {
+        "button": {
+          "approve": "അംഗീകരിക്കുക",
+          "delete": "ഇല്ലാതാക്കുക",
+          "reject": "നിരസിക്കുക"
+        },
+        "status": {
+          "approved": "അംഗീകരിച്ചു",
+          "rejected": "നിരസിച്ചു"
         }
       },
       "EditForm": {
@@ -293,6 +534,62 @@
           "retry": "വീണ്ടും ശ്രമിക്കുക"
         }
       },
+      "Home": {
+        "header": {
+          "playlists": "പ്ലേലിസ്റ്റുകൾ"
+        },
+        "title": "ലൈബ്രറി"
+      },
+      "ImportStatusModal": {
+        "button": {
+          "close": "അടയ്ക്കുക"
+        }
+      },
+      "Podcasts": {
+        "button": {
+          "cancel": "റദ്ദാക്കുക",
+          "channel": "ഒരു ചാനൽ സൃഷ്ടിക്കുക",
+          "search": "തിരയുക"
+        },
+        "label": {
+          "search": "പോഡ്‌കാസ്റ്റ്"
+        },
+        "ordering": {
+          "direction": {
+            "ascending": "ആരോഹണം"
+          }
+        },
+        "placeholder": {
+          "search": "തിരയുക…"
+        },
+        "title": "പോഡ്‌കാസ്റ്റുകൾ"
+      },
+      "Radios": {
+        "label": {
+          "search": "തിരയുക"
+        },
+        "ordering": {
+          "direction": {
+            "ascending": "ആരോഹണം",
+            "label": "ക്രമം"
+          }
+        },
+        "title": "റേഡിയോകൾ"
+      },
+      "TagDetail": {
+        "header": {
+          "channels": "ചാനലുകൾ"
+        },
+        "link": {
+          "albums": "ആൽബങ്ങളും",
+          "artists": "കലാകാരന്മാർ"
+        }
+      },
+      "TagSelector": {
+        "placeholder": {
+          "search": "തിരയുക…"
+        }
+      },
       "TrackBase": {
         "button": {
           "cancel": "റദ്ദാക്കുക",
@@ -301,214 +598,67 @@
           "more": "കൂടുതൽ…"
         }
       },
-      "ImportStatusModal": {
-        "button": {
-          "close": "അടയ്ക്കുക"
+      "TrackDetail": {
+        "table": {
+          "release": {
+            "album": "ആൽബം",
+            "artist": "കലാകാരൻ"
+          },
+          "track": {
+            "bitrate": {
+              "label": "ബിറ്റ്റേറ്റ്"
+            }
+          }
         }
       },
-      "AlbumEdit": {
-        "header": {
-          "edit": "ഈ അൽബം തിരുത്തുക"
-        }
-      },
-      "AlbumDetail": {
-        "header": {
-          "episodes": "എപ്പിസോഡുകൾ"
-        }
-      },
-      "Home": {
-        "title": "ലൈബ്രറി",
-        "header": {
-          "playlists": "പ്ലേലിസ്റ്റുകൾ"
-        }
-      },
-      "TagSelector": {
-        "placeholder": {
-          "search": "തിരയുക…"
-        }
-      }
-    },
-    "channels": {
-      "UploadModal": {
-        "meta": {
-          "files": "{ n } ഫയൽ | { n } ഫയലുകൾ"
+      "radios": {
+        "Builder": {
+          "button": {
+            "save": "സംരക്ഷിക്കുക"
+          },
+          "label": {
+            "description": "വിവരണം"
+          },
+          "table": {
+            "filter": {
+              "header": {
+                "candidates": "സ്ഥാനാർത്ഥികൾ"
+              }
+            }
+          }
         },
-        "button": {
-          "cancel": "റദ്ദാക്കുക",
-          "close": "അടയ്ക്കുക"
+        "Filter": {
+          "cancelButton": "റദ്ദാക്കുക"
         }
-      },
-      "LicenseSelect": {
-        "link": {
-          "license": "ഈ ലൈസൻസിനെ കുറിച്ച്"
-        }
-      },
-      "AlbumSelect": {
-        "label": {
-          "album": "ആൽബം"
-        }
-      },
-      "AlbumModal": {
-        "button": {
-          "cancel": "റദ്ദാക്കുക",
-          "create": "സൃഷ്ടിക്കുക"
-        }
-      },
-      "UploadForm": {
-        "label": {
-          "channel": "ചാനൽ"
-        },
-        "button": {
-          "edit": "തിരുത്തുക",
-          "retry": "വീണ്ടും ശ്രമിക്കുക"
-        }
-      },
-      "UploadMetadataForm": {
-        "label": {
-          "description": "വിവരണം"
-        }
-      }
-    },
-    "common": {
-      "Duration": {
-        "meta": {
-          "minutes": "{ minutes } മിനിറ്റ്"
-        }
-      },
-      "UserMenu": {
-        "link": {
-          "about": "കുറിച്ച്",
-          "chat": "ചാറ്റ് റൂം",
-          "notifications": "അറിയിപ്പുകൾ",
-          "profile": "പ്രൊഫൈൽ",
-          "settings": "ക്രമീകരണങ്ങൾ"
-        },
-        "label": {
-          "language": "ഭാഷ"
-        }
-      },
-      "UserModal": {
-        "link": {
-          "about": "കുറിച്ച്",
-          "chat": "ചാറ്റ് റൂം",
-          "notifications": "അറിയിപ്പുകൾ",
-          "profile": "പ്രൊഫൈൽ",
-          "settings": "ക്രമീകരണങ്ങൾ"
-        },
-        "label": {
-          "language": "ഭാഷ"
-        },
-        "header": {
-          "options": "പ്രവർത്തന"
-        }
-      },
-      "DangerousButton": {
-        "button": {
-          "cancel": "റദ്ദാക്കുക",
-          "confirm": "ഉറപ്പാക്കുക"
-        }
-      },
-      "RenderedDescription": {
-        "button": {
-          "cancel": "റദ്ദാക്കുക",
-          "edit": "തിരുത്തുക"
-        }
-      },
-      "InlineSearchBar": {
-        "button": {
-          "clear": "മായ്ക്കുക"
-        },
-        "label": {
-          "search": "തിരയുക"
-        },
-        "placeholder": {
-          "search": "തിരയുക…"
-        }
-      },
-      "CollapseLink": {
-        "button": {
-          "collapse": "ചുരുക്കുക"
-        }
-      },
-      "CopyInput": {
-        "button": {
-          "copy": "പകർത്തുക"
-        }
-      },
-      "EmptyState": {
-        "button": {
-          "refresh": "പുതുക്കുക"
-        }
-      }
-    },
-    "AboutPod": {
-      "title": "കുറിച്ച്",
-      "link": {
-        "about": "ഈ പോഡിനെ കുറിച്ച്",
-        "introduction": "ക്ഷണങ്ങൾ",
-        "statistics": "അവസ്ഥ"
-      },
-      "header": {
-        "about": "ഈ പോഡിനെ കുറിച്ച്",
-        "contact": "ബന്ധപ്പെടുക",
-        "statistics": "അവസ്ഥ"
-      },
-      "stat": {
-        "activeUsers": "% { n } സജീവ ഉപയോക്താവ് | % { n } സജീവ ഉപയോക്താക്കൾ",
-        "albumsCount": "ആൽബം | ആൽബം",
-        "artistsCount": "കലാകാരൻ | കലാകാരൻ",
-        "tracksCount": "ട്രാക്ക് ചേർക്കുക | ട്രാക്ക് ചേർക്കുക"
-      },
-      "feature": {
-        "status": {
-          "closed": "അടച്ചു",
-          "open": "തുറക്കുക"
-        }
-      }
-    },
-    "Sidebar": {
-      "link": {
-        "about": "ഈ പോഡിനെ കുറിച്ച്",
-        "albums": "ആൽബങ്ങളും",
-        "artists": "കലാകാരന്മാര്‍",
-        "browse": "കണ്ടെത്തുക",
-        "channels": "ചാനലുകൾ",
-        "home": "ഹോം",
-        "library": "ലൈബ്രറി",
-        "login": "പ്രവേശിക്കുക",
-        "playlists": "പ്ലേലിസ്റ്റുകൾ",
-        "podcasts": "പോഡ്‌കാസ്റ്റുകൾ",
-        "radios": "റേഡിയോകൾ",
-        "search": "തിരയുക",
-        "settings": "ക്രമീകരണങ്ങൾ"
-      },
-      "label": {
-        "language": "ഭാഷ"
-      },
-      "header": {
-        "more": "കൂടുതൽ"
       }
     },
     "manage": {
+      "ChannelsTable": {
+        "label": {
+          "category": "വിഭാഗം",
+          "search": "തിരയുക"
+        },
+        "option": {
+          "all": "എല്ലാം"
+        },
+        "ordering": {
+          "direction": {
+            "ascending": "ആരോഹണം"
+          }
+        },
+        "table": {
+          "channel": {
+            "header": {
+              "account": "അക്കൗണ്ട്",
+              "albums": "ആൽബങ്ങളും",
+              "domain": "മേഖല",
+              "name": "പേര്"
+            }
+          }
+        }
+      },
       "library": {
-        "LibrariesTable": {
-          "table": {
-            "library": {
-              "header": {
-                "account": "അക്കൗണ്ട്",
-                "domain": "മേഖല",
-                "name": "പേര്"
-              }
-            }
-          },
-          "option": {
-            "all": "എല്ലാം"
-          },
-          "ordering": {
-            "direction": {
-              "ascending": "ആരോഹണം"
-            }
-          },
+        "AlbumsTable": {
           "action": {
             "delete": {
               "label": "ഇല്ലാതാക്കുക"
@@ -516,62 +666,40 @@
           },
           "label": {
             "search": "തിരയുക"
-          }
-        },
-        "UploadsTable": {
-          "table": {
-            "upload": {
-              "header": {
-                "account": "അക്കൗണ്ട്",
-                "domain": "മേഖല",
-                "library": "ലൈബ്രറി",
-                "name": "പേര്"
-              }
-            }
-          },
-          "option": {
-            "all": "എല്ലാം"
           },
           "ordering": {
             "direction": {
               "ascending": "ആരോഹണം"
             }
           },
-          "action": {
-            "delete": {
-              "label": "ഇല്ലാതാക്കുക"
-            }
-          },
-          "label": {
-            "search": "തിരയുക",
-            "status": "അവസ്ഥ"
-          }
-        },
-        "TracksTable": {
           "table": {
-            "track": {
+            "album": {
               "header": {
-                "album": "ആൽബം",
                 "artist": "കലാകാരൻ",
-                "domain": "മേഖല"
+                "domain": "മേഖല",
+                "name": "പേര്"
               }
             }
-          },
-          "ordering": {
-            "direction": {
-              "ascending": "ആരോഹണം"
-            }
-          },
-          "action": {
-            "delete": {
-              "label": "ഇല്ലാതാക്കുക"
-            }
-          },
-          "label": {
-            "search": "തിരയുക"
           }
         },
         "ArtistsTable": {
+          "action": {
+            "delete": {
+              "label": "ഇല്ലാതാക്കുക"
+            }
+          },
+          "label": {
+            "category": "വിഭാഗം",
+            "search": "തിരയുക"
+          },
+          "option": {
+            "all": "എല്ലാം"
+          },
+          "ordering": {
+            "direction": {
+              "ascending": "ആരോഹണം"
+            }
+          },
           "table": {
             "artist": {
               "header": {
@@ -580,50 +708,12 @@
                 "name": "പേര്"
               }
             }
-          },
-          "option": {
-            "all": "എല്ലാം"
-          },
-          "ordering": {
-            "direction": {
-              "ascending": "ആരോഹണം"
-            }
-          },
-          "label": {
-            "category": "വിഭാഗം",
-            "search": "തിരയുക"
-          },
-          "action": {
-            "delete": {
-              "label": "ഇല്ലാതാക്കുക"
-            }
-          }
-        },
-        "TagsTable": {
-          "table": {
-            "tag": {
-              "header": {
-                "albums": "ആൽബങ്ങളും",
-                "artists": "കലാകാരന്മാർ",
-                "name": "പേര്"
-              }
-            }
-          },
-          "ordering": {
-            "direction": {
-              "ascending": "ആരോഹണം"
-            }
-          },
-          "action": {
-            "delete": {
-              "label": "ഇല്ലാതാക്കുക"
-            }
-          },
-          "label": {
-            "search": "തിരയുക"
           }
         },
         "EditsCardList": {
+          "label": {
+            "status": "അവസ്ഥ"
+          },
           "option": {
             "all": "എല്ലാം",
             "approved": "അംഗീകരിച്ചു",
@@ -634,26 +724,9 @@
               "ascending": "ആരോഹണം",
               "label": "ക്രമം"
             }
-          },
-          "label": {
-            "status": "അവസ്ഥ"
           }
         },
-        "AlbumsTable": {
-          "table": {
-            "album": {
-              "header": {
-                "artist": "കലാകാരൻ",
-                "domain": "മേഖല",
-                "name": "പേര്"
-              }
-            }
-          },
-          "ordering": {
-            "direction": {
-              "ascending": "ആരോഹണം"
-            }
-          },
+        "LibrariesTable": {
           "action": {
             "delete": {
               "label": "ഇല്ലാതാക്കുക"
@@ -661,35 +734,126 @@
           },
           "label": {
             "search": "തിരയുക"
+          },
+          "option": {
+            "all": "എല്ലാം"
+          },
+          "ordering": {
+            "direction": {
+              "ascending": "ആരോഹണം"
+            }
+          },
+          "table": {
+            "library": {
+              "header": {
+                "account": "അക്കൗണ്ട്",
+                "domain": "മേഖല",
+                "name": "പേര്"
+              }
+            }
+          }
+        },
+        "TagsTable": {
+          "action": {
+            "delete": {
+              "label": "ഇല്ലാതാക്കുക"
+            }
+          },
+          "label": {
+            "search": "തിരയുക"
+          },
+          "ordering": {
+            "direction": {
+              "ascending": "ആരോഹണം"
+            }
+          },
+          "table": {
+            "tag": {
+              "header": {
+                "albums": "ആൽബങ്ങളും",
+                "artists": "കലാകാരന്മാർ",
+                "name": "പേര്"
+              }
+            }
+          }
+        },
+        "TracksTable": {
+          "action": {
+            "delete": {
+              "label": "ഇല്ലാതാക്കുക"
+            }
+          },
+          "label": {
+            "search": "തിരയുക"
+          },
+          "ordering": {
+            "direction": {
+              "ascending": "ആരോഹണം"
+            }
+          },
+          "table": {
+            "track": {
+              "header": {
+                "album": "ആൽബം",
+                "artist": "കലാകാരൻ",
+                "domain": "മേഖല"
+              }
+            }
+          }
+        },
+        "UploadsTable": {
+          "action": {
+            "delete": {
+              "label": "ഇല്ലാതാക്കുക"
+            }
+          },
+          "label": {
+            "search": "തിരയുക",
+            "status": "അവസ്ഥ"
+          },
+          "option": {
+            "all": "എല്ലാം"
+          },
+          "ordering": {
+            "direction": {
+              "ascending": "ആരോഹണം"
+            }
+          },
+          "table": {
+            "upload": {
+              "header": {
+                "account": "അക്കൗണ്ട്",
+                "domain": "മേഖല",
+                "library": "ലൈബ്രറി",
+                "name": "പേര്"
+              }
+            }
           }
         }
       },
       "moderation": {
-        "ReportCard": {
-          "table": {
-            "object": {
-              "account": "അക്കൗണ്ട്",
-              "domain": "മേഖല",
-              "owner": "ഉടമ",
-              "type": "തരം"
-            },
-            "report": {
-              "category": "വിഭാഗം"
-            },
-            "status": {
-              "status": "അവസ്ഥ"
+        "AccountsTable": {
+          "label": {
+            "search": "തിരയുക"
+          },
+          "ordering": {
+            "direction": {
+              "ascending": "ആരോഹണം"
             }
           },
-          "button": {
-            "confirmDelete": "ഇല്ലാതാക്കുക"
-          }
-        },
-        "NoteForm": {
-          "button": {
-            "add": "കുറിപ്പ് ചേർക്കുക"
+          "table": {
+            "account": {
+              "header": {
+                "domain": "മേഖല",
+                "name": "പേര്"
+              }
+            }
           }
         },
         "DomainsTable": {
+          "label": {
+            "search": "തിരയുക"
+          },
           "option": {
             "all": "എല്ലാം",
             "no": "ഇല്ല"
@@ -705,38 +869,14 @@
                 "name": "പേര്"
               }
             }
-          },
-          "label": {
-            "search": "തിരയുക"
           }
         },
-        "UserRequestCard": {
+        "InstancePolicyCard": {
           "button": {
-            "approve": "അംഗീകരിക്കുക"
-          },
-          "table": {
-            "status": {
-              "approved": "അംഗീകരിച്ചു",
-              "status": "അവസ്ഥ"
-            }
-          }
-        },
-        "AccountsTable": {
-          "ordering": {
-            "direction": {
-              "ascending": "ആരോഹണം"
-            }
-          },
-          "table": {
-            "account": {
-              "header": {
-                "domain": "മേഖല",
-                "name": "പേര്"
-              }
-            }
+            "edit": "തിരുത്തുക"
           },
           "label": {
-            "search": "തിരയുക"
+            "reason": "കാരണം"
           }
         },
         "InstancePolicyForm": {
@@ -754,70 +894,68 @@
             "close": "അടയ്ക്കുക"
           }
         },
+        "NoteForm": {
+          "button": {
+            "add": "കുറിപ്പ് ചേർക്കുക"
+          }
+        },
         "NotesThread": {
           "button": {
             "delete": "ഇല്ലാതാക്കുക"
           }
         },
-        "InstancePolicyCard": {
+        "ReportCard": {
           "button": {
-            "edit": "തിരുത്തുക"
+            "confirmDelete": "ഇല്ലാതാക്കുക"
           },
-          "label": {
-            "reason": "കാരണം"
-          }
-        }
-      },
-      "ChannelsTable": {
-        "table": {
-          "channel": {
-            "header": {
+          "table": {
+            "object": {
               "account": "അക്കൗണ്ട്",
-              "albums": "ആൽബങ്ങളും",
               "domain": "മേഖല",
-              "name": "പേര്"
+              "owner": "ഉടമ",
+              "type": "തരം"
+            },
+            "report": {
+              "category": "വിഭാഗം"
+            },
+            "status": {
+              "status": "അവസ്ഥ"
             }
           }
         },
-        "option": {
-          "all": "എല്ലാം"
-        },
-        "ordering": {
-          "direction": {
-            "ascending": "ആരോഹണം"
+        "UserRequestCard": {
+          "button": {
+            "approve": "അംഗീകരിക്കുക"
+          },
+          "table": {
+            "status": {
+              "approved": "അംഗീകരിച്ചു",
+              "status": "അവസ്ഥ"
+            }
           }
-        },
-        "label": {
-          "category": "വിഭാഗം",
-          "search": "തിരയുക"
         }
       },
       "users": {
-        "UsersTable": {
+        "InvitationForm": {
+          "button": {
+            "clear": "മായ്ക്കുക"
+          },
           "table": {
-            "user": {
+            "invitation": {
               "header": {
-                "accountStatus": "അക്കൗണ്ടിന്റെ അവസ്ഥ",
-                "email": "ഇമെയിൽ",
-                "permissions": "അനുമതികൾ",
-                "status": "അവസ്ഥ"
-              },
-              "status": {
-                "admin": "അഡ്മിൻ"
+                "code": "കോഡ്"
               }
             }
-          },
-          "ordering": {
-            "direction": {
-              "ascending": "ആരോഹണം"
-            }
-          },
-          "permission": {
-            "library": "ലൈബ്രറി",
-            "settings": "ക്രമീകരണങ്ങൾ"
           }
         },
         "InvitationsTable": {
+          "action": {
+            "delete": "ഇല്ലാതാക്കുക"
+          },
+          "label": {
+            "search": "തിരയുക",
+            "status": "അവസ്ഥ"
+          },
           "option": {
             "all": "എല്ലാം",
             "open": "തുറക്കുക"
@@ -830,126 +968,62 @@
                 "status": "അവസ്ഥ"
               }
             }
-          },
-          "action": {
-            "delete": "ഇല്ലാതാക്കുക"
-          },
-          "label": {
-            "search": "തിരയുക",
-            "status": "അവസ്ഥ"
           }
         },
-        "InvitationForm": {
-          "button": {
-            "clear": "മായ്ക്കുക"
+        "UsersTable": {
+          "ordering": {
+            "direction": {
+              "ascending": "ആരോഹണം"
+            }
+          },
+          "permission": {
+            "library": "ലൈബ്രറി",
+            "settings": "ക്രമീകരണങ്ങൾ"
           },
           "table": {
-            "invitation": {
+            "user": {
               "header": {
-                "code": "കോഡ്"
+                "accountStatus": "അക്കൗണ്ടിന്റെ അവസ്ഥ",
+                "email": "ഇമെയിൽ",
+                "permissions": "അനുമതികൾ",
+                "status": "അവസ്ഥ"
+              },
+              "status": {
+                "admin": "അഡ്മിൻ"
               }
             }
           }
         }
       }
     },
-    "auth": {
-      "Settings": {
-        "title": "അക്കൗണ്ട് ക്രമീകരണങ്ങൾ",
-        "header": {
-          "accountSettings": "അക്കൗണ്ട് ക്രമീകരണങ്ങൾ",
-          "avatar": "അവതാർ",
-          "changeEmail": "എൻ്റെ ഇമെയിൽ വിലാസം മാറ്റുക",
-          "deleteAccount": "എന്റെ അക്കൗണ്ട് ഇല്ലാതാക്കുക",
-          "emailFailure": "എൻ്റെ ഇമെയിൽ വിലാസം മാറ്റുക"
-        },
-        "label": {
-          "avatar": "അവതാർ",
-          "currentPassword": "നിലവിലെ ഉപയോഗം",
-          "newEmail": "ഇമെയിൽ വിലാസം"
-        },
+    "moderation": {
+      "FilterModal": {
         "button": {
-          "delete": "ഇല്ലാതാക്കുക",
-          "deleteAccountConfirm": "എന്റെ അക്കൗണ്ട് ഇല്ലാതാക്കുക",
-          "deleteAccount": "എന്റെ അക്കൗണ്ട് ഇല്ലാതാക്കുക…",
-          "edit": "തിരുത്തുക",
-          "refresh": "പുതുക്കുക"
+          "cancel": "റദ്ദാക്കുക"
+        }
+      },
+      "ReportCategoryDropdown": {
+        "label": {
+          "category": "വിഭാഗം"
         },
-        "table": {
-          "artists": {
-            "header": {
-              "name": "പേര്"
-            }
-          },
-          "authorizedApps": {
-            "header": {
-              "permissions": "അനുമതികൾ"
-            }
-          }
+        "option": {
+          "all": "എല്ലാം"
         }
       },
-      "Logout": {
-        "header": {
-          "confirm": "നിങ്ങൾക്ക് പുറത്ത് കടക്കാൻ ആഗ്രഹം ഉണ്ടോ?"
-        }
-      },
-      "Authorize": {
+      "ReportModal": {
         "button": {
-          "authorize": "{ app } അനുവദിക്കുക"
-        }
-      },
-      "SignupForm": {
-        "label": {
-          "email": "ഇമെയിൽ വിലാസം"
-        },
-        "placeholder": {
-          "email": "നിങ്ങളുടെ ഇ-മെയിൽ വിലാസം ഉറപ്പാക്കുക"
-        }
-      },
-      "LoginForm": {
-        "placeholder": {
-          "username": "നിങ്ങളുടെ ഇ-മെയിൽ വിലാസം ഉറപ്പാക്കുക"
-        },
-        "button": {
-          "login": "പ്രവേശിക്കുക"
+          "cancel": "റദ്ദാക്കുക"
         },
         "label": {
-          "username": "നിങ്ങളുടെ ഇ-മെയിൽ വിലാസം ഉറപ്പാക്കുക"
-        }
-      },
-      "Plugin": {
-        "label": {
-          "library": "ലൈബ്രറി"
-        },
-        "button": {
-          "save": "സംരക്ഷിക്കുക"
-        }
-      },
-      "ApplicationForm": {
-        "label": {
-          "name": "പേര്"
+          "email": "ഇമെയിൽ"
         }
       }
     },
-    "admin": {
-      "SignupFormBuilder": {
+    "notifications": {
+      "NotificationRow": {
         "button": {
-          "add": "ഒരു പുതിയ ഫീൽഡ് ചേർക്കുക"
-        },
-        "label": {
-          "delete": "ഇല്ലാതാക്കുക"
-        },
-        "table": {
-          "additionalFields": {
-            "required": {
-              "false": "ഇല്ല"
-            }
-          }
-        }
-      },
-      "SettingsGroup": {
-        "button": {
-          "save": "സംരക്ഷിക്കുക"
+          "approve": "അംഗീകരിക്കുക",
+          "reject": "നിരസിക്കുക"
         }
       }
     },
@@ -985,649 +1059,78 @@
         }
       }
     },
-    "moderation": {
-      "ReportCategoryDropdown": {
-        "option": {
-          "all": "എല്ലാം"
-        },
-        "label": {
-          "category": "വിഭാഗം"
-        }
-      },
-      "FilterModal": {
-        "button": {
-          "cancel": "റദ്ദാക്കുക"
-        }
-      },
-      "ReportModal": {
-        "button": {
-          "cancel": "റദ്ദാക്കുക"
-        },
-        "label": {
-          "email": "ഇമെയിൽ"
-        }
-      }
-    },
-    "notifications": {
-      "NotificationRow": {
-        "button": {
-          "approve": "അംഗീകരിക്കുക",
-          "reject": "നിരസിക്കുക"
-        }
-      }
-    },
-    "favorites": {
-      "List": {
-        "ordering": {
-          "direction": {
-            "ascending": "ആരോഹണം",
-            "label": "ക്രമം"
-          }
-        }
-      }
-    },
-    "Queue": {
-      "button": {
-        "clear": "മായ്ക്കുക",
-        "close": "അടയ്ക്കുക"
-      },
-      "label": {
-        "duration": "വിവരണം"
-      }
-    },
-    "federation": {
-      "FetchButton": {
-        "button": {
-          "close": "അടയ്ക്കുക"
-        }
-      }
-    },
-    "ShortcutsModal": {
-      "button": {
-        "close": "അടയ്ക്കുക"
-      }
-    },
-    "forms": {
-      "PasswordInput": {
-        "button": {
-          "copy": "പകർത്തുക"
-        }
-      }
-    },
     "radios": {
+      "Button": {
+        "startRadio": "റേഡിയോ ഇല്ലാതാക്കുക"
+      },
       "Card": {
         "button": {
           "edit": "തിരുത്തുക"
         }
-      },
-      "Button": {
-        "startRadio": "റേഡിയോ ഇല്ലാതാക്കുക"
-      }
-    },
-    "RemoteSearchForm": {
-      "button": {
-        "search": "തിരയുക"
-      }
-    }
-  },
-  "views": {
-    "auth": {
-      "ProfileBase": {
-        "title": "{ username } ന്റെ പ്രൊഫൈൽ",
-        "link": {
-          "overview": "അവലോകനം"
-        }
-      },
-      "PasswordReset": {
-        "label": {
-          "email": "അക്കൗണ്ടിന്റെ ഇമെയിൽ"
-        }
-      },
-      "ProfileOverview": {
-        "link": {
-          "addNew": "പുതിയത് ചേർക്കുക"
-        },
-        "modal": {
-          "createChannel": {
-            "artist": {
-              "header": "കലാകരന്റെ ചാനൽ"
-            },
-            "header": "ചാനൽ സൃഷ്ടിക്കുക"
-          }
-        },
-        "button": {
-          "cancel": "റദ്ദാക്കുക",
-          "createChannel": "ചാനൽ സൃഷ്ടിക്കുക"
-        },
-        "header": {
-          "channels": "ചാനലുകൾ"
-        }
-      },
-      "EmailConfirm": {
-        "title": "നിങ്ങളുടെ ഇ-മെയിൽ വിലാസം ഉറപ്പാക്കുക",
-        "header": {
-          "success": "ഇ-മെയിൽ വിലാസം ഉറപ്പാക്കി"
-        }
-      },
-      "Signup": {
-        "header": {
-          "createAccount": "ഒരു funkwhale അക്കൗണ്ട് സൃഷ്ടിക്കുക"
-        }
-      },
-      "ProfileActivity": {
-        "header": {
-          "playlists": "പ്ലേലിസ്റ്റുകൾ"
-        }
-      }
-    },
-    "Notifications": {
-      "option": {
-        "delay": {
-          "30": "30 ദിവസം",
-          "60": "60 ദിവസം",
-          "90": "90 ദിവസം"
-        }
-      },
-      "title": "അറിയിപ്പുകൾ"
-    },
-    "library": {
-      "Edit": {
-        "button": {
-          "accept": "സ്വീകരിക്കുക",
-          "reject": "നിരസിക്കുക"
-        },
-        "table": {
-          "action": {
-            "status": {
-              "accepted": "സ്വീകരിച്ചു",
-              "rejected": "നിരസിച്ചു"
-            },
-            "header": {
-              "action": "പ്രവർത്തന",
-              "date": "തീയതി",
-              "status": "അവസ്ഥ"
-            }
-          }
-        }
-      },
-      "LibraryBase": {
-        "link": {
-          "albums": "ആൽബങ്ങളും",
-          "artists": "കലാകാരന്മാര്‍"
-        },
-        "button": {
-          "edit": "തിരുത്തുക"
-        },
-        "title": "ലൈബ്രറി"
-      }
-    },
-    "admin": {
-      "library": {
-        "LibraryDetail": {
-          "link": {
-            "account": "അക്കൗണ്ട്",
-            "albums": "ആൽബങ്ങളും",
-            "artists": "കലാകാരന്മാർ",
-            "domain": "മേഖല"
-          },
-          "button": {
-            "delete": "ഇല്ലാതാക്കുക"
-          },
-          "table": {
-            "library": {
-              "description": "വിവരണം",
-              "name": "പേര്"
-            }
-          }
-        },
-        "UploadDetail": {
-          "link": {
-            "account": "അക്കൗണ്ട്",
-            "domain": "മേഖല",
-            "library": "ലൈബ്രറി",
-            "type": "തരം"
-          },
-          "table": {
-            "audioContent": {
-              "bitrate": {
-                "label": "ബിറ്റ്റേറ്റ്"
-              }
-            },
-            "upload": {
-              "name": "പേര്"
-            }
-          },
-          "button": {
-            "delete": "ഇല്ലാതാക്കുക"
-          }
-        },
-        "TrackDetail": {
-          "link": {
-            "album": "ആൽബം",
-            "albumArtist": "അൽബം കലാകാരൻ",
-            "artist": "കലാകാരൻ",
-            "domain": "മേഖല",
-            "edits": "തിരുത്തുക…",
-            "libraries": "ലൈബ്രറികൾ"
-          },
-          "button": {
-            "delete": "ഇല്ലാതാക്കുക",
-            "edit": "തിരുത്തുക"
-          },
-          "table": {
-            "track": {
-              "description": "വിവരണം"
-            },
-            "activity": {
-              "playlists": "പ്ലേലിസ്റ്റുകൾ"
-            }
-          }
-        },
-        "AlbumDetail": {
-          "header": {
-            "albumData": "അൽബം ഡാറ്റ്"
-          },
-          "link": {
-            "artist": "കലാകാരൻ",
-            "domain": "മേഖല",
-            "edits": "തിരുത്തുക…",
-            "libraries": "ലൈബ്രറികൾ"
-          },
-          "button": {
-            "delete": "ഇല്ലാതാക്കുക",
-            "edit": "തിരുത്തുക"
-          },
-          "modal": {
-            "delete": {
-              "header": "ഈ ആൽബം ഇല്ലാതാക്കണോ?"
-            }
-          },
-          "table": {
-            "album": {
-              "description": "വിവരണം"
-            },
-            "activity": {
-              "playlists": "പ്ലേലിസ്റ്റുകൾ"
-            }
-          }
-        },
-        "ArtistDetail": {
-          "link": {
-            "albums": "ആൽബങ്ങളും",
-            "category": "വിഭാഗം",
-            "domain": "മേഖല",
-            "edits": "തിരുത്തുക…",
-            "libraries": "ലൈബ്രറികൾ"
-          },
-          "button": {
-            "delete": "ഇല്ലാതാക്കുക",
-            "edit": "തിരുത്തുക"
-          },
-          "table": {
-            "artist": {
-              "description": "വിവരണം",
-              "name": "പേര്"
-            },
-            "activity": {
-              "playlists": "പ്ലേലിസ്റ്റുകൾ"
-            }
-          }
-        },
-        "Base": {
-          "link": {
-            "albums": "ആൽബങ്ങളും",
-            "artists": "കലാകാരന്മാർ",
-            "channels": "ചാനലുകൾ",
-            "edits": "തിരുത്തുക…",
-            "libraries": "ലൈബ്രറികൾ"
-          }
-        },
-        "TagDetail": {
-          "link": {
-            "albums": "ആൽബങ്ങളും",
-            "artists": "കലാകാരന്മാർ"
-          },
-          "button": {
-            "delete": "ഇല്ലാതാക്കുക"
-          },
-          "table": {
-            "tag": {
-              "name": "പേര്"
-            }
-          }
-        },
-        "EditsList": {
-          "title": "തിരുത്തുക…"
-        }
-      },
-      "ChannelDetail": {
-        "table": {
-          "channelData": {
-            "account": "അക്കൗണ്ട്",
-            "category": "വിഭാഗം",
-            "description": "വിവരണം",
-            "domain": "മേഖല",
-            "name": "പേര്"
-          },
-          "audioContent": {
-            "albums": "ആൽബങ്ങളും"
-          },
-          "activity": {
-            "edits": "തിരുത്തുക…",
-            "playlists": "പ്ലേലിസ്റ്റുകൾ"
-          }
-        },
-        "button": {
-          "delete": "ഇല്ലാതാക്കുക"
-        }
-      },
-      "moderation": {
-        "AccountsDetail": {
-          "header": {
-            "accountData": "അക്കൗണ്ട് ഡാറ്റാ"
-          },
-          "button": {
-            "addPolicy": "ഒരു മോഡറെഷൻ പോളിസി ചേർക്കുക"
-          },
-          "link": {
-            "albums": "ആൽബങ്ങളും",
-            "artists": "കലാകാരന്മാർ",
-            "channels": "ചാനലുകൾ",
-            "domain": "മേഖല",
-            "libraries": "ലൈബ്രറികൾ",
-            "requests": "അഭ്യർത്ഥനകൾ"
-          },
-          "table": {
-            "accountData": {
-              "displayName": "പ്രദർശന നാമം",
-              "email": "ഇമെയിൽ വിലാസം",
-              "permissions": "അനുമതികൾ",
-              "userType": "തരം"
-            },
-            "audioContent": {
-              "megabyte": "എംബി"
-            }
-          },
-          "option": {
-            "permission": {
-              "library": "ലൈബ്രറി",
-              "settings": "ക്രമീകരണങ്ങൾ"
-            }
-          }
-        },
-        "Base": {
-          "link": {
-            "accounts": "അക്കൗണ്ടുകൾ",
-            "domains": "മേഖലകൾ"
-          }
-        },
-        "DomainsList": {
-          "button": {
-            "add": "ചേർക്കുക"
-          },
-          "label": {
-            "addDomain": "ഒരു മേഖല ചേർക്കുക"
-          },
-          "title": "മേഖലകൾ",
-          "header": {
-            "domains": "മേഖലകൾ"
-          }
-        },
-        "DomainsDetail": {
-          "button": {
-            "addPolicy": "ഒരു മോഡറെഷൻ പോളിസി ചേർക്കുക"
-          },
-          "link": {
-            "albums": "ആൽബങ്ങളും",
-            "artists": "കലാകാരന്മാർ",
-            "channels": "ചാനലുകൾ",
-            "libraries": "ലൈബ്രറികൾ"
-          },
-          "table": {
-            "instanceData": {
-              "domainName": "പേര്",
-              "inAllowList": {
-                "false": "ഇല്ല"
-              },
-              "nodeInfoStatus": {
-                "label": "അവസ്ഥ"
-              }
-            }
-          }
-        },
-        "ReportsList": {
-          "option": {
-            "status": {
-              "all": "എല്ലാം"
-            }
-          },
-          "ordering": {
-            "direction": {
-              "ascending": "ആരോഹണം",
-              "label": "ക്രമം"
-            }
-          },
-          "label": {
-            "search": "തിരയുക",
-            "status": "അവസ്ഥ"
-          }
-        },
-        "RequestsList": {
-          "option": {
-            "status": {
-              "all": "എല്ലാം",
-              "approved": "അംഗീകരിച്ചു"
-            }
-          },
-          "ordering": {
-            "direction": {
-              "ascending": "ആരോഹണം",
-              "label": "ക്രമം"
-            }
-          },
-          "label": {
-            "search": "തിരയുക",
-            "status": "അവസ്ഥ"
-          }
-        }
-      },
-      "CommonList": {
-        "title": {
-          "accounts": "അക്കൗണ്ടുകൾ",
-          "albums": "ആൽബങ്ങളും",
-          "artists": "കലാകാരന്മാർ",
-          "channels": "ചാനലുകൾ",
-          "invitations": "ക്ഷണങ്ങൾ",
-          "libraries": "ലൈബ്രറികൾ"
-        }
-      },
-      "Settings": {
-        "header": {
-          "channels": "ചാനലുകൾ",
-          "playlists": "പ്ലേലിസ്റ്റുകൾ"
-        }
-      },
-      "users": {
-        "Base": {
-          "link": {
-            "invitations": "ക്ഷണങ്ങൾ"
-          }
-        }
-      }
-    },
-    "channels": {
-      "DetailOverview": {
-        "link": {
-          "addAlbum": "പുതിയത് ചേർക്കുക"
-        },
-        "header": {
-          "albums": "ആൽബങ്ങളും"
-        }
-      },
-      "SubscriptionsList": {
-        "link": {
-          "addNew": "പുതിയത് ചേർക്കുക"
-        },
-        "button": {
-          "cancel": "റദ്ദാക്കുക"
-        }
-      },
-      "DetailBase": {
-        "link": {
-          "channelEpisodes": "എല്ലാ എപ്പിസോഡുകൾ",
-          "channelOverview": "അവലോകനം"
-        },
-        "header": {
-          "artistChannel": "കലാകരന്റെ ചാനൽ"
-        },
-        "button": {
-          "cancel": "റദ്ദാക്കുക",
-          "confirm": "ഇല്ലാതാക്കുക",
-          "delete": "ഇല്ലാതാക്കുക…",
-          "edit": "തിരുത്തുക"
-        },
-        "title": "ചാനൽ",
-        "modal": {
-          "delete": {
-            "header": "ഈ ചാനൽ ഇല്ലാതാക്കണോ?"
-          }
-        }
-      }
-    },
-    "content": {
-      "libraries": {
-        "FilesTable": {
-          "table": {
-            "file": {
-              "header": {
-                "album": "ആൽബം",
-                "artist": "കലാകാരൻ"
-              }
-            }
-          },
-          "option": {
-            "status": {
-              "all": "എല്ലാം"
-            }
-          },
-          "ordering": {
-            "direction": {
-              "ascending": "ആരോഹണം"
-            }
-          },
-          "action": {
-            "delete": "ഇല്ലാതാക്കുക"
-          },
-          "label": {
-            "search": "തിരയുക"
-          }
-        },
-        "Quota": {
-          "header": {
-            "currentUsage": "നിലവിലെ ഉപയോഗം"
-          }
-        },
-        "Form": {
-          "button": {
-            "delete": "ഇല്ലാതാക്കുക",
-            "confirm": "ലൈബ്രറി ഇല്ലാതാക്കുക"
-          },
-          "label": {
-            "description": "വിവരണം",
-            "name": "പേര്"
-          }
-        }
-      },
-      "remote": {
-        "Card": {
-          "link": {
-            "scanDetails": "വിശദാംങ്ങൾ"
-          },
-          "button": {
-            "follow": "പിന്തുടരുക"
-          }
-        },
-        "ScanForm": {
-          "placeholder": {
-            "url": "ഒരു ലൈബ്രറി യുആർഎൽ നൽകുക"
-          }
-        },
-        "Home": {
-          "button": {
-            "refresh": "പുതുക്കുക"
-          }
-        }
-      },
-      "Base": {
-        "link": {
-          "libraries": "ലൈബ്രറികൾ"
-        }
-      }
-    },
-    "Search": {
-      "label": {
-        "albums": "ആൽബങ്ങളും",
-        "artists": "കലാകാരന്മാർ",
-        "playlists": "പ്ലേലിസ്റ്റുകൾ",
-        "podcasts": "പോഡ്‌കാസ്റ്റുകൾ",
-        "radios": "റേഡിയോകൾ"
-      },
-      "header": {
-        "search": "തിരയുക"
-      }
-    },
-    "playlists": {
-      "List": {
-        "ordering": {
-          "direction": {
-            "ascending": "ആരോഹണം",
-            "label": "ക്രമം"
-          }
-        },
-        "header": {
-          "playlists": "പ്ലേലിസ്റ്റുകൾ"
-        },
-        "label": {
-          "search": "തിരയുക"
-        },
-        "button": {
-          "search": "തിരയുക"
-        }
-      },
-      "Detail": {
-        "button": {
-          "cancel": "റദ്ദാക്കുക",
-          "delete": "ഇല്ലാതാക്കുക",
-          "confirm": "പ്ലേലിസ്റ്റ് ഇല്ലാതാക്കുക",
-          "edit": "തിരുത്തുക"
-        },
-        "title": "പ്ലേലിസ്റ്റ്"
-      }
-    },
-    "radios": {
-      "Detail": {
-        "button": {
-          "confirm": "റേഡിയോ ഇല്ലാതാക്കുക"
-        },
-        "title": "റേഡിയോ"
-      }
-    },
-    "ChooseInstance": {
-      "button": {
-        "submit": "സമർപ്പിക്കുക"
-      }
-    }
-  },
-  "init": {
-    "serviceWorker": {
-      "newAppVersion": "ഈ ആപ്പിന്റെ പുതിയ പതിപ്പ് ലഭ്യമാണ്.",
-      "actions": {
-        "later": "പിന്നീട്"
       }
     }
   },
   "composables": {
+    "locale": {
+      "useSharedLabels": {
+        "fields": {
+          "contentCategory": {
+            "choices": {
+              "other": "മറ്റുള്ളവ",
+              "podcast": "പോഡ്‌കാസ്റ്റ്"
+            }
+          },
+          "privacyLevel": {
+            "shortChoices": {
+              "public": "എല്ലാവർക്കും"
+            }
+          },
+          "reportType": {
+            "choices": {
+              "other": "മറ്റുള്ളവ"
+            },
+            "label": "വിഭാഗം"
+          }
+        },
+        "filters": {
+          "albumTitle": "അൽബത്തിന്റെ പേര്",
+          "artistName": "കലാകാരന്റെ പേര്",
+          "bitrate": "ബിറ്റ്റേറ്റ്",
+          "domain": "മേഖല",
+          "itemsCount": "ഇനങ്ങൾ",
+          "name": "പേര്"
+        },
+        "scopes": {
+          "edits": {
+            "label": "തിരുത്തുക…"
+          },
+          "follows": {
+            "label": "പിന്തുടരുന്നു"
+          },
+          "notifications": {
+            "label": "അറിയിപ്പുകൾ"
+          },
+          "playlists": {
+            "label": "പ്ലേലിസ്റ്റുകൾ"
+          },
+          "profile": {
+            "label": "പ്രൊഫൈൽ"
+          },
+          "radios": {
+            "label": "റേഡിയോകൾ"
+          }
+        }
+      }
+    },
     "moderation": {
+      "useEditConfigs": {
+        "artist": {
+          "name": "പേര്"
+        },
+        "description": {
+          "label": "വിവരണം"
+        }
+      },
       "useReport": {
         "account": {
           "typeLabel": "അക്കൗണ്ട്"
@@ -1671,65 +1174,562 @@
         "playlist": {
           "label": "പ്ലേലിസ്റ്റ്"
         }
+      }
+    }
+  },
+  "init": {
+    "serviceWorker": {
+      "actions": {
+        "later": "പിന്നീട്"
       },
-      "useEditConfigs": {
-        "description": {
-          "label": "വിവരണം"
+      "newAppVersion": "ഈ ആപ്പിന്റെ പുതിയ പതിപ്പ് ലഭ്യമാണ്."
+    }
+  },
+  "views": {
+    "ChooseInstance": {
+      "button": {
+        "submit": "സമർപ്പിക്കുക"
+      }
+    },
+    "Notifications": {
+      "option": {
+        "delay": {
+          "30": "30 ദിവസം",
+          "60": "60 ദിവസം",
+          "90": "90 ദിവസം"
+        }
+      },
+      "title": "അറിയിപ്പുകൾ"
+    },
+    "Search": {
+      "header": {
+        "search": "തിരയുക"
+      },
+      "label": {
+        "albums": "ആൽബങ്ങളും",
+        "artists": "കലാകാരന്മാർ",
+        "playlists": "പ്ലേലിസ്റ്റുകൾ",
+        "podcasts": "പോഡ്‌കാസ്റ്റുകൾ",
+        "radios": "റേഡിയോകൾ"
+      }
+    },
+    "admin": {
+      "ChannelDetail": {
+        "button": {
+          "delete": "ഇല്ലാതാക്കുക"
         },
-        "artist": {
-          "name": "പേര്"
+        "table": {
+          "activity": {
+            "edits": "തിരുത്തുക…",
+            "playlists": "പ്ലേലിസ്റ്റുകൾ"
+          },
+          "audioContent": {
+            "albums": "ആൽബങ്ങളും"
+          },
+          "channelData": {
+            "account": "അക്കൗണ്ട്",
+            "category": "വിഭാഗം",
+            "description": "വിവരണം",
+            "domain": "മേഖല",
+            "name": "പേര്"
+          }
+        }
+      },
+      "CommonList": {
+        "title": {
+          "accounts": "അക്കൗണ്ടുകൾ",
+          "albums": "ആൽബങ്ങളും",
+          "artists": "കലാകാരന്മാർ",
+          "channels": "ചാനലുകൾ",
+          "invitations": "ക്ഷണങ്ങൾ",
+          "libraries": "ലൈബ്രറികൾ"
+        }
+      },
+      "Settings": {
+        "header": {
+          "channels": "ചാനലുകൾ",
+          "playlists": "പ്ലേലിസ്റ്റുകൾ"
+        }
+      },
+      "library": {
+        "AlbumDetail": {
+          "button": {
+            "delete": "ഇല്ലാതാക്കുക",
+            "edit": "തിരുത്തുക"
+          },
+          "header": {
+            "albumData": "അൽബം ഡാറ്റ്"
+          },
+          "link": {
+            "artist": "കലാകാരൻ",
+            "domain": "മേഖല",
+            "edits": "തിരുത്തുക…",
+            "libraries": "ലൈബ്രറികൾ"
+          },
+          "modal": {
+            "delete": {
+              "header": "ഈ ആൽബം ഇല്ലാതാക്കണോ?"
+            }
+          },
+          "table": {
+            "activity": {
+              "playlists": "പ്ലേലിസ്റ്റുകൾ"
+            },
+            "album": {
+              "description": "വിവരണം"
+            }
+          }
+        },
+        "ArtistDetail": {
+          "button": {
+            "delete": "ഇല്ലാതാക്കുക",
+            "edit": "തിരുത്തുക"
+          },
+          "link": {
+            "albums": "ആൽബങ്ങളും",
+            "category": "വിഭാഗം",
+            "domain": "മേഖല",
+            "edits": "തിരുത്തുക…",
+            "libraries": "ലൈബ്രറികൾ"
+          },
+          "table": {
+            "activity": {
+              "playlists": "പ്ലേലിസ്റ്റുകൾ"
+            },
+            "artist": {
+              "description": "വിവരണം",
+              "name": "പേര്"
+            }
+          }
+        },
+        "Base": {
+          "link": {
+            "albums": "ആൽബങ്ങളും",
+            "artists": "കലാകാരന്മാർ",
+            "channels": "ചാനലുകൾ",
+            "edits": "തിരുത്തുക…",
+            "libraries": "ലൈബ്രറികൾ"
+          }
+        },
+        "EditsList": {
+          "title": "തിരുത്തുക…"
+        },
+        "LibraryDetail": {
+          "button": {
+            "delete": "ഇല്ലാതാക്കുക"
+          },
+          "link": {
+            "account": "അക്കൗണ്ട്",
+            "albums": "ആൽബങ്ങളും",
+            "artists": "കലാകാരന്മാർ",
+            "domain": "മേഖല"
+          },
+          "table": {
+            "library": {
+              "description": "വിവരണം",
+              "name": "പേര്"
+            }
+          }
+        },
+        "TagDetail": {
+          "button": {
+            "delete": "ഇല്ലാതാക്കുക"
+          },
+          "link": {
+            "albums": "ആൽബങ്ങളും",
+            "artists": "കലാകാരന്മാർ"
+          },
+          "table": {
+            "tag": {
+              "name": "പേര്"
+            }
+          }
+        },
+        "TrackDetail": {
+          "button": {
+            "delete": "ഇല്ലാതാക്കുക",
+            "edit": "തിരുത്തുക"
+          },
+          "link": {
+            "album": "ആൽബം",
+            "albumArtist": "അൽബം കലാകാരൻ",
+            "artist": "കലാകാരൻ",
+            "domain": "മേഖല",
+            "edits": "തിരുത്തുക…",
+            "libraries": "ലൈബ്രറികൾ"
+          },
+          "table": {
+            "activity": {
+              "playlists": "പ്ലേലിസ്റ്റുകൾ"
+            },
+            "track": {
+              "description": "വിവരണം"
+            }
+          }
+        },
+        "UploadDetail": {
+          "button": {
+            "delete": "ഇല്ലാതാക്കുക"
+          },
+          "link": {
+            "account": "അക്കൗണ്ട്",
+            "domain": "മേഖല",
+            "library": "ലൈബ്രറി",
+            "type": "തരം"
+          },
+          "table": {
+            "audioContent": {
+              "bitrate": {
+                "label": "ബിറ്റ്റേറ്റ്"
+              }
+            },
+            "upload": {
+              "name": "പേര്"
+            }
+          }
+        }
+      },
+      "moderation": {
+        "AccountsDetail": {
+          "button": {
+            "addPolicy": "ഒരു മോഡറെഷൻ പോളിസി ചേർക്കുക"
+          },
+          "header": {
+            "accountData": "അക്കൗണ്ട് ഡാറ്റാ"
+          },
+          "link": {
+            "albums": "ആൽബങ്ങളും",
+            "artists": "കലാകാരന്മാർ",
+            "channels": "ചാനലുകൾ",
+            "domain": "മേഖല",
+            "libraries": "ലൈബ്രറികൾ",
+            "requests": "അഭ്യർത്ഥനകൾ"
+          },
+          "option": {
+            "permission": {
+              "library": "ലൈബ്രറി",
+              "settings": "ക്രമീകരണങ്ങൾ"
+            }
+          },
+          "table": {
+            "accountData": {
+              "displayName": "പ്രദർശന നാമം",
+              "email": "ഇമെയിൽ വിലാസം",
+              "permissions": "അനുമതികൾ",
+              "userType": "തരം"
+            },
+            "audioContent": {
+              "megabyte": "എംബി"
+            }
+          }
+        },
+        "Base": {
+          "link": {
+            "accounts": "അക്കൗണ്ടുകൾ",
+            "domains": "മേഖലകൾ"
+          }
+        },
+        "DomainsDetail": {
+          "button": {
+            "addPolicy": "ഒരു മോഡറെഷൻ പോളിസി ചേർക്കുക"
+          },
+          "link": {
+            "albums": "ആൽബങ്ങളും",
+            "artists": "കലാകാരന്മാർ",
+            "channels": "ചാനലുകൾ",
+            "libraries": "ലൈബ്രറികൾ"
+          },
+          "table": {
+            "instanceData": {
+              "domainName": "പേര്",
+              "inAllowList": {
+                "false": "ഇല്ല"
+              },
+              "nodeInfoStatus": {
+                "label": "അവസ്ഥ"
+              }
+            }
+          }
+        },
+        "DomainsList": {
+          "button": {
+            "add": "ചേർക്കുക"
+          },
+          "header": {
+            "domains": "മേഖലകൾ"
+          },
+          "label": {
+            "addDomain": "ഒരു മേഖല ചേർക്കുക"
+          },
+          "title": "മേഖലകൾ"
+        },
+        "ReportsList": {
+          "label": {
+            "search": "തിരയുക",
+            "status": "അവസ്ഥ"
+          },
+          "option": {
+            "status": {
+              "all": "എല്ലാം"
+            }
+          },
+          "ordering": {
+            "direction": {
+              "ascending": "ആരോഹണം",
+              "label": "ക്രമം"
+            }
+          }
+        },
+        "RequestsList": {
+          "label": {
+            "search": "തിരയുക",
+            "status": "അവസ്ഥ"
+          },
+          "option": {
+            "status": {
+              "all": "എല്ലാം",
+              "approved": "അംഗീകരിച്ചു"
+            }
+          },
+          "ordering": {
+            "direction": {
+              "ascending": "ആരോഹണം",
+              "label": "ക്രമം"
+            }
+          }
+        }
+      },
+      "users": {
+        "Base": {
+          "link": {
+            "invitations": "ക്ഷണങ്ങൾ"
+          }
         }
       }
     },
-    "locale": {
-      "useSharedLabels": {
-        "filters": {
-          "albumTitle": "അൽബത്തിന്റെ പേര്",
-          "artistName": "കലാകാരന്റെ പേര്",
-          "bitrate": "ബിറ്റ്റേറ്റ്",
-          "domain": "മേഖല",
-          "itemsCount": "ഇനങ്ങൾ",
-          "name": "പേര്"
+    "auth": {
+      "EmailConfirm": {
+        "header": {
+          "success": "ഇ-മെയിൽ വിലാസം ഉറപ്പാക്കി"
         },
-        "fields": {
-          "reportType": {
-            "label": "വിഭാഗം",
-            "choices": {
-              "other": "മറ്റുള്ളവ"
-            }
-          },
-          "privacyLevel": {
-            "shortChoices": {
-              "public": "എല്ലാവർക്കും"
-            }
-          },
-          "contentCategory": {
-            "choices": {
-              "other": "മറ്റുള്ളവ",
-              "podcast": "പോഡ്‌കാസ്റ്റ്"
-            }
-          }
+        "title": "നിങ്ങളുടെ ഇ-മെയിൽ വിലാസം ഉറപ്പാക്കുക"
+      },
+      "PasswordReset": {
+        "label": {
+          "email": "അക്കൗണ്ടിന്റെ ഇമെയിൽ"
+        }
+      },
+      "ProfileActivity": {
+        "header": {
+          "playlists": "പ്ലേലിസ്റ്റുകൾ"
+        }
+      },
+      "ProfileBase": {
+        "link": {
+          "overview": "അവലോകനം"
         },
-        "scopes": {
-          "edits": {
-            "label": "തിരുത്തുക…"
-          },
-          "follows": {
-            "label": "പിന്തുടരുന്നു"
-          },
-          "notifications": {
-            "label": "അറിയിപ്പുകൾ"
-          },
-          "playlists": {
-            "label": "പ്ലേലിസ്റ്റുകൾ"
-          },
-          "profile": {
-            "label": "പ്രൊഫൈൽ"
-          },
-          "radios": {
-            "label": "റേഡിയോകൾ"
+        "title": "{ username } ന്റെ പ്രൊഫൈൽ"
+      },
+      "ProfileOverview": {
+        "button": {
+          "cancel": "റദ്ദാക്കുക",
+          "createChannel": "ചാനൽ സൃഷ്ടിക്കുക"
+        },
+        "header": {
+          "channels": "ചാനലുകൾ"
+        },
+        "link": {
+          "addNew": "പുതിയത് ചേർക്കുക"
+        },
+        "modal": {
+          "createChannel": {
+            "artist": {
+              "header": "കലാകരന്റെ ചാനൽ"
+            },
+            "header": "ചാനൽ സൃഷ്ടിക്കുക"
           }
         }
+      },
+      "Signup": {
+        "header": {
+          "createAccount": "ഒരു funkwhale അക്കൗണ്ട് സൃഷ്ടിക്കുക"
+        }
+      }
+    },
+    "channels": {
+      "DetailBase": {
+        "button": {
+          "cancel": "റദ്ദാക്കുക",
+          "confirm": "ഇല്ലാതാക്കുക",
+          "delete": "ഇല്ലാതാക്കുക…",
+          "edit": "തിരുത്തുക"
+        },
+        "header": {
+          "artistChannel": "കലാകരന്റെ ചാനൽ"
+        },
+        "link": {
+          "channelEpisodes": "എല്ലാ എപ്പിസോഡുകൾ",
+          "channelOverview": "അവലോകനം"
+        },
+        "modal": {
+          "delete": {
+            "header": "ഈ ചാനൽ ഇല്ലാതാക്കണോ?"
+          }
+        },
+        "title": "ചാനൽ"
+      },
+      "DetailOverview": {
+        "header": {
+          "albums": "ആൽബങ്ങളും"
+        },
+        "link": {
+          "addAlbum": "പുതിയത് ചേർക്കുക"
+        }
+      },
+      "SubscriptionsList": {
+        "button": {
+          "cancel": "റദ്ദാക്കുക"
+        },
+        "link": {
+          "addNew": "പുതിയത് ചേർക്കുക"
+        }
+      }
+    },
+    "content": {
+      "Base": {
+        "link": {
+          "libraries": "ലൈബ്രറികൾ"
+        }
+      },
+      "libraries": {
+        "FilesTable": {
+          "action": {
+            "delete": "ഇല്ലാതാക്കുക"
+          },
+          "label": {
+            "search": "തിരയുക"
+          },
+          "option": {
+            "status": {
+              "all": "എല്ലാം"
+            }
+          },
+          "ordering": {
+            "direction": {
+              "ascending": "ആരോഹണം"
+            }
+          },
+          "table": {
+            "file": {
+              "header": {
+                "album": "ആൽബം",
+                "artist": "കലാകാരൻ"
+              }
+            }
+          }
+        },
+        "Form": {
+          "button": {
+            "confirm": "ലൈബ്രറി ഇല്ലാതാക്കുക",
+            "delete": "ഇല്ലാതാക്കുക"
+          },
+          "label": {
+            "description": "വിവരണം",
+            "name": "പേര്"
+          }
+        },
+        "Quota": {
+          "header": {
+            "currentUsage": "നിലവിലെ ഉപയോഗം"
+          }
+        }
+      },
+      "remote": {
+        "Card": {
+          "button": {
+            "follow": "പിന്തുടരുക"
+          },
+          "link": {
+            "scanDetails": "വിശദാംങ്ങൾ"
+          }
+        },
+        "Home": {
+          "button": {
+            "refresh": "പുതുക്കുക"
+          }
+        },
+        "ScanForm": {
+          "placeholder": {
+            "url": "ഒരു ലൈബ്രറി യുആർഎൽ നൽകുക"
+          }
+        }
+      }
+    },
+    "library": {
+      "Edit": {
+        "button": {
+          "accept": "സ്വീകരിക്കുക",
+          "reject": "നിരസിക്കുക"
+        },
+        "table": {
+          "action": {
+            "header": {
+              "action": "പ്രവർത്തന",
+              "date": "തീയതി",
+              "status": "അവസ്ഥ"
+            },
+            "status": {
+              "accepted": "സ്വീകരിച്ചു",
+              "rejected": "നിരസിച്ചു"
+            }
+          }
+        }
+      },
+      "LibraryBase": {
+        "button": {
+          "edit": "തിരുത്തുക"
+        },
+        "link": {
+          "albums": "ആൽബങ്ങളും",
+          "artists": "കലാകാരന്മാര്‍"
+        },
+        "title": "ലൈബ്രറി"
+      }
+    },
+    "playlists": {
+      "Detail": {
+        "button": {
+          "cancel": "റദ്ദാക്കുക",
+          "confirm": "പ്ലേലിസ്റ്റ് ഇല്ലാതാക്കുക",
+          "delete": "ഇല്ലാതാക്കുക",
+          "edit": "തിരുത്തുക"
+        },
+        "title": "പ്ലേലിസ്റ്റ്"
+      },
+      "List": {
+        "button": {
+          "search": "തിരയുക"
+        },
+        "header": {
+          "playlists": "പ്ലേലിസ്റ്റുകൾ"
+        },
+        "label": {
+          "search": "തിരയുക"
+        },
+        "ordering": {
+          "direction": {
+            "ascending": "ആരോഹണം",
+            "label": "ക്രമം"
+          }
+        }
+      }
+    },
+    "radios": {
+      "Detail": {
+        "button": {
+          "confirm": "റേഡിയോ ഇല്ലാതാക്കുക"
+        },
+        "title": "റേഡിയോ"
       }
     }
   }
