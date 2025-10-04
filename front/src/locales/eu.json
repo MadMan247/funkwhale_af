@@ -4620,8 +4620,8 @@
     "aria": {
       "pagination": {
         "currentPage": "Uneko orria: {n}",
-        "gotoNext": "Joan hurrengo orrira",
         "goToPage": "Joan orri honetara: {n}",
+        "gotoNext": "Joan hurrengo orrira",
         "gotoPrevious": "Joan aurreko orrira",
         "nav": "Orrikatzearen nabigazioa"
       }
