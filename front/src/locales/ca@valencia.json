@@ -5,8 +5,8 @@
   "aria": {
     "pagination": {
       "currentPage": "Pàgina actual, Pàgina {n}",
-      "gotoNext": "Anar a la Pàgina Següent",
       "goToPage": "Anar a Pàgina {n}",
+      "gotoNext": "Anar a la Pàgina Següent",
       "gotoPrevious": "Anar a la Pàgina Prèvia",
       "nav": "Navegació per Paginació"
     }
@@ -4626,8 +4626,8 @@
     "aria": {
       "pagination": {
         "currentPage": "Pàgina actual, Pàgina {n}",
-        "gotoNext": "Anar a la pàgina següent",
         "goToPage": "Anar a la pàgina {n}",
+        "gotoNext": "Anar a la pàgina següent",
         "gotoPrevious": "Retornar a la pàgina anterior",
         "nav": "Paginació de navegació"
       }
