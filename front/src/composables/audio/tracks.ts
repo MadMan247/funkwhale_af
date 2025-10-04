@@ -3,7 +3,7 @@ import type { Track, Upload } from '~/types'
 import type { Sound } from '~/api/player'
 
 import { createGlobalState, syncRef, useTimeoutFn, whenever } from '@vueuse/core'
-import { computed, ref, watchEffect } from 'vue'
+import { computed, ref, shallowRef, triggerRef, watchEffect } from 'vue'
 import { LRUCache } from 'lru-cache'
 
 import { connectAudioSource } from '~/composables/audio/audio-api'
@@ -22,18 +22,10 @@ const AUDIO_ELEMENT = document.createElement('audio')
 const logger = useLogger()
 
 const soundPromises = new Map<number, Promise<Sound>>()
-const soundCache = new LRUCache<number, Sound>({
+const soundCache = shallowRef(new LRUCache<number, Sound>({
   max: 3,
   dispose: (sound) => sound.dispose()
-})
-
-// used to make soundCache reactive
-const soundCacheVersion = ref(0)
-function setSoundCache(trackId: number, sound: Sound) {
-  soundCache.set(trackId, sound)
-  soundCacheVersion.value++  // bump to trigger reactivity
-}
-
+}))
 
 const currentTrack = ref<QueueTrack>()
 
@@ -92,12 +84,10 @@ const getTrackSources = async (track: QueueTrack): Promise<QueueTrackSource[]> =
 // Use Tracks
 export const useTracks = createGlobalState(() => {
   const createSound = async (track: QueueTrack): Promise<Sound> => {
-    if (soundCache.has(track.id)) {
-      return soundCache.get(track.id) as Sound
-    }
+    const soundOrPromise = soundCache.value.get(track.id) ?? soundPromises.get(track.id)
 
-    if (soundPromises.has(track.id)) {
-      return soundPromises.get(track.id) as Promise<Sound>
+    if (soundOrPromise != null) {
+      return soundOrPromise
     }
 
     const createSoundPromise = async () => {
@@ -116,7 +106,8 @@ export const useTracks = createGlobalState(() => {
 
       // NOTE: When the sound is disposed, we need to delete it from the cache (#2157)
       whenever(sound.isDisposed, () => {
-        soundCache.delete(track.id)
+        soundCache.value.delete(track.id)
+        triggerRef(soundCache)
       })
 
       // NOTE: Bump current track to ensure that it lives despite enqueueing 3 tracks as next track:
@@ -143,11 +134,12 @@ export const useTracks = createGlobalState(() => {
       //       That implies that when user changes to the previous track (only before track B ends), a new sound instance would be created,
       //       which means that there might be some network requests before playback.
       if (currentTrack.value) {
-        soundCache.get(currentTrack.value.id)
+        soundCache.value.get(currentTrack.value.id)
       }
 
       // Add track to the sound cache and remove from the promise cache
-      setSoundCache(track.id, sound)
+      soundCache.value.set(track.id, sound)
+      triggerRef(soundCache)
       soundPromises.delete(track.id)
 
       return sound
@@ -233,14 +225,13 @@ export const useTracks = createGlobalState(() => {
   })
 
   const currentSound = computed(() => {
-    soundCacheVersion.value //trigger reactivity
     const trackId = currentTrack.value?.id ?? -1
-    const sound = soundCache.get(trackId)
-    return sound
+    return soundCache.value.get(trackId)
   })
 
   const clearCache = () => {
-    return soundCache.clear()
+    soundCache.value.clear()
+    triggerRef(soundCache)
   }
 
   return {
