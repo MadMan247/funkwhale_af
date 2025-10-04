@@ -411,6 +411,9 @@
           }
         }
       },
+      "Podcasts": {
+        "title": "پادپخش‌ها"
+      },
       "TrackBase": {
         "link": {
           "domain": "به روز شده در { date }"
@@ -533,6 +536,11 @@
       "header": {
         "messages": "پیام های شما",
         "notifications": "اعلان های شما"
+      }
+    },
+    "Search": {
+      "label": {
+        "podcasts": "پادپخش‌ها"
       }
     },
     "admin": {
