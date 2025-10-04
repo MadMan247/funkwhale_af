@@ -125,6 +125,9 @@
       "placeholder": {
         "noDescription": "توضیحات موجود نیست"
       },
+      "stat": {
+        "activeUsers": "بدون کاربر فعال | {n} کاربر فعال | {n} کاربر فعال"
+      },
       "title": "خانه"
     },
     "PageNotFound": {
@@ -300,7 +303,7 @@
         }
       },
       "AlbumSelect": {
-        "add": "اضافهٔ کردن آلبوم",
+        "add": "اضافهٔ کردن جُنگ",
         "label": {
           "album": "جُنگ"
         },
@@ -379,7 +382,7 @@
           "search": "جست‌و‌جو"
         },
         "header": {
-          "browse": "مرور آلبوم‌ها..."
+          "browse": "مرور جُنگ‌ها..."
         },
         "label": {
           "search": "جست‌و‌جو",
@@ -460,6 +463,26 @@
               },
               "moderationRule": "بله"
             }
+          }
+        },
+        "InstancePolicyCard": {
+          "header": {
+            "rule": "شرایط همزیستی"
+          }
+        },
+        "InstancePolicyForm": {
+          "button": {
+            "confirm": "برداشتن میان‌داری شرایط همزیستی"
+          },
+          "header": {
+            "addRule": "یک «شرایط همزیستی» جدید اضافه کنید.",
+            "editRule": "ویرایش میان‌داری شرایط همزیستی",
+            "failure": "خطا در هنگام ایجاد شرایط همزیستی"
+          }
+        },
+        "InstancePolicyModal": {
+          "button": {
+            "show": "شرایط همزیستی میان‌دار"
           }
         }
       },
