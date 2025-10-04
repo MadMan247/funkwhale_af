@@ -4635,8 +4635,8 @@
     "aria": {
       "pagination": {
         "currentPage": "Pàgina actual, Pàgina {n}",
-        "gotoNext": "Anar a la Pàgina Següent",
         "goToPage": "Anar a Pàgina {n}",
+        "gotoNext": "Anar a la Pàgina Següent",
         "gotoPrevious": "Anar a la Pàgina Prèvia",
         "nav": "Navegació per Paginació"
       }
