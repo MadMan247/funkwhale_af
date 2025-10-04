@@ -254,8 +254,7 @@ export const useDataStore
       // Add `key` and `refetch` to the reactive object
       return computed(()=> ({
         ...searches.value[name].get(key) as Data<GetPaginatedResponses<N>>,
-        // key: hash([name, params]),
-        key: 'key',
+        key: hash([name, params]),
         refetch: fetch
       }))
     }
