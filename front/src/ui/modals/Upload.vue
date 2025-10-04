@@ -76,35 +76,76 @@ const channelUpload = ref()
 </script>
 
 <template>
-  <Modal v-model="isOpen" :title="modalTitle">
-    <template v-if="goBack" #topleft>
-      <Button icon="bi-chevron-compact-left" :title="t('components.channels.UploadModal.button.previous')"
-        @click="goBack" />
+  <Modal
+    v-model="isOpen"
+    :title="modalTitle"
+  >
+    <template
+      v-if="goBack"
+      #topleft
+    >
+      <Button
+        icon="bi-chevron-compact-left"
+        :title="t('components.channels.UploadModal.button.previous')"
+        @click="goBack"
+      />
       <Spacer grow />
     </template>
 
-    <Transition mode="out-in" :class="direction">
+    <Transition
+      mode="out-in"
+      :class="direction"
+    >
       <!-- Page content -->
       <!-- Page 1 -->
 
-      <Layout v-if="state.page === 'selectDestination'" flex style="place-content:center">
-        <Card small solid title="Music" icon="bi-upload" @click="destinationSelected({ type: 'library' })">
+      <Layout
+        v-if="state.page === 'selectDestination'"
+        flex
+        style="place-content:center"
+      >
+        <Card
+          small
+          solid
+          title="Music"
+          icon="bi-upload"
+          @click="destinationSelected({ type: 'library' })"
+        >
           <template #image>
-            <i class="bi bi-headphones solid secondary raised" :class="$style.icon" />
+            <i
+              class="bi bi-headphones solid secondary raised"
+              :class="$style.icon"
+            />
           </template>
           {{ t('modals.upload.library') }}
         </Card>
-        <Card small solid title="Music" icon="bi-upload primary solid"
-          @click="destinationSelected({ type: 'channel', filter: 'music' })">
+        <Card
+          small
+          solid
+          title="Music"
+          icon="bi-upload primary solid"
+          @click="destinationSelected({ type: 'channel', filter: 'music' })"
+        >
           <template #image>
-            <i class="bi bi-music-note-beamed solid primary" :class="$style.icon" />
+            <i
+              class="bi bi-music-note-beamed solid primary"
+              :class="$style.icon"
+            />
           </template>
           {{ t('modals.upload.musicChannel') }}
         </Card>
-        <Card small solid title="Podcast" icon="bi-upload primary solid"
-          @click="destinationSelected({ type: 'channel', filter: 'podcast' })">
+        <Card
+          small
+          solid
+          title="Podcast"
+          icon="bi-upload primary solid"
+          @click="destinationSelected({ type: 'channel', filter: 'podcast' })"
+        >
           <template #image>
-            <i class="bi bi-mic-fill solid primary" :class="$style.icon" />
+            <i
+              class="bi bi-mic-fill solid primary"
+              :class="$style.icon"
+            />
           </template>
           {{ t('modals.upload.podcastChannel') }}
         </Card>
@@ -112,21 +153,42 @@ const channelUpload = ref()
 
       <!-- Page 2 -->
 
-      <Layout v-else-if="state.page === 'uploadFiles'" stack>
-        <ChannelUpload v-if="state.uploadDestination?.type === 'channel'" ref="channelUpload"
-          :filter="state.uploadDestination.filter" :channel="state.uploadDestination?.channel || null" />
+      <Layout
+        v-else-if="state.page === 'uploadFiles'"
+        stack
+      >
+        <ChannelUpload
+          v-if="state.uploadDestination?.type === 'channel'"
+          ref="channelUpload"
+          :filter="state.uploadDestination.filter"
+          :channel="state.uploadDestination?.channel || null"
+        />
 
-        <LibraryUpload v-if="state.uploadDestination?.type === 'library'" v-model="privacyLevel" />
+        <LibraryUpload
+          v-if="state.uploadDestination?.type === 'library'"
+          v-model="privacyLevel"
+        />
         {{ state.files }}
       </Layout>
     </Transition>
 
     <template #actions>
-      <Spacer h grow />
-      <Button v-if="state.page === 'uploadFiles' && !channelUpload" primary @click="() => { isOpen = false }">
+      <Spacer
+        h
+        grow
+      />
+      <Button
+        v-if="state.page === 'uploadFiles' && !channelUpload"
+        primary
+        @click="() => { isOpen = false }"
+      >
         {{ t('components.channels.UploadModal.button.finishLater') }}
       </Button>
-      <Button v-if="channelUpload" primary @click="() => { channelUpload.publish(); isOpen = false }">
+      <Button
+        v-if="channelUpload"
+        primary
+        @click="() => { channelUpload.publish(); isOpen = false }"
+      >
         {{ t('components.channels.UploadModal.button.publish') }}
       </Button>
     </template>

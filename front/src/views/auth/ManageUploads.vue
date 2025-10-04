@@ -356,20 +356,35 @@ fetchData()
 
 <template>
   <Spacer />
-  <Layout form flex @submit.prevent="fetchData">
+  <Layout
+    form
+    flex
+    @submit.prevent="fetchData"
+  >
     <!-- Enter a search string and start the search -->
 
     <!-- TODO (2.0.0+): Replace with `Pills` component and allow editing all tokens (filters) -->
 
-    <Input v-model="search" :label="t('components.manage.library.UploadsTable.label.search')"
-      :placeholder="labels.searchPlaceholder" search style="min-width: min(100%, 520px)" />
+    <Input
+      v-model="search"
+      :label="t('components.manage.library.UploadsTable.label.search')"
+      :placeholder="labels.searchPlaceholder"
+      search
+      style="min-width: min(100%, 520px)"
+    />
 
     <!-- Filter the search results -->
 
     <!-- TODO (2.0.0+): Integrate these filters as `Pills` into above control -->
 
-    <Select v-for="[id, filter] in Object.entries(searchFilters)" :id="`uploads-${id}`" :key="id"
-      v-model:current="filter.current" v-model:options="filter.options" :label="filter.label" />
+    <Select
+      v-for="[id, filter] in Object.entries(searchFilters)"
+      :id="`uploads-${id}`"
+      :key="id"
+      v-model:current="filter.current"
+      v-model:options="filter.options"
+      :label="filter.label"
+    />
   </Layout>
 
   <Spacer />
@@ -378,8 +393,12 @@ fetchData()
 
   <div :class="['default solid raised', $style.toolbox]">
     <Spacer />
-    <Slider v-model="globalPrivacyLevel" :disabled="selectedItems.length === 0 ? true : undefined"
-      :options="privacyOptions" :label="`Privacy level (${selectedItems.length} items)`" />
+    <Slider
+      v-model="globalPrivacyLevel"
+      :disabled="selectedItems.length === 0 ? true : undefined"
+      :options="privacyOptions"
+      :label="`Privacy level (${selectedItems.length} items)`"
+    />
   </div>
 
   <!-- Select my items -->
@@ -387,15 +406,28 @@ fetchData()
   <!-- TODO (wvffle): Check if :upload shouldn't be v-model:upload -->
   <!-- Alternative design: v-model of type components['schemas']['UploadForOwner'] | null (:show would be non-null) -->
   <!-- TODO (2.0.0+): Check if we can safely upgrade from type Upload to type components['schemas']['UploadForOwner'] -->
-  <import-status-modal v-if="detailedUpload" v-model:show="showUploadDetailModal"
-    :upload="detailedUpload as unknown as Upload" />
-  <Loader v-if="isLoading" style="height: 0;" />
+  <import-status-modal
+    v-if="detailedUpload"
+    v-model:show="showUploadDetailModal"
+    :upload="detailedUpload as unknown as Upload"
+  />
+  <Loader
+    v-if="isLoading"
+    style="height: 0;"
+  />
 
-  <Table v-if="result" :grid-template-columns="['auto', 'auto', 'auto', 'auto', 'auto', 'auto']">
+  <Table
+    v-if="result"
+    :grid-template-columns="['auto', 'auto', 'auto', 'auto', 'auto', 'auto']"
+  >
     <template #header>
       <!-- 0. select -->
       <b>
-        <input v-model="isAllSelected" type="checkbox" title="Select/Deselect all">
+        <input
+          v-model="isAllSelected"
+          type="checkbox"
+          title="Select/Deselect all"
+        >
       </b>
       <!-- 1. filename -->
       <b>
@@ -418,46 +450,68 @@ fetchData()
         {{ t('components.manage.library.UploadsTable.table.upload.header.creationDate') }}
       </b>
     </template>
-    <template v-for="item in items" :key="item.uuid">
+    <template
+      v-for="item in items"
+      :key="item.uuid"
+    >
       <!-- 0. select -->
 
       <b>
-        <input v-model="item.selected" type="checkbox" title="Select">
+        <input
+          v-model="item.selected"
+          type="checkbox"
+          title="Select"
+        >
       </b>
 
       <!-- 1. filename -->
 
-      <Link :to="{
-        name: 'manage.library.uploads.detail',
-        params: { id: item.uuid }
-      }">
-      {{ truncate(displayName(item), 30, undefined, true) }}
+      <Link
+        :to="{
+          name: 'manage.library.uploads.detail',
+          params: { id: item.uuid }
+        }"
+      >
+        {{ truncate(displayName(item), 30, undefined, true) }}
       </Link>
 
       <!-- 2. privacy_level -->
 
-      <Pill :title="t('components.manage.library.UploadsTable.table.upload.header.visibility')" v-bind="item.privacy_level
-        ? { onClick: () => { token('privacy_level').value = item.privacy_level as PrivacyLevelEnum } }
-        : { disabled: true }
-        ">
+      <Pill
+        :title="t('components.manage.library.UploadsTable.table.upload.header.visibility')"
+        v-bind="item.privacy_level
+          ? { onClick: () => { token('privacy_level').value = item.privacy_level as PrivacyLevelEnum } }
+          : { disabled: true }
+        "
+      >
         {{ item.privacy_level }}
       </Pill>
 
       <!-- 3. import_status -->
 
-      <Pill :title="t('components.manage.library.UploadsTable.table.upload.header.importStatus')" v-bind="{
-        [{
-          draft: 'yellow',
-          pending: 'blue',
-          finished: 'green',
-          errored: 'red',
-          skipped: 'purple',
-        }[item.import_status]]: true
-      }" @click="() => { token('import_status').value = item.import_status }">
+      <Pill
+        :title="t('components.manage.library.UploadsTable.table.upload.header.importStatus')"
+        v-bind="{
+          [{
+            draft: 'yellow',
+            pending: 'blue',
+            finished: 'green',
+            errored: 'red',
+            skipped: 'purple',
+          }[item.import_status]]: true
+        }"
+        @click="() => { token('import_status').value = item.import_status }"
+      >
         {{ item.import_status }}
         <template #action>
-          <Button ghost primary round icon="bi-info-circle-fill" :title="sharedLabels.fields.import_status.label"
-            @click="detailedUpload = item; showUploadDetailModal = true" />
+          <Button
+            ghost
+            primary
+            round
+            icon="bi-info-circle-fill"
+            :title="sharedLabels.fields.import_status.label"
+            @click="detailedUpload = item; showUploadDetailModal = true"
+          />
         </template>
       </Pill>
 
@@ -472,15 +526,21 @@ fetchData()
 
       <!-- 5. date -->
 
-      <human-date v-if="item.import_date" :date="item.import_date" />
+      <human-date
+        v-if="item.import_date"
+        :date="item.import_date"
+      />
       <span v-else>
         {{ t('components.manage.library.UploadsTable.notApplicable') }}
       </span>
     </template>
   </Table>
 
-  <Pagination v-if="page && result && result.count > paginateBy" v-model:page="page"
-    :pages="Math.ceil(result.count / paginateBy)" />
+  <Pagination
+    v-if="page && result && result.count > paginateBy"
+    v-model:page="page"
+    :pages="Math.ceil(result.count / paginateBy)"
+  />
 
   <span v-if="page && result && result.results.length > 0">
     {{ t('components.manage.library.UploadsTable.pagination.results', {
