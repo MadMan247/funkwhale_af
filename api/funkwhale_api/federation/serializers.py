@@ -774,17 +774,7 @@ class AcceptFollowSerializer(FollowActionSerializer):
         follow.save()
         if follow.target._meta.label == "music.Library":
             follow.target.schedule_scan(actor=follow.actor)
-        if (
-            follow.target._meta.label == "federation.Actor"
-            and not follow.target.is_local
-        ):
-            # we fetch the remote actor's libraries to make the uploads available locally
-            utils.get_or_create_builtin_actor_library(
-                follow.target, privacy_level="everyone"
-            )
-            utils.get_or_create_builtin_actor_library(
-                follow.target, privacy_level="followers"
-            )
+
         return follow
 
 

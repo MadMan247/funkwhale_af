@@ -624,17 +624,40 @@ def set_approved_updated(sender, instance, update_fields, **kwargs):
 
 
 @receiver(post_save, sender=LibraryFollow)
+@receiver(post_save, sender=Follow)
 def update_denormalization_follow_approved(sender, instance, created, **kwargs):
     from funkwhale_api.music import models as music_models
 
     updated = getattr(instance, "_approved_updated", False)
 
     if (created or updated) and instance.actor.is_local:
-        music_models.TrackActor.create_entries(
-            instance.target,
-            actor_ids=[instance.actor.pk],
-            delete_existing=not instance.approved,
-        )
+        if isinstance(instance, LibraryFollow):
+            music_models.TrackActor.create_entries(
+                instance.target,
+                actor_ids=[instance.actor.pk],
+                delete_existing=not instance.approved,
+            )
+        elif isinstance(instance, Follow):
+            # we fetch the remote actor's libraries to make the uploads available locally
+
+            builtin_lib = federation_utils.get_or_create_builtin_actor_library(
+                instance.target, privacy_level="everyone"
+            )
+            followers_builtin_lib = (
+                federation_utils.get_or_create_builtin_actor_library(
+                    instance.target, privacy_level="followers"
+                )
+            )
+            music_models.TrackActor.create_entries(
+                builtin_lib,
+                actor_ids=[instance.actor.pk],
+                delete_existing=not instance.approved,
+            )
+            music_models.TrackActor.create_entries(
+                followers_builtin_lib,
+                actor_ids=[instance.actor.pk],
+                delete_existing=not instance.approved,
+            )
 
 
 @receiver(post_delete, sender=LibraryFollow)
