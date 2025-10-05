@@ -150,6 +150,9 @@ div { color:var(--fw-text-color); }
   &:hover {
     background-color: var(--hover-background-color) !important;
   }
+  i:first-child {
+    margin-right: 0px;
+  }
   span {
     width: 100%;
     position: relative;
