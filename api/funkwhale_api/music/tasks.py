@@ -347,8 +347,12 @@ def process_upload(upload, update_denormalization=True):
             upload=upload,
             sender=None,
         )
-    dispatch_outbox = getter(
-        internal_config, "funkwhale", "config", "dispatch_outbox", default=True
+    dispatch_outbox = (
+        False
+        if upload.library.privacy_level == "me"
+        else getter(
+            internal_config, "funkwhale", "config", "dispatch_outbox", default=True
+        )
     )
     if dispatch_outbox:
         routes.outbox.dispatch(
