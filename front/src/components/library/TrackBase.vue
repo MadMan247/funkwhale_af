@@ -297,14 +297,13 @@ watch(showDeleteModal, (newValue) => {
             </PopoverItem>
 
             <PopoverItem
-              v-if="artist &&
+              v-if="
                 store.state.auth.authenticated &&
-                artist.channel &&
-                artist.attributed_to?.full_username === store.state.auth.fullUsername"
+                  track.attributed_to?.full_username === store.state.auth.fullUsername"
               icon="bi-trash"
+              destructive
               @click="showDeleteModal = true"
-            >
-              {{ t('components.library.TrackBase.button.delete') }}
+            >{{ t('components.library.TrackBase.button.delete') }}
             </PopoverItem>
 
             <hr>
@@ -391,7 +390,7 @@ watch(showDeleteModal, (newValue) => {
     <Modal
       v-model="showDeleteModal"
       :title="t('components.library.TrackBase.modal.delete.header')"
-      destructive
+      isdestructive
     >
       <template #alert>
         <Alert red>
