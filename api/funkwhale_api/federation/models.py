@@ -643,6 +643,10 @@ def update_denormalization_follow_deleted(sender, instance, **kwargs):
     from funkwhale_api.music import models as music_models
 
     if instance.actor.is_local:
-        music_models.TrackActor.objects.filter(
-            actor=instance.actor, upload__in=instance.target.uploads.all()
-        ).delete()
+        if isinstance(instance, LibraryFollow):
+            music_models.TrackActor.objects.filter(
+                actor=instance.actor, upload__in=instance.target.uploads.all()
+            ).delete()
+
+        elif isinstance(instance, Follow):
+            music_models.TrackActor.objects.filter(actor=instance.actor).delete()
