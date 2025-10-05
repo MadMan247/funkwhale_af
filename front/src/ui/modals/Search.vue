@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { paths, components } from '~/generated/types.ts'
-import type { RadioConfig } from '~/store/radios'
+// import type { RadioConfig } from '~/store/radios'
 
 import axios from 'axios'
 import { ref, computed, type ShallowRef, useTemplateRef } from 'vue'
@@ -21,7 +21,7 @@ import ActorLink from '~/components/common/ActorLink.vue'
 import TrackTable from '~/components/audio/track/Table.vue'
 import AlbumCard from '~/components/album/Card.vue'
 import RadioCard from '~/components/radios/Card.vue'
-import RadioButton from '~/components/radios/Button.vue'
+// import RadioButton from '~/components/radios/Button.vue'
 import onKeyboardShortcut from '~/composables/onKeyboardShortcut'
 
 import TagsList from '~/components/tags/List.vue'
@@ -32,7 +32,6 @@ import Spacer from '~/components/ui/Spacer.vue'
 import Input from '~/components/ui/Input.vue'
 import Card from '~/components/ui/Card.vue'
 import Section from '~/components/ui/Section.vue'
-import Link from '~/components/ui/Link.vue'
 import Loader from '~/components/ui/Loader.vue'
 import Alert from '~/components/ui/Alert.vue'
 
@@ -233,6 +232,8 @@ const search = async () => {
 }
 
 // Configure the radio
+
+// TODO: Re-activate radio (but for all types at the same time) after #2467 (radio builder) is done
 
 // const radioConfig = computed<RadioConfig | null>(() =>
 //   count({ type: 'tags' }) > 0
@@ -533,7 +534,7 @@ watchDebounced(queryDebounced, search, {
           q: query,
           page: 1,
           page_size: 20,
-         })]"
+        })]"
         :key
         :columns-per-item="3"
         :action="{
