@@ -1496,6 +1496,9 @@ class TrackActor(models.Model):
             )
             if actor_ids:
                 follow_queryset = follow_queryset.filter(actor__pk__in=actor_ids)
+            owner = library.actor if library.actor.is_local else None
+            if owner and (not actor_ids or owner in final_actor_ids):
+                final_actor_ids.append(owner.pk)
             final_actor_ids = list(follow_queryset.values_list("actor", flat=True))
             for actor_id in final_actor_ids:
                 for upload_id, track_id in upload_and_track_ids:
