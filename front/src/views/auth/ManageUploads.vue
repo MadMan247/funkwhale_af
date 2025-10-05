@@ -97,6 +97,7 @@ const isAllSelected = computed<boolean | 'mixed'>({
 })
 
 // For privacy slider and <select>
+const changes = ref<{ uuid: string, privacy_level: PrivacyLevelEnum }[]>([])
 
 // Model for use in global slider `privacy_level`
 const globalPrivacyLevel = computed<PrivacyLevelEnum | undefined>({
@@ -113,29 +114,32 @@ const globalPrivacyLevel = computed<PrivacyLevelEnum | undefined>({
   set(level) {
     if (level === undefined) return
 
-    const changes = []
-
+    changes.value = []
     for (const [index, item] of items.value.entries()) {
       if (!item.selected || item.privacy_level === level)
         continue;
 
-      changes.push({
+      changes.value.push({
         uuid: item.uuid,
         privacy_level: level
       })
 
       items.value[index].privacy_level = level
     }
-
-    // Note: This will never set privacy_level to undefined.
-    // privacy_level as undefined is only a workaround for items in legacy libraries.
-    axios.patch<paths['/api/v2/uploads/bulk_update/']['patch']['responses']['200']['content']['application/json']>(
-      'uploads/bulk_update/',
-      changes
-    )
   }
 })
 
+const submit = async () => {
+  if (changes.value.length === 0) return
+
+  isLoading.value = true
+  await axios.patch(
+      'uploads/bulk_update/',
+      changes.value
+    )
+
+  isLoading.value = false
+}
 /// SEARCH
 
 // const { onSearch, query, addSearchToken, getTokenValue, token } = useSmartSearch(props)
@@ -390,16 +394,28 @@ fetchData()
   <Spacer />
 
   <!-- Edit the currently selected items -->
-
-  <div :class="['default solid raised', $style.toolbox]">
+  <div
+    :class="['default solid raised', $style.toolbox]"
+    style="display: flex; align-items: center; gap: 1rem;"
+  >
     <Spacer />
     <Slider
       v-model="globalPrivacyLevel"
       :disabled="selectedItems.length === 0 ? true : undefined"
       :options="privacyOptions"
       :label="`Privacy level (${selectedItems.length} items)`"
+      style="flex: 1;"
     />
+    <Button
+      type="submit"
+      primary
+      :class="[{'loading': isLoading}]"
+      @click="submit"
+    >
+      {{ t('components.auth.Plugin.button.save') }}
+    </Button>
   </div>
+
 
   <!-- Select my items -->
 
