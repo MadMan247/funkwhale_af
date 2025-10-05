@@ -305,6 +305,15 @@ def get_or_create_builtin_actor_library(actor, privacy_level):
 
     from . import actors
 
+    lib_qs = music_models.Library.objects.filter(
+        actor=actor,
+        playlist__isnull=True,
+        privacy_level=privacy_level,
+        name=privacy_level,
+    )
+    if lib_qs.exists() and lib_qs.count() == 1:
+        return lib_qs.first()
+
     service_actor = actors.get_service_actor()
     auth = signing.get_auth(service_actor.private_key, service_actor.private_key_id)
     response = session.get_session().get(

@@ -285,6 +285,12 @@ def test_accept_follow_serializer_representation(factories):
 def test_accept_follow_serializer_save(factories):
     follow = factories["federation.Follow"](approved=None)
     factories["audio.Channel"](actor=follow.target)
+    factories["music.Library"](
+        actor=follow.target, privacy_level="everyone", name="everyone"
+    )
+    factories["music.Library"](
+        actor=follow.target, privacy_level="followers", name="followers"
+    )
 
     data = {
         "@context": jsonld.get_default_context(),

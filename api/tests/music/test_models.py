@@ -1,6 +1,7 @@
 import os
 
 import pytest
+from django.test import override_settings
 from django.urls import reverse
 from django.utils import timezone
 
@@ -783,7 +784,8 @@ def test_save_upload_quality(factories, mimetype, bitrate, quality):
     assert upload.quality == quality
 
 
-def test_viewable_by_followers(factories):
+@override_settings(MUSIC_USE_DENORMALIZATION=False)
+def test_playable_by_followers(factories):
     library = factories["music.Library"](
         privacy_level="followers", name="followers", actor__local=False
     )
