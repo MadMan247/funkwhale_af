@@ -130,8 +130,8 @@ const isOpen = useModal('artist-description').isOpen
     >
       <template #image>
         <img
-          v-if="object?.user?.avatar"
-          v-lazy="store.getters['instance/absoluteUrl'](object.user.avatar.urls.large_square_crop)"
+          v-if="object?.icon"
+          v-lazy="store.getters['instance/absoluteUrl'](object.icon.urls.large_square_crop)"
           alt=""
           class="avatar"
         >
