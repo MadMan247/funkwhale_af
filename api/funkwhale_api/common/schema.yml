@@ -20491,7 +20491,6 @@ components:
         text:
           type: string
           nullable: true
-          minLength: 1
           maxLength: 5000
         content_type:
           $ref: '#/components/schemas/ContentTypeEnum'

@@ -321,7 +321,9 @@ class AttachmentSerializer(serializers.Serializer):
 
 class ContentSerializer(serializers.Serializer):
     text = serializers.CharField(
-        max_length=models.CONTENT_TEXT_MAX_LENGTH, allow_null=True
+        max_length=models.CONTENT_TEXT_MAX_LENGTH,
+        allow_null=True,
+        allow_blank=True,
     )
     content_type = serializers.ChoiceField(
         choices=models.CONTENT_TEXT_SUPPORTED_TYPES,
