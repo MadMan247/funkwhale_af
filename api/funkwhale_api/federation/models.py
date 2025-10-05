@@ -649,4 +649,9 @@ def update_denormalization_follow_deleted(sender, instance, **kwargs):
             ).delete()
 
         elif isinstance(instance, Follow):
-            music_models.TrackActor.objects.filter(actor=instance.actor).delete()
+            builtin_lib_uploads = music_models.Upload.objects.filter(
+                library__actor=instance.target
+            )
+            music_models.TrackActor.objects.filter(
+                actor=instance.actor, upload__in=builtin_lib_uploads
+            ).delete()
