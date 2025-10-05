@@ -121,7 +121,7 @@ div { color:var(--fw-text-color); }
   align-items: center;
   border-radius: var(--fw-border-radius);
   white-space: nowrap;
-
+  color: var(--color) !important;
   animation: v-bind('animation') 0.15s steps(1, end) 1 reverse;
 
   &:hover {
@@ -146,6 +146,7 @@ div { color:var(--fw-text-color); }
   padding: 0px 8px;
   border: none;
   align-items: center;
+  color: var(--color) !important;
   &:hover {
     background-color: var(--hover-background-color) !important;
   }
