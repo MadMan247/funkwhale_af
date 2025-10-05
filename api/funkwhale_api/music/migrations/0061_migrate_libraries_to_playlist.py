@@ -114,7 +114,7 @@ def migrate_libraries_to_playlist(apps, schema_editor):
         ):
             continue
 
-        privacy_levels = ["me", "instance", "everyone"]
+        privacy_levels = ["me", "instance", "followers", "everyone"]
         for privacy_level in privacy_levels:
             build_in_lib, created = Library.objects.filter(
                 channel__isnull=True
@@ -166,7 +166,7 @@ def check_succefull_migration(apps, schema_editor):
             )
         elif (
             not hasattr(actor, "channel")
-            and actor.libraries.count() - 3 != not_build_in_libs
+            and actor.libraries.count() - 4 != not_build_in_libs
             or (hasattr(actor, "channel") and actor.libraries.count() > 1)
         ):
             raise Exception(
