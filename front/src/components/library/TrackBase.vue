@@ -303,7 +303,8 @@ watch(showDeleteModal, (newValue) => {
               icon="bi-trash"
               destructive
               @click="showDeleteModal = true"
-            >{{ t('components.library.TrackBase.button.delete') }}
+            >
+              {{ t('components.library.TrackBase.button.delete') }}
             </PopoverItem>
 
             <hr>
