@@ -5,7 +5,7 @@ import type { Playlist, PlaylistTrack, BackendError, APIErrorResponse } from '~/
 
 import { useI18n } from 'vue-i18n'
 import { useVModels } from '@vueuse/core'
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 
 import { useQueue } from '~/composables/audio/queue'
 import { useStore } from '~/store'
@@ -165,17 +165,20 @@ const insertMany = async (insertedTracks: number[], allowDuplicates: boolean) =>
 
   isLoading.value = false
 }
+onMounted(() => {
+  fetchTracks()
+})
 </script>
 
 <template>
   <Layout stack>
-    <playlist-form
-      v-model:playlist="playlist"
-      :title="undefined"
-    />
     <h3 class="ui top attached header">
       {{ t('components.playlists.Editor.header.editor') }}
     </h3>
+    <playlist-form
+      v-model:playlist="playlist"
+      :title="false"
+    />
     <template v-if="status === 'loading'">
       <div class="ui active tiny inline loader" />
       {{ t('components.playlists.Editor.loading.sync') }}
