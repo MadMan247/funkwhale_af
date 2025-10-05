@@ -348,4 +348,5 @@ def get_or_create_builtin_actor_library(actor, privacy_level):
             uuid=data["results"][0]["id"].split("/")[-1],
             fid=data["results"][0]["id"],
         )
+        lib.schedule_scan(actor=service_actor)
         return lib
