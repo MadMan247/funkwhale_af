@@ -1,6 +1,8 @@
 // import type { BackendError, Track } from '~/types'
 import type { RootState } from '~/store/index'
 import type { Module } from 'vuex'
+import type {Track} from '~/types'
+import type {BackendError} from '~/types'
 
 import { useQueue } from '~/composables/audio/queue'
 import { usePlayer } from '~/composables/audio/player'
