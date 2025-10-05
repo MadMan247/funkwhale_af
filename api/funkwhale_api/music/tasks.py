@@ -349,7 +349,7 @@ def process_upload(upload, update_denormalization=True):
         )
     dispatch_outbox = (
         False
-        if upload.library.privacy_level == "me"
+        if upload.library.privacy_level in ["me", "instance"]
         else getter(
             internal_config, "funkwhale", "config", "dispatch_outbox", default=True
         )
