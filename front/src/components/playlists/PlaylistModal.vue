@@ -139,6 +139,7 @@ store.dispatch('playlists/fetchOwn')
       <h4 class="ui header">
         {{ t('components.playlists.PlaylistModal.header.available') }}
       </h4>
+      <!-- TODO: Add Playlist filter -->
       <!-- <Input
         id="playlist-name-filter"
         v-model="playlistNameFilter"
