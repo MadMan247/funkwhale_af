@@ -849,7 +849,62 @@ An `Audio` object is a custom object used to store upload information. It extend
 
 ### AudioCollection
 
-An `AudioCollection` object is a custom object used to store a collection of ['Audio{](###Audio) objects.
+An `AudioCollection` object is a custom object used to send a collection of ['Audio'](###Audio) objects for bulk update. The object is never saved on db, it's only used for updating `Upload` in bulk.
+
+#### Properties
+
+```{list-table}
+:header-rows: 1
+
+  * - Property
+    - Data type
+    - Description
+  * - `type`*
+    - String
+    - The object type (`Audio`)
+  * - `actor`*
+    - fid
+    - the actor making the bulk update
+  * - `totalItems`*
+    - int
+    - total audio objects in items
+  * - `items`*
+    - list
+    - a list of ['Audio'](###Audio) objects
+```
+
+#### Example
+
+```
+{
+    "type": "AudioCollection",
+    "actor": "https://reid-little.com/users/kathrynjohns177",
+    "audience": "everyone",
+    "totalItems": 1,
+    "items": [
+        {
+            "type": "Audio",
+            "id": "https://test.federation//3ea581cf-0d3d-496f-b594-fac8472f4208",
+            "library": "https://test.federation/federation/music/libraries/0deaa9e8-eaa0-4601-ba4e-e1d999102b50",
+            "name": "Patrick Huynh - Trouble late. - Notice media a.",
+            "published": "2025-10-06T21:21:40.215654+00:00",
+            "bitrate": 320,
+            "size": 320,
+            "duration": "PT5M20S",
+            // truncated
+        }
+    ],
+    "@context": [
+        "https://www.w3.org/ns/activitystreams",
+        "https://w3id.org/security/v1",
+        "https://funkwhale.audio/ns",
+        {
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            "Hashtag": "as:Hashtag",
+        },
+    ],
+}
+```
 
 ## Custom properties
 
