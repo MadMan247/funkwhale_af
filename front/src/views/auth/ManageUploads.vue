@@ -477,6 +477,7 @@ fetchData()
           v-model="item.selected"
           type="checkbox"
           title="Select"
+          :disabled="item.import_status !== 'finished'"
         >
       </b>
 
