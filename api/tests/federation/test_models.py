@@ -35,30 +35,35 @@ def test_actor_get_quota(factories):
         import_status="pending",
         audio_file__from_path=None,
         audio_file__data=b"a",
+        size=None,
     )
     factories["music.Upload"](
         library=library,
         import_status="skipped",
         audio_file__from_path=None,
         audio_file__data=b"aa",
+        size=None,
     )
     factories["music.Upload"](
         library=library,
         import_status="errored",
         audio_file__from_path=None,
         audio_file__data=b"aaa",
+        size=None,
     )
     factories["music.Upload"](
         library=library,
         import_status="finished",
         audio_file__from_path=None,
         audio_file__data=b"aaaa",
+        size=None,
     )
     factories["music.Upload"](
         library=library,
         import_status="draft",
         audio_file__from_path=None,
         audio_file__data=b"aaaaa",
+        size=None,
     )
 
     # this one is imported in place and don't count
@@ -76,6 +81,7 @@ def test_actor_get_quota(factories):
         source="file://test2",
         audio_file__from_path=None,
         audio_file__data=b"aaaa",
+        size=None,
     )
 
     # this one is in a channel
@@ -85,6 +91,7 @@ def test_actor_get_quota(factories):
         import_status="finished",
         audio_file__from_path=None,
         audio_file__data=b"aaaaa",
+        size=None,
     )
 
     expected = {

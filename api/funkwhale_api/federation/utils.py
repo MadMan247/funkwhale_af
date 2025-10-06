@@ -316,6 +316,7 @@ def get_or_create_builtin_actor_library(actor, privacy_level):
 
     service_actor = actors.get_service_actor()
     auth = signing.get_auth(service_actor.private_key, service_actor.private_key_id)
+
     response = session.get_session().get(
         f"https://{actor.domain}/api/v2/federation/music/libraries",
         auth=auth,

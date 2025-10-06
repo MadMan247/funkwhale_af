@@ -387,11 +387,16 @@ def test_user_can_list_their_received_follows(factories, logged_in_api_client):
 
 
 def test_can_follow_user_actor(factories, logged_in_api_client, mocker):
+    lib = factories["music.Library"]()
+    lib2 = factories["music.Library"]()
+
     dispatch = mocker.patch("funkwhale_api.federation.routes.outbox.dispatch")
     mock_session = Mock()
     mock_response = Mock()
+    # one response for the everyone lib and another one for followers lib
     mock_response.json.side_effect = [
-        {"results": [serializers.LibrarySerializer(factories["music.Library"]()).data]}
+        {"results": [serializers.LibrarySerializer(lib).data]},
+        {"results": [serializers.LibrarySerializer(lib2).data]},
     ]
     mock_session.get.return_value = mock_response
     mocker.patch(
@@ -401,6 +406,8 @@ def test_can_follow_user_actor(factories, logged_in_api_client, mocker):
     actor = logged_in_api_client.user.create_actor()
     target_actor = factories["federation.Actor"]()
     url = reverse("api:v1:federation:user-follows-list")
+    lib.delete()
+    lib2.delete()
     response = logged_in_api_client.post(url, {"target": target_actor.fid})
 
     assert response.status_code == 201

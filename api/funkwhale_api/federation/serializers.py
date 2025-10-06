@@ -1726,6 +1726,7 @@ class UploadSerializer(jsonld.JsonLdSerializer):
                 "size": validated_data["size"],
                 "bitrate": validated_data["bitrate"],
                 "import_status": "finished",
+                "library": validated_data["library"],
             }
             return music_models.Upload.objects.update_or_create(
                 fid=validated_data["id"], defaults=data

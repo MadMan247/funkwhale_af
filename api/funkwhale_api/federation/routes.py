@@ -867,3 +867,30 @@ def outbox_update_audiocollection(context):
             to=[activity.PUBLIC_ADDRESS, {"type": "instances_with_followers"}],
         ),
     }
+
+
+@inbox.register({"type": "Delete", "object.type": "AudioCollection"})
+def inbox_delete_audiocollection(payload, context):
+    serializer = serializers.AudioCollectionSerializer(
+        data=payload["object"], context=context
+    )
+    serializer.is_valid(raise_exception=True)
+
+    for upload in serializer.validated_data["items"]:
+        music_models.Upload.objects.filter(fid=upload["id"]).delete()
+
+
+@outbox.register({"type": "Delete", "object.type": "AudioCollection"})
+def outbox_delete_audiocollection(context):
+    audios = context["audios"]
+    serializer = serializers.ActivitySerializer(
+        {"type": "Delete", "object": serializers.AudioCollectionSerializer(audios).data}
+    )
+    yield {
+        "type": "Delete",
+        "actor": audios[0].library.actor,
+        "payload": with_recipients(
+            serializer.data,
+            to=[activity.PUBLIC_ADDRESS, {"type": "instances_with_followers"}],
+        ),
+    }

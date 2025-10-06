@@ -1316,14 +1316,16 @@ def test_inbox_update_audiocollection_create_upload(factories, mocker):
 
 
 def test_inbox_update_audiocollection_update_upload(factories, mocker):
-    actor = factories["federation.Actor"](local=True)
+    actor = factories["federation.Actor"]()
     upload = factories["music.Upload"](
-        library__actor=actor, local=True, library__privacy_level="everyone"
+        library__actor=actor,
+        local=True,
+        library__name="everyone",
+        library__privacy_level="everyone",
     )
-
     data = serializers.AudioCollectionSerializer([upload]).data
     upload.library = factories["music.Library"](
-        actor=actor, local=True, privacy_level="followers"
+        actor=actor, name="followers", privacy_level="followers"
     )
     upload.save()
 
@@ -1337,3 +1339,23 @@ def test_inbox_update_audiocollection_update_upload(factories, mocker):
     )
     should_be_updated = music_models.Upload.objects.get(fid=upload.fid)
     assert should_be_updated.library.privacy_level == "everyone"
+
+
+def test_inbox_delete_audiocollection(factories):
+    actor = factories["federation.Actor"]()
+    upload = factories["music.Upload"](
+        library__actor=actor,
+        local=True,
+        library__name="everyone",
+        library__privacy_level="everyone",
+    )
+    data = serializers.AudioCollectionSerializer([upload]).data
+    routes.inbox_delete_audiocollection(
+        {"object": data},
+        context={
+            "actor": actor,
+            "raise_exception": True,
+        },
+    )
+
+    assert music_models.Upload.objects.filter(fid=upload.fid).exists() is False
