@@ -256,7 +256,7 @@ See [the `Audio` object reference](#audio) for details on the object's structure
 ```
 
 When Funkwhale receives a `Create` activity with an [`Audio` object](#audio), it persists a local upload in the database. It then associates the upload to related library and track information. If no track matches the audio metadata, Funkwhale creates on using the `metadata` attribute in the object.
-For bulk updates of uploads privacy_level (when an upload is mooved in another library), we send an `Update` activity containing a `AudioCollection` for better performance.
+For bulk updates of uploads privacy_level (when an upload is moved in another library), we send an `Update` activity containing a `AudioCollection` for better performance.
 
 #### Checks
 
