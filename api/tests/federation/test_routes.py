@@ -14,6 +14,7 @@ from funkwhale_api.federation import (
 )
 from funkwhale_api.history import models as history_models
 from funkwhale_api.moderation import serializers as moderation_serializers
+from funkwhale_api.music import models as music_models
 from funkwhale_api.playlists import models as playlists_models
 
 
@@ -50,6 +51,10 @@ from funkwhale_api.playlists import models as playlists_models
         (
             {"type": "Update", "object": {"type": "Playlist"}},
             routes.inbox_update_playlist,
+        ),
+        (
+            {"type": "Update", "object": {"type": "AudioCollection"}},
+            routes.inbox_update_audiocollection,
         ),
         ({"type": "Delete", "object": {"type": "Person"}}, routes.inbox_delete_actor),
         ({"type": "Delete", "object": {"type": "Tombstone"}}, routes.inbox_delete),
@@ -96,6 +101,10 @@ def test_inbox_routes(route, handler):
         (
             {"type": "Update", "object": {"type": "Playlist"}},
             routes.outbox_update_playlist,
+        ),
+        (
+            {"type": "Update", "object": {"type": "AudioCollection"}},
+            routes.outbox_update_audiocollection,
         ),
         (
             {"type": "Delete", "object": {"type": "Tombstone"}},
@@ -1283,3 +1292,48 @@ def test_inbox_update_playlist(factories, mocker):
     expected = serializers.PlaylistSerializer(should_be_updated).data
     playlist_data["updated"] = expected["updated"]
     assert serializers.PlaylistSerializer(should_be_updated).data == playlist_data
+
+
+def test_inbox_update_audiocollection_create_upload(factories, mocker):
+    actor = factories["federation.Actor"](local=True)
+    upload = factories["music.Upload"](
+        library__actor=actor, local=True, library__privacy_level="everyone"
+    )
+
+    data = serializers.AudioCollectionSerializer([upload]).data
+    upload.delete()
+
+    mocker.patch("funkwhale_api.music.tasks.populate_album_cover")
+    routes.inbox_update_audiocollection(
+        {"object": data},
+        context={
+            "actor": actor,
+            "raise_exception": True,
+        },
+    )
+    should_be_updated = music_models.Upload.objects.get(fid=upload.fid)
+    assert should_be_updated.library.privacy_level == "everyone"
+
+
+def test_inbox_update_audiocollection_update_upload(factories, mocker):
+    actor = factories["federation.Actor"](local=True)
+    upload = factories["music.Upload"](
+        library__actor=actor, local=True, library__privacy_level="everyone"
+    )
+
+    data = serializers.AudioCollectionSerializer([upload]).data
+    upload.library = factories["music.Library"](
+        actor=actor, local=True, privacy_level="followers"
+    )
+    upload.save()
+
+    mocker.patch("funkwhale_api.music.tasks.populate_album_cover")
+    routes.inbox_update_audiocollection(
+        {"object": data},
+        context={
+            "actor": actor,
+            "raise_exception": True,
+        },
+    )
+    should_be_updated = music_models.Upload.objects.get(fid=upload.fid)
+    assert should_be_updated.library.privacy_level == "everyone"

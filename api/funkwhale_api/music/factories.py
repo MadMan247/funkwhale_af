@@ -211,9 +211,9 @@ class UploadFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
         from_path=os.path.join(SAMPLES_PATH, "test.ogg")
     )
 
-    bitrate = None
-    size = None
-    duration = None
+    bitrate = 320
+    size = 320
+    duration = 320
     mimetype = "audio/ogg"
     quality = 1
 

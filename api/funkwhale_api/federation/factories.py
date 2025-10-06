@@ -4,6 +4,7 @@ import factory
 import requests
 import requests_http_message_signatures
 from django.conf import settings
+from django.db.models.signals import post_save
 from django.utils import timezone
 from django.utils.http import http_date
 
@@ -179,6 +180,15 @@ class FollowFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
 
     class Params:
         local = factory.Trait(actor=factory.SubFactory(ActorFactory, local=True))
+
+    @classmethod
+    @factory.django.mute_signals(post_save)
+    def _create(cls, model_class, *args, **kwargs):
+        """
+        Overrides Factory Boy's object creation to suppress post_save signals
+        only during this factory's create(). Needed because Follow creation trigger a remote library fetch
+        """
+        return super()._create(model_class, *args, **kwargs)
 
 
 @registry.register

@@ -60,7 +60,6 @@ def expand(doc, options=None, default_contexts=["AS", "FW", "SEC"]):
     except KeyError:
         # Nothing to do here if no context is available at all
         pass
-
     result = pyld.jsonld.expand(doc, options=options)
     try:
         # jsonld.expand returns a list, which is useless for us

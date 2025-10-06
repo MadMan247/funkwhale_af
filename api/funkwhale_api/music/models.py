@@ -1019,6 +1019,8 @@ class Upload(models.Model):
             )
         ):
             return 3
+        else:
+            return 1
 
     def save(self, **kwargs):
         if not self.mimetype:
@@ -1333,16 +1335,16 @@ class LibraryQuerySet(models.QuerySet):
         ) | federation_models.Domain.objects.filter(name=settings.FUNKWHALE_HOSTNAME)
 
         # User follow
-        followed_actors = Follow.objects.filter(actor=actor, approved=True).values_list(
-            "target", flat=True
-        )
+        following_actors = Follow.objects.filter(
+            actor=actor, approved=True
+        ).values_list("target", flat=True)
         return self.filter(
             me_query
             | instance_query
             | models.Q(privacy_level="everyone")
             | models.Q(pk__in=followed_libraries)
             | models.Q(pk__in=followed_channels_libraries)
-            | models.Q(actor__in=followed_actors, privacy_level="followers")
+            | models.Q(actor__in=following_actors, privacy_level="followers")
             & models.Q(actor__domain__in=domains_reachable)
         )
 

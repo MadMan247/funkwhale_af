@@ -297,6 +297,7 @@ CONTEXTS = [
                 "Library": "fw:Library",
                 "Playlist": "fw:Playlist",
                 "PlaylistTrack": "fw:PlaylistTrack",
+                "AudioCollection": "fw:AudioCollection",
                 "bitrate": {"@id": "fw:bitrate", "@type": "xsd:nonNegativeInteger"},
                 "size": {"@id": "fw:size", "@type": "xsd:nonNegativeInteger"},
                 "position": {"@id": "fw:position", "@type": "xsd:nonNegativeInteger"},

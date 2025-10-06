@@ -212,6 +212,7 @@ def test_get_album(
         .first()
     )
     factories["music.Track"].create_batch(size=3, album=album, playable=True)
+    album = album.__class__.objects.with_duration().first()
     playable_by = mocker.spy(music_models.AlbumQuerySet, "playable_by")
     expected = {"album": serializers.GetAlbumSerializer(album).data}
     response = logged_in_api_client.get(url, {"f": f, "id": album.pk})
@@ -240,6 +241,7 @@ def test_get_album_info_2(
         .first()
     )
     factories["music.Track"].create_batch(size=3, album=album, playable=True)
+    album = album.__class__.objects.with_duration().first()
     playable_by = mocker.spy(music_models.AlbumQuerySet, "playable_by")
     expected = {"albumInfo": serializers.GetAlbumSerializer(album).data}
     response = logged_in_api_client.get(url, {"f": f, "id": album.pk})
@@ -268,6 +270,7 @@ def test_get_album_info(
         .first()
     )
     factories["music.Track"].create_batch(size=3, album=album, playable=True)
+    album = album.__class__.objects.with_duration().first()
     playable_by = mocker.spy(music_models.AlbumQuerySet, "playable_by")
     expected = {"albumInfo": serializers.GetAlbumSerializer(album).data}
     response = logged_in_api_client.get(url, {"f": f, "id": album.pk})

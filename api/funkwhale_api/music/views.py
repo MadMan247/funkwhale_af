@@ -807,17 +807,20 @@ class UploadViewSet(
         """
         Used to move an upload from one library to another. Receive a upload uuid and a privacy_level
         """
+        if not self.request.user.is_authenticated:
+            return Response({}, status=403)
+
         serializer = serializers.UploadBulkUpdateSerializer(
-            data=request.data, many=True
+            data=request.data, many=True, context={"actor": self.request.user.actor}
         )
         serializer.is_valid(raise_exception=True)
-
-        models.Upload.objects.bulk_update(serializer.validated_data, ["library"])
-
+        objs = serializer.save()
+        routes.outbox.dispatch(
+            {"type": "Update", "object": {"type": "AudioCollection"}},
+            context={"audios": objs},
+        )
         return Response(
-            serializers.UploadForOwnerSerializer(
-                serializer.validated_data, many=True
-            ).data,
+            serializers.UploadForOwnerSerializer(objs, many=True).data,
             status=200,
         )
 

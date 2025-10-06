@@ -842,3 +842,28 @@ def outbox_update_playlist(context):
             to=[{"type": "followers", "target": playlist.actor}],
         ),
     }
+
+
+@inbox.register({"type": "Update", "object.type": "AudioCollection"})
+def inbox_update_audiocollection(payload, context):
+    serializer = serializers.AudioCollectionSerializer(
+        data=payload["object"], context=context
+    )
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+
+
+@outbox.register({"type": "Update", "object.type": "AudioCollection"})
+def outbox_update_audiocollection(context):
+    audios = context["audios"]
+    serializer = serializers.ActivitySerializer(
+        {"type": "Update", "object": serializers.AudioCollectionSerializer(audios).data}
+    )
+    yield {
+        "type": "Update",
+        "actor": audios[0].library.actor,
+        "payload": with_recipients(
+            serializer.data,
+            to=[activity.PUBLIC_ADDRESS, {"type": "instances_with_followers"}],
+        ),
+    }

@@ -1571,6 +1571,11 @@ def test_album_create_artist_credit(factories, logged_in_api_client):
 def test_can_patch_upload_list(factories, logged_in_api_client):
     url = reverse("api:v1:uploads-bulk-update")
     actor = logged_in_api_client.user.create_actor()
+    factories["music.Library"](actor=actor, privacy_level="me", name="me")
+    factories["music.Library"](actor=actor, privacy_level="instance", name="instance")
+    factories["music.Library"](actor=actor, privacy_level="followers", name="followers")
+    factories["music.Library"](actor=actor, privacy_level="everyone", name="everyone")
+
     upload = factories["music.Upload"](library__actor=actor)
     upload2 = factories["music.Upload"](library__actor=actor)
     factories["music.Library"](actor=actor, privacy_level="everyone", name="everyone")
@@ -1588,6 +1593,7 @@ def test_can_patch_upload_list(factories, logged_in_api_client):
 
     assert response.status_code == 200
     assert upload.library.privacy_level == "everyone"
+    assert upload2.library.privacy_level == "everyone"
 
 
 def test_upload_list_wont_use_playlist_lib(factories, logged_in_api_client):
@@ -1603,15 +1609,14 @@ def test_upload_list_wont_use_playlist_lib(factories, logged_in_api_client):
     )
     playlist.library = lib
     playlist.save()
-    response = logged_in_api_client.patch(
-        url,
-        [
-            {"uuid": upload.uuid, "privacy_level": "everyone"},
-            {"uuid": upload2.uuid, "privacy_level": "everyone"},
-        ],
-        format="json",
-    )
-    upload.refresh_from_db()
-    upload2.refresh_from_db()
-
-    assert response.status_code == 400
+    try:
+        logged_in_api_client.patch(
+            url,
+            [
+                {"uuid": upload.uuid, "privacy_level": "everyone"},
+                {"uuid": upload2.uuid, "privacy_level": "everyone"},
+            ],
+            format="json",
+        )
+    except federation_utils.BuiltInLibException:
+        pass

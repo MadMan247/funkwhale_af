@@ -545,26 +545,41 @@ class UploadForOwnerSerializer(UploadSerializer):
         return f
 
 
+class UploadBulkUpdateListSerializer(serializers.ListSerializer):
+    def create(self, validated_data):
+        privacy_levels = ["me", "instance", "followers", "everyone"]
+        privacy_level_map = {
+            privacy_level: self.context["actor"]
+            .libraries.filter(privacy_level=privacy_level, name=privacy_level)
+            .exclude(playlist__isnull=False)
+            .first()
+            for privacy_level in privacy_levels
+        }
+        if None in privacy_level_map.values():
+            raise federation_utils.BuiltInLibException(
+                {"details": "Built-in library not found or too many"}
+            )
+        objs = []
+        for data in validated_data:
+            try:
+                uuid = data.get("uuid", None)
+                upload = models.Upload.objects.select_related("track").get(uuid=uuid)
+            except models.Upload.DoesNotExist:
+                raise serializers.ValidationError(
+                    f"Upload with uuid {uuid} does not exist"
+                )
+            upload.library = privacy_level_map[data["privacy_level"]]
+            objs.append(upload)
+        models.Upload.objects.bulk_update(objs, ["library"])
+        return objs
+
+
 class UploadBulkUpdateSerializer(serializers.Serializer):
     uuid = serializers.UUIDField()
     privacy_level = serializers.ChoiceField(choices=fields.PRIVACY_LEVEL_CHOICES)
 
-    def validate(self, data):
-        try:
-            upload = models.Upload.objects.get(uuid=data["uuid"])
-        except models.Upload.DoesNotExist:
-            raise serializers.ValidationError(
-                f"Upload with uuid {data['uuid']} does not exist"
-            )
-        lib = upload.library.actor.libraries.filter(
-            privacy_level=data["privacy_level"], name=data["privacy_level"]
-        ).exclude(playlist__isnull=False)
-
-        if len(lib) == 1:
-            upload.library = lib[0]
-        else:
-            raise serializers.ValidationError("Built-in library not found or too many")
-        return upload
+    class Meta:
+        list_serializer_class = UploadBulkUpdateListSerializer
 
 
 class UploadActionSerializer(common_serializers.ActionSerializer):

@@ -256,6 +256,7 @@ See [the `Audio` object reference](#audio) for details on the object's structure
 ```
 
 When Funkwhale receives a `Create` activity with an [`Audio` object](#audio), it persists a local upload in the database. It then associates the upload to related library and track information. If no track matches the audio metadata, Funkwhale creates on using the `metadata` attribute in the object.
+For bulk updates of uploads privacy_level (when an upload is mooved in another library), we send an `Update` activity containing a `AudioCollection` for better performance.
 
 #### Checks
 
@@ -717,7 +718,7 @@ A `Track` is a custom object used to store track information.
 ### Library
 
 ```{note}
-Crawling library pages requires authentication and an approved follow unless the library is public.
+Crawling library pages requires authentication and an approved follow unless the library is public. Auth from the service actor from a pod with an accepted followers is also accepted.
 ```
 
 A `Library` is a custom object used to store music collection information. It inherits its behavior and properties from ActivityPub's [`Actor`](https://www.w3.org/TR/activitypub/#actors) and [`Collection`](https://www.w3.org/TR/activitypub/#collections) objects.
@@ -775,7 +776,9 @@ A `Library` is a custom object used to store music collection information. It in
 ### Audio
 
 ```{note}
-Accessing audio files requires authentication and an approved follow for the containing library unless the library is public.
+Accessing audio files requires authentication (unless the library is public) and either :
+- an approved follow for the library owner
+- an approved follow for the playlist.library
 ```
 
 An `Audio` object is a custom object used to store upload information. It extends the [ActivityStreams Audio object](https://www.w3.org/TR/activitystreams-vocabulary/#dfn-audio) with custom attributes.
@@ -843,6 +846,10 @@ An `Audio` object is a custom object used to store upload information. It extend
   }
 }
 ```
+
+### AudioCollection
+
+An `AudioCollection` object is a custom object used to store a collection of ['Audio{](###Audio) objects.
 
 ## Custom properties
 

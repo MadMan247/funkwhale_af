@@ -610,6 +610,7 @@ class LibraryTrack(models.Model):
 
 
 @receiver(pre_save, sender=LibraryFollow)
+@receiver(pre_save, sender=Follow)
 def set_approved_updated(sender, instance, update_fields, **kwargs):
     if not instance.pk or not instance.actor.is_local:
         return
@@ -629,7 +630,6 @@ def update_denormalization_follow_approved(sender, instance, created, **kwargs):
     from funkwhale_api.music import models as music_models
 
     updated = getattr(instance, "_approved_updated", False)
-
     if (created or updated) and instance.actor.is_local:
         if isinstance(instance, LibraryFollow):
             music_models.TrackActor.create_entries(
@@ -637,9 +637,8 @@ def update_denormalization_follow_approved(sender, instance, created, **kwargs):
                 actor_ids=[instance.actor.pk],
                 delete_existing=not instance.approved,
             )
-        elif isinstance(instance, Follow):
+        elif isinstance(instance, Follow) and not instance.target.get_channel():
             # we fetch the remote actor's libraries to make the uploads available locally
-
             builtin_lib = federation_utils.get_or_create_builtin_actor_library(
                 instance.target, privacy_level="everyone"
             )

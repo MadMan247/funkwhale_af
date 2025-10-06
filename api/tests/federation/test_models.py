@@ -95,7 +95,6 @@ def test_actor_get_quota(factories):
         "finished": 13,
         "draft": 5,
     }
-
     assert library.actor.get_current_usage() == expected
 
 

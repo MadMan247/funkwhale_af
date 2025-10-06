@@ -309,7 +309,7 @@ def activity_pass_user_privacy_level(context, routing):
     object_type = routing.get("object", {}).get("type", None)
 
     if not actor:
-        logger.warning(
+        logger.info(
             "No actor provided in activity context : \
                 we cannot follow actor.privacy_level, activity will be sent by default."
         )
@@ -334,19 +334,23 @@ def activity_pass_user_privacy_level(context, routing):
 
 
 def activity_pass_object_privacy_level(context, routing):
-    MUSIC_OBJECT_TYPE = ["Audio", "Track", "Album", "Artist"]
+    MUSIC_OBJECT_TYPE = ["Track", "Album", "Artist"]
 
-    # we only support playlist federation for now (other objects follow user.privacy_level)
-    object = context.get("playlist", False)
-
-    obj_privacy_level = object.privacy_level if object else None
     object_type = routing.get("object", {}).get("type", None)
-
     # We do not consider music metadata has private
     if object_type in MUSIC_OBJECT_TYPE:
         return True
     if routing["type"] == "Delete":
         return True
+    # other objects follow user.privacy_level
+    if object := context.get("upload", None):
+        obj_privacy_level = object.library.privacy_level
+    elif object := context.get("audios", None):
+        obj_privacy_level = object[0].library.privacy_level
+    elif object := context.get("playlist", None):
+        obj_privacy_level = object.privacy_level
+    else:
+        object = None
 
     if routing["type"] == "Update" and obj_privacy_level in ["me", "instance"]:
         # we send a delete request instead

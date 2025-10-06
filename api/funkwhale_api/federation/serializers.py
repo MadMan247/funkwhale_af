@@ -12,6 +12,7 @@ from django.urls import reverse
 from django.utils import timezone
 from rest_framework import serializers
 
+from funkwhale_api.common import fields
 from funkwhale_api.common import models as common_models
 from funkwhale_api.common import utils as common_utils
 from funkwhale_api.favorites import models as favorites_models
@@ -2495,3 +2496,49 @@ class PlaylistCollectionSerializer(PaginatedCollectionSerializer):
         }
         r = super().to_representation(conf)
         return r
+
+
+class AudioCollectionSerializer(jsonld.JsonLdSerializer):
+    """
+    Used for the activities
+    """
+
+    type = serializers.ChoiceField(
+        choices=[contexts.AS.Collection, contexts.FW.AudioCollection]
+    )
+    actor = serializers.URLField(max_length=500, required=False)
+    audience = serializers.ChoiceField(
+        choices=fields.PRIVACY_LEVEL_CHOICES,
+        required=True,
+    )
+    totalItems = serializers.IntegerField()
+    items = UploadSerializer(many=True)
+
+    class Meta:
+        jsonld_mapping = {
+            "audience": jsonld.first_id(contexts.AS.audience),
+            "actor": jsonld.first_id(contexts.AS.actor),
+            "totalItems": jsonld.first_val(contexts.AS.totalItems),
+            "items": jsonld.raw(contexts.AS.items),
+        }
+
+    def to_representation(self, audios):
+        conf = {
+            "type": "AudioCollection",
+            "actor": audios[0].library.actor.fid,
+            "audience": audios[0].library.privacy_level,
+            "totalItems": len(audios),
+            "items": UploadSerializer(audios, many=True).data,
+        }
+        if self.context.get("include_ap_context", True):
+            conf["@context"] = jsonld.get_default_context()
+        return conf
+
+    def create(self, validated_data):
+        for upload_data in validated_data["items"]:
+            UploadSerializer().create(upload_data)
+
+        return validated_data["items"]
+
+    def update(self, instance, validated_data):
+        return self.create(validated_data)

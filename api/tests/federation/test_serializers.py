@@ -2089,9 +2089,10 @@ def test_accept_follow_trigger_built_in_lib_creation(factories, mocker):
     lib.delete()
     lib_followers.delete()
 
-    follow = factories["federation.Follow"](approved=None, target__local=False)
-    lib_data = serializers.AcceptFollowSerializer(follow).data
-    serializer = serializers.AcceptFollowSerializer(data=lib_data)
-    serializer.is_valid()
-    serializer.save()
+    follow = factories["federation.Follow"](
+        approved=None, actor__local=True, target__local=False
+    )
+    # trigger a post_save signal
+    follow.approved = True
+    follow.save(update_fields=["approved"])
     assert music_models.Library.objects.filter(actor=follow.target).count() == 2

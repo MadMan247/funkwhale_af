@@ -549,7 +549,9 @@ def test_upload_import(now, factories, temp_signal, mocker):
     get_track_from_import_metadata = mocker.spy(tasks, "get_track_from_import_metadata")
     track = factories["music.Track"](album__attachment_cover=None)
     upload = factories["music.Upload"](
-        track=None, import_metadata={"funkwhale": {"track": {"uuid": str(track.uuid)}}}
+        library__privacy_level="everyone",
+        track=None,
+        import_metadata={"funkwhale": {"track": {"uuid": str(track.uuid)}}},
     )
     create_entries = mocker.patch(
         "funkwhale_api.music.models.TrackActor.create_entries"

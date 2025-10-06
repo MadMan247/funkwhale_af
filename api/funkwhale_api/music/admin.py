@@ -87,6 +87,7 @@ class UploadAdmin(admin.ModelAdmin):
         "size",
         "bitrate",
         "import_status",
+        "library",
     ]
     list_select_related = ["track"]
     search_fields = [
