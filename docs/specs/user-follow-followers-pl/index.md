@@ -12,7 +12,11 @@ Implement the followers privacy level for UserFollow and Playlist
 
 We use bulk updates to moove `Uploads` from on built-in library to another one. We need to create a new `Activity` that send a collection of `Uploads` (`Audio` in AS vocabulary) to avoid rescanning the whole library.
 
-- [ ] Create a new `AudioCollection` AP object
-- [ ] Create `Update` activity for `AudioCollection`
-- [ ] Create `AudioCollectionSerializers` to bulk_update the uploads
-- [ ] Trigger the activity on bulk_update uploads
+- [x] Create a new `AudioCollection` AP object
+- [x] Create `Update` and `Delete` activities for `AudioCollection`
+- [x] Create `AudioCollectionSerializers` to bulk_update the uploads
+- [x] Trigger the activity on bulk_update uploads
+
+### Side development
+
+To only send activities to one remote actor in a simple way we allow the library to be fetched by remote services actor if their domain has a approced follow. This is done in `Library.viewable_by`
