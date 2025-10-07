@@ -8,7 +8,7 @@
         "findApp": "با کاره‌های ما از فانک‌وال در افزارهای دیگر استفاده کنید.",
         "funkwhale": "فانک‌وال یک پروژهٔ مبتنی بر جامعه است، که به شما امکان می‌دهد موسیقی و صدا را در یک شبکه غیرمتمرکز و باز گوش دهید و هم‌رسانی کنید.",
         "publicContent": "به جُنگ‌ها و سیاه‌های پخش عمومی که در این پاد به اشتراک گذاشته شده‌اند گوش دهید.",
-        "quota": "کاربران این پاد همچنین {سهمیه} فضای ذخیره‌سازی رایگان برای بارگذاری محتوای خود دریافت می‌کنند!",
+        "quota": "کاربران این پاد همچنین {quota} فضای ذخیره‌سازی رایگان برای بارگذاری محتوای خود دریافت می‌کنند!",
         "signup": "همین حالا نام‌نویسی کنید، تا موارد دلخواه خود را پیگیری کنید، سیاهه پخش ایجاد کنید، محتوای جدید کشف کنید و موارد دیگر!"
       },
       "header": {
@@ -26,7 +26,7 @@
         "learnMore": "بیشتر یادبگیرید"
       },
       "message": {
-        "greeting": "درود {نام کاربر}",
+        "greeting": "درود {username}",
         "loggedIn": "شما قبلاً وارد سیستم شده‌اید!"
       },
       "placeholder": {
@@ -72,7 +72,7 @@
       "message": {
         "contact": "برای ما رایانامهٔ ارسال کنید: { contactEmail }"
       },
-      "notApplicable": "ن/آ",
+      "notApplicable": "",
       "placeholder": {
         "noDescription": "توضیحات موجود نیست",
         "noRules": "هیچ شرایط همزیستی در دسترس نیست",
@@ -106,7 +106,7 @@
         "newChannels": "کانال‌های جدید",
         "signup": "نام‌نویسی",
         "statistics": "آمار",
-        "welcome": "خوش آمدید به {فانک‌وال}!"
+        "welcome": "خوش آمدید به {podName}!"
       },
       "help": {
         "registrationsClosed": "نام‌نویسی در این پاد بسته شده است؛ می‌توانید با استفاده از نشانی زیر در پاد دیگری نام‌نویسی کنید."
@@ -164,7 +164,7 @@
         "favorite": "اثر مورد علاقه",
         "next": "اثر بعدی",
         "pause": "وقفه",
-        "play": "اجرا",
+        "play": "پخش",
         "populatingRadio": "در حال کشیدن اثر رادیویی…",
         "previous": "اثر قبلی",
         "queue": "نشانی",
@@ -199,7 +199,7 @@
       },
       "shortcut": {
         "audio": {
-          "playNext": "اجرای اثر بعدی",
+          "playNext": "پخش اثر بعدی",
           "playPrevious": "پخش اثر قبلی"
         }
       }
@@ -243,7 +243,7 @@
         "meta": {
           "tracks": "بدون‌ اثر | {n} اثر| {n} اثرها"
         },
-        "title": "به روز شده در { date }"
+        "title": "به روز شده در {date}"
       },
       "ChannelForm": {
         "label": {
@@ -258,8 +258,8 @@
       },
       "PlayButton": {
         "button": {
-          "playTrack": "اجرای اثر",
-          "playTracks": "اجرای اثر‌ها",
+          "playTrack": "پخش اثر",
+          "playTracks": "پخش اثر‌ها",
           "trackDetails": "جزئیات اثر"
         }
       },
@@ -345,11 +345,11 @@
             "artistDetails": "نظاره هنرمند",
             "channelDetails": "نظاره کانال",
             "episodeDetails": "جزئیات قسمت",
-            "playNext": "اجرا بعدی",
+            "playNext": "پخش بعدی",
             "playNow": "اجرا",
             "removeFromFavorites": "برداشتن از برگزیده‌ها",
             "seriesDetails": "نظاره دورسنگ",
-            "startRadio": "اجرای رادیو",
+            "startRadio": "پخش رادیو",
             "trackDetails": "جزئیات اثر"
           }
         },
@@ -538,16 +538,71 @@
           "noResults": "هیچ نتیجه‌ای یافت نشد."
         }
       },
+      "InlineSearchBar": {
+        "button": {
+          "clear": "زدودن"
+        },
+        "label": {
+          "search": "جست‌و‌جو"
+        },
+        "placeholder": {
+          "search": "جست‌و‌جو…"
+        }
+      },
+      "LoginModal": {
+        "link": {
+          "login": "ورود",
+          "signup": "نام‌نویسی"
+        }
+      },
+      "RenderedDescription": {
+        "button": {
+          "cancel": "لغو",
+          "edit": "ویرایش"
+        }
+      },
       "UserMenu": {
         "label": {
           "language": "تغییر زبان",
           "theme": "تغییر زمینه"
+        },
+        "link": {
+          "docs": "مستندات",
+          "forum": "انجمن",
+          "login": "ورود",
+          "logout": "خروج",
+          "notifications": "آگاهی‌ها",
+          "profile": "نما",
+          "settings": "تنظیمات",
+          "signup": "نام‌نویسی",
+          "support": "کمک"
         }
       },
       "UserModal": {
+        "button": {
+          "switchInstance": "از یک نمونهٔ دیگر استفاده کنید"
+        },
+        "header": {
+          "options": "گزینه‌ها"
+        },
         "label": {
           "language": "تغییر زبان",
+          "shortcuts": "میانبرهای صفحه‌کلید",
           "theme": "تغییر زمینه"
+        },
+        "link": {
+          "about": "درباره",
+          "chat": "اتاق گفتگو",
+          "docs": "مستندات",
+          "forum": "انجمن",
+          "git": "پیمایش موضوع",
+          "login": "ورود",
+          "logout": "خروج",
+          "notifications": "آگاهی‌ها",
+          "profile": "نما",
+          "settings": "تنظیمات",
+          "signup": "نام‌نویسی",
+          "support": "کمک"
         }
       }
     },
@@ -636,7 +691,7 @@
           "more": "بیشتر…"
         },
         "link": {
-          "domain": "به روز شده در { date }"
+          "domain": ""
         }
       },
       "AlbumEdit": {
@@ -667,6 +722,9 @@
         "title": "جُنگ‌ها"
       },
       "ArtistBase": {
+        "button": {
+          "play": "پخش همه مرور جُنگ‌ها"
+        },
         "link": {
           "domain": "به روز شده در { date }"
         }
@@ -681,10 +739,14 @@
       },
       "Artists": {
         "button": {
+          "search": "جست‌و‌جو",
           "upload": "مقداری موسیقی اضافه کنید"
         },
         "empty": {
           "noResults": "هیچ نتیجه‌ای جورسازی با پُرسمان جست‌و‌جو شما یافت نشد"
+        },
+        "header": {
+          "browse": "مرور هنرمندان"
         },
         "label": {
           "search": "نام هنرمند",
@@ -692,16 +754,25 @@
         },
         "pagination": {
           "results": "نتایج در صفحه"
-        }
+        },
+        "placeholder": {
+          "search": "جست‌و‌جو…"
+        },
+        "title": "هنرمندان"
       },
       "EditCard": {
+        "button": {
+          "approve": "تأیید",
+          "delete": "برداشتن",
+          "reject": "رد کردن"
+        },
         "link": {
           "track": "اثر#{id} - {name}"
         }
       },
       "EditForm": {
         "header": {
-          "success": "تغییرات شما با موفقیت اعمال گردید"
+          "success": "تغییرات شما با موفقیت اعمال گردید."
         }
       },
       "FileUpload": {
@@ -710,10 +781,15 @@
           "retry": "بارگذاری‌های ناموفق را دوباره امتحان کنید"
         },
         "link": {
+          "processing": "پردازش",
           "uploading": "بارگذاری"
         },
         "table": {
           "upload": {
+            "header": {
+              "size": "اندازه",
+              "status": "وضعیت"
+            },
             "status": {
               "uploading": "بارگذاری…"
             }
@@ -798,7 +874,7 @@
           "edit": "ویرایش",
           "embed": "جاسازی",
           "more": "بیشتر…",
-          "play": "اجرا"
+          "play": "پخش"
         },
         "link": {
           "discogs": "جست‌و‌جو در دیسکوگ‌ها",
@@ -814,6 +890,22 @@
             "year": "سال"
           }
         }
+      },
+      "radios": {
+        "Builder": {
+          "table": {
+            "filter": {
+              "header": {
+                "config": "پیکربندی",
+                "name": "نام پالایه"
+              }
+            }
+          },
+          "title": "سازنده رادیو"
+        },
+        "Filter": {
+          "cancelButton": "لغو"
+        }
       }
     },
     "manage": {
@@ -828,6 +920,15 @@
           }
         },
         "ArtistsTable": {
+          "label": {
+            "search": "جست‌و‌جو"
+          },
+          "link": {
+            "local": "محلی"
+          },
+          "option": {
+            "all": "همه"
+          },
           "table": {
             "artist": {
               "header": {
@@ -864,6 +965,12 @@
           }
         },
         "TracksTable": {
+          "label": {
+            "search": "جست‌و‌جو"
+          },
+          "link": {
+            "local": "محلی"
+          },
           "table": {
             "track": {
               "header": {
@@ -975,8 +1082,18 @@
   "composables": {
     "locale": {
       "useSharedLabels": {
+        "fields": {
+          "contentCategory": {
+            "choices": {
+              "podcast": "پادپخش"
+            }
+          }
+        },
         "filters": {
           "artistName": "نام هنرمند",
+          "name": "نام",
+          "size": "اندازه",
+          "trackTitle": "نام اثر",
           "username": "نام کاربری",
           "users": "کاربرها"
         },
@@ -1045,12 +1162,25 @@
     },
     "admin": {
       "ChannelDetail": {
+        "label": {
+          "federated": "فیدیورس",
+          "local": "محلی"
+        },
         "link": {
-          "rss": "خوراک‌وب"
+          "rss": "خوراک‌ وب"
         },
         "table": {
+          "activity": {
+            "playlists": "سیاهه‌پخش"
+          },
+          "audioContent": {
+            "albums": "جُنگ‌ها",
+            "tracks": "اثرها",
+            "uploads": "بارگذاری"
+          },
           "channelData": {
-            "rss": "خوراک‌وب"
+            "rss": "خوراک‌ وب",
+            "url": "نشانی"
           }
         }
       },
@@ -1058,6 +1188,13 @@
         "title": {
           "tags": "برچسب ها",
           "users": "کاربرها"
+        }
+      },
+      "Settings": {
+        "header": {
+          "federation": "فدیورس",
+          "music": "موسیقی",
+          "playlists": "سیاهه‌پخش"
         }
       },
       "library": {
@@ -1148,17 +1285,17 @@
       },
       "ProfileBase": {
         "link": {
-          "domainView": "به روز شده در { date }"
+          "domainView": ""
         }
       }
     },
     "channels": {
       "DetailBase": {
         "button": {
-          "upload": "آپلود"
+          "upload": "بارگذاری"
         },
         "link": {
-          "domainView": "به روز شده در { date }"
+          "domainView": ""
         }
       },
       "SubscriptionsList": {
@@ -1171,7 +1308,7 @@
       "libraries": {
         "Card": {
           "button": {
-            "upload": "آپلود"
+            "upload": "بارگذاری"
           }
         },
         "FilesTable": {
@@ -1181,6 +1318,15 @@
                 "title": "عنوان"
               }
             }
+          }
+        },
+        "Form": {
+          "header": {
+            "failure": "خطا"
+          },
+          "label": {
+            "description": "شرح",
+            "name": "نام"
           }
         },
         "Home": {
@@ -1202,10 +1348,12 @@
       },
       "LibraryBase": {
         "button": {
-          "upload": "آپلود"
+          "upload": "بارگذاری"
         },
         "link": {
-          "domain": "به روز شده در { date }"
+          "albums": "جُنگ‌ها",
+          "artists": "هنرمندان",
+          "domain": ""
         }
       }
     },
@@ -1253,7 +1401,7 @@
     }
   },
   "vui": {
-    "addItem": "افزودن",
+    "addItem": "افزودن {item}",
     "albums": "{n} جُنگ | {n} جُنگ‌ها",
     "aria": {
       "close": "بستن",
@@ -1297,7 +1445,7 @@
       "next": "بعدی",
       "previous": "قبلی"
     },
-    "pressKey": "فشار{key}",
+    "pressKey": "",
     "preview": "پیش‌نمایش",
     "radio": "رادیو",
     "resetTo": "بازنشانی مجدد به {previousValue}",
