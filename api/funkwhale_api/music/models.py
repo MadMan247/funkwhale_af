@@ -1335,18 +1335,20 @@ class LibraryQuerySet(models.QuerySet):
         ) | federation_models.Domain.objects.filter(name=settings.FUNKWHALE_HOSTNAME)
 
         # User follow
-        following_actors = Follow.objects.filter(
-            actor=actor, approved=True
-        ).values_list("target", flat=True)
-
+        followed_actors = Follow.objects.filter(actor=actor, approved=True).values_list(
+            "target", flat=True
+        )
+        logger.info(f"followed_actors: {followed_actors}")
         # service actor can access libraries if there is approved followers on their manage domain
         if actor.managed_domains.exists():
             remote_service_actors = Q(
+                privacy_level="followers",
                 received_follows__approved=True,
                 received_follows__actor__domain__in=actor.managed_domains.all(),
             ) | Q(
+                privacy_level="followers",
                 actor__received_follows__approved=True,
-                received_follows__actor__domain__in=actor.managed_domains.all(),
+                actor__received_follows__actor__domain__in=actor.managed_domains.all(),
             )
         else:
             remote_service_actors = Q()
@@ -1357,7 +1359,7 @@ class LibraryQuerySet(models.QuerySet):
             | models.Q(privacy_level="everyone")
             | models.Q(pk__in=followed_libraries)
             | models.Q(pk__in=followed_channels_libraries)
-            | models.Q(actor__in=following_actors, privacy_level="followers")
+            | models.Q(actor__in=followed_actors, privacy_level="followers")
             & models.Q(actor__domain__in=domains_reachable)
         )
 
@@ -1512,6 +1514,8 @@ class TrackActor(models.Model):
             if actor_ids:
                 follow_queryset = follow_queryset.filter(actor__pk__in=actor_ids)
             owner = library.actor if library.actor.is_local else None
+
+            final_actor_ids = list(follow_queryset.values_list("actor", flat=True))
             if owner and (not actor_ids or owner in final_actor_ids):
                 final_actor_ids.append(owner.pk)
             final_actor_ids = list(follow_queryset.values_list("actor", flat=True))

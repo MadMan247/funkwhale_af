@@ -229,6 +229,29 @@ def test_music_library_retrieve_page_public(factories, api_client):
     assert response.data == expected
 
 
+def test_music_library_retrieve_page_followers(factories, logged_in_api_client):
+    library = factories["music.Library"](privacy_level="followers", actor__local=True)
+    user_follow = factories["federation.Follow"](target=library.actor, approved=True)
+    upload = factories["music.Upload"](library=library, import_status="finished")
+    id = library.get_federation_id()
+    expected = serializers.CollectionPageSerializer(
+        {
+            "id": id,
+            "item_serializer": serializers.UploadSerializer,
+            "actor": library.actor,
+            "page": Paginator([upload], 1).page(1),
+            "name": library.name,
+        }
+    ).data
+    actor = logged_in_api_client.user.create_actor()
+    actor.managed_domains.add(user_follow.actor.domain)
+    url = reverse("federation:music:libraries-detail", kwargs={"uuid": library.uuid})
+    response = logged_in_api_client.get(url, {"page": 1})
+
+    assert response.status_code == 200
+    assert response.data == expected
+
+
 def test_channel_outbox_retrieve(factories, api_client):
     channel = factories["audio.Channel"](actor__local=True)
     expected = serializers.ChannelOutboxSerializer(channel).data

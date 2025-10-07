@@ -825,21 +825,27 @@ def test_viewable_by_service_actor(factories):
 
     # default user actor is local
     actor = factories["federation.Actor"](local=False)
-    lib = factories["music.Library"](actor=actor)
+    lib = factories["music.Library"](actor=actor, privacy_level="followers")
     queryset = models.Library.objects.all().viewable_by(remote_service_actor)
     match = lib in list(queryset)
     assert match is False
 
-    factories["federation.LibraryFollow"](
+    libfollow = factories["federation.LibraryFollow"](
         target=lib, actor=remote_user_actor, approved=True
     )
     queryset = models.Library.objects.all().viewable_by(remote_service_actor)
     match = lib in list(queryset)
     assert match is True
 
-    factories["federation.Follow"](
+    libfollow.delete()
+    user_follow = factories["federation.Follow"](
         target=lib.actor, actor=remote_user_actor, approved=True
     )
     queryset = models.Library.objects.all().viewable_by(remote_service_actor)
     match = lib in list(queryset)
     assert match is True
+
+    user_follow.delete()
+    queryset = models.Library.objects.all().viewable_by(remote_service_actor)
+    match = lib in list(queryset)
+    assert match is False
