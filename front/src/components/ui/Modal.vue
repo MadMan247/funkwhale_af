@@ -40,7 +40,7 @@ const maxWidth = computed(() =>
 const isOpen = defineModel<boolean>({ default: false })
 
 // maxWidth: the maximum width of the modal, given the current screen size
-const width = computed<{ columns: number; max: string; }>(() => {
+const width = computed(() => {
   const padding = 32, gap = 32, column= 46, minMargin=4
   const maxColumnsPerScreen = Math.trunc((screenWidth.value - 2*padding -2*minMargin + gap) / (column + gap))
 
@@ -52,7 +52,7 @@ const width = computed<{ columns: number; max: string; }>(() => {
   const max = `${columns * column + (columns - 1) * gap + padding * 2}px`
 
   return ({ columns, max })
-},{ immediate: true })
+})
 
 const previouslyFocusedElement = ref()
 
