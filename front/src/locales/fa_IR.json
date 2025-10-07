@@ -30,7 +30,7 @@
         "loggedIn": "شما قبلاً وارد سیستم شده‌اید!"
       },
       "placeholder": {
-        "noDescription": "توضیحات موجود نیست."
+        "noDescription": "توضیحات موجود نیست"
       },
       "stat": {
         "activeUsers": "بدون کاربر فعال | {n} کاربر فعال | {n} کاربر فعال",
@@ -124,7 +124,7 @@
         "rules": "شرایط همزیستی کارساز",
         "userGuides": {
           "description": "هر آنچه باید دربارهٔ فانک‌وال و ویژگی‌های آن بدانید را کشف کنید.",
-          "label": "راهنماهای کاربر"
+          "label": "راهنمایی کاربر"
         },
         "viewMore": "مشاهده بیشتر…"
       },
@@ -189,24 +189,36 @@
       "label": {
         "rss": {
           "fieldLabel": "مکان خوراک‌وب",
-          "title": "در کارهٔ خوراک‌خوان پادپخش، مشترک شوید"
+          "title": "در کارهٔ خوراک‌خوان پادپخش، پی‌بگیرید"
         }
       }
     },
     "ShortcutsModal": {
       "button": {
         "close": "بستن"
+      },
+      "shortcut": {
+        "audio": {
+          "playNext": "اجرای اثر بعدی",
+          "playPrevious": "پخش اثر قبلی"
+        }
       }
     },
     "Sidebar": {
       "header": {
         "explore": "کاوش"
       },
+      "label": {
+        "play": "پخش این اثر",
+        "theme": "زمینه"
+      },
       "link": {
         "albums": "جُنگ ها",
         "channels": "کانال‌ها",
         "favorites": "برگزیده",
         "login": "ورود",
+        "playlists": "سیاهه پخش",
+        "podcasts": "پادپخش‌ها",
         "radios": "رادیو‌ها",
         "users": "کاربرها"
       }
@@ -228,54 +240,134 @@
     },
     "audio": {
       "ChannelCard": {
+        "meta": {
+          "tracks": "بدون‌ اثر | {n} اثر| {n} اثرها"
+        },
         "title": "به روز شده در { date }"
       },
       "ChannelForm": {
         "label": {
           "email": "نام کاربری یا رایانامه",
-          "owner": "نام کاربری"
+          "owner": "نام کاربری",
+          "podcast": "پادپخش‌ها",
+          "tags": "برچسب ها"
+        },
+        "loader": {
+          "loading": "بار کردن…"
+        }
+      },
+      "PlayButton": {
+        "button": {
+          "playTrack": "اجرای اثر",
+          "playTracks": "اجرای اثر‌ها",
+          "trackDetails": "جزئیات اثر"
+        }
+      },
+      "Player": {
+        "label": {
+          "nextTrack": "اثر بعدی",
+          "previousTrack": "اثر قبلی"
+        }
+      },
+      "PlayerControls": {
+        "labels": {
+          "next": "اثر بعدی",
+          "previous": "اثر قبلی"
         }
       },
       "Search": {
         "header": {
           "albums": "جُنگ‌ها",
           "artists": "هنرمندان"
+        },
+        "placeholder": {
+          "search": "هنرمند, جُنگ , اثر…"
         }
       },
       "SearchBar": {
         "label": {
-          "album": "جُنگ"
+          "album": "جُنگ",
+          "category": {
+            "podcasts": "پادپخش‌ها"
+          },
+          "track": "اثر"
+        },
+        "placeholder": {
+          "search": "جست‌و‌جو هنرمندان، جُنگ ها، اثرها…"
         }
       },
       "album": {
+        "Card": {
+          "meta": {
+            "tracks": "بدون‌ اثر | {n} اثر| {n} اثرها"
+          }
+        },
         "Widget": {
           "button": {
             "more": "نمایش بیشتر"
           }
         }
       },
+      "artist": {
+        "Card": {
+          "meta": {
+            "tracks": "بدون‌ اثر | {n} اثر| {n} اثرها"
+          }
+        }
+      },
       "podcast": {
+        "MobileRow": {
+          "button": {
+            "actions": "کنش‌ نمایش اثر"
+          }
+        },
         "Modal": {
           "button": {
             "addToFavorites": "افزودن به برگزیده‌ها",
             "albumDetails": "مشاهده جٌنگ",
-            "removeFromFavorites": "برداشتن از برگزیده‌ها"
+            "removeFromFavorites": "برداشتن از برگزیده‌ها",
+            "trackDetails": "جزئیات اثر"
           }
         }
       },
       "track": {
+        "MobileRow": {
+          "button": {
+            "actions": "کنش‌ نمایش اثر"
+          }
+        },
         "Modal": {
           "button": {
             "addToFavorites": "افزودن به برگزیده‌ها",
-            "removeFromFavorites": "برداشتن از برگزیده‌ها"
+            "addToPlaylist": "افزودن به سیاهه‌پخش",
+            "addToQueue": "اضافه کردن به صف",
+            "albumDetails": "نظاره جُنگ",
+            "artistDetails": "نظاره هنرمند",
+            "channelDetails": "نظاره کانال",
+            "episodeDetails": "جزئیات قسمت",
+            "playNext": "اجرا بعدی",
+            "playNow": "اجرا",
+            "removeFromFavorites": "برداشتن از برگزیده‌ها",
+            "seriesDetails": "نظاره دورسنگ",
+            "startRadio": "اجرای رادیو",
+            "trackDetails": "جزئیات اثر"
           }
         },
         "Table": {
           "table": {
             "header": {
               "album": "جُنگ",
+              "artist": "هنرمند",
               "title": "عنوان"
             }
+          }
+        },
+        "Widget": {
+          "button": {
+            "more": "نمایش بیشتر"
+          },
+          "empty": {
+            "noResults": "چیزی پیدا نشد"
           }
         }
       }
@@ -295,7 +387,11 @@
           "login": "ورود"
         },
         "label": {
+          "password": "گذرواژه",
           "username": "نام کاربری یا نشانی رایانامه"
+        },
+        "link": {
+          "resetPassword": "گذرواژه خود را بازنشانی کنید"
         }
       },
       "Logout": {
@@ -304,16 +400,44 @@
         }
       },
       "Settings": {
+        "button": {
+          "password": "تغییر گذرواژه"
+        },
         "header": {
-          "passwordFailure": "پسورد شما قابل تغییر نیست"
+          "changePassword": "گذرواژه‌ٔ من را تغییر بده",
+          "passwordFailure": "گذرواژه شما قابل تغییر نیست"
         },
         "label": {
-          "currentPassword": "تغییر پسورد"
+          "currentPassword": "گذرواژه جاری",
+          "newPassword": "گذرواژهٔ جدید",
+          "password": "گذرواژه"
+        },
+        "modal": {
+          "changePassword": {
+            "header": "می‌خواهید گذرواژهٔ خود را تغییر دهید؟"
+          }
+        },
+        "table": {
+          "artists": {
+            "header": {
+              "name": "نام"
+            }
+          }
         }
       },
       "SignupForm": {
         "label": {
+          "password": "گذرواژه",
           "username": "نام کاربری"
+        }
+      },
+      "SubsonicTokenForm": {
+        "button": {
+          "confirmNewPassword": "درخواست گذرواژه",
+          "newPassword": "درخواست گذرواژه"
+        },
+        "message": {
+          "passwordUpdated": "به‌روزرسانی گذرواژه"
         }
       }
     },
@@ -329,7 +453,8 @@
           "create": "ایجاد"
         },
         "header": {
-          "newAlbum": "جُنگ جدید"
+          "newAlbum": "جُنگ جدید",
+          "newSeries": "دورسنگ جدید"
         }
       },
       "AlbumSelect": {
@@ -337,20 +462,67 @@
         "label": {
           "album": "جُنگ"
         },
+        "meta": {
+          "tracks": "بدون‌ اثر | {n} اثر| {n} اثرها"
+        },
         "option": {
           "none": "هیچ‌کدام"
         }
       },
+      "UploadForm": {
+        "button": {
+          "remove": "برداشتن",
+          "resume": "ادامه",
+          "retry": "امتحان دوباره"
+        },
+        "label": {
+          "openBrowser": "مرور…"
+        },
+        "status": {
+          "errored": "خطا داد",
+          "pending": "معلق",
+          "uploading": "بارگذاری"
+        }
+      },
       "UploadMetadataForm": {
         "label": {
+          "description": "شرح",
+          "image": "نگارهٔ اثر",
+          "position": "موقعیت",
+          "tags": "برچسب ها",
           "title": "عنوان"
+        }
+      },
+      "UploadModal": {
+        "button": {
+          "cancel": "لغو",
+          "close": "بستن",
+          "next": "بعدی",
+          "previous": "مرحلهٔ قبلی",
+          "publish": "انتشار",
+          "update": "به روز رسانی"
+        },
+        "header": {
+          "processing": "پردازش بارگذاری‌ها",
+          "publish": "انتشار صدا",
+          "uploadDetails": "جزئیات بارگذاری",
+          "uploadFiles": "بارگذاری پرونده‌ها"
+        },
+        "meta": {
+          "files": "بدون پرونده | {n} پرونده| {n} پرونده"
         }
       }
     },
     "common": {
       "AttachmentInput": {
+        "help": {
+          "upload": "PNG یا JPG. ابعاد باید بین ۱۴۰۰x۱۴۰۰px و ۳۰۰۰x۳۰۰۰px باشد. حداکثر حجم مجاز پرونده ۵ مگابایت است."
+        },
         "label": {
           "upload": "أپلود عکس جدید"
+        },
+        "loader": {
+          "uploading": "بارگذاری پرونده…"
         }
       },
       "ContentForm": {
@@ -359,6 +531,23 @@
         },
         "placeholder": {
           "input": "یه چند کلمه ای اینجا بنویس ..."
+        }
+      },
+      "EmptyState": {
+        "header": {
+          "noResults": "هیچ نتیجه‌ای یافت نشد."
+        }
+      },
+      "UserMenu": {
+        "label": {
+          "language": "تغییر زبان",
+          "theme": "تغییر زمینه"
+        }
+      },
+      "UserModal": {
+        "label": {
+          "language": "تغییر زبان",
+          "theme": "تغییر زمینه"
         }
       }
     },
@@ -395,6 +584,13 @@
     },
     "federation": {
       "FetchButton": {
+        "button": {
+          "reload": "صفحه را ببندید و دوباره بارگذاری کنید"
+        },
+        "loader": {
+          "awaitingResult": "منتظر نتیجه…",
+          "fetchRequest": "درخواست واکشی …"
+        },
         "table": {
           "error": {
             "value": {
@@ -404,16 +600,31 @@
         }
       }
     },
+    "forms": {
+      "PasswordInput": {
+        "button": {
+          "copy": "رونوشت"
+        },
+        "message": {
+          "copy": "متن در کلیپ‌بورد رونوشت شد!"
+        },
+        "title": "نمایش/پنهان کردن گذرواژه"
+      }
+    },
     "library": {
       "AlbumBase": {
         "link": {
           "addDescription": "اضافه کردن توضیحات…"
         },
+        "meta": {
+          "tracks": "بدون‌ اثر | {n} اثر| {n} اثرها"
+        },
         "title": "جُنگ"
       },
       "AlbumDetail": {
         "header": {
-          "episodes": "قسمت‌ها"
+          "episodes": "قسمت‌ها",
+          "tracks": "اثر‌ها"
         }
       },
       "AlbumDropdown": {
@@ -437,12 +648,18 @@
         "button": {
           "search": "جست‌و‌جو"
         },
+        "empty": {
+          "noResults": "هیچ نتیجه‌ای جورسازی با پُرسمان جست‌و‌جو شما یافت نشد"
+        },
         "header": {
           "browse": "مرور جُنگ‌ها..."
         },
         "label": {
           "search": "جست‌و‌جو",
           "tags": "برچسب‌ها"
+        },
+        "pagination": {
+          "results": "نتایج در صفحه"
         },
         "placeholder": {
           "search": "عنوان جُنگ را وارد کنید…"
@@ -454,9 +671,60 @@
           "domain": "به روز شده در { date }"
         }
       },
+      "ArtistDetail": {
+        "button": {
+          "more": "بارگذاری بیشتر…"
+        },
+        "header": {
+          "track": "اثرهای جدید این هنرمند"
+        }
+      },
+      "Artists": {
+        "button": {
+          "upload": "مقداری موسیقی اضافه کنید"
+        },
+        "empty": {
+          "noResults": "هیچ نتیجه‌ای جورسازی با پُرسمان جست‌و‌جو شما یافت نشد"
+        },
+        "label": {
+          "search": "نام هنرمند",
+          "tags": "برچسب ها"
+        },
+        "pagination": {
+          "results": "نتایج در صفحه"
+        }
+      },
+      "EditCard": {
+        "link": {
+          "track": "اثر#{id} - {name}"
+        }
+      },
       "EditForm": {
         "header": {
           "success": "تغییرات شما با موفقیت اعمال گردید"
+        }
+      },
+      "FileUpload": {
+        "button": {
+          "cancel": "لغو",
+          "retry": "بارگذاری‌های ناموفق را دوباره امتحان کنید"
+        },
+        "link": {
+          "uploading": "بارگذاری"
+        },
+        "table": {
+          "upload": {
+            "status": {
+              "uploading": "بارگذاری…"
+            }
+          }
+        }
+      },
+      "Home": {
+        "header": {
+          "newChannels": "کانال‌های جدید",
+          "playlists": "سیاهه پخش",
+          "recentlyAdded": "در این اواخر اضافه شده است"
         }
       },
       "ImportStatusModal": {
@@ -467,14 +735,80 @@
         }
       },
       "Podcasts": {
+        "button": {
+          "cancel": "لغو",
+          "channel": "ایجاد کانال",
+          "feed": "اشتراک خوراک‌وب",
+          "search": "جست‌و‌جو",
+          "subscribe": "مشترک"
+        },
+        "empty": {
+          "noResults": "هیچ نتیجه‌ای جورسازی با پُرسمان جست‌و‌جو شما یافت نشد"
+        },
+        "header": {
+          "browse": "‎مرور پادپخش‌ها"
+        },
+        "label": {
+          "search": "عنوان پادپخش",
+          "tags": "برچسب ها"
+        },
+        "modal": {
+          "subscription": {
+            "header": "مشترک"
+          }
+        },
+        "ordering": {
+          "direction": {
+            "ascending": "بالارو",
+            "descending": "پایین‏رو"
+          },
+          "label": "سفارش"
+        },
+        "pagination": {
+          "results": "نتایج در صفحه"
+        },
+        "placeholder": {
+          "search": "جست‌و‌جو…"
+        },
         "title": "پادپخش‌ها"
       },
+      "Radios": {
+        "empty": {
+          "noResults": "هیچ نتیجه‌ای جورسازی با پُرسمان جست‌و‌جو شما یافت نشد"
+        },
+        "pagination": {
+          "results": "نتایج در صفحه"
+        }
+      },
+      "TagDetail": {
+        "header": {
+          "tracks": "اثر‌ها"
+        }
+      },
+      "TagSelector": {
+        "placeholder": {
+          "search": "جست‌و‌جو…"
+        }
+      },
       "TrackBase": {
+        "button": {
+          "cancel": "لغو",
+          "delete": "‪برداشتن",
+          "download": "بارگیری",
+          "edit": "ویرایش",
+          "embed": "جاسازی",
+          "more": "بیشتر…",
+          "play": "اجرا"
+        },
         "link": {
+          "discogs": "جست‌و‌جو در دیسکوگ‌ها",
           "domain": "به روز شده در { date }"
         }
       },
       "TrackDetail": {
+        "header": {
+          "playlists": "سیاهه پخش مرتبط"
+        },
         "table": {
           "release": {
             "year": "سال"
@@ -489,6 +823,42 @@
             "album": {
               "header": {
                 "name": "عنوان"
+              }
+            }
+          }
+        },
+        "ArtistsTable": {
+          "table": {
+            "artist": {
+              "header": {
+                "name": "نام"
+              }
+            }
+          }
+        },
+        "TagsTable": {
+          "action": {
+            "delete": {
+              "label": "برداشتن"
+            }
+          },
+          "label": {
+            "search": "جست‌و‌جو"
+          },
+          "ordering": {
+            "direction": {
+              "ascending": "بالارو",
+              "descending": "پایین‏رو"
+            }
+          },
+          "table": {
+            "tag": {
+              "header": {
+                "albums": "جُنگ‌ها",
+                "artists": "هنرمندان",
+                "creationDate": "تاریخ ایجاد",
+                "name": "نام",
+                "tracks": "اثر‌ها"
               }
             }
           }
@@ -556,12 +926,57 @@
           }
         }
       }
+    },
+    "playlists": {
+      "Editor": {
+        "button": {
+          "addDuplicate": "به هر حال اضافه کنید",
+          "clear": "زدودن سیاهه پخش"
+        },
+        "header": {
+          "editor": "ویرایشگر سیاهه پخش"
+        }
+      },
+      "Form": {
+        "button": {
+          "create": "ایجاد سیاهه‌پخش",
+          "update": "به‌روزرسانی سیاهه پخش"
+        },
+        "header": {
+          "createPlaylist": "ایجاد سیاهه پخش جدید",
+          "createSuccess": "سیاهه پخش ایجاد شد",
+          "updateSuccess": "سیاهه‌پخش به‌روزرسانی شد"
+        },
+        "label": {
+          "name": "نام سیاهه‌پخش",
+          "visibility": "دیدن سیاهه‌پخش"
+        },
+        "placeholder": {
+          "description": "شرح"
+        }
+      },
+      "PlaylistModal": {
+        "button": {
+          "addDuplicate": "به هر حال اضافه کنید",
+          "addToPlaylist": "به این سیاهه پخش اضافه کنید",
+          "addTrack": "اضافه کردن اثر",
+          "cancel": "لغو",
+          "edit": "ویرایش"
+        }
+      }
+    },
+    "radios": {
+      "Button": {
+        "startTagsRadio": "شروع برچسب‌های رادیویی",
+        "stopTagsRadio": "برچسب‌های رادیو را متوقف کنید"
+      }
     }
   },
   "composables": {
     "locale": {
       "useSharedLabels": {
         "filters": {
+          "artistName": "نام هنرمند",
           "username": "نام کاربری",
           "users": "کاربرها"
         },
@@ -578,6 +993,12 @@
         "album": {
           "title": "عنوان"
         },
+        "artist": {
+          "name": "نام"
+        },
+        "tags": {
+          "label": "برچسب ها"
+        },
         "track": {
           "title": "عنوان"
         }
@@ -586,10 +1007,23 @@
         "album": {
           "title": "عنوان"
         },
+        "tags": {
+          "label": "برچسب ها"
+        },
         "track": {
           "title": "عنوان"
         }
       }
+    },
+    "useThemeList": {
+      "browserDefault": "مرورگر پیش‌‌گزیده",
+      "darkTheme": "تیره",
+      "lightTheme": "روشن"
+    }
+  },
+  "modals": {
+    "upload": {
+      "podcastChannel": "پادپخش‌هایی که می‌سازید را منتشر کنید"
     }
   },
   "views": {
@@ -597,12 +1031,16 @@
       "header": {
         "messages": "پیام های شما",
         "notifications": "اعلان های شما"
+      },
+      "loading": {
+        "notifications": "در حال بارگیری اطلاعیه‌ها…"
       }
     },
     "Search": {
       "label": {
         "podcasts": "پادپخش‌ها",
-        "rss": "خوراک‌وب‌ها"
+        "rss": "خوراک‌وب‌ها",
+        "tags": "برچسب ها"
       }
     },
     "admin": {
@@ -618,6 +1056,7 @@
       },
       "CommonList": {
         "title": {
+          "tags": "برچسب ها",
           "users": "کاربرها"
         }
       },
@@ -627,6 +1066,18 @@
             "album": {
               "title": "عنوان"
             }
+          }
+        },
+        "ArtistDetail": {
+          "table": {
+            "artist": {
+              "name": "نام"
+            }
+          }
+        },
+        "Base": {
+          "link": {
+            "tags": "برچسب ها"
           }
         },
         "TrackDetail": {
@@ -664,13 +1115,36 @@
       }
     },
     "auth": {
+      "PasswordReset": {
+        "header": {
+          "reset": "گذرواژه خود را بازنشانی کنید"
+        },
+        "label": {
+          "email": "نشانی رایانامهٔ حساب کاربری"
+        },
+        "link": {
+          "back": "بازگشت به ورود"
+        },
+        "title": "گذرواژه خود را بازنشانی کنید"
+      },
       "PasswordResetConfirm": {
         "button": {
           "update": "تغییر پسورد"
         },
+        "header": {
+          "success": "گذرواژه با موفقیت به‌روزرسانی شد"
+        },
+        "label": {
+          "newPassword": "گذرواژهٔ جدید"
+        },
+        "link": {
+          "back": "بازگشت به ورود",
+          "login": "برای ورود به سیستم رهسپار شوید"
+        },
         "message": {
-          "success": "پسورد شما با موفقیت به روز گردید"
-        }
+          "success": "گذرواژهٔ شما با موفقیت به روزرسانی شد"
+        },
+        "title": "تغییر گذرواژه"
       },
       "ProfileBase": {
         "link": {
@@ -685,6 +1159,11 @@
         },
         "link": {
           "domainView": "به روز شده در { date }"
+        }
+      },
+      "SubscriptionsList": {
+        "link": {
+          "addNew": "افزودن جدید"
         }
       }
     },
@@ -702,6 +1181,11 @@
                 "title": "عنوان"
               }
             }
+          }
+        },
+        "Home": {
+          "loading": {
+            "libraries": "در حال بارگیری کتابخانه‌ها…"
           }
         }
       }
@@ -726,6 +1210,14 @@
       }
     },
     "playlists": {
+      "List": {
+        "empty": {
+          "noResults": "هیچ نتیجه‌ای جورسازی با پُرسمان جست‌و‌جو شما یافت نشد"
+        },
+        "pagination": {
+          "results": "نتایج در صفحه"
+        }
+      },
       "PlaylistDropdown": {
         "button": {
           "export": {
@@ -769,7 +1261,7 @@
         "currentPage": "صفحه فعلی، صفحه {n}",
         "gotoNext": "رفتن به صفحه بعدی",
         "gotoPage": "رفتن به صفحه {n}",
-        "gotoPrevious": "رفتن به صفحه پیشین",
+        "gotoPrevious": "رفتن به صفحه قبلی",
         "nav": "پیمایش صفحه‌ای"
       },
       "password": {
