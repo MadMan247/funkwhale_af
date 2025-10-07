@@ -1073,6 +1073,7 @@ class LibrarySerializer(PaginatedCollectionSerializer):
                 "uploads_count": validated_data["totalItems"],
                 "name": validated_data["name"],
                 "privacy_level": privacy[validated_data["audience"]],
+                "uuid": validated_data["id"].rstrip("/").split("/")[-1],
             },
         )
         return library
@@ -2383,10 +2384,7 @@ class PlaylistSerializer(jsonld.JsonLdSerializer):
     published = serializers.DateTimeField(required=False)
     updated = serializers.DateTimeField(required=False)
     audience = serializers.ChoiceField(
-        choices=[None, "https://www.w3.org/ns/activitystreams#Public"],
-        required=False,
-        allow_null=True,
-        allow_blank=True,
+        choices=fields.PRIVACY_LEVEL_CHOICES,
     )
     library = serializers.URLField(max_length=500, required=True)
     updateable_fields = [
@@ -2416,9 +2414,6 @@ class PlaylistSerializer(jsonld.JsonLdSerializer):
             "audience": playlist.privacy_level,
             "library": playlist.library.fid,
         }
-        payload["audience"] = (
-            contexts.AS.Public if playlist.privacy_level == "everyone" else ""
-        )
         if playlist.modification_date:
             payload["updated"] = playlist.modification_date.isoformat()
         if self.context.get("include_ap_context", True):
@@ -2433,19 +2428,11 @@ class PlaylistSerializer(jsonld.JsonLdSerializer):
             serializer_class=ActorSerializer,
         )
 
-        library = utils.retrieve_ap_object(
-            validated_data["library"],
-            actor=self.context.get("fetch_actor"),
-            queryset=music_models.Library,
-            serializer_class=LibrarySerializer,
-        )
-
         ap_to_fw_data = {
             "actor": actor,
             "name": validated_data["name"],
             "creation_date": validated_data["published"],
             "privacy_level": validated_data["audience"],
-            "library": library,
         }
 
         playlist, created = playlists_models.Playlist.objects.update_or_create(
@@ -2458,6 +2445,16 @@ class PlaylistSerializer(jsonld.JsonLdSerializer):
             },
         )
 
+        if created or ("library" in validated_data != playlist.library.fid):
+            library = utils.retrieve_ap_object(
+                validated_data["library"],
+                actor=self.context.get("fetch_actor"),
+                queryset=music_models.Library,
+                serializer_class=LibrarySerializer,
+            )
+            playlist.library = library
+            playlist.save()
+
         return playlist
 
     def validate(self, data):
@@ -2467,8 +2464,6 @@ class PlaylistSerializer(jsonld.JsonLdSerializer):
             "everyone",
         ]:
             validated_data["audience"] = "everyone"
-        else:
-            validated_data.pop("audience")
         return validated_data
 
     def update(self, instance, validated_data):

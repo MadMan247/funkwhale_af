@@ -1,6 +1,7 @@
 from unittest.mock import Mock
 
 import pytest
+from django.db.models import signals
 
 from funkwhale_api.favorites import models as favorites_models
 from funkwhale_api.federation import (
@@ -1220,7 +1221,11 @@ def test_inbox_create_playlist(factories, mocker):
     )
     mocker.patch("funkwhale_api.music.tasks.populate_album_cover")
 
+    # Prevent the post_delete signal from being triggered
+    receivers = signals.post_delete.receivers
+    signals.post_delete.receivers = []
     playlist.delete()
+    signals.post_delete.receivers = receivers
 
     assert not playlists_models.PlaylistTrack.objects.filter(uuid=plt.uuid).exists()
 
@@ -1279,7 +1284,12 @@ def test_inbox_update_playlist(factories, mocker):
 
     playlist_data = serializers.PlaylistSerializer(playlist_updated).data
     playlist_data["id"] = str(playlist.fid)
+
+    # Prevent the post_delete signal from being triggered
+    receivers = signals.post_delete.receivers
+    signals.post_delete.receivers = []
     playlist_updated.delete()
+    signals.post_delete.receivers = receivers
 
     routes.inbox_update_playlist(
         {"object": playlist_data},

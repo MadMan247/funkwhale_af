@@ -197,6 +197,7 @@ OBJECT_SERIALIZER_MAPPING = {
     music_models.Artist: federation_serializers.ArtistSerializer,
     music_models.Album: federation_serializers.AlbumSerializer,
     music_models.Track: federation_serializers.TrackSerializer,
+    music_models.Library: federation_serializers.LibrarySerializer,
     models.Actor: federation_serializers.APIActorSerializer,
     audio_models.Channel: audio_serializers.ChannelSerializer,
     playlists_models.Playlist: federation_serializers.PlaylistSerializer,

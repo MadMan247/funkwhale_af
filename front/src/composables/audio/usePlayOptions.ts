@@ -211,14 +211,17 @@ export default (props: PlayOptionsProps) => {
     throw new Error("Library id not found in response.");
   }
   const fetchResponse = await axios.post('federation/fetches',
-    { object: id }
+    { object_uri: id }
   );
-
+  if (!fetchResponse.data.object) {
+    throw new Error("Library object not found in response. Probably fetch could not find it on remote");
+  }
   const response = await axios.post(
     'federation/follows/library',
-    { target: fetchResponse.data.object.uuid }
+    { target: fetchResponse.data.object.id.split('/').filter(Boolean).pop() }
   );
 
+    //  to commit to store or update the playlist idk how
   return response;
 };
 

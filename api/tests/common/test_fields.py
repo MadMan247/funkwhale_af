@@ -16,6 +16,7 @@ def test_privacy_level_query(factories):
             privacy_level="followers",
             actor__in=user.actor.get_approved_followings(),
         )
+        | Q(privacy_level="followers", user=user)
     )
 
     query = fields.privacy_level_query(user)

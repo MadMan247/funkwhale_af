@@ -2849,7 +2849,10 @@
           "userAcceptFollow": "{username} accepted your follow",
           "userFollow": "{username} followed you",
           "userPendingFollow": "{username} wants to follow you",
-          "userReject": "You rejected {username}'s request to follow you"
+          "userReject": "You rejected {username}'s request to follow you",
+          "playlistFollow": "{username} got access to your audio files from the playlist \"{library}\"",
+          "playlistPendingFollow": "{username} wants to access audio files from your playlist \"{library}\"",
+          "playlistReject": "You rejected {username}'s request to access files from the playlist \"{library}\""
         }
       }
     },

@@ -4,6 +4,8 @@ import uuid
 from django.db import models, transaction
 from django.db.models import Q
 from django.db.models.expressions import OuterRef, Subquery
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework import exceptions
@@ -283,6 +285,12 @@ class Playlist(federation_models.FederationMixin):
                 tasks.start_playlist_scan.delay, playlist_scan_id=scan.pk
             )
             return scan
+
+
+@receiver(post_delete, sender=Playlist)
+def delete_playlist_library(sender, instance, **kwargs):
+    if instance.library:
+        instance.library.delete()
 
 
 class PlaylistTrackQuerySet(models.QuerySet, common_models.LocalFromFidQuerySet):

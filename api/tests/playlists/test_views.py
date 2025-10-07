@@ -51,6 +51,16 @@ def test_serializer_includes_is_playable(factories, logged_in_api_client):
     assert response.data["is_playable"] is False
 
 
+def test_serializer_includes_followers_lib(factories, logged_in_api_client):
+    actor = logged_in_api_client.user.create_actor()
+    playlist = factories["playlists.Playlist"](privacy_level="followers", actor=actor)
+
+    url = reverse("api:v1:playlists-detail", kwargs={"uuid": playlist.uuid})
+    response = logged_in_api_client.get(url, content_type="application/json")
+
+    assert response.data["is_playable"] is False
+
+
 def test_playlist_inherits_user_privacy(logged_in_api_client):
     url = reverse("api:v1:playlists-list")
     user = logged_in_api_client.user

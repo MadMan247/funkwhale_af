@@ -69,7 +69,7 @@ def get_playlist_page(playlist, page_url, actor):
 )
 def start_playlist_scan(playlist_scan):
     playlist_scan.playlist.playlist_tracks.all().delete()
-
+    playlist_scan.playlist.library.uploads.all().delete()
     try:
         data = get_playlist_data(playlist_scan.playlist.fid, actor=playlist_scan.actor)
     except Exception:

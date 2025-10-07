@@ -383,11 +383,24 @@ def has_playlist_access(request, playlist):
         return True
 
     try:
-        actor = request.actor
+        actor = music_utils.get_actor_from_request(request)
     except AttributeError:
         return False
 
-    return playlist.library.received_follows.filter(actor=actor, approved=True).exists()
+    if playlist.library.received_follows.filter(actor=actor, approved=True).exists():
+        return True
+    if (
+        playlist.privacy_level == "followers"
+        and playlist.actor.received_follows.filter(actor=actor, approved=True).exists()
+    ):
+        return True
+    if (
+        playlist.privacy_level == "followers"
+        and playlist.actor.received_follows.filter(
+            actor__domain__in=actor.managed_domains.all()
+        )
+    ):
+        return True
 
 
 class MusicLibraryViewSet(
