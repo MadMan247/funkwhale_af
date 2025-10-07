@@ -453,6 +453,9 @@
       },
       "PlayButton": {
         "button": {
+          "PlaylistUploadGranted": "El propietari de la llista de reproducció us ha concedit accés als fitxers de la seva llista de reproducció",
+          "PlaylistUploadPending": "Ja heu sol·licitat accés als fitxers de la llista de reproducció",
+          "PlaylistUploadTooltip": "Això només s'aplica als arxius propietat de l'actor de la llista de reproducció. Si vols accedir a tots els arxius, pensa a comprar-los per donar suport als teus artistes favorits",
           "addToPlaylist": "Afegir a la llista de reproducció",
           "addToQueue": "Afegir a la cua de reproducció actual",
           "discretePlay": "Reproduir",
@@ -797,7 +800,7 @@
         "button": {
           "delete": "Suprimir",
           "deleteAccount": "Esborra el meu compte …",
-          "deleteAccountConfirm": "Esborrar el meu compte",
+          "deleteAccountConfirm": "Accepto el risc. Esborrar el meu compte",
           "disableSubsonic": "Desactivar l'accés",
           "edit": "Editar",
           "password": "Canviar la contrasenya",
@@ -4631,24 +4634,50 @@
     }
   },
   "vui": {
+    "addItem": "Afegir {item}",
     "albums": "{n} àlbum | {n} àlbums",
     "aria": {
+      "close": "Tancar",
       "pagination": {
         "currentPage": "Pàgina actual, Pàgina {n}",
         "goToPage": "Anar a Pàgina {n}",
         "gotoNext": "Anar a la Pàgina Següent",
         "gotoPrevious": "Anar a la Pàgina Prèvia",
         "nav": "Navegació per Paginació"
+      },
+      "password": {
+        "hide": "Amaga la paraula de pas",
+        "show": "Mostra la paraula de pas"
+      },
+      "text": {
+        "bold": "negreta",
+        "italic": "italic",
+        "link": "enllaç",
+        "orderedList": "llista ordenada",
+        "paragraph": "paràgraf",
+        "quote": "cita",
+        "strikethrough": "ratllat",
+        "unorderedList": "llista no ordenada"
       }
     },
     "by-user": "per {username}",
+    "cancel": "Cancel·lar",
+    "deletItem": "Esborrar {item}",
+    "delete": "Esborrar",
+    "deselect": "Desselecciona",
     "episodes": "{n} episodi | {n} episodis",
     "go-to": "Anar a",
     "pagination": {
+      "ellipsis": "…",
+      "enterPageNumber": "Ves a la pàgina…",
       "next": "Següent",
       "previous": "Prèvia"
     },
+    "pressKey": "Prem {key}",
+    "pressKeyToAction": "Prem {key} per {action}",
+    "preview": "Previsualitza",
     "radio": "Ràdio",
+    "resetTo": "Torna a {previousValue}",
     "tracks": "{n} pista | {n} pistes"
   }
 }
