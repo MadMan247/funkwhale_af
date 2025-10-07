@@ -1567,7 +1567,13 @@ def update_batch_status(sender, instance, **kwargs):
 @receiver(post_save, sender=Upload)
 def update_denormalization_track_actor(sender, instance, created, **kwargs):
     if (
-        created
+        (
+            created
+            or (
+                kwargs.get("update_fields", None)
+                and "library" in kwargs.get("update_fields")
+            )
+        )
         and settings.MUSIC_USE_DENORMALIZATION
         and instance.track_id
         and instance.import_status == "finished"

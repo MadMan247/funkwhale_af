@@ -569,8 +569,11 @@ class UploadBulkUpdateListSerializer(serializers.ListSerializer):
                     f"Upload with uuid {uuid} does not exist"
                 )
             upload.library = privacy_level_map[data["privacy_level"]]
+            # bulk_update skip post-save signal (raw sql db query), we need the to update the denormalization table
+            # could optimize and work on a bulk denormalization table update. In the meantime we do it one by one
+            upload.save(update_fields=["library"])
             objs.append(upload)
-        models.Upload.objects.bulk_update(objs, ["library"])
+
         return objs
 
 
