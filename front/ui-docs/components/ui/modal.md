@@ -350,6 +350,12 @@ It indicates that "pressing the enter key has the same effect as pressing this b
 
 _TODO: Implement `autofocus` and `fake-focus` props for `Card`, and implement said behavior_
 
+## Managing multiple modals
+
+Several modals can overlay each other. Designate priority to global modals over local modals. For example, a search modal or a keyboard shortcut modal should have priority over a modal within a page.
+
+Use the `priority` prop (default: 0) to override the layering behavior.
+
 ## Responsivity
 
 ### Designing for small screens

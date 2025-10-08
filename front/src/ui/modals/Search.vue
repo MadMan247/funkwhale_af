@@ -272,6 +272,7 @@ watchDebounced(queryDebounced, search, {
     autofocus="off"
     title=""
     maximize-size
+    :priority="12"
   >
     <template #topleft>
       <!-- The following is a placeholder for the original input element and contributes only its position and dimensions-->
@@ -794,7 +795,7 @@ watchDebounced(queryDebounced, search, {
 }
 .input.input.input {
     height: 48px;
-    z-index: 99999;
+    z-index: v-bind("isOpen ? 99999 : 9000");
     position: fixed;
     &> * {
         z-index: 99999;

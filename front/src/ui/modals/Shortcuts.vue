@@ -112,7 +112,7 @@ const player = computed(() => [
 <template>
   <Modal
     v-model="isOpen"
-    over-popover
+    :priority="10"
     :title="t('components.ShortcutsModal.header.modal')"
   >
     <Layout grid="auto / repeat(auto-fit, minmax(min-content, max(calc(50% - 16px), 367px)))">

@@ -90,7 +90,7 @@ store.dispatch('playlists/fetchOwn')
     v-model="store.state.playlists.showModal"
     :title="t('components.playlists.PlaylistModal.header.addToPlaylist')"
     :cancel="t('components.playlists.PlaylistModal.button.cancel')"
-    over-popover
+    :priority="8"
   >
     <template v-if="track">
       <h3 class="ui header">

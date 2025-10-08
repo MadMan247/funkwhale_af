@@ -16,7 +16,7 @@ const isOpen = useModal('language').isOpen
 <template>
   <Modal
     v-model="isOpen"
-    over-popover
+    :priority="9"
     :title="t('components.common.UserMenu.label.language')"
   >
     <Layout

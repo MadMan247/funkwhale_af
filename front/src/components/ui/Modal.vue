@@ -18,12 +18,12 @@ const { t } = useI18n()
 const props = withDefaults(
     defineProps<{
       title?: string,
-      overPopover?: true,
       isdestructive?: true,
       cancel?: string | true,
       icon?: string,
       autofocus?: true | 'off',
-      maximizeSize?: true
+      maximizeSize?: true,
+      priority?: number
     } & (ColorProps | DefaultProps)>(),
     { title: '' }
 )
@@ -92,7 +92,6 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
             {
               'isdestructive': isdestructive,
               'has-alert': !!$slots.alert,
-              'over-popover': overPopover,
             }
           ]"
           v-bind="{ ...$attrs, ...color(props, ['default'])() }"
@@ -303,11 +302,6 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
   }
 }
 
-.funkwhale.overlay:has(.over-popover) {
-  /* override z-index */
-  z-index: 9999;
-}
-
 .funkwhale.overlay {
   background: rgba(#000, .2);
 
@@ -315,6 +309,7 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
   inset: 0;
 
   z-index: 9001;
+  z-index: v-bind("9001 + (priority || 0)");
 
   display: flex;
   align-items: center;
