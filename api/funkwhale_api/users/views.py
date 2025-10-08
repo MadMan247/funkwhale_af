@@ -13,6 +13,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from funkwhale_api.common import preferences, throttling
+from funkwhale_api.federation import routes
 
 from . import models, serializers, tasks
 
@@ -91,7 +92,6 @@ class UserViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
     @extend_schema(operation_id="update_settings")
     @action(methods=["post"], detail=False, url_name="settings", url_path="settings")
     def set_settings(self, request, *args, **kwargs):
-        """Return information about the current user or delete it"""
         new_settings = request.data
         request.user.set_settings(**new_settings)
         return Response(request.user.settings)
@@ -140,6 +140,12 @@ class UserViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
     def update(self, request, *args, **kwargs):
         if not self.request.user.username == kwargs.get("username"):
             return Response(status=403)
+
+        if "privacy_level" in request.data:
+            routes.outbox.dispatch(
+                {"type": "Update", "object": {"type": "Person"}},
+                context={"actor": request.user.actor},
+            )
         return super().update(request, *args, **kwargs)
 
     def partial_update(self, request, *args, **kwargs):

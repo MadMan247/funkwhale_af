@@ -21,7 +21,7 @@ music_router.register(r"artistcredit", views.MusicArtistCreditViewSet, "artistcr
 music_router.register(r"albums", views.MusicAlbumViewSet, "albums")
 music_router.register(r"tracks", views.MusicTrackViewSet, "tracks")
 music_router.register(r"likes", views.TrackFavoriteViewSet, "likes")
-music_router.register(r"listenings", views.ListeningsViewSet, "listenings")
+music_router.register(r"listenings", views.ListeningViewSet, "listenings")
 music_router.register(r"playlists", views.PlaylistViewSet, "playlists")
 music_router.register(r"playlists", views.PlaylistTrackViewSet, "playlist-tracks")
 

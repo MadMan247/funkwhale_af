@@ -57,6 +57,7 @@ from funkwhale_api.playlists import models as playlists_models
             {"type": "Update", "object": {"type": "AudioCollection"}},
             routes.inbox_update_audiocollection,
         ),
+        ({"type": "Update", "object": {"type": "Person"}}, routes.inbox_update_actor),
         ({"type": "Delete", "object": {"type": "Person"}}, routes.inbox_delete_actor),
         ({"type": "Delete", "object": {"type": "Tombstone"}}, routes.inbox_delete),
         ({"type": "Flag"}, routes.inbox_flag),
@@ -99,6 +100,7 @@ def test_inbox_routes(route, handler):
         ({"type": "Undo", "object": {"type": "Follow"}}, routes.outbox_undo_follow),
         ({"type": "Update", "object": {"type": "Track"}}, routes.outbox_update_track),
         ({"type": "Update", "object": {"type": "Audio"}}, routes.outbox_update_audio),
+        ({"type": "Update", "object": {"type": "Person"}}, routes.outbox_update_actor),
         (
             {"type": "Update", "object": {"type": "Playlist"}},
             routes.outbox_update_playlist,
@@ -1369,3 +1371,19 @@ def test_inbox_delete_audiocollection(factories):
     )
 
     assert music_models.Upload.objects.filter(fid=upload.fid).exists() is False
+
+
+def test_inbox_update_actor(factories):
+    actor = factories["federation.Actor"]()
+    setattr(actor, "audience", "me")
+    factories["history.Listening"](actor=actor)
+
+    data = serializers.ActorSerializer(actor).data
+    routes.inbox_update_actor(
+        {"object": data},
+        context={
+            "actor": actor,
+            "raise_exception": True,
+        },
+    )
+    assert history_models.Listening.objects.filter(actor=actor).exists() is False

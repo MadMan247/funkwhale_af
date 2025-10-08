@@ -1338,7 +1338,6 @@ class LibraryQuerySet(models.QuerySet):
         followed_actors = Follow.objects.filter(actor=actor, approved=True).values_list(
             "target", flat=True
         )
-        logger.info(f"followed_actors: {followed_actors}")
         # service actor can access libraries if there is approved followers on their manage domain
         if actor.managed_domains.exists():
             remote_service_actors = Q(

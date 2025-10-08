@@ -267,6 +267,9 @@ class ActorSerializer(jsonld.JsonLdSerializer):
     attributedTo = serializers.URLField(max_length=500, required=False)
 
     tags = serializers.ListField(min_length=0, required=False, allow_null=True)
+    audience = serializers.ChoiceField(
+        fields.PRIVACY_LEVEL_CHOICES, required=False, allow_null=True
+    )
 
     def validate_tags(self, tags):
         valid_tags = []
@@ -305,6 +308,7 @@ class ActorSerializer(jsonld.JsonLdSerializer):
             "attributedTo": jsonld.first_id(contexts.AS.attributedTo),
             "tags": jsonld.raw(contexts.AS.tag),
             "category": jsonld.first_val(contexts.SC.category),
+            "audience": jsonld.first_id(contexts.AS.audience),
             # "language": jsonld.first_val(contexts.SC.inLanguage),
         }
 
@@ -339,7 +343,8 @@ class ActorSerializer(jsonld.JsonLdSerializer):
             urls.append(
                 {"type": "Link", "href": instance.url, "mediaType": "text/html"}
             )
-
+        if hasattr(instance, "audience"):
+            ret["audience"] = instance.audience
         channel = instance.get_channel()
         if channel:
             ret["url"] = [

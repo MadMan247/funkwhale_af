@@ -300,9 +300,9 @@ def schedule_key_rotation(actor_id, delay):
 
 
 def activity_pass_user_privacy_level(context, routing):
-    TYPE_FOLLOW_USER_PRIVACY_LEVEL = ["Listen", "Like", "Create"]
-    TYPE_IGNORE_USER_PRIVACY_LEVEL = ["Delete", "Accept", "Follow"]
-    MUSIC_OBJECT_TYPE = ["Audio", "Track", "Album", "Artist"]
+    TYPE_FOLLOW_USER_PRIVACY_LEVEL = ["Listen", "Like"]
+    TYPE_IGNORE_USER_PRIVACY_LEVEL = ["Delete", "Accept", "Follow", "Update"]
+    MUSIC_OBJECT_TYPE = ["Track", "Album", "Artist"]
 
     actor = context.get("actor", False)
     type = routing.get("type", False)
@@ -351,6 +351,7 @@ def activity_pass_object_privacy_level(context, routing):
         obj_privacy_level = object.privacy_level
     else:
         object = None
+        obj_privacy_level = None
 
     if routing["type"] == "Update" and obj_privacy_level in ["me", "instance"]:
         # we send a delete request instead

@@ -742,6 +742,40 @@ def inbox_delete_listening(payload, context):
     favorite.delete()
 
 
+@outbox.register({"type": "Update", "object.type": "Person"})
+def outbox_update_actor(context):
+    actor = context["actor"]
+    # this is a bit hacky, but we want to send the privacy level of the user as audience
+    # to delete or fetch all user activities inheriting user.privacy_level
+    setattr(actor, "audience", actor.user.privacy_level)
+    serializer = serializers.ActivitySerializer(
+        {"type": "Update", "object": serializers.ActorSerializer(actor).data}
+    )
+    yield {
+        "type": "Update",
+        "actor": actor,
+        "payload": with_recipients(
+            serializer.data,
+            to=[activity.PUBLIC_ADDRESS, {"type": "instances_with_followers"}],
+        ),
+    }
+
+
+@inbox.register({"type": "Update", "object.type": "Person"})
+def inbox_update_actor(payload, context):
+    actor = context["actor"]
+    serializer = serializers.ActorSerializer(data=payload["object"])
+    if serializer.is_valid() and "audience" in serializer.validated_data:
+        privacy_level = serializer.validated_data["audience"]
+        if privacy_level in [
+            "me",
+            "instance",
+        ]:
+            # we delete all activities inheriting user.privacy_level
+            history_models.Listening.objects.filter(actor=actor).delete()
+            favorites_models.TrackFavorite.objects.filter(actor=actor).delete()
+
+
 @outbox.register({"type": "Create", "object.type": "Playlist"})
 def outbox_create_playlist(context):
     playlist = context["playlist"]

@@ -732,7 +732,7 @@ class TrackFavoriteViewSet(
         return response.Response(serializer.data)
 
 
-class ListeningsViewSet(
+class ListeningViewSet(
     FederationMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
 ):
     authentication_classes = [authentication.SignatureAuthentication]
