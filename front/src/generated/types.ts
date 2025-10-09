@@ -2970,7 +2970,6 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Return information about the current user or delete it */
         post: operations["update_settings"];
         delete?: never;
         options?: never;
@@ -6094,7 +6093,6 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Return information about the current user or delete it */
         post: operations["update_settings_2"];
         delete?: never;
         options?: never;
@@ -6177,7 +6175,6 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Return information about the current user or delete it */
         post: operations["update_settings_3"];
         delete?: never;
         options?: never;

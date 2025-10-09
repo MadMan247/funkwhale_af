@@ -9541,7 +9541,6 @@ paths:
   /api/v1/users/settings/:
     post:
       operationId: update_settings
-      description: Return information about the current user or delete it
       tags:
       - users
       requestBody:
@@ -19232,7 +19231,6 @@ paths:
   /api/v2/users/settings/:
     post:
       operationId: update_settings_2
-      description: Return information about the current user or delete it
       tags:
       - users
       requestBody:
@@ -19465,7 +19463,6 @@ paths:
   /api/v2/users/users/settings/:
     post:
       operationId: update_settings_3
-      description: Return information about the current user or delete it
       tags:
       - users
       requestBody:
