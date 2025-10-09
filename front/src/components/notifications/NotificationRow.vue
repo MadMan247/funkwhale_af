@@ -83,7 +83,7 @@ const notificationData = computed(() => {
       }
       let labelReject = ""
         if (typeof activity.object?.name === 'string' && activity.object.name.startsWith('playlist_')) {
-          labelReject = t('components.notifications.NotificationRow.message.playlistlReject', { username: username.value, library: activity.object.name.slice("playlist_".length) })
+          labelReject = t('components.notifications.NotificationRow.message.playlistReject', { username: username.value, library: activity.object.name.slice("playlist_".length) })
         }
         else {
           labelReject = t('components.notifications.NotificationRow.message.libraryReject', { username: username.value, library: activity.object.name })
