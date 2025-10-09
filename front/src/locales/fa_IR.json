@@ -42,8 +42,8 @@
       "feature": {
         "allowList": "سیاهه مجاز",
         "anonymousAccess": "دسترسی ناشناس",
-        "federation": "فدراسیون",
-        "quota": "سهمیه بارگذاری",
+        "federation": "فدیورس",
+        "quota": "سهمیهٔ بارگذاری",
         "registrations": "نام‌نویسی‌ها",
         "status": {
           "closed": "بسته شد",
@@ -197,10 +197,16 @@
       "button": {
         "close": "بستن"
       },
+      "header": {
+        "modal": "میانبرهای صفحه‌کلید"
+      },
       "shortcut": {
         "audio": {
           "playNext": "پخش اثر بعدی",
           "playPrevious": "پخش اثر قبلی"
+        },
+        "general": {
+          "show": "نمایش میانبرهای صفحه کلید موجود"
         }
       }
     },
@@ -257,10 +263,21 @@
           "loading": "بار کردن…"
         }
       },
+      "ChannelSeries": {
+        "button": {
+          "showMore": "نمایش بیشتر"
+        }
+      },
+      "ChannelsWidget": {
+        "button": {
+          "showMore": "نمایش بیشتر"
+        }
+      },
       "PlayButton": {
         "button": {
           "playTrack": "پخش اثر",
           "playTracks": "پخش اثر‌ها",
+          "report": "گزارش…",
           "trackDetails": "جزئیات اثر"
         }
       },
@@ -432,7 +449,13 @@
         "table": {
           "artists": {
             "header": {
+              "creationDate": "تاریخ ایجاد",
               "name": "نام"
+            }
+          },
+          "yourApps": {
+            "header": {
+              "creationDate": "تاریخ ایجاد"
             }
           }
         }
@@ -479,7 +502,8 @@
       "AlbumSelect": {
         "add": "اضافهٔ کردن جُنگ",
         "label": {
-          "album": "جُنگ"
+          "album": "جُنگ",
+          "series": "دورسنگ"
         },
         "meta": {
           "tracks": "بدون‌ اثر | {n} اثر| {n} اثرها"
@@ -488,8 +512,27 @@
           "none": "هیچ‌کدام"
         }
       },
+      "LicenseSelect": {
+        "label": {
+          "license": "پروانه"
+        },
+        "link": {
+          "license": "درباره این پروانه"
+        },
+        "option": {
+          "none": "هیچ‌کدام"
+        }
+      },
+      "SubscribeButton": {
+        "title": {
+          "subscribe": "مشترک",
+          "unsubscribe": "لغو اشتراک"
+        }
+      },
       "UploadForm": {
         "button": {
+          "edit": "ویرایش",
+          "ignore": "چشم پوشی",
           "remove": "برداشتن",
           "resume": "ادامه",
           "retry": "امتحان دوباره"
@@ -583,6 +626,7 @@
       "UserMenu": {
         "label": {
           "language": "تغییر زبان",
+          "shortcuts": "میانبرهای صفحه‌کلید",
           "theme": "تغییر زمینه"
         },
         "link": {
@@ -639,7 +683,7 @@
             "descending": "پایین‏رو",
             "label": "نظم"
           },
-          "label": "نظم‌دادن"
+          "label": "مرتب‌سازی"
         },
         "pagination": {
           "results": "نتایج در صفحه"
@@ -698,6 +742,7 @@
       "AlbumDetail": {
         "header": {
           "episodes": "قسمت‌ها",
+          "libraries": "در شبکه",
           "tracks": "اثر‌ها"
         }
       },
@@ -710,6 +755,7 @@
           "more": "بیشتر…"
         },
         "link": {
+          "discogs": "جست‌و‌جو در دیسکوگز",
           "domain": ""
         }
       },
@@ -732,6 +778,14 @@
           "search": "جست‌و‌جو",
           "tags": "برچسب‌ها"
         },
+        "ordering": {
+          "direction": {
+            "ascending": "بالارو",
+            "descending": "پایین‏رو",
+            "label": "جهت مرتب‌سازی"
+          },
+          "label": "مرتب‌سازی"
+        },
         "pagination": {
           "results": "نتایج در صفحه"
         },
@@ -745,6 +799,7 @@
           "play": "پخش همه مرور جُنگ‌ها"
         },
         "link": {
+          "discogs": "جست‌و‌جو در دیسکوگز",
           "domain": "به روز شده در { date }"
         }
       },
@@ -771,6 +826,14 @@
           "search": "نام هنرمند",
           "tags": "برچسب ها"
         },
+        "ordering": {
+          "direction": {
+            "ascending": "بالارو",
+            "descending": "پایین‏رو",
+            "label": "جهت مرتب‌سازی"
+          },
+          "label": "مرتب‌سازی"
+        },
         "pagination": {
           "results": "نتایج در صفحه"
         },
@@ -784,6 +847,9 @@
           "approve": "تأیید",
           "delete": "برداشتن",
           "reject": "رد کردن"
+        },
+        "header": {
+          "modification": "اصلاح {id}"
         },
         "link": {
           "track": "اثر#{id} - {name}"
@@ -855,9 +921,10 @@
         "ordering": {
           "direction": {
             "ascending": "بالارو",
-            "descending": "پایین‏رو"
+            "descending": "پایین‏رو",
+            "label": "جهت مرتب‌سازی"
           },
-          "label": "سفارش"
+          "label": "مرتب‌سازی"
         },
         "pagination": {
           "results": "نتایج در صفحه"
@@ -871,8 +938,23 @@
         "empty": {
           "noResults": "هیچ نتیجه‌ٔ جورسازی با پُرسمان جست‌و‌جو شما یافت نشد"
         },
+        "header": {
+          "instance": "رادیوهای نمونه",
+          "user": "رادیوهای کاربر"
+        },
+        "ordering": {
+          "direction": {
+            "ascending": "بالارو",
+            "descending": "پایین‏رو",
+            "label": "نظم"
+          },
+          "label": "مرتب‌سازی"
+        },
         "pagination": {
           "results": "نتایج در صفحه"
+        },
+        "placeholder": {
+          "search": "نام رادیو را وارد کنید…"
         }
       },
       "TagDetail": {
@@ -896,7 +978,7 @@
           "play": "پخش"
         },
         "link": {
-          "discogs": "جست‌و‌جو در دیسکوگ‌ها",
+          "discogs": "جست‌و‌جو در دیسکوگز",
           "domain": "به روز شده در { date }"
         }
       },
@@ -928,11 +1010,37 @@
       }
     },
     "manage": {
+      "ChannelsTable": {
+        "ordering": {
+          "direction": {
+            "ascending": "بالارو",
+            "descending": "پایین‏رو",
+            "label": "جهت مرتب‌سازی"
+          },
+          "label": "مرتب‌سازی"
+        },
+        "table": {
+          "channel": {
+            "header": {
+              "creationDate": "تاریخ ایجاد"
+            }
+          }
+        }
+      },
       "library": {
         "AlbumsTable": {
+          "ordering": {
+            "direction": {
+              "ascending": "بالارو",
+              "descending": "پایین‏رو",
+              "label": "جهت مرتب‌سازی"
+            },
+            "label": "مرتب‌سازی"
+          },
           "table": {
             "album": {
               "header": {
+                "creationDate": "تاریخ ایجاد",
                 "name": "عنوان"
               }
             }
@@ -948,10 +1056,46 @@
           "option": {
             "all": "همه"
           },
+          "ordering": {
+            "direction": {
+              "ascending": "بالارو",
+              "descending": "پایین‏رو",
+              "label": "جهت مرتب‌سازی"
+            },
+            "label": "مرتب‌سازی"
+          },
           "table": {
             "artist": {
               "header": {
+                "creationDate": "تاریخ ایجاد",
                 "name": "نام"
+              }
+            }
+          }
+        },
+        "EditsCardList": {
+          "ordering": {
+            "direction": {
+              "ascending": "بالارو",
+              "descending": "پایین‏رو",
+              "label": "نظم"
+            },
+            "label": "مرتب‌سازی"
+          }
+        },
+        "LibrariesTable": {
+          "ordering": {
+            "direction": {
+              "ascending": "بالارو",
+              "descending": "پایین‏رو",
+              "label": "جهت مرتب‌سازی"
+            },
+            "label": "مرتب‌سازی"
+          },
+          "table": {
+            "library": {
+              "header": {
+                "creationDate": "تاریخ ایجاد"
               }
             }
           }
@@ -968,8 +1112,10 @@
           "ordering": {
             "direction": {
               "ascending": "بالارو",
-              "descending": "پایین‏رو"
-            }
+              "descending": "پایین‏رو",
+              "label": "جهت مرتب‌سازی"
+            },
+            "label": "مرتب‌سازی"
           },
           "table": {
             "tag": {
@@ -990,10 +1136,36 @@
           "link": {
             "local": "محلی"
           },
+          "ordering": {
+            "direction": {
+              "ascending": "بالارو",
+              "descending": "پایین‏رو",
+              "label": "جهت مرتب‌سازی"
+            },
+            "label": "مرتب‌سازی"
+          },
           "table": {
             "track": {
               "header": {
+                "creationDate": "تاریخ ایجاد",
                 "title": "عنوان"
+              }
+            }
+          }
+        },
+        "UploadsTable": {
+          "ordering": {
+            "direction": {
+              "ascending": "بالارو",
+              "descending": "پایین‏رو",
+              "label": "جهت مرتب‌سازی"
+            },
+            "label": "مرتب‌سازی"
+          },
+          "table": {
+            "upload": {
+              "header": {
+                "creationDate": "تاریخ ایجاد"
               }
             }
           }
@@ -1001,6 +1173,14 @@
       },
       "moderation": {
         "AccountsTable": {
+          "ordering": {
+            "direction": {
+              "ascending": "بالارو",
+              "descending": "پایین‏رو",
+              "label": "جهت مرتب‌سازی"
+            },
+            "label": "مرتب‌سازی"
+          },
           "table": {
             "account": {
               "moderationRule": "بله"
@@ -1010,6 +1190,14 @@
         "DomainsTable": {
           "option": {
             "yes": "بله"
+          },
+          "ordering": {
+            "direction": {
+              "ascending": "بالارو",
+              "descending": "پایین‏رو",
+              "label": "جهت مرتب‌سازی"
+            },
+            "label": "مرتب‌سازی"
           },
           "table": {
             "domain": {
@@ -1039,10 +1227,69 @@
           "button": {
             "show": "شرایط همزیستی میان‌دار"
           }
+        },
+        "ReportCard": {
+          "button": {
+            "confirmDelete": "‪برداشتن",
+            "delete": "برداشتن شیء گزارش‌شده",
+            "resolve": "رفع کردن",
+            "unresolve": "حل نشده"
+          },
+          "header": {
+            "actions": "کنش‌ها",
+            "message": "پیام",
+            "notes": "یادداشت‌های محلی",
+            "reportedObject": "شیء گزارش شده"
+          },
+          "link": {
+            "publicPage": "مشاهده برگه‌ٔ عمومی",
+            "report": "گزارش{id}"
+          },
+          "table": {
+            "object": {
+              "account": "حساب",
+              "domain": "دامنه",
+              "local": "محلی",
+              "owner": "دارنده",
+              "type": "تایپ"
+            },
+            "report": {
+              "category": "دسته بندی",
+              "creationDate": "تاریخ ایجاد",
+              "submittedBy": "ارسال شده توسط"
+            }
+          }
+        },
+        "UserRequestCard": {
+          "table": {
+            "request": {
+              "creationDate": "تاریخ ایجاد"
+            }
+          }
         }
       },
       "users": {
+        "InvitationsTable": {
+          "ordering": {
+            "label": "مرتب‌سازی"
+          },
+          "table": {
+            "invitation": {
+              "header": {
+                "creationDate": "تاریخ ایجاد"
+              }
+            }
+          }
+        },
         "UsersTable": {
+          "ordering": {
+            "direction": {
+              "ascending": "بالارو",
+              "descending": "پایین‏رو",
+              "label": "جهت مرتب‌سازی"
+            },
+            "label": "مرتب‌سازی"
+          },
           "table": {
             "user": {
               "header": {
@@ -1088,6 +1335,21 @@
           "addTrack": "اضافه کردن اثر",
           "cancel": "لغو",
           "edit": "ویرایش"
+        },
+        "empty": {
+          "noPlaylists": "هنوز هیچ سیاهه‌پخشی ایجاد نشده است"
+        },
+        "table": {
+          "edit": {
+            "header": {
+              "lastModification": "آخرین اصلاح"
+            }
+          }
+        }
+      },
+      "Widget": {
+        "placeholder": {
+          "noPlaylists": "هنوز هیچ سیاهه‌پخشی ایجاد نشده است"
         }
       }
     },
@@ -1110,6 +1372,8 @@
         },
         "filters": {
           "artistName": "نام هنرمند",
+          "creationDate": "تاریخ ایجاد",
+          "modificationDate": "تاریخ اصلاح",
           "name": "نام",
           "size": "اندازه",
           "trackTitle": "نام اثر",
@@ -1142,6 +1406,9 @@
       "useReportConfigs": {
         "album": {
           "title": "عنوان"
+        },
+        "creationDate": {
+          "label": "تاریخ ایجاد"
         },
         "tags": {
           "label": "برچسب ها"
@@ -1249,6 +1516,9 @@
           "table": {
             "accountData": {
               "username": "نام کاربری"
+            },
+            "audioContent": {
+              "uploadQuota": "سهمیهٔ بارگذاری"
             }
           }
         },
@@ -1259,6 +1529,26 @@
                 "true": "بله"
               }
             }
+          }
+        },
+        "ReportsList": {
+          "ordering": {
+            "direction": {
+              "ascending": "بالارو",
+              "descending": "پایین‏رو",
+              "label": "نظم"
+            },
+            "label": "مرتب‌سازی"
+          }
+        },
+        "RequestsList": {
+          "ordering": {
+            "direction": {
+              "ascending": "بالارو",
+              "descending": "پایین‏رو",
+              "label": "نظم"
+            },
+            "label": "مرتب‌سازی"
           }
         }
       },
@@ -1320,6 +1610,9 @@
       "SubscriptionsList": {
         "link": {
           "addNew": "افزودن جدید"
+        },
+        "placeholder": {
+          "search": "پالایه بر اساس نام…"
         }
       }
     },
@@ -1331,6 +1624,14 @@
           }
         },
         "FilesTable": {
+          "ordering": {
+            "direction": {
+              "ascending": "بالارو",
+              "descending": "پایین‏رو",
+              "label": "جهت مرتب‌سازی"
+            },
+            "label": "مرتب‌سازی"
+          },
           "table": {
             "file": {
               "header": {
@@ -1381,6 +1682,14 @@
         "empty": {
           "noResults": "هیچ نتیجه‌ٔ جورسازی با پُرسمان جست‌و‌جو شما یافت نشد"
         },
+        "ordering": {
+          "direction": {
+            "ascending": "بالارو",
+            "descending": "پایین‏رو",
+            "label": "نظم"
+          },
+          "label": "مرتب‌سازی"
+        },
         "pagination": {
           "results": "نتایج در صفحه"
         }
@@ -1393,6 +1702,18 @@
         },
         "more": "بیشتر"
       },
+      "PlaylistModal": {
+        "empty": {
+          "noPlaylists": "هنوز هیچ سیاهه‌پخشی ایجاد نشده است"
+        },
+        "table": {
+          "edit": {
+            "header": {
+              "lastModification": "آخرین اصلاح"
+            }
+          }
+        }
+      },
       "TrackPlaylistIcon": {
         "button": {
           "add": "اضافه کردن به سیاهه‌پخش…"
@@ -1402,6 +1723,9 @@
         "button": {
           "create": "ایجاد سیاهه‌پخش",
           "more": "نمایش بیشتر"
+        },
+        "placeholder": {
+          "noPlaylists": "هنوز هیچ سیاهه‌پخشی ایجاد نشده است"
         }
       }
     },
@@ -1461,6 +1785,7 @@
     "go-to": "رفتن به",
     "pagination": {
       "ellipsis": "…",
+      "enterPageNumber": "رفتن به برگهٔ…",
       "next": "بعدی",
       "previous": "قبلی"
     },
