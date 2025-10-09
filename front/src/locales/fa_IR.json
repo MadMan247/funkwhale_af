@@ -538,6 +538,7 @@
           "retry": "امتحان دوباره"
         },
         "label": {
+          "channel": "کانال",
           "openBrowser": "مرور…"
         },
         "status": {
@@ -959,7 +960,11 @@
       },
       "TagDetail": {
         "header": {
+          "channels": "کانال‌ها",
           "tracks": "اثر‌ها"
+        },
+        "link": {
+          "channels": "مرور کانال‌ها..."
         }
       },
       "TagSelector": {
@@ -1011,6 +1016,13 @@
     },
     "manage": {
       "ChannelsTable": {
+        "label": {
+          "category": "دسته بندی",
+          "search": "جست‌و‌جو"
+        },
+        "link": {
+          "local": "محلی"
+        },
         "ordering": {
           "direction": {
             "ascending": "بالارو",
