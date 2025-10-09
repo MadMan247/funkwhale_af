@@ -18,7 +18,7 @@ def create_playlist_libraries(apps, schema_editor):
     Library = apps.get_model("music", "Library")
     Actor = apps.get_model("federation", "Actor")
     playlist_with_lib_count = 0
-
+    playlists = []
     for playlist in Playlist.objects.all():
         if not federation_utils.is_local(playlist.actor.fid):
             continue
@@ -40,7 +40,7 @@ def create_playlist_libraries(apps, schema_editor):
                 )
                 library.save()
                 playlist.library = library
-                playlist.save()
+                playlists.append(playlist)
                 with transaction.atomic():
                     add_uploads_to_pl_library(playlist, library)
             except Exception as e:
@@ -49,6 +49,7 @@ def create_playlist_libraries(apps, schema_editor):
                       to enforce one lib per playlist"
                 )
                 raise e
+        Playlist.objects.bulk_update(playlists, fields=["library"], batch_size=5000)
         playlist_with_lib_count = playlist_with_lib_count + 1
         local_actors = Actor.objects.filter(domain_id=settings.FEDERATION_HOSTNAME)
 

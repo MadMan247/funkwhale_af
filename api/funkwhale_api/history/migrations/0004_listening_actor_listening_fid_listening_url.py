@@ -8,14 +8,18 @@ import django.db.models.deletion
 
 def get_user_actor(apps, schema_editor):
     MyModel = apps.get_model("history", "Listening")
+    rows = []
     for row in MyModel.objects.all():
         actor = row.user.actor
         row.actor = actor
-        row.save(update_fields=["actor"])
+        rows.append(row)
+
+    MyModel.objects.bulk_update(rows, fields=["actor"], batch_size=5000)
 
 
 def gen_uuid(apps, schema_editor):
     MyModel = apps.get_model("history", "Listening")
+    rows = []
     for row in MyModel.objects.all():
         unique_uuid = uuid.uuid4()
         while MyModel.objects.filter(uuid=unique_uuid).exists():
@@ -26,15 +30,20 @@ def gen_uuid(apps, schema_editor):
         )
         row.uuid = unique_uuid
         row.fid = fid
-        row.save(update_fields=["uuid", "fid"])
+        rows.append(row)
+
+    MyModel.objects.bulk_update(rows, fields=["uuid", "fid"], batch_size=5000)
 
 
 def get_user_actor(apps, schema_editor):
     MyModel = apps.get_model("history", "Listening")
+    rows = []
     for row in MyModel.objects.all():
         actor = row.user.actor
         row.actor = actor
-        row.save(update_fields=["actor"])
+        rows.append(row)
+
+    MyModel.objects.bulk_update(rows, fields=["actor"], batch_size=5000)
 
 
 class Migration(migrations.Migration):

@@ -8,8 +8,10 @@ import uuid
 from funkwhale_api.federation import utils
 from django.urls import reverse
 
+
 def gen_uuid(apps, schema_editor):
     MyModel = apps.get_model("playlists", "PlaylistTrack")
+    rows = []
     for row in MyModel.objects.all():
         unique_uuid = uuid.uuid4()
         while MyModel.objects.filter(uuid=unique_uuid).exists():
@@ -20,10 +22,12 @@ def gen_uuid(apps, schema_editor):
         )
         row.uuid = unique_uuid
         row.fid = fid
-        row.save(update_fields=["uuid", "fid"])
+        rows.append(row)
+
+    MyModel.objects.bulk_update(rows, fields=["uuid", "fid"], batch_size=5000)
+
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("federation", "0028_auto_20221027_1141"),
         ("playlists", "0005_remove_playlist_user_playlist_actor"),

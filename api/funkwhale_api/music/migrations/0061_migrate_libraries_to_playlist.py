@@ -10,6 +10,7 @@ import uuid
 
 def insert_tracks_to_playlist(apps, playlist, uploads):
     PlaylistTrack = apps.get_model("playlists", "PlaylistTrack")
+    uploads_to_update = []
     for i, upload in enumerate(uploads):
         if upload.track:
             PlaylistTrack.objects.create(
@@ -26,8 +27,11 @@ def insert_tracks_to_playlist(apps, playlist, uploads):
                 ),
             )
             upload.library = None
-            upload.save()
+            uploads_to_update.append(upload)
 
+    apps.get_model("music", "Upload").objects.bulk_update(
+        uploads_to_update, fields=["library"], batch_size=1000
+    )
     playlist.library.playlist_uploads.set(uploads)
 
 
@@ -62,7 +66,7 @@ def migrate_libraries_to_playlist(apps, schema_editor):
             Channel.objects.filter(library=library).exists()
             or Playlist.objects.filter(library=library).exists()
             or not federation_utils.is_local(library.fid)
-            or library.name in ["me", "instance", "everyone"]
+            or library.name in ["me", "instance", "everyone", "followers"]
         ):
             continue
 
@@ -190,6 +194,20 @@ class Migration(migrations.Migration):
         ("playlists", "0009_playlist_library"),
     ]
     operations = [
+        migrations.AlterField(
+            model_name="library",
+            name="privacy_level",
+            field=models.CharField(
+                choices=[
+                    ("me", "Only me"),
+                    ("followers", "Me and my followers"),
+                    ("instance", "Everyone on my instance, and my followers"),
+                    ("everyone", "Everyone, including people on other instances"),
+                ],
+                default="me",
+                max_length=25,
+            ),
+        ),
         migrations.AddField(
             model_name="upload",
             name="playlist_libraries",
