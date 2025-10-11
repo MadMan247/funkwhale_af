@@ -142,9 +142,9 @@
         "pageNotFound": "صفحهٔ یافت نشد!"
       },
       "link": {
-        "home": "رفتن به صفحه خانه"
+        "home": "رفتن به برگهٔ خانه"
       },
-      "title": "صفحه یافت نشد"
+      "title": "برگه یافت نشد"
     },
     "Queue": {
       "button": {
@@ -699,7 +699,7 @@
           "label": "مرتب‌سازی"
         },
         "pagination": {
-          "results": "نتایج در صفحه"
+          "results": "نتایج در برگه"
         },
         "title": "برگزیده‌های شما"
       },
@@ -800,7 +800,7 @@
           "label": "مرتب‌سازی"
         },
         "pagination": {
-          "results": "نتایج در صفحه"
+          "results": "نتایج در برگه"
         },
         "placeholder": {
           "search": "عنوان جُنگ را وارد کنید…"
@@ -848,7 +848,7 @@
           "label": "مرتب‌سازی"
         },
         "pagination": {
-          "results": "نتایج در صفحه"
+          "results": "نتایج در برگه"
         },
         "placeholder": {
           "search": "جست‌و‌جو…"
@@ -941,7 +941,7 @@
           "label": "مرتب‌سازی"
         },
         "pagination": {
-          "results": "نتایج در صفحه"
+          "results": "نتایج در برگه"
         },
         "placeholder": {
           "search": "جست‌و‌جو…"
@@ -969,7 +969,7 @@
           "label": "مرتب‌سازی"
         },
         "pagination": {
-          "results": "نتایج در صفحه"
+          "results": "نتایج در برگه"
         },
         "placeholder": {
           "search": "نام رادیو را وارد کنید…"
@@ -1736,7 +1736,7 @@
           "label": "مرتب‌سازی"
         },
         "pagination": {
-          "results": "نتایج در صفحه"
+          "results": "نتایج در برگه"
         },
         "placeholder": {
           "search": "نام سیاهه‌پخش را وارد کنید…"
@@ -1789,6 +1789,11 @@
         },
         "header": {
           "tracks": "اثر‌ها"
+        },
+        "modal": {
+          "delete": {
+            "header": "آیا می‌خواهید رادیو را بردارید {radio}؟"
+          }
         },
         "title": "رادیو"
       }
