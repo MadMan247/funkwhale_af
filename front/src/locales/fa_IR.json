@@ -12,9 +12,9 @@
         "signup": "همین حالا نام‌نویسی کنید، تا موارد دلخواه خود را پیگیری کنید، سیاهه پخش ایجاد کنید، محتوای جدید کشف کنید و موارد دیگر!"
       },
       "header": {
-        "aboutPod": "درباره این پاد",
-        "findApp": "یک کارهٔ پیدا کنید",
-        "funkwhale": "یک پلتفرم اجتماعی، برای لذت بردن و به اشتراک گذاشتن موسیقی",
+        "aboutPod": "دربارهٔ این پاد",
+        "findApp": "یک کاره پیدا کنید",
+        "funkwhale": "یک بُن‌سازهٔ اجتماعی، برای لذت بردن و به اشتراک گذاشتن موسیقی",
         "publicContent": "مرور محتوای عمومی",
         "signup": "نام‌نویسی"
       },
@@ -54,7 +54,7 @@
         "version": "نسخهٔ فانک‌وال"
       },
       "header": {
-        "about": "‫درباره این پاد",
+        "about": "‫دربارهٔ این پاد",
         "contact": "تماس",
         "features": "ویژگی‌ها",
         "rules": "شرایط همزیستی",
@@ -62,7 +62,7 @@
         "terms": "شرایط و ضوابط و سیاست حفظ حریم خصوصی"
       },
       "link": {
-        "about": "درباره این پاد",
+        "about": "‫دربارهٔ این پاد",
         "features": "ویژگی‌ها",
         "introduction": "مقدمهٔ",
         "rules": "شرایط همزیستی",
@@ -72,7 +72,7 @@
       "message": {
         "contact": "برای ما رایانامهٔ ارسال کنید: { contactEmail }"
       },
-      "notApplicable": "",
+      "notApplicable": "N/A",
       "placeholder": {
         "noDescription": "توضیحات موجود نیست",
         "noRules": "هیچ شرایط همزیستی در دسترس نیست",
@@ -119,6 +119,7 @@
           "label": "کاره‌های موبایل"
         },
         "publicContent": {
+          "description": "به جُنگ‌ها و سیاه‌های پخش عمومی که در این پاد به اشتراک گذاشته شده‌اند گوش دهید.",
           "label": "مرور محتوای عمومی"
         },
         "rules": "شرایط همزیستی کارساز",
@@ -176,7 +177,7 @@
       "meta": {
         "end": "پایان",
         "startTime": "00:00",
-        "unknownAlbum": "جُنگ ناشناخته",
+        "unknownAlbum": "جُنگ ناشناس",
         "unknownArtist": "هنرمند ناشناخته"
       }
     },
@@ -212,36 +213,68 @@
     },
     "Sidebar": {
       "header": {
-        "explore": "کاوش"
+        "explore": "کاوش",
+        "library": "کتابخانهٔ من",
+        "more": "بیشتر"
       },
       "label": {
+        "add": "افزودن محتوا",
+        "administration": "مدیریت",
+        "language": "زبان",
+        "main": "منوی اصلی",
         "play": "پخش این اثر",
         "theme": "زمینه"
       },
       "link": {
-        "about": "‫درباره این پاد",
+        "about": "‫دربارهٔ این پاد",
         "albums": "جُنگ ها",
         "artists": "هنرمندان",
+        "browse": "مرور",
         "channels": "کانال‌ها",
+        "createAccount": "ایجاد حساب‌کاربری",
         "favorites": "برگزیده",
+        "library": "کتابخانه",
         "login": "ورود",
+        "moderation": "میان‌داری",
         "playlists": "سیاهه پخش",
         "podcasts": "پادپخش‌ها",
         "radios": "رادیو‌ها",
         "search": "جست‌و‌جو",
+        "settings": "تنظیمات",
+        "switchInstance": "تغییر نمونه",
         "users": "کاربرها"
       }
     },
     "admin": {
+      "SettingsGroup": {
+        "button": {
+          "save": "ذخیره"
+        }
+      },
       "SignupFormBuilder": {
         "button": {
           "edit": "ویرایش داده‌برگه",
           "preview": "پیش‏‌نمایش داده‌برگه"
         },
+        "label": {
+          "delete": "‪برداشتن",
+          "helpText": "متن راهنما",
+          "moveDown": "حرکت به پایین",
+          "moveUp": "حرکت به بالا"
+        },
         "table": {
           "additionalFields": {
+            "header": {
+              "actions": "کنش‌ها",
+              "required": "ضروری"
+            },
             "required": {
-              "true": "بله"
+              "false": "نادرست",
+              "true": "درست"
+            },
+            "type": {
+              "long": "متن طولانی",
+              "short": "متن کوتاه"
             }
           }
         }
@@ -250,19 +283,35 @@
     "audio": {
       "ChannelCard": {
         "meta": {
+          "episodes": "بدون قسمت‌ها | {n} قسمت| {n} قسمت‌ها",
           "tracks": "بدون‌ اثر | {n} اثر| {n} اثرها"
         },
-        "title": "به روز شده در {date}"
+        "title": "به روز شده در { date }"
       },
       "ChannelForm": {
         "label": {
+          "category": "دسته بندی",
+          "description": "شرح",
+          "discography": "دیسکوگرافی هنرمند",
           "email": "نام کاربری یا رایانامه",
-          "owner": "نام کاربری",
+          "image": "تصویر کانال",
+          "language": "زبان",
+          "name": "نام",
+          "owner": "نام صاحب",
           "podcast": "پادپخش‌ها",
+          "subcategory": "زیرشاخه",
           "tags": "برچسب ها"
         },
         "loader": {
           "loading": "بار کردن…"
+        },
+        "placeholder": {
+          "name": "نام کانال عالیه"
+        }
+      },
+      "ChannelSerieCard": {
+        "meta": {
+          "episodes": "بدون قسمت‌ها | {n} قسمت| {n} قسمت‌ها"
         }
       },
       "ChannelSeries": {
@@ -275,11 +324,42 @@
           "showMore": "نمایش بیشتر"
         }
       },
+      "EmbedWizard": {
+        "button": {
+          "copy": "رونوشت"
+        },
+        "header": {
+          "preview": "پیش‌نمایش"
+        },
+        "label": {
+          "embed": "کد جاسازی"
+        },
+        "message": {
+          "copy": "متن در کلیپ‌بورد رونوشت شد!"
+        }
+      },
+      "LibraryFollowButton": {
+        "button": {
+          "cancel": "لغو درخواست ‌پی‌گرفتن",
+          "follow": "پی‌گرفتن",
+          "unfollow": "پی‌نگرفتن"
+        }
+      },
       "PlayButton": {
         "button": {
+          "addToPlaylist": "افزودن به سیاهه‌پخش",
+          "addToQueue": "به صف فعلی اضافه کنید",
+          "discretePlay": "پخش",
+          "episodeDetails": "جزئیات قسمت",
+          "hideArtist": "پنهان کردن محتوا از این هنرمند",
+          "playAlbum": "پخش جُنگ",
+          "playArtist": "پخش هنرمند",
+          "playNow": "اجرا",
+          "playPlaylist": "پخش سیاهه‌پخش",
           "playTrack": "پخش اثر",
           "playTracks": "پخش اثر‌ها",
           "report": "گزارش…",
+          "startRadio": "پخش آهنگ‌های مشابه",
           "trackDetails": "جزئیات اثر"
         }
       },
@@ -287,6 +367,9 @@
         "label": {
           "nextTrack": "اثر بعدی",
           "previousTrack": "اثر قبلی"
+        },
+        "meta": {
+          "unknownAlbum": "جُنگ ناشناس"
         }
       },
       "PlayerControls": {
@@ -341,6 +424,7 @@
       "artist": {
         "Card": {
           "meta": {
+            "albums": "بدون جُنگ ‌ها | {n} جُنگ | {n} جُنگ ‌ها",
             "tracks": "بدون‌ اثر | {n} اثر| {n} اثرها"
           }
         },
@@ -435,12 +519,18 @@
           "logout": "آره،می رم بیرون"
         }
       },
+      "Plugin": {
+        "button": {
+          "save": "ذخیره"
+        }
+      },
       "Settings": {
         "button": {
           "password": "تغییر گذرواژه"
         },
         "header": {
           "changePassword": "گذرواژه‌ٔ من را تغییر بده",
+          "hiddenArtists": "هنرمندان پنهان",
           "passwordFailure": "گذرواژه شما قابل تغییر نیست"
         },
         "label": {
@@ -497,6 +587,9 @@
     },
     "channels": {
       "AlbumForm": {
+        "header": {
+          "error": "خطا هنگام ایجاد"
+        },
         "label": {
           "albumTitle": "عنوان"
         }
@@ -748,6 +841,7 @@
           "addDescription": "اضافه کردن توضیحات…"
         },
         "meta": {
+          "episodes": "بدون قسمت‌ها | {n} قسمت| {n} قسمت‌ها",
           "tracks": "بدون‌ اثر | {n} اثر| {n} اثرها"
         },
         "title": "جُنگ"
@@ -757,6 +851,9 @@
           "episodes": "قسمت‌ها",
           "libraries": "در شبکه",
           "tracks": "اثر‌ها"
+        },
+        "meta": {
+          "volume": "جلد{number}"
         }
       },
       "AlbumDropdown": {
@@ -769,12 +866,18 @@
         },
         "link": {
           "discogs": "جست‌و‌جو در دیسکوگز",
-          "domain": ""
+          "domain": "مشاهده در {domain}"
+        },
+        "modal": {
+          "delete": {
+            "header": "این آلبوم را بردارم؟"
+          }
         }
       },
       "AlbumEdit": {
         "header": {
-          "edit": "ویرایش این جُنگ"
+          "edit": "ویرایش این جُنگ",
+          "suggest": "پیشنهاد ویرایش برای این جُنگ"
         }
       },
       "Albums": {
@@ -789,7 +892,10 @@
         },
         "label": {
           "search": "جست‌و‌جو",
-          "tags": "برچسب‌ها"
+          "tags": "برچسب ها"
+        },
+        "link": {
+          "addMusic": "مقداری موسیقی اضافه کنید"
         },
         "ordering": {
           "direction": {
@@ -814,6 +920,9 @@
         "link": {
           "discogs": "جست‌و‌جو در دیسکوگز",
           "domain": "به روز شده در { date }"
+        },
+        "meta": {
+          "albums": "0 جُنگ‌ها | {n} جُنگ | {n} جُنگ‌ها"
         }
       },
       "ArtistDetail": {
@@ -821,7 +930,13 @@
           "more": "بارگذاری بیشتر…"
         },
         "header": {
+          "album": "جُنگ‌های این هنرمند",
           "track": "اثرهای جدید این هنرمند"
+        }
+      },
+      "ArtistEdit": {
+        "header": {
+          "edit": "ویرایش این هنرمند"
         }
       },
       "Artists": {
@@ -869,6 +984,9 @@
         }
       },
       "EditForm": {
+        "button": {
+          "backToAlbum": "بازگشت به جُنگ"
+        },
         "header": {
           "success": "تغییرات شما با موفقیت اعمال گردید."
         }
@@ -977,10 +1095,14 @@
       },
       "TagDetail": {
         "header": {
+          "albums": "جُنگ‌ها",
+          "artists": "هنرمند‌ها",
           "channels": "کانال‌ها",
           "tracks": "اثر‌ها"
         },
         "link": {
+          "albums": "مرور جُنگ‌ها...",
+          "artists": "مرور هنرمند‌ها...",
           "channels": "مرور کانال‌ها..."
         }
       },
@@ -1010,16 +1132,40 @@
         },
         "table": {
           "release": {
+            "album": "جُنگ",
+            "artist": "هنرمند",
             "year": "سال"
           }
         }
       },
       "radios": {
         "Builder": {
+          "button": {
+            "save": "ذخیره"
+          },
+          "header": {
+            "builder": "سازنده",
+            "created": "رادیو ایجاد شد",
+            "updated": "رادیو به‌روز شد"
+          },
+          "label": {
+            "description": "شرح",
+            "name": "نام رادیو",
+            "public": "نمایش عمومی"
+          },
+          "option": {
+            "filter": "انتخاب یک پالایه"
+          },
+          "placeholder": {
+            "description": "شرح فوق‌العاده من"
+          },
           "table": {
             "filter": {
               "header": {
+                "actions": "کنش‌ها",
+                "candidates": "نامزدها",
                 "config": "پیکربندی",
+                "exclude": "مستثنی",
                 "name": "نام پالایه"
               }
             }
@@ -1051,6 +1197,7 @@
         "table": {
           "channel": {
             "header": {
+              "albums": "جُنگ ها",
               "creationDate": "تاریخ ایجاد"
             }
           }
@@ -1058,6 +1205,18 @@
       },
       "library": {
         "AlbumsTable": {
+          "action": {
+            "delete": {
+              "label": "‪برداشتن"
+            }
+          },
+          "label": {
+            "search": "جست‌و‌جو"
+          },
+          "link": {
+            "local": "محلی"
+          },
+          "notApplicable": "N/A",
           "ordering": {
             "direction": {
               "ascending": "بالارو",
@@ -1069,8 +1228,12 @@
           "table": {
             "album": {
               "header": {
+                "artist": "هنرمند",
                 "creationDate": "تاریخ ایجاد",
-                "name": "عنوان"
+                "domain": "دامنه",
+                "name": "عنوان",
+                "releaseDate": "تاریخ انتشار",
+                "tracks": "اثرها"
               }
             }
           }
@@ -1096,6 +1259,7 @@
           "table": {
             "artist": {
               "header": {
+                "albums": "جُنگ ها",
                 "creationDate": "تاریخ ایجاد",
                 "name": "نام"
               }
@@ -1149,7 +1313,7 @@
           "table": {
             "tag": {
               "header": {
-                "albums": "جُنگ‌ها",
+                "albums": "جُنگ ها",
                 "artists": "هنرمندان",
                 "creationDate": "تاریخ ایجاد",
                 "name": "نام",
@@ -1176,6 +1340,7 @@
           "table": {
             "track": {
               "header": {
+                "album": "جُنگ",
                 "creationDate": "تاریخ ایجاد",
                 "title": "عنوان"
               }
@@ -1329,6 +1494,15 @@
         }
       }
     },
+    "moderation": {
+      "FilterModal": {
+        "warning": {
+          "createFilter": {
+            "listItem3": "در سیاهه هنرمندان و جُنگ‌ها"
+          }
+        }
+      }
+    },
     "playlists": {
       "Editor": {
         "button": {
@@ -1403,6 +1577,7 @@
           }
         },
         "filters": {
+          "albumTitle": "نام جُنگ",
           "artistName": "نام هنرمند",
           "creationDate": "تاریخ ایجاد",
           "modificationDate": "تاریخ اصلاح",
@@ -1423,6 +1598,7 @@
     "moderation": {
       "useEditConfigs": {
         "album": {
+          "releaseDate": "تاریخ انتشار",
           "title": "عنوان"
         },
         "artist": {
@@ -1435,8 +1611,16 @@
           "title": "عنوان"
         }
       },
+      "useReport": {
+        "album": {
+          "label": "گزارش این جُنگ…",
+          "typeLabel": "جُنگ"
+        }
+      },
       "useReportConfigs": {
         "album": {
+          "label": "جُنگ",
+          "releaseDate": "تاریخ انتشار",
           "title": "عنوان"
         },
         "creationDate": {
@@ -1473,6 +1657,7 @@
     },
     "Search": {
       "label": {
+        "albums": "جُنگ ها",
         "podcasts": "پادپخش‌ها",
         "rss": "خوراک‌وب‌ها",
         "tags": "برچسب ها"
@@ -1492,7 +1677,7 @@
             "playlists": "سیاهه‌پخش"
           },
           "audioContent": {
-            "albums": "جُنگ‌ها",
+            "albums": "جُنگ ها",
             "tracks": "اثرها",
             "uploads": "بارگذاری"
           },
@@ -1504,6 +1689,7 @@
       },
       "CommonList": {
         "title": {
+          "albums": "جُنگ ها",
           "tags": "برچسب ها",
           "users": "کاربرها"
         }
@@ -1517,13 +1703,58 @@
       },
       "library": {
         "AlbumDetail": {
+          "button": {
+            "delete": "‪برداشتن",
+            "edit": "ویرایش",
+            "remoteRefresh": "به‌روزرسانی از کارساز راه دور"
+          },
+          "header": {
+            "activity": "فعالیت",
+            "albumData": "داده‌های جُنگ",
+            "audioContent": "محتوای صوتی",
+            "federated": "فیدیورس",
+            "local": "محلی"
+          },
+          "link": {
+            "artist": "هنرمند",
+            "domain": "دامنه",
+            "edits": "ویرایش‌ها",
+            "libraries": "کتابخانه‌ها",
+            "localProfile": "باز کردن نمایهٔ محلی",
+            "remoteProfile": "باز کردن نمایهٔ از راه دور",
+            "reports": "گزارش‌های مرتبط",
+            "tracks": "اثرها",
+            "uploads": "بارگذاری"
+          },
+          "modal": {
+            "delete": {
+              "content": {
+                "warning": "جُنگ به‌همراه بارگذاری‌ها، اثرها، برگزیده‌ها و سابقهٔ گوش دادن مرتبط حذف خواهد شد. این اقدام برگشت‌ناپذیر است."
+              },
+              "header": "این آلبوم را بردارم؟"
+            }
+          },
           "table": {
+            "activity": {
+              "favorited": "اثر‌های برگزیده",
+              "firstSeen": "اولین بار دیده شد",
+              "listenings": "شنیده‌ها",
+              "playlists": "سیاهه پخش"
+            },
             "album": {
+              "description": "شرح",
               "title": "عنوان"
+            },
+            "audioContent": {
+              "cachedSize": "اندازهٔ حافظهٔ نهان",
+              "totalSize": "اندازه کل"
             }
           }
         },
         "ArtistDetail": {
+          "link": {
+            "albums": "جُنگ ها"
+          },
           "table": {
             "artist": {
               "name": "نام"
@@ -1532,10 +1763,25 @@
         },
         "Base": {
           "link": {
+            "albums": "جُنگ ها",
             "tags": "برچسب ها"
           }
         },
+        "LibraryDetail": {
+          "link": {
+            "albums": "جُنگ ها"
+          }
+        },
+        "TagDetail": {
+          "link": {
+            "albums": "جُنگ ها"
+          }
+        },
         "TrackDetail": {
+          "link": {
+            "album": "جُنگ",
+            "albumArtist": "هنرمند جُنگ"
+          },
           "table": {
             "track": {
               "title": "عنوان"
@@ -1545,6 +1791,9 @@
       },
       "moderation": {
         "AccountsDetail": {
+          "link": {
+            "albums": "جُنگ ها"
+          },
           "table": {
             "accountData": {
               "username": "نام کاربری"
@@ -1555,6 +1804,9 @@
           }
         },
         "DomainsDetail": {
+          "link": {
+            "albums": "جُنگ ها"
+          },
           "table": {
             "instanceData": {
               "inAllowList": {
@@ -1649,6 +1901,14 @@
           "domainView": ""
         }
       },
+      "DetailOverview": {
+        "header": {
+          "albums": "جُنگ ها"
+        },
+        "link": {
+          "addAlbum": "افزودن جدید"
+        }
+      },
       "SubscriptionsList": {
         "link": {
           "addNew": "افزودن جدید"
@@ -1659,6 +1919,11 @@
       }
     },
     "content": {
+      "Home": {
+        "button": {
+          "start": "شروع کنید"
+        }
+      },
       "libraries": {
         "Card": {
           "button": {
@@ -1666,6 +1931,9 @@
           }
         },
         "FilesTable": {
+          "action": {
+            "restartImport": "شروع مجدد درون‏بُرد"
+          },
           "ordering": {
             "direction": {
               "ascending": "بالارو",
@@ -1674,9 +1942,13 @@
             },
             "label": "مرتب‌سازی"
           },
+          "placeholder": {
+            "search": "جستجو بر اساس دامنه، عنوان، هنرمند، جُنگ و …"
+          },
           "table": {
             "file": {
               "header": {
+                "album": "جُنگ",
                 "title": "عنوان"
               }
             }
@@ -1696,9 +1968,21 @@
             "libraries": "در حال بارگیری کتابخانه‌ها…"
           }
         }
+      },
+      "remote": {
+        "Card": {
+          "label": {
+            "scanPartialSuccess": "اسکن شده با خطا"
+          }
+        }
       }
     },
     "library": {
+      "DetailAlbums": {
+        "empty": {
+          "follow": "برای دیدن محتوای این کتابخانه، ممکن است لازم باشد آن را ‌پی‌بگیرید."
+        }
+      },
       "Edit": {
         "table": {
           "action": {
@@ -1753,6 +2037,9 @@
       "PlaylistModal": {
         "empty": {
           "noPlaylists": "هنوز هیچ سیاهه‌پخشی ایجاد نشده است"
+        },
+        "header": {
+          "track": "{title}, توسط {artist}"
         },
         "placeholder": {
           "filterPlaylist": "نام سیاهه‌پخش را وارد کنید"
