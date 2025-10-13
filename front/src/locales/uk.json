@@ -5,32 +5,32 @@
   "components": {
     "About": {
       "description": {
-        "findApp": "",
-        "funkwhale": "",
-        "publicContent": "",
+        "findApp": "Використовуйте Funkwhale на інших пристроях за допомогою наших застосунків.",
+        "funkwhale": "Funkwhale — це проект, що підтримується спільнотою, який дозволяє слухати та ділитися музикою та аудіофайлами в децентралізованій відкритій мережі.",
+        "publicContent": "Слухайте публічні альбоми та плейлисти, якими поділилися в цьому подкасті.",
         "quota": "",
-        "signup": ""
+        "signup": "Зареєструйтеся зараз, щоб відстежувати свої улюблені записи, створювати плейлисти, відкривати для себе новий контент та багато іншого!"
       },
       "header": {
         "aboutPod": "",
-        "findApp": "",
-        "funkwhale": "",
-        "publicContent": "",
-        "signup": ""
+        "findApp": "Знайти застосунок",
+        "funkwhale": "Соціальна платформа для прослуховування та обміну музикою",
+        "publicContent": "Переглянути публічний контент",
+        "signup": "Зареєструватися"
       },
       "help": {
         "closedRegistrations": ""
       },
       "link": {
         "findOtherPod": "",
-        "learnMore": ""
+        "learnMore": "Дізнатися більше"
       },
       "message": {
-        "greeting": "",
-        "loggedIn": ""
+        "greeting": "Вітаю {username}",
+        "loggedIn": "Ви вже увійшли в систему!"
       },
       "placeholder": {
-        "noDescription": ""
+        "noDescription": "Опис відсутній"
       },
       "stat": {
         "activeUsers": "",
@@ -41,9 +41,9 @@
     "AboutPod": {
       "feature": {
         "allowList": "",
-        "anonymousAccess": "",
-        "federation": "",
-        "quota": "",
+        "anonymousAccess": "Анонімний доступ",
+        "federation": "Федерація",
+        "quota": "Квота на завантаження",
         "registrations": "",
         "status": {
           "closed": "",
@@ -4783,22 +4783,41 @@
   "vui": {
     "albums": "",
     "aria": {
+      "close": "Закрити",
       "pagination": {
         "currentPage": "",
-        "gotoNext": "",
-        "goToPage": "",
-        "gotoPrevious": "",
-        "nav": ""
+        "goToPage": "Перейти на сторінку {n}",
+        "gotoNext": "Перейти на наступну сторінку",
+        "gotoPrevious": "Перейти до попередньої сторінки",
+        "nav": "Навігація по сторінках"
+      },
+      "password": {
+        "hide": "Приховати пароль",
+        "show": "Показати пароль"
+      },
+      "text": {
+        "bold": "жирний",
+        "italic": "курсив",
+        "link": "посилання",
+        "orderedList": "порядковий список",
+        "quote": "цитата",
+        "strikethrough": "перекресленний",
+        "unorderedList": "неупорядкований список"
       }
     },
     "by-user": "",
+    "cancel": "Скасувати",
+    "deletItem": "Видалити {item}",
+    "delete": "Видалити",
     "episodes": "",
     "go-to": "",
     "pagination": {
+      "ellipsis": "…",
+      "enterPageNumber": "Перейти на сторінку…",
       "next": "",
       "previous": ""
     },
-    "radio": "",
+    "radio": "Радіо",
     "tracks": ""
   }
 }
