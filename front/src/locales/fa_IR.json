@@ -188,6 +188,9 @@
         "search": "جست‌و‌جو"
       },
       "label": {
+        "fediverse": {
+          "fieldPlaceholder": "{'@'}username{'@'}example.com"
+        },
         "rss": {
           "fieldLabel": "مکان خوراک‌وب",
           "title": "در کارهٔ خوراک‌خوان پادپخش، پی‌بگیرید"
@@ -249,6 +252,9 @@
       "SettingsGroup": {
         "button": {
           "save": "ذخیره"
+        },
+        "header": {
+          "error": "{label}: خطا هنگام ذخیره تنظیمات."
         }
       },
       "SignupFormBuilder": {
@@ -289,6 +295,9 @@
         "title": "به روز شده در { date }"
       },
       "ChannelForm": {
+        "help": {
+          "username": "برای استفاده در نشانی‌ها و پی‌گرفتن این کانال در فدیورس. در آینده قابل تغییر نیست."
+        },
         "label": {
           "category": "دسته بندی",
           "description": "شرح",
@@ -300,7 +309,8 @@
           "owner": "نام صاحب",
           "podcast": "پادپخش‌ها",
           "subcategory": "زیرشاخه",
-          "tags": "برچسب ها"
+          "tags": "برچسب ها",
+          "username": "شناسهٔ فدیورس"
         },
         "loader": {
           "loading": "بار کردن…"
@@ -369,6 +379,7 @@
           "previousTrack": "اثر قبلی"
         },
         "meta": {
+          "position": "{index} از {length}",
           "unknownAlbum": "جُنگ ناشناس"
         }
       },
@@ -499,6 +510,11 @@
               "label": "نوشتن"
             }
           }
+        }
+      },
+      "Authorize": {
+        "header": {
+          "access": "{app_name} می‌خواهد به حساب کاربری فانک‌وال شما دسترسی پیدا کند"
         }
       },
       "LoginForm": {
@@ -701,6 +717,11 @@
           "input": "یه چند کلمه ای اینجا بنویس ..."
         }
       },
+      "Duration": {
+        "meta": {
+          "minutes": "{minutes} دقیقه"
+        }
+      },
       "EmptyState": {
         "header": {
           "noResults": "هیچ نتیجه‌ای یافت نشد."
@@ -727,6 +748,11 @@
         "button": {
           "cancel": "لغو",
           "edit": "ویرایش"
+        }
+      },
+      "UserLink": {
+        "link": {
+          "username": "{'@'}{username}"
         }
       },
       "UserMenu": {
@@ -1006,6 +1032,7 @@
               "size": "اندازه",
               "status": "وضعیت"
             },
+            "progressNum": "{current} / {total}",
             "status": {
               "uploading": "بارگذاری…"
             }
@@ -1030,7 +1057,7 @@
       "Podcasts": {
         "button": {
           "cancel": "لغو",
-          "channel": "ایجاد کانال",
+          "channel": "ایجاد یک کانال",
           "feed": "اشتراک خوراک‌وب",
           "search": "جست‌و‌جو",
           "subscribe": "مشترک"
@@ -1890,6 +1917,22 @@
         "link": {
           "domainView": ""
         }
+      },
+      "ProfileOverview": {
+        "button": {
+          "createChannel": "ایجاد کانال"
+        },
+        "modal": {
+          "createChannel": {
+            "artist": {
+              "header": "ایجاد هنرمند"
+            },
+            "header": "ایجاد کانال",
+            "podcast": {
+              "header": "کانال پادپخش"
+            }
+          }
+        }
       }
     },
     "channels": {
@@ -1934,6 +1977,7 @@
           "action": {
             "restartImport": "شروع مجدد درون‏بُرد"
           },
+          "notApplicable": "N/A",
           "ordering": {
             "direction": {
               "ascending": "بالارو",
@@ -2004,6 +2048,11 @@
       }
     },
     "playlists": {
+      "Detail": {
+        "meta": {
+          "updated": "به روز شد"
+        }
+      },
       "List": {
         "empty": {
           "noResults": "هیچ نتیجه‌ٔ جورسازی با پُرسمان جست‌و‌جو شما یافت نشد"
