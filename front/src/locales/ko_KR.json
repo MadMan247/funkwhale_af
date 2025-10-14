@@ -1,15 +1,17 @@
 {
+  "App": {
+    "loading": "로드 중…"
+  },
   "components": {
-    "auth": {
-      "Authorize": {
-        "header": {
-          "access": "{ app } 이 Funkwhale 계정에 접근하려고 합니다"
-        }
-      }
-    },
     "About": {
       "stat": {
         "activeUsers": "{ count } 활성 사용자"
+      }
+    },
+    "AboutPod": {
+      "stat": {
+        "activeUsers": "{ count } 활성 사용자",
+        "listeningsCount": "{ count } 듣는중"
       }
     },
     "Home": {
@@ -17,15 +19,14 @@
         "activeUsers": "{ count } 활성 사용자"
       }
     },
-    "audio": {
-      "artist": {
-        "Card": {
-          "meta": {
-            "episodes": "{ count } 에피소드",
-            "tracks": "{ count } 트랙"
-          }
+    "RemoteSearchForm": {
+      "label": {
+        "rss": {
+          "fieldPlaceholder": "{'@'}channel{'@'}pod.example 또는 https://website.example/rss.xml"
         }
-      },
+      }
+    },
+    "audio": {
       "ChannelCard": {
         "meta": {
           "episodes": "{ count } 에피소드",
@@ -43,12 +44,26 @@
             "tracks": "{ count } 트랙"
           }
         }
+      },
+      "artist": {
+        "Card": {
+          "meta": {
+            "episodes": "{ count } 에피소드",
+            "tracks": "{ count } 트랙"
+          }
+        }
       }
     },
-    "library": {
-      "AlbumBase": {
+    "auth": {
+      "Authorize": {
+        "header": {
+          "access": "{ app } 이 Funkwhale 계정에 접근하려고 합니다"
+        }
+      }
+    },
+    "channels": {
+      "AlbumSelect": {
         "meta": {
-          "episodes": "{ count } 에피소드",
           "tracks": "{ count } 트랙"
         }
       }
@@ -60,9 +75,10 @@
         }
       }
     },
-    "channels": {
-      "AlbumSelect": {
+    "library": {
+      "AlbumBase": {
         "meta": {
+          "episodes": "{ count } 에피소드",
           "tracks": "{ count } 트랙"
         }
       }
@@ -73,22 +89,16 @@
           "tracks": "{ count } 트랙"
         }
       }
-    },
-    "AboutPod": {
-      "stat": {
-        "activeUsers": "{ count } 활성 사용자",
-        "listeningsCount": "{ count } 듣는중"
-      }
-    },
-    "RemoteSearchForm": {
-      "label": {
-        "rss": {
-          "fieldPlaceholder": "{'@'}channel{'@'}pod.example 또는 https://website.example/rss.xml"
-        }
-      }
     }
   },
   "views": {
+    "auth": {
+      "Signup": {
+        "header": {
+          "createAccount": "{ app } 이 Funkwhale 계정에 접근하려고 합니다"
+        }
+      }
+    },
     "channels": {
       "DetailBase": {
         "meta": {
@@ -121,13 +131,21 @@
           "tracks": "{ count } 트랙"
         }
       }
-    },
-    "auth": {
-      "Signup": {
-        "header": {
-          "createAccount": "{ app } 이 Funkwhale 계정에 접근하려고 합니다"
-        }
-      }
     }
+  },
+  "vui": {
+    "addItem": "",
+    "aria": {
+      "password": {
+        "hide": "비밀번호 숨기기",
+        "show": "비밀번호 표시"
+      },
+      "text": {
+        "link": "링크"
+      }
+    },
+    "cancel": "취소",
+    "delete": "삭제",
+    "deselect": "선택 해제"
   }
 }
