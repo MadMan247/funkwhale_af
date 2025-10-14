@@ -236,6 +236,7 @@
         "channels": "کانال‌ها",
         "createAccount": "ایجاد حساب‌کاربری",
         "favorites": "برگزیده",
+        "home": "خانه",
         "library": "کتابخانه",
         "login": "ورود",
         "moderation": "میان‌داری",
@@ -255,6 +256,9 @@
         },
         "header": {
           "error": "{label}: خطا هنگام ذخیره تنظیمات."
+        },
+        "message": {
+          "success": "تنظیمات با موفقیت به‌روزرسانی شد."
         }
       },
       "SignupFormBuilder": {
@@ -410,6 +414,7 @@
             "federation": "فدیورس",
             "podcasts": "پادپخش‌ها"
           },
+          "search": "جست‌و‌جو برای محتوا",
           "tag": "برچسب",
           "track": "اثر"
         },
@@ -418,6 +423,12 @@
         },
         "placeholder": {
           "search": "جست‌و‌جو هنرمندان، جُنگ ها، اثرها…"
+        }
+      },
+      "VolumeControl": {
+        "button": {
+          "mute": "بی‌صدا",
+          "unmute": "لغو بی‌صدا"
         }
       },
       "album": {
@@ -528,6 +539,9 @@
         "link": {
           "createAccount": "ایجاد حساب کاربری",
           "resetPassword": "گذرواژه خود را بازنشانی کنید"
+        },
+        "placeholder": {
+          "username": "نام کاربری یا نشانی رایانامهٔ خود را وارد کنید"
         }
       },
       "Logout": {
@@ -542,18 +556,34 @@
       },
       "Settings": {
         "button": {
-          "password": "تغییر گذرواژه"
+          "deleteAccount": "حساب کاربری من را حذف کنید…",
+          "deleteAccountConfirm": "من خطر را می‌پذیرم. حساب کاربری من را حذف کنید",
+          "password": "تغییر گذرواژه",
+          "refresh": "تازه کردن"
         },
         "header": {
+          "accountSettings": "تنظیمات حساب",
+          "authorizedApps": "کاره‌های مجاز",
+          "avatar": "چهرک",
+          "avatarFailure": "چهرک شما قابل ذخیره نیست",
+          "changeEmail": "تغییر نشانی رایانامهٔ من",
           "changePassword": "گذرواژه‌ٔ من را تغییر بده",
+          "contentFilters": "پالایه‌‌های محتوا",
+          "deleteAccount": "حساب کاربری من را حذف کنید",
           "hiddenArtists": "هنرمندان پنهان",
-          "passwordFailure": "گذرواژه شما قابل تغییر نیست"
+          "passwordFailure": "گذرواژه شما قابل تغییر نیست",
+          "plugins": "افزونه‌ها",
+          "updateFailure": "تنظیمات شما قابل به‌روزرسانی نیست"
         },
         "label": {
+          "avatar": "چهرک",
           "currentPassword": "گذرواژه جاری",
           "newEmail": "نشانی رایانامهٔ جدید",
           "newPassword": "گذرواژهٔ جدید",
           "password": "گذرواژه"
+        },
+        "link": {
+          "managePlugins": "مدیریت افزونه‌ها"
         },
         "message": {
           "currentEmail": "نشانی رایانامهٔ فعلی شماست {email}"
@@ -570,12 +600,18 @@
               "name": "نام"
             }
           },
+          "authorizedApps": {
+            "header": {
+              "permissions": "مجوزها"
+            }
+          },
           "yourApps": {
             "header": {
               "creationDate": "تاریخ ایجاد"
             }
           }
-        }
+        },
+        "title": "تنظیمات حساب"
       },
       "SignupForm": {
         "header": {
@@ -589,6 +625,11 @@
         },
         "message": {
           "registrationClosed": "نام‌نویسی عمومی در این نمونه امکان پذیر نیست. برای نام‌نویسی به کد دعوت نیاز دارید."
+        },
+        "placeholder": {
+          "email": "نشانی رایانامهٔ خود را وارد کنید",
+          "invitation": "کد دعوت خود را وارد کنید (به حروف کوچک و بزرگ حساس نیست)",
+          "username": "نام کاربری خود را وارد کنید"
         }
       },
       "SubsonicTokenForm": {
@@ -699,6 +740,9 @@
     },
     "common": {
       "AttachmentInput": {
+        "button": {
+          "remove": "برداشتن"
+        },
         "help": {
           "upload": "PNG یا JPG. ابعاد باید بین ۱۴۰۰x۱۴۰۰px و ۳۰۰۰x۳۰۰۰px باشد. حداکثر حجم مجاز پرونده ۵ مگابایت است."
         },
@@ -723,6 +767,9 @@
         }
       },
       "EmptyState": {
+        "button": {
+          "refresh": "تازه کردن"
+        },
         "header": {
           "noResults": "هیچ نتیجه‌ای یافت نشد."
         }
@@ -836,6 +883,9 @@
       "FetchButton": {
         "button": {
           "reload": "صفحه را ببندید و دوباره بارگذاری کنید"
+        },
+        "header": {
+          "failure": "تازه کردن خطا"
         },
         "loader": {
           "awaitingResult": "منتظر نتیجه…",
@@ -1029,6 +1079,7 @@
         "table": {
           "upload": {
             "header": {
+              "filename": "نام‌پرونده",
               "size": "اندازه",
               "status": "وضعیت"
             },
@@ -1044,8 +1095,10 @@
           "newChannels": "کانال‌های جدید",
           "playlists": "سیاهه پخش",
           "recentlyAdded": "در این اواخر اضافه شده است",
+          "recentlyFavorited": "اخیراً برگزیده شده است",
           "recentlyListened": "اخیراً گوش داده شده"
-        }
+        },
+        "title": "کتابخانه"
       },
       "ImportStatusModal": {
         "error": {
@@ -1095,7 +1148,8 @@
       },
       "Radios": {
         "button": {
-          "create": "رادیوی خودتان را ایجاد کنید"
+          "create": "رادیوی خودتان را ایجاد کنید",
+          "search": "جست‌و‌جو"
         },
         "empty": {
           "noResults": "هیچ نتیجه‌ٔ جورسازی با پُرسمان جست‌و‌جو شما یافت نشد"
@@ -1104,6 +1158,9 @@
           "browse": "مرور رادیوها",
           "instance": "رادیوهای نمونه",
           "user": "رادیوهای کاربر"
+        },
+        "label": {
+          "search": "جست‌و‌جو"
         },
         "ordering": {
           "direction": {
@@ -1150,7 +1207,8 @@
         },
         "link": {
           "discogs": "جست‌و‌جو در دیسکوگز",
-          "domain": "به روز شده در { date }"
+          "domain": "به روز شده در { date }",
+          "wikipedia": "‍جست‌و‌جو در ویکی‌پدیا"
         }
       },
       "TrackDetail": {
@@ -1220,6 +1278,9 @@
             "label": "جهت مرتب‌سازی"
           },
           "label": "مرتب‌سازی"
+        },
+        "placeholder": {
+          "search": "جست‌وجو بر اساس دامنه، نام، حساب کاربری…"
         },
         "table": {
           "channel": {
@@ -1294,6 +1355,9 @@
           }
         },
         "EditsCardList": {
+          "label": {
+            "search": "جست‌و‌جو"
+          },
           "ordering": {
             "direction": {
               "ascending": "بالارو",
@@ -1301,9 +1365,15 @@
               "label": "نظم"
             },
             "label": "مرتب‌سازی"
+          },
+          "placeholder": {
+            "search": "جستجو بر اساس حساب کاربری، خلاصه، دامنه…"
           }
         },
         "LibrariesTable": {
+          "label": {
+            "search": "جست‌و‌جو"
+          },
           "ordering": {
             "direction": {
               "ascending": "بالارو",
@@ -1312,10 +1382,15 @@
             },
             "label": "مرتب‌سازی"
           },
+          "placeholder": {
+            "search": "جستجو بر اساس دامنه، هنرپیشه، نام، توضیحات…"
+          },
           "table": {
             "library": {
               "header": {
-                "creationDate": "تاریخ ایجاد"
+                "creationDate": "تاریخ ایجاد",
+                "followers": "پی‌گیر‌ها",
+                "name": "نام"
               }
             }
           }
@@ -1336,6 +1411,9 @@
               "label": "جهت مرتب‌سازی"
             },
             "label": "مرتب‌سازی"
+          },
+          "placeholder": {
+            "search": "جست‌و‌جو بر اساس نام"
           },
           "table": {
             "tag": {
@@ -1375,6 +1453,9 @@
           }
         },
         "UploadsTable": {
+          "label": {
+            "search": "جست‌و‌جو"
+          },
           "ordering": {
             "direction": {
               "ascending": "بالارو",
@@ -1394,6 +1475,9 @@
       },
       "moderation": {
         "AccountsTable": {
+          "label": {
+            "search": "جست‌و‌جو"
+          },
           "ordering": {
             "direction": {
               "ascending": "بالارو",
@@ -1409,6 +1493,9 @@
           }
         },
         "DomainsTable": {
+          "label": {
+            "search": "جست‌و‌جو"
+          },
           "option": {
             "yes": "بله"
           },
@@ -1419,6 +1506,9 @@
               "label": "جهت مرتب‌سازی"
             },
             "label": "مرتب‌سازی"
+          },
+          "placeholder": {
+            "search": "جست‌و‌جو بر اساس نام"
           },
           "table": {
             "domain": {
@@ -1432,20 +1522,52 @@
         "InstancePolicyCard": {
           "header": {
             "rule": "شرایط همزیستی"
+          },
+          "label": {
+            "blockAll": "مسدود کردن همه",
+            "muteActivity": "بی‌صدا کردن فعالیت",
+            "muteNotifications": "بی‌صدا کردن آگاهی‌ها",
+            "reason": "دلیل",
+            "rejectMedia": "رد کردن رسانه‌ها"
+          },
+          "status": {
+            "enabled": "فعال شده",
+            "paused": "متوقف شد"
           }
         },
         "InstancePolicyForm": {
           "button": {
-            "confirm": "برداشتن میان‌داری شرایط همزیستی"
+            "cancel": "لغو",
+            "confirm": "برداشتن میان‌داری شرایط همزیستی",
+            "delete": "برداشتن",
+            "update": "به روز رسانی"
           },
           "header": {
             "addRule": "یک «شرایط همزیستی» جدید اضافه کنید.",
             "editRule": "ویرایش میان‌داری شرایط همزیستی",
             "failure": "خطا در هنگام ایجاد شرایط همزیستی"
+          },
+          "label": {
+            "blockAll": "مسدود کردن همه",
+            "customizeRule": "یا شرایط همزیستی خود را سفارشی کنید",
+            "policyDisabled": "غیرفعال",
+            "policyEnabled": "فعال شده",
+            "policyReason": "دلیل",
+            "rejectMedia": "رد کردن رسانه‌ها",
+            "silenceActivity": "بی‌صدا کردن فعالیت",
+            "silenceNotifications": "بی‌صدا کردن آگاهی‌ها"
+          },
+          "modal": {
+            "delete": {
+              "content": {
+                "warning": "این اقدام برگشت‌ناپذیر است"
+              }
+            }
           }
         },
         "InstancePolicyModal": {
           "button": {
+            "close": "بستن",
             "show": "شرایط همزیستی میان‌دار"
           }
         },
@@ -1491,8 +1613,14 @@
       },
       "users": {
         "InvitationsTable": {
+          "label": {
+            "search": "جست‌و‌جو"
+          },
           "ordering": {
             "label": "مرتب‌سازی"
+          },
+          "placeholder": {
+            "search": "جست‌و‌جو بر اساس نام کاربری، نشانی رایانامه، کد و …"
           },
           "table": {
             "invitation": {
@@ -1503,6 +1631,9 @@
           }
         },
         "UsersTable": {
+          "label": {
+            "search": "جست‌و‌جو"
+          },
           "ordering": {
             "direction": {
               "ascending": "بالارو",
@@ -1510,6 +1641,9 @@
               "label": "جهت مرتب‌سازی"
             },
             "label": "مرتب‌سازی"
+          },
+          "placeholder": {
+            "search": "جست‌و‌جو بر اساس نام‌کاربری، نشانی‌رایانامه، نام و …"
           },
           "table": {
             "user": {
@@ -1527,6 +1661,14 @@
           "createFilter": {
             "listItem3": "در سیاهه هنرمندان و جُنگ‌ها"
           }
+        }
+      },
+      "ReportModal": {
+        "label": {
+          "message": "پیام"
+        },
+        "message": {
+          "submissionSuccess": "گزارش با موفقیت ارسال شد، متشکریم"
         }
       }
     },
@@ -1575,7 +1717,8 @@
         "table": {
           "edit": {
             "header": {
-              "lastModification": "آخرین اصلاح"
+              "lastModification": "آخرین اصلاح",
+              "name": "نام"
             }
           }
         }
@@ -1601,6 +1744,21 @@
             "choices": {
               "podcast": "پادپخش"
             }
+          },
+          "privacyLevel": {
+            "choices": {
+              "followers": "پی‌گیران من",
+              "instance": "همه در این نمونه",
+              "private": "هیچکس جز من",
+              "public": "همه، در همه نمونه‌ها"
+            },
+            "help": "سطح دیدپذیری فعالیت خود را تعیین کنید",
+            "label": "مشاهدهٔ فعالیت",
+            "shortChoices": {
+              "instance": "نمونه",
+              "private": "هیچکس جز من",
+              "public": "همه"
+            }
           }
         },
         "filters": {
@@ -1618,6 +1776,10 @@
           "favorites": {
             "description": "دسترسی به برگزیده‌ها",
             "label": "برگزیده‌ها"
+          },
+          "filters": {
+            "description": "دسترسی به پالایه‌‌های محتوا",
+            "label": "پالایه‌‌های محتوا"
           }
         }
       }
@@ -1653,6 +1815,9 @@
         "creationDate": {
           "label": "تاریخ ایجاد"
         },
+        "name": {
+          "label": "نام"
+        },
         "tags": {
           "label": "برچسب ها"
         },
@@ -1673,25 +1838,45 @@
     }
   },
   "views": {
+    "ChooseInstance": {
+      "label": {
+        "url": "نشانی نمونه"
+      }
+    },
     "Notifications": {
       "header": {
         "messages": "پیام های شما",
         "notifications": "اعلان های شما"
+      },
+      "label": {
+        "reminder": "به من یادآوری کن در:"
       },
       "loading": {
         "notifications": "در حال بارگیری اطلاعیه‌ها…"
       }
     },
     "Search": {
+      "header": {
+        "rss": "در کارهٔ خوراک‌خوان پادپخش، مشترک شوید",
+        "search": "جست‌و‌جو"
+      },
       "label": {
-        "albums": "جُنگ ها",
+        "albums": "جُنگ‌ها",
+        "artists": "هنرمندان",
+        "playlists": "سیاهه‌پخش",
         "podcasts": "پادپخش‌ها",
+        "radios": "رادیو‌ها",
         "rss": "خوراک‌وب‌ها",
-        "tags": "برچسب ها"
+        "series": "دورسنگ",
+        "tags": "برچسب ها",
+        "tracks": "اثرها"
       }
     },
     "admin": {
       "ChannelDetail": {
+        "button": {
+          "refresh": "به‌روزرسانی از کارساز راه دور"
+        },
         "label": {
           "federated": "فیدیورس",
           "local": "محلی"
@@ -1709,6 +1894,7 @@
             "uploads": "بارگذاری"
           },
           "channelData": {
+            "name": "نام",
             "rss": "خوراک‌‌وب",
             "url": "نشانی"
           }
@@ -1724,8 +1910,10 @@
       "Settings": {
         "header": {
           "federation": "فدیورس",
+          "instanceInfo": "اطلاعات نمونه",
           "music": "موسیقی",
-          "playlists": "سیاهه‌پخش"
+          "playlists": "سیاهه‌پخش",
+          "settings": "تنظیمات نمونه"
         }
       },
       "library": {
@@ -1779,6 +1967,9 @@
           }
         },
         "ArtistDetail": {
+          "button": {
+            "remoteRefresh": "به‌روزرسانی از کارساز راه دور"
+          },
           "link": {
             "albums": "جُنگ ها"
           },
@@ -1792,19 +1983,35 @@
           "link": {
             "albums": "جُنگ ها",
             "tags": "برچسب ها"
+          },
+          "menu": {
+            "secondary": "منوی ثانویه"
           }
         },
         "LibraryDetail": {
           "link": {
             "albums": "جُنگ ها"
+          },
+          "table": {
+            "library": {
+              "name": "نام"
+            }
           }
         },
         "TagDetail": {
           "link": {
             "albums": "جُنگ ها"
+          },
+          "table": {
+            "tag": {
+              "name": "نام"
+            }
           }
         },
         "TrackDetail": {
+          "button": {
+            "remoteRefresh": "به‌روزرسانی از کارساز راه دور"
+          },
           "link": {
             "album": "جُنگ",
             "albumArtist": "هنرمند جُنگ"
@@ -1814,6 +2021,13 @@
               "title": "عنوان"
             }
           }
+        },
+        "UploadDetail": {
+          "table": {
+            "upload": {
+              "name": "نام"
+            }
+          }
         }
       },
       "moderation": {
@@ -1821,8 +2035,14 @@
           "link": {
             "albums": "جُنگ ها"
           },
+          "option": {
+            "permission": {
+              "settings": "تنظیمات"
+            }
+          },
           "table": {
             "accountData": {
+              "displayName": "نام نمایشی",
               "username": "نام کاربری"
             },
             "audioContent": {
@@ -1838,11 +2058,17 @@
             "instanceData": {
               "inAllowList": {
                 "true": "بله"
+              },
+              "nodeInfoStatus": {
+                "label": "وضعیت"
               }
             }
           }
         },
         "ReportsList": {
+          "label": {
+            "search": "جست‌و‌جو"
+          },
           "ordering": {
             "direction": {
               "ascending": "بالارو",
@@ -1850,9 +2076,15 @@
               "label": "نظم"
             },
             "label": "مرتب‌سازی"
+          },
+          "placeholder": {
+            "search": "جست‌و‌جو بر اساس حساب‌کاربری، خلاصه، دامنه…"
           }
         },
         "RequestsList": {
+          "label": {
+            "search": "جست‌و‌جو"
+          },
           "ordering": {
             "direction": {
               "ascending": "بالارو",
@@ -1860,6 +2092,9 @@
               "label": "نظم"
             },
             "label": "مرتب‌سازی"
+          },
+          "placeholder": {
+            "search": "جست‌وجو بر اساس نام کاربری"
           }
         }
       },
@@ -1887,6 +2122,9 @@
         "link": {
           "back": "بازگشت به ورود"
         },
+        "placeholder": {
+          "email": "نشانی رایانامهٔ مرتبط با حساب کاربری خود را وارد کنید"
+        },
         "title": "گذرواژه خود را بازنشانی کنید"
       },
       "PasswordResetConfirm": {
@@ -1908,14 +2146,19 @@
         },
         "title": "تغییر گذرواژه"
       },
+      "Plugins": {
+        "title": "مدیریت افزونه‌ها"
+      },
       "ProfileActivity": {
         "header": {
+          "recentlyFavorited": "اخیراً برگزیده شده است",
           "recentlyListened": "اخیراً گوش داده شده"
         }
       },
       "ProfileBase": {
         "link": {
-          "domainView": ""
+          "domainView": "",
+          "edit": "ویرایش نمایه"
         }
       },
       "ProfileOverview": {
@@ -1977,6 +2220,9 @@
           "action": {
             "restartImport": "شروع مجدد درون‏بُرد"
           },
+          "label": {
+            "search": "جست‌و‌جو"
+          },
           "notApplicable": "N/A",
           "ordering": {
             "direction": {
@@ -2018,6 +2264,11 @@
           "label": {
             "scanPartialSuccess": "اسکن شده با خطا"
           }
+        },
+        "ScanForm": {
+          "button": {
+            "submit": "ارسال جست‌و‌جو"
+          }
         }
       }
     },
@@ -2050,15 +2301,22 @@
     "playlists": {
       "Detail": {
         "meta": {
+          "attribution": "توسط",
           "updated": "به روز شد"
         }
       },
       "List": {
+        "button": {
+          "search": "جست‌و‌جو"
+        },
         "empty": {
           "noResults": "هیچ نتیجه‌ٔ جورسازی با پُرسمان جست‌و‌جو شما یافت نشد"
         },
         "header": {
           "browse": "مرور سیاهه‌های‌پخش"
+        },
+        "label": {
+          "search": "جست‌و‌جو"
         },
         "ordering": {
           "direction": {
