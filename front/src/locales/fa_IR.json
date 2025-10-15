@@ -94,13 +94,14 @@
           "paragraph1": "این پاد، فانک‌وال را اجرا می‌کند، یک پروژه‌ی اجتماعی که به شما امکان می‌دهد در یک شبکه‌ی غیرمتمرکز و باز، به موسیقی و صدا گوش دهید و آن را همرسانی کنید.",
           "paragraph2": "فانک‌وال رایگان است و توسط یک جامعهٔ دوستانه از داوطلبان توسعه داده شده است."
         },
-        "quota": "کاربران این پاد همچنین {quota} فضای ذخیره‌سازی رایگان برای بارگذاری محتوای خود دریافت می‌کنند!"
+        "quota": "کاربران این پاد همچنین {quota} فضای ذخیره‌سازی رایگان برای بارگذاری محتوای خود دریافت می‌کنند!",
+        "signup": "همین حالا نام‌نویسی کنید، تا موارد دلخواه خود را پیگیری کنید، سیاهه پخش ایجاد کنید، محتوای جدید کشف کنید و موارد دیگر!"
       },
       "header": {
         "about": "دربارهٔ این پاد فانک‌وال",
         "aboutFunkwhale": "درباره فانک‌وال",
         "contact": "تماس",
-        "links": "لینک های مفید",
+        "links": "پیوند‌های مفید",
         "login": "ورود",
         "newAlbums": "جُنگ های به تازگی اضافه شده",
         "newChannels": "کانال‌های جدید",
@@ -112,6 +113,7 @@
         "registrationsClosed": "نام‌نویسی در این پاد بسته شده است؛ می‌توانید با استفاده از نشانی زیر در پاد دیگری نام‌نویسی کنید."
       },
       "link": {
+        "findOtherPod": "یافتن پاد‌های دیگر",
         "funkwhale": "به funkwhale.audio مراجعه کنید",
         "learnMore": "بیشتر یادبگیرید",
         "mobileApps": {
@@ -177,7 +179,7 @@
       "meta": {
         "end": "پایان",
         "startTime": "00:00",
-        "unknownAlbum": "جُنگ ناشناس",
+        "unknownAlbum": "جُنگ ناشناخته",
         "unknownArtist": "هنرمند ناشناخته"
       }
     },
@@ -186,6 +188,9 @@
         "fediverse": "فدیورِس",
         "rss": "خوراک‌وب",
         "search": "جست‌و‌جو"
+      },
+      "description": {
+        "fediverse": "از این داده‌برگه برای عضویت در کانالی که در جای دیگری در فدیورس میزبانی می‌شود، استفاده کنید."
       },
       "label": {
         "fediverse": {
@@ -206,16 +211,25 @@
       },
       "shortcut": {
         "audio": {
+          "clearQueue": "زودن صف",
+          "label": "میانبرهای پخش‌کنندهٔ صوتی",
           "playNext": "پخش اثر بعدی",
-          "playPrevious": "پخش اثر قبلی"
+          "playPause": "مکث/پخش اثر فعلی",
+          "playPrevious": "پخش اثر قبلی",
+          "shuffleQueue": "پخش تصادفی",
+          "toggleFavorite": "تغییر وضعیت به برگزیده",
+          "toggleMute": "بی‌صدا کردن"
         },
         "general": {
+          "focus": "تمرکز بیشتر در جست‌و‌جو",
+          "label": "میانبرهای عمومی",
           "show": "نمایش میانبرهای صفحه کلید موجود"
         }
       }
     },
     "Sidebar": {
       "header": {
+        "administration": "مدیریت",
         "explore": "کاوش",
         "library": "کتابخانهٔ من",
         "more": "بیشتر"
@@ -223,6 +237,7 @@
       "label": {
         "add": "افزودن محتوا",
         "administration": "مدیریت",
+        "edits": "ویرایش‌های در انتظار بررسی",
         "language": "زبان",
         "main": "منوی اصلی",
         "play": "پخش این اثر",
@@ -265,6 +280,9 @@
         "button": {
           "edit": "ویرایش داده‌برگه",
           "preview": "پیش‏‌نمایش داده‌برگه"
+        },
+        "help": {
+          "helpText": "متنی اختیاری که در ابتدای داده‌برگه نام‌نویسی نمایش داده می‌شود."
         },
         "label": {
           "delete": "‪برداشتن",
@@ -368,7 +386,8 @@
           "hideArtist": "پنهان کردن محتوا از این هنرمند",
           "playAlbum": "پخش جُنگ",
           "playArtist": "پخش هنرمند",
-          "playNow": "اجرا",
+          "playNext": "پخش بعدی",
+          "playNow": "پخش",
           "playPlaylist": "پخش سیاهه‌پخش",
           "playTrack": "پخش اثر",
           "playTracks": "پخش اثر‌ها",
@@ -379,6 +398,7 @@
       },
       "Player": {
         "label": {
+          "clearQueue": "زدودن صف خود",
           "nextTrack": "اثر بعدی",
           "previousTrack": "اثر قبلی"
         },
@@ -466,7 +486,9 @@
           "button": {
             "addToFavorites": "افزودن به برگزیده‌ها",
             "albumDetails": "مشاهده جٌنگ",
+            "playNext": "پخش بعدی",
             "removeFromFavorites": "برداشتن از برگزیده‌ها",
+            "startRadio": "پخش رادیو",
             "trackDetails": "جزئیات اثر"
           }
         }
@@ -487,7 +509,7 @@
             "channelDetails": "نظاره کانال",
             "episodeDetails": "جزئیات قسمت",
             "playNext": "پخش بعدی",
-            "playNow": "اجرا",
+            "playNow": "پخش",
             "removeFromFavorites": "برداشتن از برگزیده‌ها",
             "seriesDetails": "نظاره دورسنگ",
             "startRadio": "پخش رادیو",
@@ -614,6 +636,9 @@
         "title": "تنظیمات حساب"
       },
       "SignupForm": {
+        "button": {
+          "create": "حساب کاربری من را ایجاد کنید"
+        },
         "header": {
           "login": "وارد حساب کاربری فانک‌وال خود شوید",
           "signupFailure": "حساب کاربری شما قابل ایجاد نیست."
@@ -809,8 +834,10 @@
           "theme": "تغییر زمینه"
         },
         "link": {
+          "chat": "اتاق گفتگو",
           "docs": "مستندات",
           "forum": "انجمن",
+          "git": "پیمایش موضوع",
           "login": "ورود",
           "logout": "خروج",
           "notifications": "آگاهی‌ها",
@@ -991,7 +1018,7 @@
       },
       "ArtistBase": {
         "button": {
-          "play": "پخش همه مرور جُنگ‌ها"
+          "play": "پخش همهٔ جُنگ‌ها"
         },
         "link": {
           "discogs": "جست‌و‌جو در دیسکوگز",
@@ -1731,7 +1758,9 @@
     },
     "radios": {
       "Button": {
+        "startRadio": "پخش رادیو",
         "startTagsRadio": "شروع برچسب‌های رادیویی",
+        "stopPlaylistsRadio": "توقف سیاهه‌پخش رادیو",
         "stopTagsRadio": "برچسب‌های رادیو را متوقف کنید"
       }
     }
@@ -1826,6 +1855,9 @@
         }
       }
     },
+    "useErrorHandler": {
+      "leaveFeedback": "بازخورد ارسال کنید"
+    },
     "useThemeList": {
       "browserDefault": "مرورگر پیش‌‌گزیده",
       "darkTheme": "تیره",
@@ -1857,7 +1889,7 @@
     },
     "Search": {
       "header": {
-        "rss": "در کارهٔ خوراک‌خوان پادپخش، مشترک شوید",
+        "rss": "در کارهٔ خوراک‌خوان پادپخش، پی‌بگیرید",
         "search": "جست‌و‌جو"
       },
       "label": {
@@ -1903,12 +1935,14 @@
       "CommonList": {
         "title": {
           "albums": "جُنگ ها",
+          "channels": "کانال‌ها",
           "tags": "برچسب ها",
           "users": "کاربرها"
         }
       },
       "Settings": {
         "header": {
+          "channels": "کانال‌ها",
           "federation": "فدیورس",
           "instanceInfo": "اطلاعات نمونه",
           "music": "موسیقی",
@@ -1982,6 +2016,7 @@
         "Base": {
           "link": {
             "albums": "جُنگ ها",
+            "channels": "کانال‌ها",
             "tags": "برچسب ها"
           },
           "menu": {
@@ -2033,7 +2068,8 @@
       "moderation": {
         "AccountsDetail": {
           "link": {
-            "albums": "جُنگ ها"
+            "albums": "جُنگ ها",
+            "channels": "کانال‌ها"
           },
           "option": {
             "permission": {
@@ -2052,7 +2088,8 @@
         },
         "DomainsDetail": {
           "link": {
-            "albums": "جُنگ ها"
+            "albums": "جُنگ ها",
+            "channels": "کانال‌ها"
           },
           "table": {
             "instanceData": {
@@ -2165,6 +2202,9 @@
         "button": {
           "createChannel": "ایجاد کانال"
         },
+        "header": {
+          "channels": "کانال‌ها"
+        },
         "modal": {
           "createChannel": {
             "artist": {
@@ -2176,14 +2216,31 @@
             }
           }
         }
+      },
+      "Signup": {
+        "header": {
+          "createAccount": "یک حساب‌‌کاربری فانک‌وال ایجاد کنید"
+        }
       }
     },
     "channels": {
       "DetailBase": {
         "button": {
+          "cancel": "لغو",
+          "confirm": "برداشتن",
+          "delete": "برداشتن…",
+          "edit": "ویرایش…",
+          "embed": "جاسازی",
+          "play": "پخش",
+          "updateChannel": "به‌روزرسانی کانال",
           "upload": "بارگذاری"
         },
+        "header": {
+          "artistChannel": "کانال هنرمند",
+          "podcastChannel": "کانال پادپخش"
+        },
         "link": {
+          "channelEpisodes": "همه قسمت‌ها",
           "domainView": ""
         }
       },
