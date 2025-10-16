@@ -186,6 +186,7 @@
       },
       "meta": {
         "end": "پایان",
+        "queuePosition": "اثر{index} از{length}",
         "startTime": "00:00",
         "unknownAlbum": "جُنگ ناشناخته",
         "unknownArtist": "هنرمند ناشناخته"
@@ -220,12 +221,16 @@
       "shortcut": {
         "audio": {
           "clearQueue": "زودن صف",
+          "decreaseVolume": "کاهش صدا",
+          "expandQueue": "",
+          "increaseVolume": "افزایش صدا",
           "label": "میانبرهای پخش‌کنندهٔ صوتی",
           "playNext": "پخش اثر بعدی",
           "playPause": "مکث/پخش اثر فعلی",
           "playPrevious": "پخش اثر قبلی",
           "shuffleQueue": "پخش تصادفی",
           "toggleFavorite": "تغییر وضعیت به برگزیده",
+          "toggleLoop": "تغییر حالت به تکرار صف",
           "toggleMute": "بی‌صدا کردن"
         },
         "general": {
@@ -457,6 +462,9 @@
         "button": {
           "mute": "بی‌صدا",
           "unmute": "لغو بی‌صدا"
+        },
+        "label": {
+          "slider": "تنظیم صدا"
         }
       },
       "album": {
@@ -475,6 +483,7 @@
         "Card": {
           "meta": {
             "albums": "بدون جُنگ ‌ها | {n} جُنگ | {n} جُنگ ‌ها",
+            "episodes": "بدون قسمت‌ها | {n} قسمت| {n} قسمت‌ها",
             "tracks": "بدون‌ اثر | {n} اثر| {n} اثرها"
           }
         },
@@ -494,8 +503,13 @@
           "button": {
             "addToFavorites": "افزودن به برگزیده‌ها",
             "albumDetails": "مشاهده جٌنگ",
+            "artistDetails": "نظارهٔ هنرمند",
+            "channelDetails": "نظارهٔ کانال",
+            "episodeDetails": "جزئیات قسمت",
             "playNext": "پخش بعدی",
+            "playNow": "پخش",
             "removeFromFavorites": "برداشتن از برگزیده‌ها",
+            "seriesDetails": "نظاره دورسنگ",
             "startRadio": "پخش رادیو",
             "trackDetails": "جزئیات اثر"
           }
@@ -544,18 +558,65 @@
       }
     },
     "auth": {
-      "ApplicationForm": {
+      "ApplicationEdit": {
+        "header": {
+          "appDetails": "جزئیات کاره",
+          "appSecretWarning": "یک نسخه از این توکن را در جای امن نگه دارید.",
+          "editApp": "ویرایش کاره"
+        },
+        "help": {
+          "appDetails": "شناسهٔ برنامه و کلید مخفی (secret) مقادیری بسیار حساس هستند و باید مانند گذرواژه برخورد شود. آن‌ها را با هیچ‌کس به اشتراک نگذارید."
+        },
         "label": {
+          "accessToken": "توکن دسترسی",
+          "appId": "شناسهٔ کاره"
+        },
+        "link": {
+          "settings": "بازگشت به تنظیمات"
+        },
+        "message": {
+          "appSecretWarning": "پس از ترک این صفحه دیگر قادر به مشاهدهٔ آن نخواهید بود."
+        },
+        "title": "ویرایش کاره"
+      },
+      "ApplicationForm": {
+        "button": {
+          "create": "ایجاد کاره",
+          "update": "به‌روزرسانی کاره"
+        },
+        "header": {
+          "failure": "نمی‌توانیم تغییرات شما را ذخیره کنیم"
+        },
+        "label": {
+          "name": "نام",
           "scopes": {
+            "read": {
+              "description": "دسترسی فقط‌خواندنی به داده‌های کاربر"
+            },
             "write": {
               "label": "نوشتن"
             }
           }
         }
       },
+      "ApplicationNew": {
+        "link": {
+          "settings": "بازگشت به تنظیمات"
+        },
+        "title": "ایجاد یک کاره جدید"
+      },
       "Authorize": {
+        "button": {
+          "authorize": "مجوز دادن به {app}"
+        },
         "header": {
-          "access": "{app_name} می‌خواهد به حساب کاربری فانک‌وال شما دسترسی پیدا کند"
+          "access": "{app_name} می‌خواهد به حساب کاربری فانک‌وال شما دسترسی پیدا کند",
+          "allScopes": "دسترسی کامل",
+          "readOnly": "فقط خواندنی",
+          "writeOnly": "فقط نوشتنی"
+        },
+        "help": {
+          "copyCode": "کدی به شما نشان داده می‌شود تا در کاره کپی و جای‌گذاری کنید"
         }
       },
       "LoginForm": {
@@ -2451,6 +2512,9 @@
         },
         "modal": {
           "delete": {
+            "content": {
+              "warning": "این رادیو به‌طور کامل برداشته خواهد شد و قابل بازگشت نیست."
+            },
             "header": "آیا می‌خواهید رادیو را بردارید {radio}؟"
           }
         },
