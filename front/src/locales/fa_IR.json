@@ -1184,12 +1184,27 @@
               "uploading": "بارگذاری…"
             }
           }
+        },
+        "tooltip": {
+          "retry": "دوباره امتحان کنید",
+          "size": "نمی‌توان این پرونده را بارگذاری کرد، مطمئن شوید که اندازه‌ٔ پرونده بزرگ نیست",
+          "timeout": "زمان بارگذاری تمام شده است، لطفاً دوباره تلاش کنید"
+        }
+      },
+      "FsBrowser": {
+        "button": {
+          "import": "درون‏بُرد"
+        }
+      },
+      "FsLogs": {
+        "empty": {
+          "notStarted": "درون‏بُردهنوز شروع نشده است"
         }
       },
       "Home": {
         "header": {
           "newChannels": "کانال‌های جدید",
-          "playlists": "سیاهه پخش",
+          "playlists": "سیاهه‌پخش",
           "recentlyAdded": "در این اواخر اضافه شده است",
           "recentlyFavorited": "اخیراً برگزیده شده است",
           "recentlyListened": "اخیراً گوش داده شده"
@@ -1197,9 +1212,34 @@
         "title": "کتابخانه"
       },
       "ImportStatusModal": {
+        "button": {
+          "close": "بستن"
+        },
         "error": {
+          "importFailure": "یک خطا در حین پردازش بارگذاری رخ داده است. اطلاعات بیشتری در زیر خواهید یافت.",
+          "invalidMetadata": {
+            "label": "فرادادهٔ نامعتبر"
+          },
           "unknownError": {
-            "label": "خطای ناشناخته"
+            "label": "خطای ناشناخته",
+            "message": "یک خطای ناشناخته رخ داده است."
+          }
+        },
+        "header": {
+          "importDetail": "جزئیات درون‏بُرد"
+        },
+        "link": {
+          "documentation": "مستندات را برای این خطا بخوایند"
+        },
+        "message": {
+          "importSuccess": "بارگذاری با موفقیت توسط کارساز پردازش شد."
+        },
+        "table": {
+          "error": {
+            "debug": "اطلاعات اشکال‌زدایی",
+            "errorDetail": "جزئیات خطا",
+            "errorType": "نوع خطا",
+            "help": "دریافت کمک"
           }
         }
       },
@@ -1244,6 +1284,7 @@
       },
       "Radios": {
         "button": {
+          "add": "ایجاد یک رادیو",
           "create": "رادیوی خودتان را ایجاد کنید",
           "search": "جست‌و‌جو"
         },
@@ -2463,6 +2504,9 @@
         "button": {
           "export": {
             "header": "بارگیری سیاهه‌پخش"
+          },
+          "import": {
+            "header": "بازسازی سیاهه‌پخش"
           }
         },
         "more": "بیشتر"
@@ -2472,7 +2516,14 @@
           "noPlaylists": "هنوز هیچ سیاهه‌پخشی ایجاد نشده است"
         },
         "header": {
+          "addToPlaylist": "افزودن به سیاهه‌پخش",
+          "available": "سیاهه‌‌های‌پخش موجود",
+          "manage": "مدیریت سیاهه‌پخش",
+          "noResults": "هیچ نتیجه‌ٔ جورسازی با پُرسمان پالایهٔ شما وجود ندارد",
           "track": "{title}, توسط {artist}"
+        },
+        "label": {
+          "filter": "پالایه"
         },
         "placeholder": {
           "filterPlaylist": "نام سیاهه‌پخش را وارد کنید"
@@ -2480,9 +2531,15 @@
         "table": {
           "edit": {
             "header": {
-              "lastModification": "آخرین اصلاح"
+              "edit": "ویرایش",
+              "lastModification": "آخرین اصلاح",
+              "name": "نام",
+              "tracks": "اثرها"
             }
           }
+        },
+        "warning": {
+          "duplicate": "{ 0 } در حال حاضر در { 1 }."
         }
       },
       "TrackPlaylistIcon": {
@@ -2506,6 +2563,9 @@
           "confirm": "برداشتن رادیو",
           "delete": "برداشتن",
           "edit": "ویرایش…"
+        },
+        "empty": {
+          "noTracks": "هنوز هیچ اثری به این رادیو اضافه نشده است"
         },
         "header": {
           "tracks": "اثر‌ها"
@@ -2569,7 +2629,8 @@
       "next": "بعدی",
       "previous": "قبلی"
     },
-    "pressKey": "",
+    "pressKey": "فشار{key}",
+    "pressKeyToAction": "فشار{key} به{action}",
     "preview": "پیش‌نمایش",
     "radio": "رادیو",
     "resetTo": "بازنشانی مجدد به {previousValue}",
