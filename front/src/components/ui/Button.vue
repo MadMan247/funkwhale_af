@@ -246,7 +246,7 @@ onUnmounted(() =>
 
     // Font
 
-    font-family: $font-main;
+    font-family: var(--font-family);
     font-weight: v-bind(fontWeight);
     font-size: 14px;
 

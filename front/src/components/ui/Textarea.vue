@@ -494,7 +494,7 @@ onMounted(() => {
       background: transparent;
 
       &:placeholder-shown {
-        font-family: $font-main;
+        font-family: var(--font-family);
       }
     }
 

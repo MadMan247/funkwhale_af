@@ -115,7 +115,7 @@ onMounted(() => {
 
   // Font
 
-  font-family: var(--font-main);
+  font-family: var(--font-family);
   font-weight: v-bind(fontWeight);
   font-size: 14px;
 
@@ -167,6 +167,11 @@ onMounted(() => {
 
     &+span:not(:empty) {
       margin-left: 1ch;
+
+      :global(.direction-rtl) & {
+        margin-left: 0;
+        margin-right: 1ch;
+      }
     }
   }
 }
