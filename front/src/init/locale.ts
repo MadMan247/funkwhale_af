@@ -56,7 +56,14 @@ export const setI18nLanguage = async (locale: string) => {
 
   // set locale
   i18n.global.locale.value = locale
-  document.querySelector('html')?.setAttribute('lang', locale)
+  const htmlElement = document.querySelector('html')
+  const direction = locales[locale as SupportedLanguages].direction
+  if (htmlElement) {
+    htmlElement.setAttribute('lang', locale)
+    htmlElement.setAttribute('dir', direction)
+    htmlElement.classList.remove('direction-ltr', 'direction-rtl');
+    htmlElement.classList.add(`direction-${direction}`);
+  }
   await store.dispatch('ui/currentLanguage', locale)
   store.commit('ui/momentLocale', locale.replace(/_/g, '-'))
 }

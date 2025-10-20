@@ -6,75 +6,98 @@ export type SupportedLanguages = 'ar' | 'ca' | 'ca@valencia' | 'cs' | 'de' | 'en
 
 export interface Locale {
   label: string
+  direction: 'ltr' | 'rtl'
   pluralizationRule?: Exclude<VueI18nOptions['pluralizationRules'], undefined>[string]
 }
 
 export const locales: Record<SupportedLanguages, Locale> = {
   ar: {
-    label: 'العربية'
+    label: 'العربية',
+    direction: 'rtl'
   },
   ca: {
-    label: 'Català'
+    label: 'Català',
+    direction: 'ltr'
   },
   'ca@valencia': {
-    label: 'Català (Valencia)'
+    label: 'Català (Valencia)',
+    direction: 'ltr'
   },
   cs: {
-    label: 'Čeština'
+    label: 'Čeština',
+    direction: 'ltr'
   },
   de: {
-    label: 'Deutsch'
+    label: 'Deutsch',
+    direction: 'ltr'
   },
   en_GB: {
-    label: 'English (UK)'
+    label: 'English (UK)',
+    direction: 'ltr'
   },
   en_US: {
-    label: 'English (United-States)'
+    label: 'English (United-States)',
+    direction: 'ltr'
   },
   eo: {
-    label: 'Esperanto'
+    label: 'Esperanto',
+    direction: 'ltr'
   },
   es: {
-    label: 'Español'
+    label: 'Español',
+    direction: 'ltr'
   },
   eu: {
-    label: 'Euskara'
+    label: 'Euskara',
+    direction: 'ltr'
   },
   fr_FR: {
-    label: 'Français'
+    label: 'Français',
+    direction: 'ltr'
   },
   gl: {
-    label: 'Galego'
+    label: 'Galego',
+    direction: 'ltr'
   },
   hu: {
-    label: 'Magyar'
+    label: 'Magyar',
+    direction: 'ltr'
   },
   it: {
-    label: 'Italiano'
+    label: 'Italiano',
+    direction: 'ltr'
   },
   ja_JP: {
-    label: '日本語'
+    label: '日本語',
+    direction: 'ltr'
   },
   kab_DZ: {
-    label: 'Taqbaylit'
+    label: 'Taqbaylit',
+    direction: 'ltr'
   },
   ko_KR: {
-    label: '한국어'
+    label: '한국어',
+    direction: 'ltr'
   },
   nb_NO: {
-    label: 'Bokmål'
+    label: 'Bokmål',
+    direction: 'ltr'
   },
   nn_NO: {
-    label: 'Nynorsk'
+    label: 'Nynorsk',
+    direction: 'ltr'
   },
   nl: {
-    label: 'Nederlands'
+    label: 'Nederlands',
+    direction: 'ltr'
   },
   oc: {
-    label: 'Occitan'
+    label: 'Occitan',
+    direction: 'ltr'
   },
   pl: {
     label: 'Polski',
+    direction: 'ltr',
     pluralizationRule: (n, choices) => {
       // 0 rowerow | 1 rower | 2-4 rowery | 5-21 rowerow
       // 1 rower | 2-4 rowery | 5-21 rowerow
@@ -92,33 +115,43 @@ export const locales: Record<SupportedLanguages, Locale> = {
     }
   },
   pt_BR: {
-    label: 'Português (Brasil)'
+    label: 'Português (Brasil)',
+    direction: 'ltr'
   },
   pt_PT: {
-    label: 'Português (Portugal)'
+    label: 'Português (Portugal)',
+    direction: 'ltr'
   },
   ru: {
-    label: 'Русский'
+    label: 'Русский',
+    direction: 'ltr'
   },
   sq: {
-    label: 'Shqip'
+    label: 'Shqip',
+    direction: 'ltr'
   },
   zh_Hans: {
-    label: '中文(简体)'
+    label: '中文(简体)',
+    direction: 'ltr'
   },
   zh_Hant: {
-    label: '中文(繁體)'
+    label: '中文(繁體)',
+    direction: 'ltr'
   },
   fa_IR: {
-    label: 'فارسی'
+    label: 'فارسی',
+    direction: 'rtl'
   },
   ml: {
-    label: 'മലയാളം'
+    label: 'മലയാളം',
+    direction: 'ltr'
   },
   sv: {
-    label: 'Svenska'
+    label: 'Svenska',
+    direction: 'ltr'
   },
   el: {
-    label: 'Ελληνικά'
+    label: 'Ελληνικά',
+    direction: 'ltr'
   }
 }
