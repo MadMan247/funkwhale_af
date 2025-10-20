@@ -2,6 +2,7 @@
 @import 'inc/theme.scss';
 @import 'base/index';
 @import 'font';
+@import 'font-rtl';
 @import 'colors';
 
 // not in vars because not meant to be overridden
@@ -67,9 +68,18 @@ $bottom-player-height: 4rem;
 @import './themes/light/_main.scss';
 @import './themes/dark/_main.scss';
 
+
+.theme-dark,
+.theme-light {
+  .direction-rtl & {
+    --font-family: 'Vazirmatn', ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  }
+}
+
+
 html,
 body {
-  font-family: $font-main;
+  font-family: var(--font-family);
   font-size: 16px;
   margin: 0;
 }

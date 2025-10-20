@@ -92,7 +92,7 @@ const tabs = computed(() => [
 h1 {
   font-size: 36px;
   font-weight: 900;
-  font-family: Lato, sans-serif;
+  font-family: var(--font-family)
 }
 
 .flex:not(.flex-col) {

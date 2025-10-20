@@ -73,7 +73,7 @@ const moderationNotifications = computed(() =>
       header
       flex
       no-gap
-      style="justify-content:space-between; align-items:center; padding-right:8px;"
+      style="justify-content:space-between; align-items:center; padding-inline:8px;"
     >
       <Link
         :to="{name: logoUrl}"

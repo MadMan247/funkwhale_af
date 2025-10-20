@@ -177,7 +177,7 @@ const model = defineModel<string | number>({ required: true })
     width: 100%;
     padding: 10px 16px;
     font-size: 14px;
-    font-family: $font-main;
+    font-family: var(--font-family);
     line-height: 28px;
     border-radius: var(--fw-border-radius);
     cursor: text;
