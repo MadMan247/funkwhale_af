@@ -1,0 +1,1 @@
+Update style and font for RTL languages
