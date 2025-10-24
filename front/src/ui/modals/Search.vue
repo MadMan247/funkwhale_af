@@ -7,6 +7,7 @@ import { ref, computed, type ShallowRef, useTemplateRef } from 'vue'
 import { refDebounced, watchDebounced } from '@vueuse/core'
 import { trim } from 'lodash-es'
 import { vElementBounding } from '@vueuse/components'
+import { useRouter } from 'vue-router'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 import { useI18n } from 'vue-i18n'
@@ -21,6 +22,7 @@ import ActorLink from '~/components/common/ActorLink.vue'
 import TrackTable from '~/components/audio/track/Table.vue'
 import AlbumCard from '~/components/album/Card.vue'
 import RadioCard from '~/components/radios/Card.vue'
+import Button from '~/components/ui/Button.vue'
 // import RadioButton from '~/components/radios/Button.vue'
 import onKeyboardShortcut from '~/composables/onKeyboardShortcut'
 
@@ -34,8 +36,12 @@ import Card from '~/components/ui/Card.vue'
 import Section from '~/components/ui/Section.vue'
 import Loader from '~/components/ui/Loader.vue'
 import Alert from '~/components/ui/Alert.vue'
+import Pagination from '~/components/ui/Pagination.vue'
 
 const { t } = useI18n()
+
+const router = useRouter()
+
 /*
   Future:
     - For now, we will use fetch-then-cache, and not support features such as search in
@@ -176,7 +182,7 @@ const rssSubscribe = async (url: string) => {
   }
 }
 
-// Search
+// Federated Search
 
 const federationError = ref()
 
@@ -260,6 +266,28 @@ const search = async () => {
 watchDebounced(queryDebounced, search, {
   debounce: 1000, maxWait: 10000, immediate: true
 })
+
+// Pagination
+const artistsPage = ref(1)
+const albumsPage = ref(1)
+const tracksPage = ref(1)
+const tagsPage = ref(1)
+const playlistsPage = ref(1)
+const radiosPage = ref(1)
+const podcastsPage = ref(1)
+const seriesPage = ref(1)
+
+// Reset all pagination pages to 1 when the trimmed query changes
+watchDebounced(trimmedQuery, () => {
+  artistsPage.value = 1
+  albumsPage.value = 1
+  tracksPage.value = 1
+  tagsPage.value = 1
+  playlistsPage.value = 1
+  radiosPage.value = 1
+  podcastsPage.value = 1
+  seriesPage.value = 1
+}, { debounce: 50 })
 </script>
 
 <template>
@@ -275,13 +303,14 @@ watchDebounced(queryDebounced, search, {
     :priority="12"
   >
     <template #topleft>
-      <!-- The following is a placeholder for the original input element and contributes only its position and dimensions-->
+      <!-- The following is a placeholder for the original input element and contributes only its position and dimensions -->
       <div
         v-element-bounding="[setBoundingBox('inner'), { updateTiming: 'sync', immediate: true }]"
         :class="[$style.placeholder, 'secondary raised interactive solid']"
         style="opacity: 0; position: relative; top: -4px;"
       />
-      <!-- <RadioButtona
+      <!-- Radio button placeholder (disabled for now) -->
+      <!-- <RadioButton
         v-if="radioConfig"
         class="ui right floated medium button"
         type="custom_multiple"
@@ -293,7 +322,7 @@ watchDebounced(queryDebounced, search, {
       v-if="isFetch"
       #default
     >
-      <Spacer size-46 />
+      <Spacer size-32 />
       <Section
         :columns-per-item="3"
         align-left
@@ -371,7 +400,7 @@ watchDebounced(queryDebounced, search, {
       v-else
       #default="{ columns, cardsPerRow }"
     >
-      <Spacer size-46 />
+      <Spacer size-32 />
 
       <!-- DEBUG: CACHE -->
 
@@ -379,386 +408,427 @@ watchDebounced(queryDebounced, search, {
       {{ allCaches[0] }}
       </pre> -->
 
+
       <!-- Artists -->
 
-      <Section
-        v-for="{ value: { refetch, status, data, error, key } } in [dataStore.artists({
+      <template
+        v-for="{ value: { status, data, error, key } } in [dataStore.artists({
           q: query,
           page: 1,
-          page_size: cardsPerRow() - 1,
-          content_category: 'music',
-          include_channels: true
+          page_size: cardsPerRow() * 2 - 2,
         })]"
         :key
-        :columns-per-item="3"
-        :action="{
-          text: 'refresh',
-          icon: 'bi-arrow-clockwise',
-          onClick: refetch
-        }"
-        align-left
       >
-        <Card
-          :title="status === 'pending' ? ' ' : t('artists', data?.count || 0)"
-          :to="{name: 'library.artists.browse', query: { query }}"
-          category
-          small
-          flat
-          yellow
-          solid
+        <Section
+          v-if="(data?.results.length ?? 0) > 0"
+          icon="bi-person"
+          :h1="t('artists', data?.results.length || 0)"
+          :columns-per-item="3"
+          align-left
         >
-          <Alert v-if="status==='error'">
+          <Loader
+            v-if="status === 'loading'"
+          />
+
+          <Alert
+            v-if="status === 'error'"
+            red
+            style="grid-column: 1 / -1;"
+          >
             {{ error }}
           </Alert>
-          <template #footer>
-            <Spacer grow />
-            <Loader v-if="status==='pending'" />
-            <label>
-              {{ t('components.Home.link.viewMore') }}
-            </label>
-          </template>
-        </Card>
 
-        <ArtistCard
-          v-for="(artist) in (data?.results || [])"
-          :key="getKey(artist)"
-          :artist
+          <ArtistCard
+            v-for="(artist) in data?.results"
+            :key="getKey(artist)"
+            :artist
+          />
+
+          <Button
+            secondary
+            icon="bi-search"
+            @click="router.push({ name: 'library.artists.browse', query: { query } })"
+          >
+            {{ t('views.Search.label.artists') }}
+          </Button>
+
+          <Pagination
+            v-if="(data?.results.length ?? 0) > (cardsPerRow() * 2 - 2)"
+            v-model:page="artistsPage"
+            style="grid-column: 1 / -1;"
+            :pages="Math.ceil((data?.results.length ?? 0) / (cardsPerRow() * 2 - 2))"
+          />
+        </Section>
+        <Spacer
+          v-if="(data?.results.length ?? 0) > 0"
+          size-64
         />
-      </Section>
-
-      <Spacer size-46 />
+      </template>
 
       <!-- Albums -->
 
-      <Section
-        v-for="{ value: { refetch, status, data, error, key } } in [dataStore.albums({
+      <template
+        v-for="{ value: { status, data, error, key } } in [dataStore.albums({
           q: query,
           page: 1,
-          page_size: cardsPerRow() - 1,
-          playable: true,
-          content_category: 'music',
-          include_channels: true
+          page_size: cardsPerRow() * 2 - 2,
         })]"
         :key
-        :columns-per-item="3"
-        :action="{
-          text: 'refresh',
-          icon: 'bi-arrow-clockwise',
-          onClick: refetch
-        }"
-        align-left
       >
-        <Card
-          :title="status === 'pending' ? ' ' : t('albums', data?.count || 0)"
-          :to="{name: 'library.albums.browse', query: { query }}"
-          category
-          small
-          flat
-          blue
-          solid
+        <Section
+          v-if="(data?.results.length ?? 0) > 0"
+          icon="bi-disc"
+          :h1="t('albums', data?.results.length || 0)"
+          :columns-per-item="3"
+          align-left
         >
-          <Alert v-if="error">
+          <Alert
+            v-if="status === 'error'"
+            red
+            style="grid-column: 1 / -1;"
+          >
             {{ error }}
           </Alert>
-          <template #footer>
-            <Spacer grow />
-            <Loader v-if="status === 'loading'" />
-            <label>
-              {{ t('components.Home.link.viewMore') }}
-            </label>
-          </template>
-        </Card>
+          <Loader v-if="status === 'loading'" />
 
-        <AlbumCard
-          v-for="(album) in (data?.results || [])"
-          :key="getKey(album)"
-          :album
+          <AlbumCard
+            v-for="(album) in data?.results"
+            :key="getKey(album)"
+            :album
+          />
+
+          <Button
+            secondary
+            icon="bi-search"
+            @click="router.push({ name: 'library.albums.browse', query: { query } })"
+          >
+            {{ t('views.Search.label.albums') }}
+          </Button>
+
+          <Pagination
+            v-if="(data?.results.length ?? 0) > (cardsPerRow() * 2 - 2)"
+            v-model:page="albumsPage"
+            style="grid-column: 1 / -1;"
+            :pages="Math.ceil((data?.results.length ?? 0) / (cardsPerRow() * 2 - 2))"
+          />
+        </Section>
+        <Spacer
+          v-if="(data?.results.length ?? 0) > 0"
+          size-64
         />
-      </Section>
+      </template>
 
-      <Spacer size-46 />
+
 
       <!-- Tracks -->
 
-      <Section
-        v-for="{ value: { refetch, status, data, error, key } } in [dataStore.tracks({
+      <template
+        v-for="{ value: { status, data, error, key } } in [dataStore.tracks({
           q: query,
           page: 1,
-          page_size: 4,
+          page_size: cardsPerRow() * 2 - 2,
         })]"
         :key
-        :columns-per-item="3"
-        :action="{
-          text: 'refresh',
-          icon: 'bi-arrow-clockwise',
-          onClick: refetch
-        }"
-        align-left
       >
-        <Card
-          :title="status === 'pending' ? ' ' : t('tracks', data?.count || 0)"
-          category
-          small
-          flat
-          green
-          solid
-          :style="`grid-column: 1 / ${columns > 10 ? 4 : -1}`"
+        <Section
+          v-if="(data?.results.length ?? 0) > 0"
+          icon="bi-music-note-beamed"
+          :h1="t('tracks', data?.results.length || 0)"
+          :columns-per-item="3"
+          align-left
         >
-          <Alert v-if="error">
+          <Alert
+            v-if="status =='error'"
+            red
+            style="grid-column: 1 / -1;"
+          >
             {{ error }}
           </Alert>
-          <template #footer>
-            <Spacer grow />
-            <Loader v-if="status === 'loading'" />
-          </template>
-        </Card>
+          <Loader
+            v-if="status === 'loading'"
+            :container="false"
+          />
 
-        <TrackTable
-          :tracks="data?.results || []"
-          :style="`grid-column: ${columns > 10 ? 4 : 1} / -1`"
+          <TrackTable
+            :tracks="data?.results"
+            :style="`grid-column: 1 / -1`"
+          />
+
+          <Pagination
+            v-if="(data?.results.length ?? 0) > (cardsPerRow() * 2 - 2)"
+            v-model:page="tracksPage"
+            style="grid-column: 1 / -1;"
+            :pages="Math.ceil((data?.results.length ?? 0) / (cardsPerRow() * 2 - 2))"
+          />
+        </Section>
+        <Spacer
+          v-if="(data?.results.length ?? 0) > 0"
+          size-64
         />
-      </Section>
-      <Spacer size-46 />
+      </template>
+
 
       <!-- Tags -->
 
-      <!-- TODO: `Tracks` and `Tags` have no global pages in the sidebar.
-      So the user has no way to see all when searching.
-      If this is an actual use case, I see 2 ways to implement it easily:
-         (a) Button `load more` increases items-per-page
-         (b) Use pagination (page and page_size stored in query params
-               `tags_page` and `tags_page_size`) with Pagination component
-         -->
-
-      <Section
-        v-for="{ value: { refetch, status, data, error, key } } in [dataStore.tags_({
+      <template
+        v-for="{ value: { status, data, error, key } } in [dataStore.tags_({
           q: query,
           page: 1,
           page_size: 20,
         })]"
         :key
-        :columns-per-item="3"
-        :action="{
-          text: 'refresh',
-          icon: 'bi-arrow-clockwise',
-          onClick: refetch
-        }"
-        align-left
       >
-        <Card
-          :title="status === 'pending' ? ' ' : t('tags', data?.count || 0)"
-          category
-          small
-          flat
-          secondary
-          solid
+        <Section
+          v-if="(data?.results.length ?? 0) > 0"
+          icon="bi-tags"
+          :h1="t('tags', data?.results.length || 0)"
+          :columns-per-item="3"
+          align-left
         >
-          <Alert v-if="error">
+          <Alert
+            v-if="status === 'error'"
+            red
+            style="grid-column: 1 / -1;"
+          >
             {{ error }}
           </Alert>
-          <template #footer>
-            <Spacer grow />
-            <Loader v-if="status==='pending'" />
-          </template>
-        </Card>
+          <Loader v-if="status === 'loading'" />
 
-        <TagsList
-          :style="`grid-column: ${columns > 3 ? 4 : 1} / -1`"
-          :truncate-size="200"
-          :limit="20"
-          :tags="data?.results.map(t => t.name) || []"
+          <TagsList
+            :style="`grid-column: ${columns > 3 ? 4 : 1} / -1`"
+            :truncate-size="200"
+            :limit="20"
+            :tags="data?.results?.map(t => t.name) || []"
+          />
+
+          <Button
+            secondary
+            icon="bi-search"
+            @click="router.push({ name: 'library.tags.browse', query: { query } })"
+          >
+            {{ t('views.Search.label.tags') }}
+          </Button>
+
+          <Pagination
+            v-if="(data?.results.length ?? 0) > (cardsPerRow() * 2 - 2)"
+            v-model:page="tagsPage"
+            style="grid-column: 1 / -1;"
+            :pages="Math.ceil((data?.results.length ?? 0) / (cardsPerRow() * 2 - 2))"
+          />
+        </Section>
+        <Spacer
+          v-if="(data?.results.length ?? 0) > 0"
+          size-64
         />
-      </Section>
-
-      <Spacer size-46 />
+      </template>
 
       <!-- Playlists -->
 
-      <Section
-        v-for="{ value: { refetch, status, data, error, key } } in [dataStore.playlists({
+      <template
+        v-for="{ value: { status, data, error, key } } in [dataStore.playlists({
           q: query,
           page: 1,
-          page_size: cardsPerRow() - 1,
+          page_size: cardsPerRow() * 2 - 2,
         })]"
         :key
-        :columns-per-item="3"
-        :action="{
-          text: 'refresh',
-          icon: 'bi-arrow-clockwise',
-          onClick: refetch
-        }"
-        align-left
       >
-        <Card
-          :title="status === 'pending' ? ' ' : t('playlists', data?.count || 0)"
-          :to="{name: 'library.playlists.browse', query: { query }}"
-          category
-          small
-          flat
-          purple
-          solid
+        <Section
+          v-if="(data?.results.length ?? 0) > 0"
+          icon="bi-music-note-list"
+          :h1="t('playlists', data?.results.length || 0)"
+          :columns-per-item="3"
+          align-left
         >
-          <Alert v-if="error">
+          <Alert
+            v-if="error"
+            red
+            style="grid-column: 1 / -1;"
+          >
             {{ error }}
           </Alert>
-          <template #footer>
-            <Spacer grow />
-            <Loader v-if="status === 'loading'" />
-            <label>
-              {{ t('components.Home.link.viewMore') }}
-            </label>
-          </template>
-        </Card>
+          <Loader v-if="status === 'loading'" />
+          <PlaylistCard
+            v-for="(playlist) in data?.results || []"
+            :key="getKey(playlist)"
+            :playlist
+          />
 
-        <PlaylistCard
-          v-for="(playlist) in data?.results || []"
-          :key="getKey(playlist)"
-          :playlist
+          <Button
+            secondary
+            icon="bi-search"
+            @click="router.push({ name: 'library.playlists.browse', query: { query } })"
+          >
+            {{ t('views.Search.label.playlists') }}
+          </Button>
+
+          <Pagination
+            v-if="(data?.results.length ?? 0) > (cardsPerRow() * 2 - 2)"
+            v-model:page="playlistsPage"
+            style="grid-column: 1 / -1;"
+            :pages="Math.ceil((data?.results.length ?? 0) / (cardsPerRow() * 2 - 2))"
+          />
+        </Section>
+        <Spacer
+          v-if="(data?.results.length ?? 0) > 0"
+          size-64
         />
-      </Section>
-
-      <Spacer size-46 />
+      </template>
 
       <!-- Radios -->
 
-      <Section
-        v-for="{ value: { refetch, status, data, error, key } } in [dataStore.radios({
+      <template
+        v-for="{ value: { status, data, error, key } } in [dataStore.radios({
           q: query,
           page: 1,
-          page_size: cardsPerRow() - 1,
+          page_size: cardsPerRow() * 2 - 2,
         })]"
         :key
-        :columns-per-item="3"
-        :action="{
-          text: 'refresh',
-          icon: 'bi-arrow-clockwise',
-          onClick: refetch
-        }"
-        align-left
       >
-        <Card
-          :title="status === 'pending' ? ' ' : t('radios', data?.count || 0)"
-          :to="{name: 'library.radios.browse', query: { query }}"
-          category
-          small
-          flat
-          red
-          solid
+        <Section
+          v-if="(data?.results.length ?? 0) > 0"
+          icon="bi-boombox-fill"
+          :h1="t('radios', data?.results.length || 0)"
+          :columns-per-item="3"
+          align-left
         >
-          <Alert v-if="error">
+          <Alert
+            v-if="error"
+            red
+            style="grid-column: 1 / -1;"
+          >
             {{ error }}
           </Alert>
-          <template #footer>
-            <Spacer grow />
-            <Loader v-if="status === 'loading'" />
-            <label>
-              {{ t('components.Home.link.viewMore') }}
-            </label>
-          </template>
-        </Card>
+          <Loader v-if="status === 'loading'" />
 
-        <RadioCard
-          v-for="(radio) in data?.results || []"
-          :key="getKey(radio)"
-          type="custom"
-          :custom-radio="radio"
+          <RadioCard
+            v-for="(radio) in data?.results || []"
+            :key="getKey(radio)"
+            type="custom"
+            :custom-radio="radio"
+          />
+
+          <Pagination
+            v-if="(data?.results.length ?? 0) > (cardsPerRow() * 2 - 2)"
+            v-model:page="radiosPage"
+            style="grid-column: 1 / -1;"
+            :pages="Math.ceil((data?.results.length ?? 0) / (cardsPerRow() * 2 - 2))"
+          />
+
+          <Button
+            secondary
+            icon="bi-search"
+            @click="router.push({ name: 'library.radios.browse', query: { query } })"
+          >
+            {{ t('views.Search.label.radios') }}
+          </Button>
+        </Section>
+        <Spacer
+          v-if="(data?.results.length ?? 0) > 0"
+          size-64
         />
-      </Section>
-
-      <Spacer size-46 />
+      </template>
 
       <!-- Podcasts -->
 
-      <Section
-        v-for="{ value: { refetch, status, data, error, key } } in [dataStore.artists({
+      <template
+        v-for="{ value: { status, data, error, key } } in [dataStore.artists({
           q: query,
           content_category: 'podcast',
           include_channels: true,
           page: 1,
-          page_size: cardsPerRow() - 1,
+          page_size: cardsPerRow() * 2 - 2,
         })]"
         :key
-        :columns-per-item="3"
-        :action="{
-          text: 'refresh',
-          icon: 'bi-arrow-clockwise',
-          onClick: refetch
-        }"
-        align-left
       >
-        <Card
-          :title="status === 'pending' ? ' ' : t('podcasts', data?.count || 0)"
-          :to="{name: 'library.podcasts.browse', query: { query }}"
-          category
-          small
-          flat
-          primary
-          solid
+        <Section
+          v-if="(data?.results.length ?? 0) > 0"
+          icon="bi-boombox-fill"
+          :h1="t('podcasts', data?.results.length || 0)"
+          :columns-per-item="3"
+          align-left
         >
-          <Alert v-if="error">
+          <Alert
+            v-if="error"
+            red
+            style="grid-column: 1 / -1;"
+          >
             {{ error }}
           </Alert>
-          <template #footer>
-            <Spacer grow />
-            <Loader v-if="status === 'loading'" />
-            <label>
-              {{ t('components.Home.link.viewMore') }}
-            </label>
-          </template>
-        </Card>
+          <Loader v-if="status === 'loading'" />
 
-        <ArtistCard
-          v-for="(artist) in data?.results || []"
-          :key="getKey(artist)"
-          :artist
+          <ArtistCard
+            v-for="(artist) in data?.results"
+            :key="getKey(artist)"
+            :artist
+          />
+
+          <Button
+            secondary
+            icon="bi-search"
+            @click="router.push({ name: 'library.podcasts.browse', query: { query } })"
+          >
+            {{ t('views.Search.label.podcasts') }}
+          </Button>
+
+          <Pagination
+            v-if="(data?.results.length ?? 0) > (cardsPerRow() * 2 - 2)"
+            v-model:page="podcastsPage"
+            style="grid-column: 1 / -1;"
+            :pages="Math.ceil((data?.results.length ?? 0) / (cardsPerRow() * 2 - 2))"
+          />
+        </Section>
+        <Spacer
+          v-if="(data?.results.length ?? 0) > 0"
+          size-64
         />
-      </Section>
-
-      <Spacer size-46 />
+      </template>
 
       <!-- Series -->
 
-      <Section
-        v-for="{ value: { refetch, status, data, error, key } } in [dataStore.albums({
+      <template
+        v-for="{ value: { status, data, error, key } } in [dataStore.albums({
           q: query,
           content_category: 'podcast',
           include_channels: true,
           page: 1,
-          page_size: cardsPerRow() - 1,
+          page_size: cardsPerRow() * 2 - 2,
         })]"
         :key
-        :columns-per-item="3"
-        :action="{
-          text: 'refresh',
-          icon: 'bi-arrow-clockwise',
-          onClick: refetch
-        }"
-        align-left
       >
-        <Card
-          :title="status === 'pending' ? ' ' : t('series', data?.count || 0)"
-          category
-          small
-          flat
-          primary
-          raised
-          solid
+        <Section
+          v-if="(data?.results.length ?? 0) > 0"
+          :h1="t('podcast series', data?.results.length || 0)"
+          icon="bi-collection-play"
+          :columns-per-item="3"
+          align-left
         >
-          <Alert v-if="error">
+          <Alert
+            v-if="error"
+            red
+            style="grid-column: 1 / -1;"
+          >
             {{ error }}
           </Alert>
-          <template #footer>
-            <Spacer grow />
-            <Loader v-if="status === 'loading'" />
-          </template>
-        </Card>
+          <Loader v-if="status === 'loading'" />
 
-        <AlbumCard
-          v-for="(album) in data?.results || []"
-          :key="getKey(album)"
-          :album
+          <AlbumCard
+            v-for="(album) in data?.results"
+            :key="getKey(album)"
+            :album
+          />
+
+          <Pagination
+            v-if="(data?.results.length ?? 0) > (cardsPerRow() * 2 - 2)"
+            v-model:page="seriesPage"
+            style="grid-column: 1 / -1;"
+            :pages="Math.ceil((data?.results.length ?? 0) / (cardsPerRow() * 2 - 2))"
+          />
+        </Section>
+        <Spacer
+          v-if="(data?.results.length ?? 0) > 0"
+          size-64
         />
-      </Section>
+      </template>
     </template>
   </Modal>
 
