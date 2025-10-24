@@ -151,7 +151,12 @@ export const useDataStore
       track: {}
     }
 
-    // ------------- Query tags --------------- //
+  // ------------- Loading tracking --------------- //
+  // Track number of active fetches so UI can show a global loader when > 0
+  const activeFetches = ref(0)
+  const isLoading = computed(() => activeFetches.value > 0)
+
+  // ------------- Query tags --------------- //
 
     const tagsCache = ref<Tag[]>([])
     const tagsTimestamp = ref(0)
@@ -231,7 +236,8 @@ export const useDataStore
         || cached.value.lastUpdated < Date.now() - maxAge
 
       const fetch = async () => {
-
+            // track active fetches for global loading state
+            activeFetches.value = activeFetches.value + 1
             try {
               cached.value = setPending(cached.value)
               await rateLimiter.greenlight([name, params])
@@ -246,6 +252,9 @@ export const useDataStore
                 if (cached.value.status === 'loading')
                   cached.value = setError(cached.value, error as Error)
               }
+            } finally {
+              // ensure we never go negative
+              activeFetches.value = Math.max(0, activeFetches.value - 1)
             }
           }
 
@@ -320,6 +329,9 @@ export const useDataStore
       radios,
       tags_,
       playlists,
-      searches
+      searches,
+      // Loading state
+      activeFetches,
+      isLoading
     }
   })

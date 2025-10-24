@@ -237,6 +237,13 @@ const search = async () => {
   isLoading.value = false
 }
 
+// Global loading that includes federated/rss search and store-level fetches
+const globalLoading = computed(() => {
+  const storeLoading = (dataStore as any).isLoading?.value ?? (dataStore as any).isLoading
+  const activeFetches = (dataStore as any).activeFetches?.value ?? (dataStore as any).activeFetches
+  return isLoading.value || Boolean(storeLoading) || Boolean(activeFetches?.length > 0)
+})
+
 // Configure the radio
 
 // TODO: Re-activate radio (but for all types at the same time) after #2467 (radio builder) is done
@@ -828,6 +835,9 @@ watchDebounced(trimmedQuery, () => {
           v-if="(data?.results.length ?? 0) > 0"
           size-64
         />
+      </template>
+      <template v-if="globalLoading">
+        <Loader :container="false" />
       </template>
     </template>
   </Modal>
