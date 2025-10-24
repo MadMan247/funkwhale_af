@@ -3,7 +3,7 @@ import type { paths, components } from '~/generated/types.ts'
 // import type { RadioConfig } from '~/store/radios'
 
 import axios from 'axios'
-import { ref, computed, type ShallowRef, useTemplateRef } from 'vue'
+import { ref, computed, type ShallowRef, useTemplateRef, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import { refDebounced, watchDebounced } from '@vueuse/core'
 import { trim } from 'lodash-es'
 import { vElementBounding } from '@vueuse/components'
@@ -244,6 +244,36 @@ const globalLoading = computed(() => {
   return isLoading.value || Boolean(storeLoading) || Boolean(activeFetches?.length > 0)
 })
 
+// Count visible sections by observing rendered DOM nodes with the `search-section` class.
+const visibleSections = ref(0)
+let sectionObserver: MutationObserver | null = null
+
+const updateVisibleSections = async () => {
+  await nextTick()
+  try {
+    const nodes = Array.from(document.querySelectorAll('.search-section')) as HTMLElement[]
+    const visible = nodes.filter(n => n.offsetParent !== null || n.getClientRects().length > 0).length
+    visibleSections.value = visible
+  } catch (e) {
+    // ignore
+  }
+}
+
+onMounted(() => {
+  updateVisibleSections()
+  sectionObserver = new MutationObserver(() => updateVisibleSections())
+  sectionObserver.observe(document.body, { childList: true, subtree: true })
+})
+
+onUnmounted(() => {
+  sectionObserver?.disconnect()
+  sectionObserver = null
+})
+
+// also update when the search query or global loading changes
+watch([queryDebounced], () => updateVisibleSections())
+watch([() => globalLoading.value], () => updateVisibleSections())
+
 // Configure the radio
 
 // TODO: Re-activate radio (but for all types at the same time) after #2467 (radio builder) is done
@@ -331,6 +361,7 @@ watchDebounced(trimmedQuery, () => {
     >
       <Spacer size-32 />
       <Section
+        class="search-section"
         :columns-per-item="3"
         align-left
       >
@@ -428,6 +459,7 @@ watchDebounced(trimmedQuery, () => {
       >
         <Section
           v-if="(data?.results.length ?? 0) > 0"
+          class="search-section"
           icon="bi-person"
           :h1="t('artists', data?.results.length || 0)"
           :columns-per-item="3"
@@ -484,6 +516,7 @@ watchDebounced(trimmedQuery, () => {
       >
         <Section
           v-if="(data?.results.length ?? 0) > 0"
+          class="search-section"
           icon="bi-disc"
           :h1="t('albums', data?.results.length || 0)"
           :columns-per-item="3"
@@ -539,6 +572,7 @@ watchDebounced(trimmedQuery, () => {
       >
         <Section
           v-if="(data?.results.length ?? 0) > 0"
+          class="search-section"
           icon="bi-music-note-beamed"
           :h1="t('tracks', data?.results.length || 0)"
           :columns-per-item="3"
@@ -587,6 +621,7 @@ watchDebounced(trimmedQuery, () => {
       >
         <Section
           v-if="(data?.results.length ?? 0) > 0"
+          class="search-section"
           icon="bi-tags"
           :h1="t('tags', data?.results.length || 0)"
           :columns-per-item="3"
@@ -641,6 +676,7 @@ watchDebounced(trimmedQuery, () => {
       >
         <Section
           v-if="(data?.results.length ?? 0) > 0"
+          class="search-section"
           icon="bi-music-note-list"
           :h1="t('playlists', data?.results.length || 0)"
           :columns-per-item="3"
@@ -693,6 +729,7 @@ watchDebounced(trimmedQuery, () => {
       >
         <Section
           v-if="(data?.results.length ?? 0) > 0"
+          class="search-section"
           icon="bi-boombox-fill"
           :h1="t('radios', data?.results.length || 0)"
           :columns-per-item="3"
@@ -749,6 +786,7 @@ watchDebounced(trimmedQuery, () => {
       >
         <Section
           v-if="(data?.results.length ?? 0) > 0"
+          class="search-section"
           icon="bi-boombox-fill"
           :h1="t('podcasts', data?.results.length || 0)"
           :columns-per-item="3"
@@ -804,6 +842,7 @@ watchDebounced(trimmedQuery, () => {
       >
         <Section
           v-if="(data?.results.length ?? 0) > 0"
+          class="search-section"
           :h1="t('podcast series', data?.results.length || 0)"
           icon="bi-collection-play"
           :columns-per-item="3"
@@ -837,7 +876,14 @@ watchDebounced(trimmedQuery, () => {
         />
       </template>
       <template v-if="globalLoading">
+        <Spacer size-64 />
         <Loader :container="false" />
+      </template>
+      <template v-if="visibleSections === 0">
+        <EmptyState
+          :refresh="true"
+          @refresh="search"
+        />
       </template>
     </template>
   </Modal>
