@@ -64,8 +64,8 @@
   "radios": "No Radios | 1 Radio | {n} Radios",
   "podcast": "Podcast",
   "podcasts": "No Podcasts | 1 Podcast | {n} Podcasts",
-  "serie": "Series",
-  "series": "No Series | 1 Series | {n} Series",
+  "podcast serie": "Podcast Serie",
+  "podcast series": "No Podcast Series | 1 Podcast Series | {n} Podcast Series",
   "podcast episode": "Podcast Episode",
   "podcast episodes": "No Podcast Episodes | 1 Podcast Episode | {n} Podcast Episodes",
   "components": {
