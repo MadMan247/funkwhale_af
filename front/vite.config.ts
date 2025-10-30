@@ -1,5 +1,5 @@
 import { visualizer } from 'rollup-plugin-visualizer'
-import { defineConfig, type PluginOption } from 'vite'
+import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import { fileURLToPath, URL } from 'node:url'
 
@@ -11,6 +11,7 @@ import VueI18n from '@intlify/unplugin-vue-i18n/vite'
 import Vue from '@vitejs/plugin-vue'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import vueDevTools from 'vite-plugin-vue-devtools'
+import { sassFalse, sassTrue } from 'sass-embedded'
 
 
 // We don't use port but, magically, it is necessary to set it here.
@@ -27,12 +28,13 @@ export default defineConfig(({ mode }) => ({
     Vue(),
 
     // https://github.com/intlify/bundle-tools/tree/main/packages/vite-plugin-vue-i18n
-    VueI18n({
+    // This plugin breaks JSON imports during vitest. Exclude it during tests.
+    mode === 'test' ? undefined : VueI18n({
       include: fileURLToPath(new URL('./src/locales/**', import.meta.url))
     }),
 
     // https://github.com/btd/rollup-plugin-visualizer
-    visualizer() as unknown as PluginOption,
+    visualizer(),
 
     // https://github.com/antfu/vite-plugin-pwa
     VitePWA({
@@ -40,6 +42,9 @@ export default defineConfig(({ mode }) => ({
       srcDir: 'src',
       filename: 'serviceWorker.ts',
       manifestFilename: 'manifest.json',
+      injectManifest: {
+        maximumFileSizeToCacheInBytes: 4_000_000
+      },
       devOptions: {
         enabled: true,
         type: 'module',
@@ -70,26 +75,22 @@ export default defineConfig(({ mode }) => ({
     exclude: ['@sentry/vue', '@sentry/tracing']
   },
   resolve: {
-    alias: [
-      { find: '#', replacement: fileURLToPath(new URL('./src/ui/workers', import.meta.url)) },
-      { find: '?', replacement: fileURLToPath(new URL('./test', import.meta.url)) },
-      { find: '~', replacement: fileURLToPath(new URL('./src', import.meta.url)) }
-    ]
+    alias: {
+      '#': fileURLToPath(new URL('./src/ui/workers', import.meta.url)),
+      '?': fileURLToPath(new URL('./test', import.meta.url)),
+      '~': fileURLToPath(new URL('./src', import.meta.url))
+    }
   },
   css: {
     preprocessorOptions: {
       scss: {
+        functions: {
+          'docs()': () => (!!process.env.VP_DOCS) ? sassTrue : sassFalse
+        },
         additionalData: `
-          $docs: ${!!process.env.VP_DOCS};
           @use "~/style/_vars" as *;
         `
       }
-    }
-  },
-  esbuild: {
-    target: mode === 'development' ? 'esnext' : 'es2020',
-    supported: {
-      'top-level-await': true
     }
   },
   build: {
@@ -97,18 +98,41 @@ export default defineConfig(({ mode }) => ({
       ? 'esnext'
       : ['es2020', 'chrome87', 'firefox78', 'safari14', 'edge88'],
     sourcemap: true,
-    minify: mode === 'development' ? false : 'esbuild',
+    minify: mode !== 'development',
     // https://rollupjs.org/configuration-options/
-    rollupOptions: {
+    rolldownOptions: {
       output: mode === 'production' ? {
-        manualChunks: {
-          axios: ['axios', 'axios-auth-refresh'],
-          dompurify: ['dompurify'],
-          lodash: ['lodash-es'],
-          moment: ['moment'],
-          sentry: ['@sentry/vue', '@sentry/tracing'],
-          'standardized-audio-context': ['standardized-audio-context'],
-          'vue-router': ['vue-router']
+        advancedChunks: {
+          groups: [
+            {
+              name: 'axios',
+              test: /[\\/]node_modules[\\/](axios|axios-refresh)[\\/]/
+            },
+            {
+              name: 'dompurify',
+              test: /[\\/]node_modules[\\/]dompurify[\\/]/
+            },
+            {
+              name: 'lodash',
+              test: /[\\/]node_modules[\\/]lodash-es[\\/]/
+            },
+            {
+              name: 'moment',
+              test: /[\\/]node_modules[\\/]moment[\\/]/
+            },
+            {
+              name: 'sentry',
+              test: /[\\/]node_modules[\\/]@sentry[\\/]/
+            },
+            {
+              name: 'standardized-audio-context',
+              test: /[\\/]node_modules[\\/]standardized-audio-context[\\/]/
+            },
+            {
+              name: 'vue-router',
+              test: /[\\/]node_modules[\\/]vue-router[\\/]/
+            }
+          ]
         }
       } : {}
     }

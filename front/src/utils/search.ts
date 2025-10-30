@@ -69,7 +69,7 @@ export const parseTokens = (normalizedQuery: string[]): Token[] =>
     const parts = t.split(/:(.+)/)
     return parts.length === 1
       ? { field: null, value: t }  // No field specified
-      : { field: parts[0], value: unquote(parts[1]) }  // Field:value format, remove quotes
+      : { field: parts[0]!, value: unquote(parts[1]!) }  // Field:value format, remove quotes
   })
 
 /**
@@ -79,9 +79,8 @@ export const parseTokens = (normalizedQuery: string[]): Token[] =>
  * @returns A formatted query string
  */
 export const compileTokens = (tokens: Token[]) =>
-  tokens.map(({field, value}) =>{
-    field
-      ? `${field}:${quoteIfNecessary(value)}`
-      : quoteIfNecessary(value)
-  })
+  tokens.map(({field, value}) => field
+    ? `${field}:${quoteIfNecessary(value)}`
+    : quoteIfNecessary(value)
+  )
   .join(' ')

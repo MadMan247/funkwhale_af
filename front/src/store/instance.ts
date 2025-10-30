@@ -296,7 +296,7 @@ const store: Module<State, RootState> = {
       type SettingsSection = { section: string, name: string }
       const sections = response.data.reduce((map: Record<string, Record<string, SettingsSection>>, entry: SettingsSection) => {
         map[entry.section] ??= {}
-        map[entry.section][entry.name] = entry
+        map[entry.section]![entry.name] = entry
         return map
       }, {})
 

@@ -1,9 +1,12 @@
+@use '~/style/globals/layout';
+@use '~/style/vendor/media' as *;
+
 .ui.wide.left.sidebar {
     @include media(">desktop") {
-        width: $desktop-sidebar-width;
+        width: layout.$desktop-sidebar-width;
     }
     @include media(">widedesktop") {
-        width: $widedesktop-sidebar-width;
+        width: layout.$widedesktop-sidebar-width;
     }
 }
 

@@ -128,7 +128,7 @@ watch(page, (_) => {
           </Button>
         </li>
         <li
-          v-if="i + 1 < renderPages[index + 1]"
+          v-if="i + 1 < renderPages[index + 1]!"
           style="user-select: none;"
         >
           {{ t('vui.pagination.ellipsis') }}

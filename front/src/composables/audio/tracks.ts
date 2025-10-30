@@ -29,7 +29,7 @@ const soundCache = shallowRef(new LRUCache<number, Sound>({
 
 const currentTrack = ref<QueueTrack>()
 
-export const fetchTrackSources = async (id: number): Promise<QueueTrackSource[]> => {
+export const fetchTrackSources = async (id: number): Promise<[QueueTrackSource, ...QueueTrackSource[]]> => {
   const { uploads } = await axios.get(`tracks/${id}/`)
     .then(response => response.data as Track, () => ({ uploads: [] as Upload[] }))
 
@@ -39,7 +39,7 @@ export const fetchTrackSources = async (id: number): Promise<QueueTrackSource[]>
     mimetype: upload.mimetype,
     bitrate: upload.bitrate,
     url: store.getters['instance/absoluteUrl'](upload.listen_url)
-  }))
+  })) as [QueueTrackSource, ...QueueTrackSource[]]
 }
 
 const getTrackSources = async (track: QueueTrack): Promise<QueueTrackSource[]> => {
@@ -67,8 +67,8 @@ const getTrackSources = async (track: QueueTrack): Promise<QueueTrackSource[]> =
   // NOTE: Add a transcoded MP3 src at the end for browsers
   //       that do not support other codecs to be able to play it :)
   if (sources.length > 0) {
-    const original = sources[0]
-    const url = new URL(original.url)
+    const original = sources[0]!
+    const url = new URL(original.url!)
     url.searchParams.set('to', 'mp3')
 
     const bitrate = Math.min(320000, original.bitrate ?? Infinity)
@@ -178,7 +178,7 @@ export const useTracks = createGlobalState(() => {
     if (queue.value.length <= index || index === -1) return
     logger.log('LOADING TRACK', index)
 
-    const track = queue.value[index]
+    const track = queue.value[index]!
     const sound = await createSound(track)
 
     if (!sound.playable) {

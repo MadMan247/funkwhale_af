@@ -60,7 +60,7 @@ const createLoggerFn = (level: LogLevel) => {
     const stacktrace = await Stacktrace.get()
 
     // NOTE: First call is a call to logger.log, second one is a call to the function that called logger.log
-    const { functionName, fileName, lineNumber } = stacktrace[1]
+    const { functionName, fileName, lineNumber } = stacktrace[1]!
 
     let file = fileName
 

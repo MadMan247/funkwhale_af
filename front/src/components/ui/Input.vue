@@ -163,7 +163,7 @@ const model = defineModel<string | number>({ required: true })
 </template>
 
 <style lang="scss">
-@import '~/style/funkwhale.scss';
+@use '~/style/funkwhale.scss';
 
 .funkwhale.input {
   position: relative;
@@ -182,7 +182,7 @@ const model = defineModel<string | number>({ required: true })
     border-radius: var(--fw-border-radius);
     cursor: text;
 
-    @include light-theme {
+    @include funkwhale.light-theme {
         &.raised {
           background-color: #ffffff;
           border-color: var(--border-color);

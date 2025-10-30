@@ -142,7 +142,7 @@ const loopingTitle = computed(() => {
   >
     <h1
       id="player-label"
-      v-t="'components.audio.Player.header.player'"
+      t="'components.audio.Player.header.player'"
       class="visually-hidden"
     />
     <div

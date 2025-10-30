@@ -34,21 +34,24 @@ const { t } = useI18n()
 const getDiscKey = (disc: Track[]) => disc?.map(track => track.id).join('|') ?? ''
 const page = ref(1)
 
-const discCount = computed(() => props.object?.tracks?.reduce((acc, track) => {
-  acc.add(track.disc_number)
-  return acc
-}, new Set()).size)
+const discCount = computed(() => new Set(
+    (props.object?.tracks ?? []).map(track => track.disc_number)
+).size)
 
-const discs = computed(() => props.object?.tracks?.reduce((acc: Track[][], track: Track) => {
-  const discNumber = track.disc_number - (props.object?.tracks?.[0]?.disc_number ?? 1)
-  acc[discNumber].push(track)
-  return acc
-}, Array(discCount.value).fill(undefined).map(() => [])))
+const discs = computed(() => {
+  const arr: Track[][] = Array.from({ length: discCount.value ?? 1 }).map(() => [])
+  const firstDisc = props.object?.tracks?.[0]?.disc_number ?? 1
+  for (const track of props.object.tracks ?? []) {
+    const discNumber = track.disc_number - firstDisc
+    arr[discNumber]?.push(track)
+  }
+  return arr
+})
 
 const paginatedDiscs = computed(() => props.object?.tracks?.slice(props.paginateBy * (page.value - 1), props.paginateBy * page.value)
   .reduce((acc: Track[][], track: Track) => {
     const discNumber = track.disc_number - (props.object?.tracks?.[0]?.disc_number ?? 1)
-    acc[discNumber].push(track)
+    acc[discNumber]?.push(track)
     return acc
   }, Array(discCount.value).fill(undefined).map(() => []))
 )
@@ -69,7 +72,7 @@ const paginatedDiscs = computed(() => props.object?.tracks?.slice(props.paginate
     </h2>
 
     <channel-entries
-      v-if="artistCredit && artistCredit[0].artist.channel && isSerie"
+      v-if="artistCredit && artistCredit[0]?.artist.channel != null && isSerie"
       :default-cover="null"
       :is-podcast="isSerie"
       :limit="50"
@@ -96,7 +99,7 @@ const paginatedDiscs = computed(() => props.object?.tracks?.slice(props.paginate
               :tracks="discs ? discs[index] : []"
             />
             <h3>
-              {{ t('components.library.AlbumDetail.meta.volume', { number: tracks[0].disc_number }) }}
+              {{ t('components.library.AlbumDetail.meta.volume', { number: tracks[0]?.disc_number }) }}
             </h3>
             <track-table
               :is-album="true"

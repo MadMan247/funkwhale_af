@@ -69,17 +69,17 @@ const favoriteButton = computed(() => isFavorite.value
   : t('components.audio.track.Modal.button.addToFavorites')
 )
 
-const trackDetailsButton = computed(() => props.track.artist_credit?.[0].artist.content_category === 'podcast'
+const trackDetailsButton = computed(() => props.track.artist_credit[0]?.artist.content_category === 'podcast'
   ? t('components.audio.track.Modal.button.episodeDetails')
   : t('components.audio.track.Modal.button.trackDetails')
 )
 
-const albumDetailsButton = computed(() => props.track.artist_credit?.[0].artist?.content_category === 'podcast'
+const albumDetailsButton = computed(() => props.track.artist_credit[0]?.artist.content_category === 'podcast'
   ? t('components.audio.track.Modal.button.seriesDetails')
   : t('components.audio.track.Modal.button.albumDetails')
 )
 
-const artistDetailsButton = computed(() => props.track.artist_credit?.[0].artist?.content_category === 'podcast'
+const artistDetailsButton = computed(() => props.track.artist_credit[0]?.artist.content_category === 'podcast'
   ? t('components.audio.track.Modal.button.channelDetails')
   : t('components.audio.track.Modal.button.artistDetails')
 )
@@ -115,7 +115,7 @@ const labels = computed(() => ({
           class="ui centered image"
         >
         <img
-          v-else-if="!!track.artist_credit.length && track.artist_credit[0].artist.cover"
+          v-else-if="!!track.artist_credit.length && track.artist_credit[0]?.artist.cover"
           v-lazy="getArtistCoverUrl(track.artist_credit)"
           alt=""
           class="ui centered image"
@@ -137,7 +137,7 @@ const labels = computed(() => ({
         no-gap
       >
         <Button
-          v-if="store.state.auth.authenticated && track.artist_credit?.[0].artist.content_category !== 'podcast'"
+          v-if="store.state.auth.authenticated && track.artist_credit[0]?.artist.content_category !== 'podcast'"
           full
           ghost
           :aria-label="favoriteButton"

@@ -45,7 +45,7 @@ export const setI18nLanguage = async (locale: string) => {
   // load locale messages
   if (!i18n.global.availableLocales.includes(locale)) {
     try {
-      const { default: messages } = await localeFactory[`../locales/${locale}.json`]()
+      const { default: messages } = await localeFactory[`../locales/${locale}.json`]!()
       i18n.global.setLocaleMessage(locale, messages)
       await nextTick()
     } catch (error) {

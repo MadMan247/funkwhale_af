@@ -50,7 +50,7 @@ export const useModal = <T> (
    */
   const isOpen = computed({
     get () {
-      return flag in query.value && assignment.isOn(query.value[flag])
+      return flag in query.value && assignment.isOn(query.value[flag]!)
     },
     set (newValue: boolean) {
       router?.push({
@@ -74,7 +74,7 @@ export const useModal = <T> (
    */
   const value = computed({
     get () {
-      const flagValue = flag in query.value ? query.value[flag] : ''
+      const flagValue = flag in query.value ? query.value[flag]! : ''
       return typeof flagValue === 'string' ? flagValue : flagValue === null ? '' : flagValue.join(' ')
     },
     set (newValue: string) {

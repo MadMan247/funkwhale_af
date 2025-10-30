@@ -515,17 +515,17 @@ watch(queryDebounced, search, { immediate: true })
         >
           <ArtistCard
             v-if="(category.type === 'artists' || category.type === 'podcasts')"
-            :artist="resultsPerCategory(category)[index]"
+            :artist="resultsPerCategory(category)[index]!"
           />
 
           <AlbumCard
             v-else-if="category.type === 'albums' || category.type === 'series'"
-            :album="resultsPerCategory(category)[index]"
+            :album="resultsPerCategory(category)[index]!"
           />
 
           <PlaylistCard
             v-else-if="category.type === 'playlists'"
-            :playlist="resultsPerCategory(category)[index]"
+            :playlist="resultsPerCategory(category)[index]!"
           />
 
           <RadioCard

@@ -175,7 +175,7 @@ watch(isOpen, (isOpen) => {
 </template>
 
 <style lang="scss">
-@import '~/style/funkwhale.scss';
+@use '~/style/funkwhale.scss';
 
 .funkwhale.popover-container {
   width: max-content;
@@ -207,12 +207,12 @@ watch(isOpen, (isOpen) => {
       border-bottom: 1px solid var(--fw-border-color);
     }
 
-    @include light-theme {
+    @include funkwhale.light-theme {
       --fw-border-color: var(--fw-gray-500);
 
     }
 
-    @include dark-theme {
+    @include funkwhale.dark-theme {
       --fw-border-color: var(--fw-gray-800);
 
       .popover-item:hover {

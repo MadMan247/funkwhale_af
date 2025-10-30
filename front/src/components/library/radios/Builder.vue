@@ -316,7 +316,7 @@ const save = async () => {
           <builder-filter
             v-for="(f, index) in filters"
             :key="f.hash"
-            v-model:data="filters[index]"
+            v-model:data="filters[index]!"
             @delete="deleteFilter(index)"
           />
         </tbody>

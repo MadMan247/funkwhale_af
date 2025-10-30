@@ -11,14 +11,18 @@ import Heading from '~/components/ui/Heading.vue'
 
 const { t } = useI18n()
 
-const props = defineProps<{
-  title: string,
-  overPopover?: true,
-  isdestructive?: true,
-  cancel?: string | true,
-  icon?: string,
-  autofocus?: true | 'off'
-} & (ColorProps | DefaultProps)>()
+const props = withDefaults(
+    defineProps<{
+      title?: string,
+      overPopover?: true,
+      isdestructive?: true,
+      cancel?: string | true,
+      icon?: string,
+      autofocus?: true | 'off'
+    } & (ColorProps | DefaultProps)>(),
+    { title: '' }
+)
+
 
 const isOpen = defineModel<boolean>({ default: false })
 

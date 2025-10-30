@@ -33,7 +33,7 @@ const choiceValues = new Proxy<Record<string, boolean>>(Object.create(null), {
   <PopoverRadioItem
     v-for="choice of filteredChoices"
     :key="choice"
-    v-model="choiceValues[choice]"
+    v-model="choiceValues[choice]!"
     :keep-open="keepOpen"
   >
     {{ choice }}

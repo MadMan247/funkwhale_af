@@ -11,7 +11,7 @@ interface Events {
 }
 
 interface Props {
-  modelValue: string | null
+  modelValue?: string | null
 }
 
 const { t } = useI18n()

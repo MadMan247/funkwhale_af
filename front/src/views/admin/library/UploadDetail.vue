@@ -453,7 +453,7 @@ const displayName = (object: any) => object?.filename ?? object?.source ?? objec
 </template>
 
 <style scoped lang="scss">
-@import '~/style/funkwhale.scss';
+@use '~/style/funkwhale.scss';
 
 .avatar {
   font-size: 64px;
@@ -470,22 +470,22 @@ h3.category {
   border-top: 1px solid;
   min-width: 280px;
 
-  @include light-theme {
+  @include funkwhale.light-theme {
     border-color: var(--fw-gray-300);
   }
 
-  @include dark-theme {
+  @include funkwhale.dark-theme {
     border-color: var(--fw-gray-800);
   }
 
   .label {
     font-weight: 800;
 
-    @include light-theme {
+    @include funkwhale.light-theme {
       color: var(--fw-gray-600);
     }
 
-    @include dark-theme {
+    @include funkwhale.dark-theme {
       color: var(--fw-gray-500);
     }
   }

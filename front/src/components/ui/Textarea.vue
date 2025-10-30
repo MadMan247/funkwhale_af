@@ -52,7 +52,7 @@ const currentLine = computed({
   get: () => (model.value.split('\n')[model.value.split('\n').length > lineNumber.value ? lineNumber.value : 0]),
   set: (line) => {
     const content = model.value.split('\n')
-    content[lineNumber.value] = line
+    content[lineNumber.value] = line!
     model.value = content.join('\n')
   }
 })
@@ -65,7 +65,7 @@ const splice = async (start: number, deleteCount: number, items?: string) => {
   let lineStart = selectionStart - lineBeginning
   let lineEnd = selectionEnd - lineBeginning
 
-  const text = currentLine.value.split('')
+  const text = currentLine.value!.split('')
   text.splice(start, deleteCount, items ?? '')
   currentLine.value = text.join('')
 
@@ -89,7 +89,7 @@ const splice = async (start: number, deleteCount: number, items?: string) => {
 
 const newLineOperations = new Map<RegExp, ((event: KeyboardEvent, line: string, groups: string[]) => void)>()
 const newline = async (event: KeyboardEvent) => {
-  const line = currentLine.value
+  const line = currentLine.value!
   for (const regexp of newLineOperations.keys()) {
     const matches = line.match(regexp) ?? []
     if (matches.length > 0) {
@@ -99,11 +99,11 @@ const newline = async (event: KeyboardEvent) => {
 }
 
 // Conditions
-const isHeading1 = computed(() => currentLine.value.startsWith('# '))
-const isHeading2 = computed(() => currentLine.value.startsWith('## '))
-const isQuote = computed(() => currentLine.value.startsWith('> '))
-const isUnorderedList = computed(() => currentLine.value.startsWith('- ') || currentLine.value.startsWith('* '))
-const isOrderedList = computed(() => /^\d+\. /.test(currentLine.value))
+const isHeading1 = computed(() => currentLine.value!.startsWith('# '))
+const isHeading2 = computed(() => currentLine.value!.startsWith('## '))
+const isQuote = computed(() => currentLine.value!.startsWith('> '))
+const isUnorderedList = computed(() => currentLine.value!.startsWith('- ') || currentLine.value!.startsWith('* '))
+const isOrderedList = computed(() => /^\d+\. /.test(currentLine.value!))
 
 const isParagraph = computed(() => !isHeading1.value && !isHeading2.value && !isQuote.value && !isUnorderedList.value && !isOrderedList.value)
 
@@ -152,7 +152,7 @@ const newlineOperation = (regexp: RegExp, newLineHandler: (line: string, groups:
   })
 }
 
-newlineOperation(/^(\d+)\. /, (line, [lastNumber]) => splice(line.length, 0, `\n${+lastNumber + 1}. `))
+newlineOperation(/^(\d+)\. /, (line, [lastNumber]) => splice(line.length, 0, `\n${+lastNumber! + 1}. `))
 newlineOperation(/^- /, (line) => splice(line.length, 0, '\n- '))
 newlineOperation(/^> /, (line) => splice(line.length, 0, '\n> '))
 newlineOperation(/^\* /, (line) => splice(line.length, 0, '\n* '))
@@ -373,7 +373,7 @@ onMounted(() => {
 </template>
 
 <style lang="scss">
-@import '~/style/funkwhale.scss';
+@use '~/style/funkwhale.scss';
 
 .funkwhale {
   &.textarea-label {
@@ -416,7 +416,7 @@ onMounted(() => {
       }
     }
 
-    @include light-theme {
+    @include funkwhale.light-theme {
       --fw-border-color: var(--fw-bg-color);
       --fw-buttons-border-color: var(--fw-gray-400);
       --fw-bg-color: var(--fw-gray-100);
@@ -433,7 +433,7 @@ onMounted(() => {
       }
     }
 
-    @include dark-theme {
+    @include funkwhale.dark-theme {
       --fw-bg-color: var(--fw-gray-850);
       --fw-border-color: var(--fw-bg-color);
       --fw-buttons-border-color: var(--fw-gray-950);

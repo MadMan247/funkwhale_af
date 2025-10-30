@@ -45,7 +45,7 @@ const labels = computed(() => ({
 // (b) I am the channel's artist: props.isChannel && props.artistCredit[0].artist?.channel?.actor)
 const isEmbedable = computed(() => (props.publicLibraries.length))
 const musicbrainzUrl = computed(() => props.object?.mbid ? `https://musicbrainz.org/release/${props.object.mbid}` : null)
-const discogsUrl = computed(() => `https://discogs.com/search/?type=release&title=${encodeURI(props.object?.title)}&artist=${encodeURI(props.object?.artist_credit[0].artist.name)}`)
+const discogsUrl = computed(() => `https://discogs.com/search/?type=release&title=${encodeURI(props.object?.title)}&artist=${encodeURI(props.object.artist_credit[0]!.artist.name)}`)
 
 const open = ref(false)
 </script>

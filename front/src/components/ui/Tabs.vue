@@ -27,7 +27,7 @@ const currentIndex = computed(() =>
 // select first tab
 watch(tabs, () => {
   if (tabs.length === 1) {
-    currentTitle.value = tabs[0].title
+    currentTitle.value = tabs[0]!.title
   }
 })
 </script>
@@ -44,8 +44,8 @@ watch(tabs, () => {
         v-bind="tab"
         :on-click="'to' in tab ? undefined : () => { currentTitle = tab.title }"
         class="tabs-item"
-        @keydown.left="currentTitle = tabs[(currentIndex - 1 + tabs.length) % tabs.length].title"
-        @keydown.right="currentTitle = tabs[(currentIndex + 1) % tabs.length].title"
+        @keydown.left="currentTitle = tabs[(currentIndex - 1 + tabs.length) % tabs.length]!.title"
+        @keydown.right="currentTitle = tabs[(currentIndex + 1) % tabs.length]!.title"
       >
         <div class="is-spacing">
           {{ tab.title }}
@@ -63,16 +63,16 @@ watch(tabs, () => {
 </template>
 
 <style lang="scss">
-@import '~/style/funkwhale.scss';
+@use '~/style/funkwhale.scss';
 
 .funkwhale.tabs {
     color: var(--fw-text-color);
 
-    @include light-theme {
+    @include funkwhale.light-theme {
       --fw-border-color: var(--fw-gray-300);
     }
 
-    @include dark-theme {
+    @include funkwhale.dark-theme {
       --fw-text-color: var(--fw-gray-300);
       --fw-border-color: var(--fw-gray-700);
     }

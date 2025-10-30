@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { BackendError, SettingsGroup, SettingsDataEntry, FunctionRef, Form } from '~/types'
+import type { BackendError, SettingsGroup, SettingsDataEntry, FunctionRef, Form, SettingsField } from '~/types'
 import axios from 'axios'
 import SignupFormBuilder from '~/components/admin/SignupFormBuilder.vue'
 import useFormData from '~/composables/useFormData'
@@ -45,15 +45,19 @@ const settings = computed(() => {
     return acc
   }, {} as Record<string, SettingsDataEntry>)
 
-  return props.group.settings.map(entry => {
-    return { ...byIdentifier[entry.name], fieldType: entry.fieldType, fieldParams: entry.fieldParams || {} }
-  })
+  return props.group.settings.map(entry => ({
+    ...byIdentifier[entry.name],
+    fieldType: entry.fieldType,
+    fieldParams: entry.fieldParams || {}
+  } as SettingsDataEntry & Pick<SettingsField, 'fieldType' | 'fieldParams'>))
 })
 
-const fileSettings = computed(() => settings.value.filter(setting => setting.field.widget.class === 'ImageWidget'))
+const fileSettings = computed(() => settings.value.filter(setting => setting.field?.widget.class === 'ImageWidget'))
 
 for (const setting of settings.value) {
-  values[setting.identifier] = setting.value
+  if (setting.identifier != null) {
+    values[setting.identifier] = setting.value
+  }
 }
 
 const isLoading = ref(false)
@@ -66,22 +70,25 @@ const save = async () => {
 
   if (fileSettings.value.length > 0) {
     const fileSettingsIDs = fileSettings.value.map((setting) => setting.identifier)
-    const data = settings.value.reduce((data, setting) => {
+    const data: Record<string, string | File> = {}
+    for (const setting of settings.value) {
+      if (setting.identifier == null) {
+        return data
+      }
+
       if (fileSettingsIDs.includes(setting.identifier)) {
         const input = fileRefs[setting.identifier]
-        const { files } = input
+        const { files } = (input as HTMLInputElement)
 
         logger.debug('ref', input, files)
 
-        if (files && files.length > 0) {
+        if (files && files.length > 0 && files[0] != null) {
           data[setting.identifier] = files[0]
         }
       } else {
         data[setting.identifier] = values[setting.identifier] as string
       }
-
-      return data
-    }, {} as Record<string, string | File>)
+    }
 
     contentType = 'multipart/form-data'
     postData = useFormData(data)

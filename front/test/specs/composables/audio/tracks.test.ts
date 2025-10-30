@@ -4,6 +4,7 @@ import { useTracks } from '~/composables/audio/tracks'
 import { isEqual } from 'lodash-es'
 import type { Sound } from '~/api/player'
 import type { Track } from '~/types'
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const { enqueue, enqueueAt, clear } = useQueue()
 
@@ -70,7 +71,7 @@ describe('cache', () => {
 
   it('maxes at 3 cache elements', async () => {
     expect(cache.size).toBe(1)
-    const [[firstCachedId]] = cache.dump()
+    const [firstCachedId] = cache.dump()[0]!
 
     await waitUntilCacheUpdated()
     expect(cache.size).toBe(2)

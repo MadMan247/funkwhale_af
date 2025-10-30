@@ -33,7 +33,7 @@ const props = defineProps<Props>()
 </template>
 
 <style lang="scss">
-@import '~/style/funkwhale.scss';
+@use '~/style/funkwhale.scss';
 
 .funkwhale.alert {
 

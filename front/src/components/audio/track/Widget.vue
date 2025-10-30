@@ -226,7 +226,7 @@ watch(() => props.websocketHandlers.includes('Listen'), (to) => {
 </template>
 
 <style lang="scss" scoped>
-@import '~/style/funkwhale.scss';
+@use '~/style/funkwhale.scss';
 
 .funkwhale {
   &.activity {
@@ -234,11 +234,11 @@ watch(() => props.websocketHandlers.includes('Listen'), (to) => {
     border-top: 1px solid;
     margin: -11px 0;
 
-    @include light-theme {
+    @include funkwhale.light-theme {
       border-color: var(--fw-gray-300);
     }
 
-    @include dark-theme {
+    @include funkwhale.dark-theme {
       border-color: var(--fw-gray-800);
     }
 
@@ -303,7 +303,7 @@ watch(() => props.websocketHandlers.includes('Listen'), (to) => {
         font-weight: 700;
         line-height: 1.5em;
 
-        @include dark-theme {
+        @include funkwhale.dark-theme {
           color: var(--fw-gray-300);
         }
       }
@@ -322,7 +322,7 @@ watch(() => props.websocketHandlers.includes('Listen'), (to) => {
   }
 }
 
-@include light-theme {
+@include funkwhale.light-theme {
 
   .play-button {
     background: rgba(255, 255, 255, .5);
@@ -333,7 +333,7 @@ watch(() => props.websocketHandlers.includes('Listen'), (to) => {
   }
 }
 
-@include dark-theme {
+@include funkwhale.dark-theme {
 
   .play-button {
     background: rgba(0, 0, 0, .2);

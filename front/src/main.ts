@@ -51,7 +51,7 @@ const waitForImportantModules = async () => {
       continue
     }
 
-    await modules[path].install?.(moduleContext)?.catch((error: Error) => {
+    await modules[path]?.install?.(moduleContext)?.catch((error: Error) => {
       logger.error(`Failed to load important module: ${path}`, error)
       throw error
     })

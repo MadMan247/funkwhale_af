@@ -1,8 +1,12 @@
+@use '~/style/globals/layout';
+@use '~/style/inc/theme';
+@use '~/style/vendor/media' as *;
+
 .opaque {
-  @include dark-theme {
+  @include theme.dark-theme {
     background-color: rgba(#292525, 0.8);
   }
-  @include light-theme {
+  @include theme.light-theme {
     background-color: rgba(#ffffff, 0.8);
   }
   backdrop-filter: blur(8px);
@@ -11,7 +15,7 @@
 
 .queue-controls {
   @include media('<desktop') {
-    height: $bottom-player-height;
+    height: layout.$bottom-player-height;
   }
 }
 

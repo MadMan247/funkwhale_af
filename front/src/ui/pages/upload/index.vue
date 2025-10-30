@@ -39,6 +39,9 @@ const currentTab = ref(tabs[0])
 
 const uploads = useUploadsStore()
 const openLibrary = () => {
+  if (currentTab.value == null) {
+    return
+  }
   uploads.createUploadGroup(currentTab.value.key, target.value?.uuid)
 }
 
@@ -60,7 +63,7 @@ const { state: items } = useAsyncState(
         v-for="tab in tabs"
         :key="tab.key"
         :title="tab.label"
-        :class="currentTab.key === tab.key && 'active'"
+        :class="currentTab?.key === tab.key && 'active'"
         @click="currentTab = tab"
       >
         <template #image>

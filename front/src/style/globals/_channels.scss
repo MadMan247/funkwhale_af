@@ -1,3 +1,4 @@
+@use '~/style/inc/theme';
 
 //  channels stuff
 @mixin two-images {
@@ -124,10 +125,10 @@
   display: block;
   padding: 1.5em;
   &.selected {
-    @include light-theme {
+    @include theme.light-theme {
       background-color: rgba(0, 0, 0, 0.05);
     }
-    @include dark-theme {
+    @include theme.dark-theme {
       background-color: rgba(255, 255, 255, 0.05);
     }
   }

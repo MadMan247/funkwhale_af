@@ -1,4 +1,5 @@
 import { useMarkdownRaw } from '~/composables/useMarkdown'
+import { describe, it, expect } from 'vitest'
 
 describe('useMarkdownRaw', () => {
   describe('anchors', () => {

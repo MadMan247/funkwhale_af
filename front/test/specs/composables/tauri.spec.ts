@@ -1,4 +1,4 @@
-import { vi } from 'vitest'
+import { afterEach, expect, test, vi } from 'vitest'
 import { isTauri } from '~/composables/tauri'
 
 afterEach(() => {

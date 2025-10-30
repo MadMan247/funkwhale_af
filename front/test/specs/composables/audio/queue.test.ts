@@ -1,5 +1,6 @@
 import { useQueue } from '~/composables/audio/queue'
 import type { Track } from '~/types'
+import { beforeEach, describe, expect, it } from 'vitest'
 
 const { tracks, enqueue, dequeue, clear, reorder, currentIndex } = useQueue()
 

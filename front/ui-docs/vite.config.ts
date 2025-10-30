@@ -1,16 +1,16 @@
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vueDevTools from 'vite-plugin-vue-devtools'
-import path from 'node:path'
+import { sassFalse, sassTrue } from 'sass-embedded'
 
 export default defineConfig({
   plugins: [vueDevTools()],
   publicDir: false,
   resolve: {
     alias: {
-      '~': fileURLToPath(new URL('../src', import.meta.url)),
-      '#': fileURLToPath(new URL('../src/ui/workers', import.meta.url)),
-      '/node_modules': fileURLToPath(new URL('../node_modules', import.meta.url))
+      '#': fileURLToPath(new URL('./src/ui/workers', import.meta.url)),
+      '?': fileURLToPath(new URL('./test', import.meta.url)),
+      '~': fileURLToPath(new URL('../src', import.meta.url))
     }
   },
 
@@ -18,15 +18,17 @@ export default defineConfig({
     devSourcemap: true,
     preprocessorOptions: {
       scss: {
+        functions: {
+          'docs()': () => (!!process.env.VP_DOCS) ? sassTrue : sassFalse
+        },
         additionalData: `
-          $docs: ${!!process.env.VP_DOCS};
-          @import "~/style/inc/docs.scss";
+          @use "~/style/inc/docs.scss";
         `
       }
     }
   },
   build: {
-    rollupOptions: {
+    rolldownOptions: {
       external: ['vue', 'vue-i18n', '@vueuse/core', 'vue-router', 'vue-devtools'],
       output: {
         globals: {

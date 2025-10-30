@@ -55,7 +55,7 @@ defineProps<Props>()
     </div>
     <div class="duration-cell">
       <template v-if="source.sources.length > 0">
-        {{ time.parse(Math.round(source.sources[0].duration ?? 0)) }}
+        {{ time.parse(Math.round(source.sources[0]?.duration ?? 0)) }}
       </template>
     </div>
     <div class="controls">

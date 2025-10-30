@@ -1,4 +1,4 @@
-import { vi } from 'vitest'
+import { afterEach, describe, expect, test, vi } from 'vitest'
 
 // HACK: First we import the global store (and instance store indirectly) so that we don't fall into error pitfall
 import _store from '~/store'

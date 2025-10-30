@@ -55,7 +55,7 @@ watchEffect(() => {
 </template>
 
 <style lang="scss">
-@import '~/style/funkwhale.scss';
+@use '~/style/funkwhale.scss';
 
 .funkwhale {
   &.toc {
@@ -67,11 +67,11 @@ watchEffect(() => {
       }
     }
 
-    @include light-theme {
+    @include funkwhale.light-theme {
       --fw-border-color: var(--fw-gray-300);
     }
 
-    @include dark-theme {
+    @include funkwhale.dark-theme {
       --fw-border-color: var(--fw-gray-700);
 
       > .toc-toc > .toc-links > button {

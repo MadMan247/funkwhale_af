@@ -1,5 +1,6 @@
-import { handlers } from '../msw-server'
+import { handlers } from '../msw-server/handlers'
 import { setupServer } from 'msw/node'
+import { afterAll, afterEach, beforeAll } from 'vitest'
 
 import.meta.env.VUE_APP_INSTANCE_URL = 'http://localhost:3000/'
 

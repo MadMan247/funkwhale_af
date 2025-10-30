@@ -18,7 +18,7 @@ import useErrorHandler from '~/composables/useErrorHandler'
 import SanitizedHtml from '~/components/SanitizedHtml.vue'
 
 interface Props extends PlayOptionsProps {
-  tracks: Track[]
+  tracks?: Track[]
   track: Track
   index: number
 
@@ -100,7 +100,7 @@ await fetchData()
         @error="(e) => { e.target && track.album.cover ? (e.target as HTMLImageElement).src = store.getters['instance/absoluteUrl'](track.album.cover.urls.medium_square_crop) : null }"
       >
       <img
-        v-else-if="track.artist_credit.length && track.artist_credit[0].artist.cover"
+        v-else-if="track.artist_credit.length && track.artist_credit[0]?.artist.cover"
         v-lazy="getArtistCoverUrl(track.artist_credit)"
         alt=""
         class="ui artist-track mini image"

@@ -67,13 +67,13 @@ const releaseDetails: {
     link: props.track.artist_credit.length > 0
       ? {
           name: 'library.artists.detail',
-          params: { id: props.track.artist_credit[0].artist.id }
+          params: { id: props.track.artist_credit[0]!.artist.id }
         }
       : undefined
   },
   {
     label:
-      props.track.album?.artist_credit?.[0].artist.content_category === 'music'
+      props.track.album?.artist_credit[0]?.artist.content_category === 'music'
         ? t('components.library.TrackDetail.table.release.album')
         : t('components.library.TrackDetail.table.release.series'),
     releaseValue: props.track.album?.title || t('components.library.TrackDetail.notApplicable'),
@@ -112,16 +112,16 @@ const trackDetails: {
   {
     label:
     t('components.library.TrackDetail.table.track.size'),
-    trackValue: upload?.value.size ? humanSize(upload.value.size) : t('components.library.TrackDetail.notApplicable')
+    trackValue: upload?.value?.size ? humanSize(upload.value.size) : t('components.library.TrackDetail.notApplicable')
   },
   {
     label: t('components.library.TrackDetail.table.track.codec'),
-    trackValue: upload?.value.extension || t('components.library.TrackDetail.notApplicable')
+    trackValue: upload?.value?.extension || t('components.library.TrackDetail.notApplicable')
   },
   {
     label:
     t('components.library.TrackDetail.table.track.bitrate.label'),
-    trackValue: upload?.value.bitrate
+    trackValue: upload?.value?.bitrate
       ? t('components.library.TrackDetail.table.track.bitrate.value', { bitrate: humanSize(upload.value.bitrate) })
       : t('components.library.TrackDetail.notApplicable')
   },
@@ -242,7 +242,7 @@ const trackDetails: {
 </template>
 
 <style scoped lang="scss">
-@import '~/style/funkwhale.scss';
+@use '~/style/funkwhale.scss';
 
 .channel-image {
   width: 200px;
@@ -257,21 +257,21 @@ const trackDetails: {
   border-top: 1px solid;
   min-width: 280px;
 
-  @include light-theme {
+  @include funkwhale.light-theme {
     border-color: var(--fw-gray-300);
   }
-  @include dark-theme {
+  @include funkwhale.dark-theme {
     border-color: var(--fw-gray-800);
   }
 
   .label {
     font-weight: 800;
 
-    @include light-theme {
+    @include funkwhale.light-theme {
       color: var(--fw-gray-600);
     }
 
-    @include dark-theme {
+    @include funkwhale.dark-theme {
       color: var(--fw-gray-500);
     }
   }

@@ -1,7 +1,9 @@
+@use '~/style/inc/theme';
+
 // Links
 %link,
 .funkwhale.link {
-  @include light-theme {
+  @include theme.light-theme {
     --fw-link-color: var(--fw-blue-400);
     --fw-link-hover-color: var(--fw-blue-500);
 
@@ -11,7 +13,7 @@
     }
   }
 
-  @include dark-theme {
+  @include theme.dark-theme {
     --fw-link-color: var(--fw-gray-300);
     --fw-link-hover-color: var(--fw-gray-400);
 
@@ -33,7 +35,7 @@
   // }
 }
 
-@if $docs {
+@if docs() {
   .VPContent a:not(.funkwhale.link) {
     &:not(.VPLink):not(.vp-doc .header-anchor):not(.VPDocAsideOutline .outline-link):not(.VPNavBarTitle .title):not(.VPDocFooter .pager-link):not(.is-raw) {
       @extend %link;
@@ -53,11 +55,11 @@
   border: none;
   border-bottom: 1px solid var(--fw-border-color);
 
-  @include light-theme {
+  @include theme.light-theme {
     --fw-border-color: var(--fw-gray-200);
   }
 
-  @include dark-theme {
+  @include theme.dark-theme {
     --fw-border-color: var(--fw-gray-800);
   }
 
@@ -68,7 +70,7 @@
 hr:not(.is-raw) {
   @extend %hr;
 
-  @if $docs {
+  @if docs() {
     @extend %hr;
   }
 }

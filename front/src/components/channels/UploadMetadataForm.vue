@@ -16,7 +16,7 @@ interface Events {
 
 interface Props {
   upload: Upload
-  values: Partial<Values> | null
+  values?: Partial<Values> | null
 }
 
 const { t } = useI18n()

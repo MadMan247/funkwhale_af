@@ -18,7 +18,7 @@ interface Events {
 interface Props {
   filters: object
   limit?: number
-  defaultCover: Cover | null
+  defaultCover?: Cover | null
   isPodcast: boolean
 }
 const { t } = useI18n()

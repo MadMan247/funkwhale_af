@@ -108,12 +108,12 @@ onMounted(() => {
         :cancel="cancel"
         :autofocus="index === nextIndex && nextIndex < model.currents.length"
         no-underline
-        v-bind="model.currents[index].label === '' ? {'solid': true, 'default': true} : {'secondary':true}"
+        v-bind="model.currents[index]?.label === '' ? {'solid': true, 'default': true} : {'secondary':true}"
         :class="[
           $style.pill,
           isStatic ? $style.static
-          : model.currents[index].label === '' ? $style.empty
-            : model.currents[index].type === 'custom' ? $style.custom
+          : model.currents[index]?.label === '' ? $style.empty
+            : model.currents[index]?.type === 'custom' ? $style.custom
               : $style.preset
         ]"
         @opened="() => { model = props.set(model); }"
@@ -123,9 +123,9 @@ onMounted(() => {
         <span
           v-if="isStatic"
           :class="$style['pill-content']"
-        >{{ model.currents[index].label }}</span>
+        >{{ model.currents?.[index]?.label }}</span>
         <template
-          v-if="model.others && model.currents[index].label !== ''"
+          v-if="model.others && model.currents?.[index]?.label !== ''"
           #action
         >
           <Button
@@ -136,7 +136,7 @@ onMounted(() => {
             :title="t('vui.deselect')"
             @click.stop.prevent="() => {
               if (!model.others) return
-              model.others.push({ ...model.currents[index] });
+              model.others.push({ ...model.currents[index]! });
               model.currents[index] = { label: '', type: 'custom' }
               sanitize()
             }"

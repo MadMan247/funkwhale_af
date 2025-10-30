@@ -321,7 +321,7 @@ const shuffle = () => { }
 </template>
 
 <style lang="scss" scoped>
-@import '~/style/funkwhale.scss';
+@use '~/style/funkwhale.scss';
 
 .playlist-grid {
   display: grid;
@@ -341,11 +341,11 @@ const shuffle = () => { }
 .meta {
   font-size: 15px;
 
-  @include light-theme {
+  @include funkwhale.light-theme {
     color: var(--fw-gray-700);
   }
 
-  @include dark-theme {
+  @include funkwhale.dark-theme {
     color: var(--fw-gray-500);
   }
 }

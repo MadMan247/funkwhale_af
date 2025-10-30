@@ -192,7 +192,7 @@ const labels = computed(() => ({
 </template>
 
 <style lang="scss" scoped>
-@import '~/style/funkwhale.scss';
+@use '~/style/funkwhale.scss';
 
 header>nav button.button {
   padding: 10px;
@@ -205,7 +205,7 @@ header>nav button.button {
       height: 40px;
       border-radius: 50%;
 
-      @include light-theme {
+      @include funkwhale.light-theme {
         &.label {
           background-color: var(--fw-gray-900);
           color: var(--fw-beige-300);
@@ -217,7 +217,7 @@ header>nav button.button {
         }
       }
 
-      @include dark-theme {
+      @include funkwhale.dark-theme {
         &.label {
           background-color: var(--fw-beige-400);
           color: var(--fw-gray-900);

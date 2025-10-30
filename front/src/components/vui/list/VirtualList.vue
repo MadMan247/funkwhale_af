@@ -155,7 +155,7 @@ const { resume, pause } = useRafFn(() => {
   const now = +new Date()
   const direction = scrollDirection.value
 
-  if (direction && el.value?.children[0] && !isTouch.value) {
+  if (direction && el.value != null && 'children' in el.value && el.value.children[0] && !isTouch.value) {
     el.value.children[0].scrollTop += 200 / (now - lastDate) * (direction === 'up' ? -1 : 1)
   }
 

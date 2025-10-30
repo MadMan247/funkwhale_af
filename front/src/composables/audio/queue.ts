@@ -114,7 +114,7 @@ export const useQueue = createGlobalState(() => {
       // TODO: Either make `track` a writable ref or implement the client/cache model
       // See Issue: https://dev.funkwhale.audio/funkwhale/funkwhale/-/issues/2437
       // @ts-expect-error `track` is read-only
-      track.uploads = uploads
+      track.uploads = uploads as [QueueTrackSource, ...QueueTrackSource[]]
     }
 
     return {
@@ -137,11 +137,11 @@ export const useQueue = createGlobalState(() => {
         mimetype: upload.mimetype,
         bitrate: upload.bitrate,
         url: store.getters['instance/absoluteUrl'](upload.listen_url)
-      }))
+      })) as [QueueTrackSource, ...QueueTrackSource[]]
     }
   }
 
-  const isTrack = (track: Track | boolean): track is Track => typeof track !== 'boolean'
+  const isTrack = (track?: Track | boolean): track is Track => track != null && typeof track !== 'boolean'
 
   function deepToRaw (obj: any): any {
     if (Array.isArray(obj)) {
@@ -201,7 +201,7 @@ export const useQueue = createGlobalState(() => {
     }
 
     if (isShuffled.value) {
-      tracks.value.splice(tracks.value.indexOf(shuffledIds.value[index]), 1)
+      tracks.value.splice(tracks.value.indexOf(shuffledIds.value[index]!), 1)
       shuffledIds.value.splice(index, 1)
     } else {
       tracks.value.splice(index, 1)
@@ -284,7 +284,7 @@ export const useQueue = createGlobalState(() => {
     // NOTE: We're batching the changes to avoid reactivity issues related to the currentIndex being clamped at list length
     const listCopy = list.value.slice()
     const [id] = listCopy.splice(from, 1)
-    listCopy.splice(to, 0, id)
+    listCopy.splice(to, 0, id!)
     list.value = listCopy
 
     if (current === from) {
@@ -311,13 +311,13 @@ export const useQueue = createGlobalState(() => {
 
       // NOTE: This this looses the correct index when there are multiple tracks with the same id in the queue
       //       Since we shuffled the queue before, we probably do not even care for the correct index, just the order
-      currentIndex.value = tracks.value.indexOf(id)
+      currentIndex.value = tracks.value.indexOf(id!)
       return
     }
 
     const ids = [...tracks.value]
     const [first] = ids.splice(currentIndex.value, 1)
-    shuffledIds.value = [first, ...shuffleArray(ids)]
+    shuffledIds.value = [first!, ...shuffleArray(ids)]
     currentIndex.value = 0
   }
 

@@ -265,7 +265,7 @@ const store: Module<State, RootState> = {
       const authorizeUrl = `${rootState.instance.instanceUrl}authorize?${params}`
 
       if (isTauri()) {
-        const { WebviewWindow, getCurrent } = await import('@tauri-apps/api/webviewWindow')
+        const { WebviewWindow, getCurrentWebviewWindow } = await import('@tauri-apps/api/webviewWindow')
 
         state.oauthWindow = new WebviewWindow('oauth', {
           title: `Login to ${rootState.instance.settings.instance.name}`,
@@ -276,7 +276,7 @@ const store: Module<State, RootState> = {
         const token = await new Promise((resolve, reject) => {
           if (!state.oauthWindow) return
 
-          const stop = getCurrent().once<string>('oauthToken', async (event) => {
+          const stop = getCurrentWebviewWindow().once<string>('oauthToken', async (event) => {
             resolve(event.payload)
           })
 
@@ -314,8 +314,8 @@ const store: Module<State, RootState> = {
       )
 
       if (isTauri()) {
-        const { getCurrent } = await import('@tauri-apps/api/webviewWindow')
-        const currentWindow = getCurrent()
+        const { getCurrentWebviewWindow } = await import('@tauri-apps/api/webviewWindow')
+        const currentWindow = getCurrentWebviewWindow()
 
         // If the current window is the oauth window, pass the event to the main window
         if (currentWindow.label === 'oauth') {

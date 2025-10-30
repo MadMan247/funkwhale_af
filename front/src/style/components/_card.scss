@@ -1,5 +1,7 @@
+@use '~/style/inc/theme';
+
 .card {
-  @include dark-theme {
+  @include theme.dark-theme {
     border-color: var(--hover-background-color) !important;
   }
 }

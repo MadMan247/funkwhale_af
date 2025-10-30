@@ -8,9 +8,8 @@ import useErrorHandler from '~/composables/useErrorHandler'
 export const COOKIE = 'allow-tracing'
 
 const initSentry = async (app: App, router: Router, store: Store<RootState>) => {
-  const [{ default: useLogger }, { BrowserTracing }, Sentry] = await Promise.all([
+  const [{ default: useLogger },  Sentry] = await Promise.all([
     import('~/composables/useLogger'),
-    import('@sentry/tracing'),
     import('@sentry/vue')
   ])
 
@@ -20,12 +19,9 @@ const initSentry = async (app: App, router: Router, store: Store<RootState>) => 
   Sentry.init({
     app,
     dsn: import.meta.env.FUNKWHALE_SENTRY_DSN,
-    logErrors: true,
-    trackComponents: true,
+    enableLogs: true,
     integrations: [
-      new BrowserTracing({
-        routingInstrumentation: Sentry.vueRouterInstrumentation(router)
-      })
+      Sentry.browserTracingIntegration({ router })
     ],
     debug: import.meta.env.DEV,
     environment: 'front',

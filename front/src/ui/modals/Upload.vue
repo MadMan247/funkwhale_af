@@ -42,7 +42,7 @@ const pages = ['selectDestination', 'uploadFiles', 'uploadsInProgress'] as const
 const goBack = computed(() =>
   state.value.page === 'selectDestination'
     ? undefined
-    : () => { state.value.page = pages[pages.indexOf(state.value.page) - 1] }
+    : () => { state.value.page = pages[pages.indexOf(state.value.page) - 1]! }
 )
 
 // Step 1

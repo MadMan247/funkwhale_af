@@ -112,7 +112,9 @@ review_front:
   before_script:
     - mkdir front-review
     - cd front
-    - yarn install --frozen-lockfile
+    - npm install -g corepack
+    - corepack enable
+    - yarn install
   script:
     - yarn run build --base ./
     - cp -r dist/* ../front-review
@@ -209,7 +211,9 @@ lint_front:
     - *lint_cache
   before_script:
     - cd front
-    - yarn install --frozen-lockfile
+    - npm install -g corepack
+    - corepack enable
+    - yarn install
   script:
     - yarn lint
 
@@ -297,7 +301,9 @@ test_front:
     - *lint_cache
   before_script:
     - cd front
-    - yarn install --frozen-lockfile
+    - npm install -g corepack
+    - corepack enable
+    - yarn install
   script:
     - yarn test:unit
   artifacts:
@@ -342,6 +348,8 @@ test_integration:
 
   before_script:
     - cd front
+    - npm install -g corepack
+    - corepack enable
     - yarn install
   script:
     - yarn run cypress run
@@ -427,7 +435,9 @@ build_front:
     - *lint_cache
   before_script:
     - cd front
-    - yarn install --frozen-lockfile
+    - npm install -g corepack
+    - corepack enable
+    - yarn install
   script:
     - yarn run build:deployment
   artifacts:

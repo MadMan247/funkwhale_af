@@ -69,8 +69,8 @@ const domain = computed(() => getDomain(track.value?.fid ?? ''))
 const isEmbedable = computed(() => false)
 
 const upload = computed(() => track.value?.uploads?.[0] ?? null)
-const wikipediaUrl = computed(() => `https://en.wikipedia.org/w/index.php?search=${encodeURI(`${track.value?.title ?? ''} ${track.value?.artist_credit?.[0].artist?.name ?? ''}`)}`)
-const discogsUrl = computed(() => `https://discogs.com/search/?type=release&title=${encodeURI(track.value?.album?.title ?? '')}&artist=${encodeURI(track.value?.artist_credit?.[0].artist?.name ?? '')}&title=${encodeURI(track.value?.title ?? '')}`)
+const wikipediaUrl = computed(() => `https://en.wikipedia.org/w/index.php?search=${encodeURI(`${track.value?.title ?? ''} ${track.value?.artist_credit[0]?.artist.name ?? ''}`)}`)
+const discogsUrl = computed(() => `https://discogs.com/search/?type=release&title=${encodeURI(track.value?.album?.title ?? '')}&artist=${encodeURI(track.value?.artist_credit[0]?.artist.name ?? '')}&title=${encodeURI(track.value?.title ?? '')}`)
 const downloadUrl = computed(() => {
   const url = store.getters['instance/absoluteUrl'](upload.value?.listen_url ?? '')
   return store.state.auth.authenticated
@@ -119,7 +119,7 @@ const fetchData = async () => {
     const trackResponse = await axios.get<TrackResponse>(`tracks/${props.id}/`, { params: { refresh: 'true' } })
     track.value = trackResponse.data
     const artistResponse = await axios.get<ArtistResponse>(
-      `artists/${trackResponse.data.artist_credit[0].artist.id}/`
+      `artists/${trackResponse.data.artist_credit[0]?.artist.id}/`
     )
     artist.value = artistResponse.data
   } catch (error) {
@@ -427,15 +427,15 @@ watch(showDeleteModal, (newValue) => {
 </template>
 
 <style lang="scss" scoped>
-@import '~/style/funkwhale.scss';
+@use '~/style/funkwhale.scss';
 
 .meta {
   font-size: 15px;
   line-height: 32px;
-  @include light-theme {
+  @include funkwhale.light-theme {
     color: var(--fw-gray-700);
   }
-  @include dark-theme {
+  @include funkwhale.dark-theme {
     color: var(--fw-gray-500);
   }
 }

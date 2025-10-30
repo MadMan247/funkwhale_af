@@ -4,9 +4,9 @@ RUN apk add --no-cache jq bash coreutils python3 build-base
 
 WORKDIR /app
 
-COPY package.json yarn.lock /app/
+COPY package.json yarn.lock .yarnrc.yml /app/
 COPY scripts /app/scripts
-RUN yarn install
+RUN corepack enable && yarn install
 
 COPY public /app/public
 COPY src /app/src

@@ -10,7 +10,8 @@ repos:
           (?x)(
             ^api/funkwhale_api/common/schema.yml|
             ^api/tests/music/test_coverart.ogg|
-            ^front/src/generated/types.ts
+            ^front/src/generated/types.ts|
+            ^front/test/msw-server/handlers.ts
           )
 
       - id: check-case-conflict

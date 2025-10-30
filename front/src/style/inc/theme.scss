@@ -1,3 +1,6 @@
+@use "sass:list";
+@use "sass:selector";
+
 @mixin theme($isDark) {
   $root-selectors: ();
   /* Satisfy both vitepress (docs) and funkwhale (front) convention */
@@ -10,16 +13,16 @@
 
   // If we call `@include dark-theme {}` at the root of the file
   @if & == null {
-    $root-selectors: append($root-selectors, $root-element);
+    $root-selectors: list.append($root-selectors, $root-element);
   } @else {
     // For every selector in selector list
     @each $selector in & {
       // If it is `html`, we add a root rule
       @if #{$selector} == ":root" or #{$selector} == "html" {
-        $root-selectors: append($root-selectors, $root-element, comma);
+        $root-selectors: list.append($root-selectors, $root-element, comma);
         // If it's any other rule, we append it to the root rule
       } @else {
-        $root-selectors: append($root-selectors, "#{selector-nest($root-element, $selector)}", comma);
+        $root-selectors: list.append($root-selectors, "#{selector.nest($root-element, $selector)}", comma);
       }
     }
 

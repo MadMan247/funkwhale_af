@@ -10,7 +10,6 @@ import Spacer from '~/components/ui/Spacer.vue'
 import Pill from '~/components/ui/Pill.vue'
 import Activity from '~/components/ui/Activity.vue'
 import Section from '~/components/ui/Section.vue'
-import Link from '~/components/ui/Link.vue'
 
 const alignLeft = ref(true)
 
@@ -21,7 +20,8 @@ const track: Track = {
   title: 'Some lovely track',
   description: {
     content_type: 'text/markdown',
-    text: `**New:** Music for the eyes!`
+    text: `**New:** Music for the eyes!`,
+    html: ''
   },
   cover: {
     uuid: "",
@@ -29,7 +29,10 @@ const track: Track = {
       original: 'https://images.unsplash.com/photo-1524650359799-842906ca1c06?ixlib=rb-1.2.1&dl=te-nguyen-Wt7XT1R6sjU-unsplash.jpg&w=640&q=80&fm=jpg&crop=entropy&cs=tinysrgb',
       medium_square_crop: 'https://images.unsplash.com/photo-1524650359799-842906ca1c06?ixlib=rb-1.2.1&dl=te-nguyen-Wt7XT1R6sjU-unsplash.jpg&w=640&q=80&fm=jpg&crop=entropy&cs=tinysrgb',
       large_square_crop: 'https://images.unsplash.com/photo-1524650359799-842906ca1c06?ixlib=rb-1.2.1&dl=te-nguyen-Wt7XT1R6sjU-unsplash.jpg&w=640&q=80&fm=jpg&crop=entropy&cs=tinysrgb'
-    }
+    },
+    size: 640,
+    mimetype: 'image/jpeg',
+    creation_date: '2025-01-01T00:00:00Z'
   },
   tags: ["example"],
   uploads: [],
@@ -44,20 +47,13 @@ const track: Track = {
         content_type: 'text/markdown',
         text: `I'm a musician based on the internet.
 
-  Find all my music on [Funkwhale](https://funkwhale.audio)!`},
+  Find all my music on [Funkwhale](https://funkwhale.audio)!`,
+        html: ''
+      },
       tags: [],
 
       content_category: 'music',
-      albums: [],
-      tracks_count: 1,
-      attributed_to: {
-        id: 0,
-        summary: "",
-        preferred_username: "User12345",
-        full_username: "User12345",
-        is_local: false,
-        domain: "myDomain.io"
-      },
+      attributed_to: 0,
       is_local: false,
       is_playable: true
     },
@@ -70,7 +66,7 @@ const track: Track = {
   listen_url: "https://funkwhale.audio",
   creation_date: "12345",
   attributed_to: {
-    id: 0,
+    fid: '0',
     summary: "",
     preferred_username: "User12345",
     full_username: "User12345",
@@ -80,7 +76,7 @@ const track: Track = {
 
   is_playable: true,
   is_local: false
-}
+} as unknown as Track
 
 const user: User = {
   id: 12,
@@ -90,7 +86,10 @@ const user: User = {
       original: 'https://images.unsplash.com/photo-1524650359799-842906ca1c06?ixlib=rb-1.2.1&dl=te-nguyen-Wt7XT1R6sjU-unsplash.jpg&w=640&q=80&fm=jpg&crop=entropy&cs=tinysrgb',
       medium_square_crop: 'https://images.unsplash.com/photo-1524650359799-842906ca1c06?ixlib=rb-1.2.1&dl=te-nguyen-Wt7XT1R6sjU-unsplash.jpg&w=640&q=80&fm=jpg&crop=entropy&cs=tinysrgb',
       large_square_crop: 'https://images.unsplash.com/photo-1524650359799-842906ca1c06?ixlib=rb-1.2.1&dl=te-nguyen-Wt7XT1R6sjU-unsplash.jpg&w=640&q=80&fm=jpg&crop=entropy&cs=tinysrgb'
-    }
+    },
+    size: 640,
+    mimetype: 'image/jpeg',
+    creation_date: '2025-01-01T00:00:00Z'
   },
   email: "user12345@example.org",
   summary: { text: "Hi! I'm Example from The Internet.", content_type: "text" },

@@ -200,8 +200,8 @@ const hover = ref(false)
       class="meta right floated column"
     >
       <human-duration
-        v-if="showDuration && track.uploads && track.uploads.length > 0 && track.uploads[0].duration"
-        :duration="track.uploads[0].duration"
+        v-if="showDuration && track.uploads && track.uploads.length > 0 && track.uploads[0]!.duration"
+        :duration="track.uploads[0]!.duration"
       />
     </div>
 

@@ -149,7 +149,7 @@ const store: Module<State, RootState> = {
         { name: 'phone', width: 320 }
       ]
       for (let index = 0; index < breakpoints.length; index++) {
-        const element = breakpoints[index]
+        const element = breakpoints[index]!
         if (width >= element.width) {
           return element.name
         }
@@ -213,10 +213,18 @@ const store: Module<State, RootState> = {
       state.modalsOpen.delete(key)
     },
     toggleModal (state, key) {
-      state.modalsOpen.has(key) ? state.modalsOpen.delete(key) : state.modalsOpen.add(key)
+      if (state.modalsOpen.has(key)) {
+        state.modalsOpen.delete(key)
+      } else {
+        state.modalsOpen.add(key)
+      }
     },
     setModal (state, [key, isOpen]:[string, IsOpen]) {
-      isOpen ? state.modalsOpen.add(key) : state.modalsOpen.delete(key)
+      if (isOpen) {
+        state.modalsOpen.add(key)
+      } else {
+        state.modalsOpen.delete(key)
+      }
     },
 
     notifications (state, { type, count }: { type: NotificationsKey, count: number }) {
@@ -280,7 +288,7 @@ const store: Module<State, RootState> = {
 
       const names = Object.keys(handlers)
       names.forEach((k) => {
-        const handler = handlers[k]
+        const handler = handlers[k]!
         handler(event)
       })
     }

@@ -23,7 +23,7 @@ const { container = true } = defineProps<{ container?: boolean }>()
 </template>
 
 <style lang="scss">
-@import '~/style/funkwhale.scss';
+@use '~/style/funkwhale.scss';
 
 .funkwhale {
   &:not(:has(>.loader-container)):has(>.loader) {
@@ -62,14 +62,14 @@ const { container = true } = defineProps<{ container?: boolean }>()
   margin-top: -0.75em;
   text-indent: -9999em;
 
-  @include light-theme {
+  @include funkwhale.light-theme {
     border-top: 0.2em solid rgba(0, 0, 0, 0.2);
     border-right: 0.2em solid rgba(0, 0, 0, 0.2);
     border-bottom: 0.2em solid rgba(0, 0, 0, 0.2);
     border-left: 0.2em solid rgba(0, 0, 0, 0.7);
   }
 
-  @include dark-theme {
+  @include funkwhale.dark-theme {
     border-top: 0.2em solid rgba(255, 255, 255, 0.2);
     border-right: 0.2em solid rgba(255, 255, 255, 0.2);
     border-bottom: 0.2em solid rgba(255, 255, 255, 0.2);

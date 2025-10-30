@@ -354,7 +354,7 @@ const isOpen = useModal('artist-description').isOpen
 </template>
 
 <style scoped lang="scss">
-@import '~/style/funkwhale.scss';
+@use '~/style/funkwhale.scss';
 
   .channel-image {
     border-radius: 50%;
@@ -362,10 +362,10 @@ const isOpen = useModal('artist-description').isOpen
 
   .meta {
     font-size: 15px;
-    @include light-theme {
+    @include funkwhale.light-theme {
       color: var(--fw-gray-700);
     }
-    @include dark-theme {
+    @include funkwhale.dark-theme {
       color: var(--fw-gray-500);
     }
   }

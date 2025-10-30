@@ -113,7 +113,7 @@ const fetchCandidates = async () => {
 
   try {
     const response = await axios.post('radios/radios/validate/', params)
-    checkResult.value = (response.data as ResponseType).filters[0]
+    checkResult.value = (response.data as ResponseType).filters[0]!
   } catch (error) {
     useErrorHandler(error as Error)
   }

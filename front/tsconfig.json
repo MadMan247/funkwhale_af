@@ -9,7 +9,7 @@
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "typeRoots": ["node_modules", "node_modules/@types"],
     "types": [
-      "vitest/globals",
+      "vitest",
       "vite/client",
       "vite-plugin-pwa/client",
       "unplugin-vue-macros/macros-global"
@@ -28,7 +28,9 @@
     "test/**/*.ts",
     "src/docs/vite.config.ts",
     "src/docs/**/*.ts",
-    "ui-docs/**/*.md"
+    "ui-docs/**/*.md",
+    "eslint.config.mjs",
+    "cypress.config.ts"
   ],
   "exclude": [
     "ui-docs/components/ui/link.md",
@@ -36,6 +38,7 @@
     "ui-docs/using-color.md"
   ],
   "vueCompilerOptions": {
+    "module": "esnext",
     "vitePressExtensions": [".md"],
     "plugins": []
   }

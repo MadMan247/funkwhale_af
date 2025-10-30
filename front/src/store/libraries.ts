@@ -54,7 +54,7 @@ const store: Module<State, RootState> = {
           commit('follows', { library: uuid, follow: null })
         })
       } else {
-        const follow = state.followsByLibrary[uuid]
+        const follow = state.followsByLibrary[uuid]!
         return axios.delete(`federation/follows/library/${follow.uuid}/`).then(() => {
           logger.info('Successfully unsubscribed from library')
           commit('follows', { library: uuid, follow: null })

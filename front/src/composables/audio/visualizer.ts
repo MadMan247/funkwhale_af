@@ -53,6 +53,9 @@ export const useMilkDrop = (canvas: Ref<HTMLCanvasElement>) => {
 
   const isVisible = ref(false)
   useResizeObserver(canvas, ([entry]) => {
+    if (entry == null) {
+      return
+    }
     const { width, height } = entry.contentRect
 
     canvas.value.width = width

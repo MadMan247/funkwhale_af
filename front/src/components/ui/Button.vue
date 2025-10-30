@@ -196,8 +196,6 @@ onUnmounted(() =>
 </template>
 
 <style lang="scss">
-@import '~/style/funkwhale.scss';
-
 .funkwhale {
   &.split-button {
     cursor: var(--cursor, pointer);

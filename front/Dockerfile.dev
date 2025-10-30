@@ -9,8 +9,8 @@ WORKDIR /app/
 RUN mkdir -p node_modules
 
 ADD scripts/ ./scripts/
-ADD package.json yarn.lock  ./
-RUN yarn
+ADD package.json yarn.lock .yarnrc.yml ./
+RUN corepack enable && yarn
 
 VOLUME /app
 VOLUME /app/node_modules

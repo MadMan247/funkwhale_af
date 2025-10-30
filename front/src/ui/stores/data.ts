@@ -91,8 +91,8 @@ export const useDataStore
       // Re-fetch if immediate is true or the item is not cached or older than 1 second
       if (options?.immediate || items[id].timestamp < Date.now() - 1000)
         axios.get<ItemType[I]>(`${type}s/${id}/`, { params: { refresh: 'true' } }).then(({ data }) => {
-          items[id].result.value = data;
-          items[id].timestamp = Date.now();
+          items[id]!.result.value = data;
+          items[id]!.timestamp = Date.now();
         })
       return items[id].result
     }

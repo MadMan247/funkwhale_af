@@ -55,7 +55,7 @@ watchEffect(() => {
     content: v-bind('`"${title}"`')
   }
 
-  @if $docs {
+  @if docs() {
     animation: blink .7s 1;
     @keyframes blink { 50% {
       outline: 2px dashed var(--fw-secondary);

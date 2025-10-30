@@ -507,7 +507,7 @@ const renderedDescription = computed(() => {
 </template>
 
 <style scoped lang="scss">
-@import '~/style/funkwhale.scss';
+@use '~/style/funkwhale.scss';
 
 .channel-image {
   border-radius: 50%;
@@ -521,11 +521,11 @@ const renderedDescription = computed(() => {
 .meta {
   font-size: 15px;
 
-  @include light-theme {
+  @include funkwhale.light-theme {
     color: var(--fw-gray-700);
   }
 
-  @include dark-theme {
+  @include funkwhale.dark-theme {
     color: var(--fw-gray-500);
   }
 }

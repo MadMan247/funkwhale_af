@@ -34,19 +34,19 @@ const pages = computed(() => {
     clamp(props.current + RANGE, 1, maxPage.value)
   ).filter(i => !start.includes(i) && !end.includes(i))
 
-  if (end[0] - 1 <= start[RANGE - 1]) {
+  if (end[0]! - 1 <= start[RANGE - 1]!) {
     return [
       ...start,
-      ...end.filter(i => i > start[RANGE - 1])
+      ...end.filter(i => i > start[RANGE - 1]!)
     ]
   }
 
   return [
     ...start,
     middle.length === 0 && 'skip',
-    middle.length !== 0 && start[start.length - 1] + 1 !== middle[0] && 'skip',
+    middle.length !== 0 && start[start.length - 1]! + 1 !== middle[0] && 'skip',
     ...middle,
-    middle.length !== 0 && middle[middle.length - 1] + 1 !== end[0] && 'skip',
+    middle.length !== 0 && middle[middle.length - 1]! + 1 !== end[0] && 'skip',
     ...end
   ].filter(i => i !== false) as Array<'skip' | number>
 })

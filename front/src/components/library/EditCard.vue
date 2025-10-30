@@ -88,7 +88,6 @@ const updatedFields = computed(() => {
   const state = previousState.value
 
   return fields.map((id) => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const config = configs[props.obj.target!.type].fields.find((field) => id === field.id)
     const getValueRepr = config?.getValueRepr ?? (v => v)
 

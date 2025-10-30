@@ -87,7 +87,7 @@ const actionsButtonLabel = computed(() => t('components.audio.podcast.MobileRow.
         @error="(e) => { e.target && track.cover ? (e.target as HTMLImageElement).src = store.getters['instance/absoluteUrl'](track.cover.urls.medium_square_crop) : null }"
       >
       <img
-        v-else-if="!!track.artist_credit.length && track.artist_credit[0].artist.cover"
+        v-else-if="!!track.artist_credit.length && track.artist_credit[0]?.artist.cover"
         v-lazy="getArtistCoverUrl(track.artist_credit)"
         alt=""
         class="ui artist-track mini image"
@@ -115,7 +115,7 @@ const actionsButtonLabel = computed(() => t('components.audio.podcast.MobileRow.
         {{ track.title }}
       </p>
       <p
-        v-if="track.artist_credit?.[0].artist.content_category === 'podcast'"
+        v-if="track.artist_credit[0]?.artist.content_category === 'podcast'"
         class="track-meta mobile"
       >
         <human-date
@@ -141,7 +141,7 @@ const actionsButtonLabel = computed(() => t('components.audio.podcast.MobileRow.
       </p>
     </div>
     <div
-      v-if="store.state.auth.authenticated && track.artist_credit?.[0].artist.content_category !== 'podcast'"
+      v-if="store.state.auth.authenticated && track.artist_credit[0]?.artist.content_category !== 'podcast'"
       :class="[
         'meta',
         'right',

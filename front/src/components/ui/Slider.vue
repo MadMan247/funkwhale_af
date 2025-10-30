@@ -131,7 +131,7 @@ onMounted(() => {
 </template>
 
 <style module lang="scss">
-@import '~/style/funkwhale.scss';
+@use '~/style/funkwhale.scss';
 
 .slider {
   .label {
@@ -190,7 +190,7 @@ onMounted(() => {
   input[type="range"]::-moz-range-track {
     border-radius: 8px;
 
-    @include light-theme {
+    @include funkwhale.light-theme {
       background: var(--fw-gray-400);
     }
   }

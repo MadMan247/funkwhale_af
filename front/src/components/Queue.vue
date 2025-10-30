@@ -90,11 +90,13 @@ watchEffect(async () => {
 const list = ref()
 const el = useCurrentElement()
 const scrollToCurrent = (behavior: ScrollBehavior = 'smooth') => {
-  const item = el.value?.querySelector('.queue-item.active')
-  item?.scrollIntoView({
-    behavior,
-    block: 'center'
-  })
+  if (el.value != null && 'querySelector' in el.value) {
+    const item = el.value.querySelector('.queue-item.active')
+    item?.scrollIntoView({
+      behavior,
+      block: 'center'
+    })
+  }
 }
 
 watchDebounced(currentTrack, () => scrollToCurrent(), { debounce: 100 })
@@ -138,12 +140,13 @@ const reorderTracks = async (from: number, to: number) => {
   }
 }
 const hideArtist = () => {
-  if (currentTrack.value.artistId !== -1 && currentTrack.value.artistCredit) {
+  const { value } = currentTrack
+  if (value != null && value.artistId !== -1 && value.artistCredit) {
     return store.dispatch('moderation/hide', {
       type: 'artist',
       target: {
-        id: currentTrack.value.artistCredit[0].artist.id,
-        name: currentTrack.value.artistCredit[0].artist.name
+        id: value.artistCredit[0]?.artist.id,
+        name: value.artistCredit[0]?.artist.name
       }
     })
   }
@@ -422,7 +425,7 @@ if (!isWebGLSupported) {
                   </i18n-t>
                   <span class="middle pipe symbol" />
                   <span
-                    v-t="'components.Queue.meta.end'"
+                    t="'components.Queue.meta.end'"
                     style="margin-right: 8px;"
                   />
                   <span :title="labels.duration">

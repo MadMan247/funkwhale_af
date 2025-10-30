@@ -19,8 +19,8 @@ interface Events {
 }
 
 interface Props {
-  modelValue: string | null
-  channel: Channel | null
+  modelValue?: string | null
+  channel?: Channel | null
 }
 
 const emit = defineEmits<Events>()

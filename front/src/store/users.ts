@@ -53,7 +53,7 @@ const store: Module<State, RootState> = {
           commit('follows', { fid, follow: null })
         })
       } else {
-        const follow = state.followsByActor[fid]
+        const follow = state.followsByActor[fid]!
         return axios.delete(`federation/follows/user/${follow.uuid}/`).then(() => {
           logger.info('Successfully unsubscribed from actor')
           commit('follows', { fid, follow: null })

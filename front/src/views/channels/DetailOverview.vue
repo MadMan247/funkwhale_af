@@ -89,8 +89,9 @@ if (isOwner.value) {
   fetchPendingUploads()
     .then(() => {
       useWebSocketHandler('import.status_updated', (event) => {
-        if (!pendingUploadsById.value[event.upload.uuid]) return
-        Object.assign(pendingUploadsById.value[event.upload.uuid], event.upload)
+        const pendingUpload = pendingUploadsById.value[event.upload.uuid]
+        if (pendingUpload == null) return
+        Object.assign(pendingUpload, event.upload)
       })
     })
 }

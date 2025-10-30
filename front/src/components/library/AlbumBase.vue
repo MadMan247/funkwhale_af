@@ -132,7 +132,7 @@ const remove = async () => {
     await axios.delete(`albums/${object.value?.id}`)
     emit('deleted')
     if (artistCredit.value)
-      router.push({ name: 'library.artists.detail', params: { id: artistCredit.value[0].artist.id } })
+      router.push({ name: 'library.artists.detail', params: { id: artistCredit.value[0]?.artist.id } })
   } catch (error) {
     useErrorHandler(error as Error)
   }
@@ -290,16 +290,16 @@ const remove = async () => {
 </template>
 
 <style scoped lang="scss">
-@import '~/style/funkwhale.scss';
+@use '~/style/funkwhale.scss';
 
 .meta {
   font-size: 15px;
 
-  @include light-theme {
+  @include funkwhale.light-theme {
     color: var(--fw-gray-700);
   }
 
-  @include dark-theme {
+  @include funkwhale.dark-theme {
     color: var(--fw-gray-500);
   }
 }

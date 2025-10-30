@@ -29,7 +29,7 @@ interface Events {
 }
 
 interface Props {
-  channel: Channel | null,
+  channel?: Channel | null,
   filter: 'podcast' | 'music' | undefined,
 }
 
@@ -106,22 +106,24 @@ albums
 const channelDropdownId = ref<Channel['artist']['id'] | null>(null)
 const isLoading = ref(false)
 
-const selectedChannel = computed(() =>
-  // Deeplink / Preset channel
-  props.channel
-    ? props.channel
-    // Not yet loaded the available channels
-    : availableChannels.value === null
-      ? null
-      // No channels available
-      : availableChannels.value.length === 0
-        ? (createEmptyChannel(), null)
-        // Exactly one available channel
-        : availableChannels.value.length === 1
-          ? availableChannels.value[0]
-          // Multiple available channels
-          : availableChannels.value.find(({ artist }) => artist.id === channelDropdownId.value) || null
-)
+const selectedChannel = computed(() => {
+  if (props.channel != null) {
+    // Deeplink / Preset channel
+    return props.channel
+  }
+  const value = availableChannels.value
+  if (value == null) {
+    return null
+  }
+  if (value.length === 0) {
+    createEmptyChannel()
+    return null
+  }
+  // Multiple available channels
+  return value.length === 1
+      ? value[0]
+      : value.find(({ artist }) => artist.id === channelDropdownId.value) ?? null
+})
 
 const emptyChannelCreateRequest:components['schemas']['ChannelCreateRequest'] = {
   name: store.state.auth.fullUsername,
@@ -244,7 +246,7 @@ const uploadedFiles = computed(() => {
 
     if (file.response?.uuid) {
       const uuid = file.response.uuid as string
-      data.metadata = uploadImportData[uuid] ?? uploadData[uuid]?.import_metadata ?? {}
+      data.metadata = uploadImportData[uuid] ?? uploadData[uuid]?.import_metadata ?? {} as Metadata
       data.removed = removed.has(uuid)
     }
 
@@ -301,28 +303,34 @@ const patchUpload = async (id: string, data: Record<string, Metadata>) => {
 }
 
 const fetchAudioMetadata = async (uuid: string) => {
+  const uploadImportDatum = uploadImportData[uuid]
+
+  if (uploadImportDatum == null) {
+    return
+  }
+
   delete audioMetadata[uuid]
 
   const response = await axios.get(`uploads/${uuid}/audio-file-metadata/`)
   audioMetadata[uuid] = response.data
 
   const uploadedFile = uploadedFilesById.value[uuid]
-  if (uploadedFile.response?.import_metadata.title === uploadedFile._fileObj?.name.replace(/\.[^/.]+$/, '') && response.data.title) {
+  if (uploadedFile?.response?.import_metadata.title === uploadedFile?._fileObj?.name.replace(/\.[^/.]+$/, '') && response.data.title) {
     // Replace existing title deduced from file by the one in audio file metadata, if any
-    uploadImportData[uuid].title = response.data.title
+    uploadImportDatum.title = response.data.title
   }
 
   for (const key of ['title', 'position', 'tags'] as const) {
-    if (uploadImportData[uuid][key] === undefined) {
+    if (uploadImportDatum[key] === undefined) {
       // uploadImportData[uuid][key] = response.data[key] as never
     }
   }
 
-  if (uploadImportData[uuid].description === undefined) {
-    uploadImportData[uuid].description = (response.data.description ?? {}).text
+  if (uploadImportDatum.description === undefined) {
+    uploadImportDatum.description = (response.data.description ?? {}).text
   }
 
-  await patchUpload(uuid, { import_metadata: uploadImportData[uuid] })
+  await patchUpload(uuid, { import_metadata: uploadImportDatum })
 }
 
 watchEffect(async () => {
@@ -379,8 +387,9 @@ fetchChannels()
 fetchQuota()
 
 watch(selectedUploadId, async (_, from) => {
-  if (from) {
-    await patchUpload(from, { import_metadata: uploadImportData[from] })
+  const uploadImportDatum = uploadImportData[from]
+  if (from != null && uploadImportDatum != null) {
+    await patchUpload(from, { import_metadata: uploadImportDatum })
   }
 })
 

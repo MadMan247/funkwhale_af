@@ -67,17 +67,17 @@ const favoriteButton = computed(() => isFavorite.value
   : t('components.audio.podcast.Modal.button.addToFavorites')
 )
 
-const trackDetailsButton = computed(() => props.track.artist_credit?.[0].artist.content_category === 'podcast'
+const trackDetailsButton = computed(() => props.track.artist_credit[0]?.artist.content_category === 'podcast'
   ? t('components.audio.podcast.Modal.button.episodeDetails')
   : t('components.audio.podcast.Modal.button.trackDetails')
 )
 
-const albumDetailsButton = computed(() => props.track.artist_credit?.[0].artist?.content_category === 'podcast'
+const albumDetailsButton = computed(() => props.track.artist_credit[0]?.artist.content_category === 'podcast'
   ? t('components.audio.podcast.Modal.button.seriesDetails')
   : t('components.audio.podcast.Modal.button.albumDetails')
 )
 
-const artistDetailsButton = computed(() => props.track.artist_credit?.[0].artist?.content_category === 'podcast'
+const artistDetailsButton = computed(() => props.track.artist_credit[0]?.artist.content_category === 'podcast'
   ? t('components.audio.podcast.Modal.button.channelDetails')
   : t('components.audio.podcast.Modal.button.artistDetails')
 )
@@ -122,7 +122,7 @@ const labels = computed(() => ({
           class="ui centered image"
         >
         <img
-          v-else-if="!!track.artist_credit?.length && track.artist_credit[0].artist.cover"
+          v-else-if="track.artist_credit[0]?.artist.cover"
           v-lazy="
             getArtistCoverUrl(track.artist_credit)
           "
@@ -144,7 +144,7 @@ const labels = computed(() => ({
     <div class="content">
       <div class="ui one column unstackable grid">
         <div
-          v-if="store.state.auth.authenticated && track.artist_credit?.[0].artist?.content_category !== 'podcast'"
+          v-if="store.state.auth.authenticated && track.artist_credit[0]?.artist.content_category !== 'podcast'"
           class="row"
         >
           <div

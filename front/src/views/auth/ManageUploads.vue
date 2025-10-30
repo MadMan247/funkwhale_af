@@ -124,7 +124,7 @@ const globalPrivacyLevel = computed<PrivacyLevelEnum | undefined>({
         privacy_level: level
       })
 
-      items.value[index].privacy_level = level
+      items.value[index]!.privacy_level = level
     }
   }
 })
@@ -272,17 +272,17 @@ const tokens = {
     .split(' ')
     .filter(token => token.trim())
     .map(token => token.split(':'))
-    .filter(([head, ...tail]) => tail.length !== 1 || tail[0].trim())
+    .filter(([head, ...tail]) => tail.length !== 1 || tail[0]!.trim())
     .reduce((dict, [head, ...tail]) =>
       // TODO: Once we activate ES2025, we can use pattern matching here:
       tail.length === 1
-        ? dict.set(head, tail[0])
+        ? dict.set(head!, tail[0]!)
         : dict.set('q', `${dict.get('q') ?? ''} ${head} ${tail.join(':')}`.trim())
       , new Map<string, string>()),
   set: (dict: Map<string, string>) => {
     const fullText = dict.get('q') ?? ''
     const keyValuePairs = Array.from(dict)
-      .filter(([key, value]) => key !== 'q')
+      .filter(([key]) => key !== 'q')
       .map(([key, value]) => `${key}:${value}`)
 
     query.value = [fullText, ...keyValuePairs].filter(part => part.trim()).join(' ')
@@ -349,9 +349,11 @@ watch(page, fetchData)
 
 // Reset page and reload data when privacy level or import status changes
 watch([token('privacy_level'), token('import_status')], () => {
-  page.value !== 1
-    ? page.value = 1
-    : fetchData();
+  if (page.value !== 1) {
+    page.value = 1
+  } else {
+    fetchData()
+  }
 });
 
 onOrderingUpdate(fetchData)

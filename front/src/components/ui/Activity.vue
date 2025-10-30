@@ -71,7 +71,7 @@ const profileParams = computed(() => {
 </template>
 
 <style lang="scss">
-@import '~/style/funkwhale.scss';
+@use '~/style/funkwhale.scss';
 
 .funkwhale {
   &.activity {
@@ -90,7 +90,7 @@ const profileParams = computed(() => {
       cursor: pointer;
     }
 
-    @include light-theme {
+    @include funkwhale.light-theme {
       color: var(--fw-gray-500);
 
       +.funkwhale.activity {
@@ -120,7 +120,7 @@ const profileParams = computed(() => {
       }
     }
 
-    @include dark-theme {
+    @include funkwhale.dark-theme {
       +.funkwhale.activity {
         border-top: 1px solid var(--fw-gray-800);
       }

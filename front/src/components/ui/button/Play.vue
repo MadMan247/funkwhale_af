@@ -15,12 +15,12 @@ const play = defineEmits(['play'])
 </template>
 
 <style lang="scss">
-@import '~/style/funkwhale.scss';
+@use '~/style/funkwhale.scss';
 
 .funkwhale {
   &.play-button {
 
-    @include light-theme {
+    @include funkwhale.light-theme {
       --fw-bg-color: var(--fw-red-010) !important;
       --fw-text-color: var(--fw-gray-600) !important;
 
@@ -29,7 +29,7 @@ const play = defineEmits(['play'])
       }
     }
 
-    @include dark-theme {
+    @include funkwhale.dark-theme {
       --fw-bg-color: var(--fw-gray-800) !important;
       --fw-text-color: var(--fw-gray-300) !important;
 

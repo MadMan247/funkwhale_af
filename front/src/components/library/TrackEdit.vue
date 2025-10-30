@@ -18,7 +18,7 @@ import Alert from '~/components/ui/Alert.vue'
 interface Props {
   objectType: EditObjectType
   object: EditObject
-  libraries: Library[] | null
+  libraries?: Library[] | null
 }
 
 withDefaults(defineProps<Props>(), {
