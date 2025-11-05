@@ -28,15 +28,6 @@ const props = withDefaults(
     { title: '' }
 )
 
-const size = { padding: 32, gap: 32, card: 202 }
-
-const maxWidth = computed(() =>
-  props.maximizeSize
-  ? `${[0, 1, 2, 3, 4, 5, 6, 7, 8].map(n => size.padding*2+(n+1)*size.card+n*size.gap).findLast(n => n< screenWidth.value)}px`
-  : 'min(90vw, 55rem)',
-  { immediate: true }
-)
-
 const isOpen = defineModel<boolean>({ default: false })
 
 // maxWidth: the maximum width of the modal, given the current screen size

@@ -54,7 +54,7 @@ const dataStore = useDataStore()
 // Search input sizing
 const style = ref<{ inner: string, outer: string }>({ inner: '', outer: '' })
 
-const setBoundingBox = (placeholder: 'inner' | 'outer') => ({ left, width, top }: Record<string, ShallowRef<number>>) => {
+const setBoundingBox = (placeholder: 'inner' | 'outer') => ({ left, width, top }: { left: ShallowRef<number>, width: ShallowRef<number>, top: ShallowRef<number> }) => {
   style.value[placeholder] = `left: ${left.value}px; top: ${top.value}px; width: ${width.value}px;`
   }
 
