@@ -12,9 +12,7 @@ export default defineConfigWithVueTs(
 
   {
     files: [['./src', '*.vue']],
-    extends: [
-      vueTsConfigs.recommendedTypeChecked
-    ]
+    extends: [vueTsConfigs.recommendedTypeChecked]
   },
 
   {
@@ -51,10 +49,13 @@ export default defineConfigWithVueTs(
       '@intlify/vue-i18n/no-i18n-t-path-prop': 'error',
       '@intlify/vue-i18n/no-missing-keys': 'error',
       '@intlify/vue-i18n/no-dynamic-keys': 'error',
-      '@intlify/vue-i18n/no-unused-keys': ['error', {
-        extensions: ['.ts', '.vue'],
-        enableFix: true
-      }],
+      '@intlify/vue-i18n/no-unused-keys': [
+        'error',
+        {
+          extensions: ['.ts', '.vue'],
+          enableFix: true
+        }
+      ],
 
       // TODO (wvffle): Remove after VUI and #1618
       'vue/multi-word-component-names': 'off',
@@ -105,11 +106,6 @@ export default defineConfigWithVueTs(
   },
 
   {
-    ignores: [
-      'src/locales/*.json',
-      '**/dist',
-      '**/stats.html',
-      'ui-docs/.vitepress'
-    ]
+    ignores: ['src/locales/*.json', '**/dist', '**/stats.html', 'ui-docs/.vitepress', 'ui-docs/components']
   }
 )
