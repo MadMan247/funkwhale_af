@@ -86,7 +86,7 @@ type Key = string
 
 /**Global rate limiting for any Api call */
 const rateLimiter = useRateLimiter<[Name, Params<Name>]>({
-  cooldown: 200, // max. 5 requests per second
+  cooldown: 50, // max. 20 requests per second
 
   // While the user is typing in a search field, only send the last call generated during a cooldown period
   supersedeWhen: ([newName, newFilter], [oldName, oldFilter]) =>
