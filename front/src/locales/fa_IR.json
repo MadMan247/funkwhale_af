@@ -2,6 +2,7 @@
   "App": {
     "loading": "بار کردن…"
   },
+  "artist": "هنرمند",
   "components": {
     "About": {
       "description": {
@@ -164,6 +165,7 @@
         "radio": "شما یک رادیو در حال پخش دارید"
       },
       "label": {
+        "addArtistContentFilter": "پنهان کردن محتوا از این هنرمند",
         "duration": "مدت‌زمان",
         "enterFullscreen": "حالت تمام‏پرده",
         "exitFullscreen": "خارج از حالت تمام‏پرده",
@@ -2010,6 +2012,10 @@
       "podcastChannel": "پادپخش‌هایی که می‌سازید را منتشر کنید"
     }
   },
+  "playlist": "سیاههٔ پخش",
+  "radio": "رادیو",
+  "tag": "برچسب",
+  "track": "اثر",
   "views": {
     "ChooseInstance": {
       "label": {
