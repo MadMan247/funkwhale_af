@@ -125,7 +125,12 @@ fetchCandidates()
 
 <template>
   <tr>
+    <!-- Name (Label) -->
+
     <td>{{ data.filter.label }}</td>
+
+    <!-- Exclude? -->
+
     <td>
       <div class="ui toggle checkbox">
         <input
@@ -142,6 +147,9 @@ fetchCandidates()
         </label>
       </div>
     </td>
+
+    <!-- Config (List of FilterFields) -->
+
     <td>
       <div
         v-for="f in data.filter.fields"
@@ -181,6 +189,9 @@ fetchCandidates()
         </div>
       </div>
     </td>
+
+    <!-- Open a modal with matching tracks -->
+
     <td>
       <a
         v-if="checkResult"
@@ -210,6 +221,9 @@ fetchCandidates()
         </div>
       </Modal>
     </td>
+
+    <!-- Remove the filter -->
+
     <td>
       <Button
         destructive

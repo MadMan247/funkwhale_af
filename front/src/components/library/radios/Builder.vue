@@ -7,6 +7,8 @@ import axios from 'axios'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 
+import { useDataStore } from '~/ui/stores/data'
+
 import TrackTable from '~/components/audio/track/Table.vue'
 import RadioButton from '~/components/radios/Button.vue'
 import BuilderFilter from './Filter.vue'
@@ -16,7 +18,12 @@ import Input from '~/components/ui/Input.vue'
 import Toggle from '~/components/ui/Toggle.vue'
 import Textarea from '~/components/ui/Textarea.vue'
 import Alert from '~/components/ui/Alert.vue'
+import Header from '~/components/ui/Header.vue'
+import Section from '~/components/ui/Section.vue'
 import Spacer from '~/components/ui/Spacer.vue'
+import Heading from '~/components/ui/Heading.vue'
+
+import Pills from '~/components/ui/Pills.vue'
 
 export interface BuilderFilter {
   type: string
@@ -59,6 +66,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { t } = useI18n()
 const router = useRouter()
+const dataStore = useDataStore()
 
 const labels = computed(() => ({
   title: t('components.library.radios.Builder.title'),
@@ -68,7 +76,7 @@ const labels = computed(() => ({
   }
 }))
 
-const filters = reactive([] as Filter[])
+const filters = reactive<Filter[]>([])
 const checkResult = ref()
 const fetchCandidates = async () => {
   // TODO (wvffle): Add loader
@@ -103,7 +111,7 @@ const radioDesc = ref('')
 const canSave = computed(() => radioName.value.length > 0 && checkErrors.value.length === 0)
 
 const currentFilterType = ref()
-const availableFilters = reactive([] as BuilderFilter[])
+const availableFilters = reactive<BuilderFilter[]>([])
 const currentFilter = computed(() => availableFilters.find(filter => filter.type === currentFilterType.value))
 
 const fetchFilters = async () => {
@@ -143,17 +151,21 @@ const fetchData = async () => {
 
 fetchFilters().then(() => fetchData())
 
-const add = async () => {
+/**
+ * Create a new filter
+ */
+const add = async (type: string) => {
   if (!currentFilter.value) return
   filters.push({
-    config: {} as FilterConfig,
+    config: {
+      type,
+      options: {},
+      not: false,
+      names: []
+    },
     filter: currentFilter.value,
     hash: +new Date()
   })
-}
-
-const deleteFilter = async (index: number) => {
-  filters.splice(index, 1)
 }
 
 const success = ref(false)
@@ -191,23 +203,28 @@ const save = async () => {
 
   isLoading.value = false
 }
+
+// ------------- Get and set filter selections --------------
+
+
 </script>
 
 <template>
   <Layout
     v-title="labels.title"
-    stack
     main
+    stack
+    gap-64
   >
-    <section>
-      <h1>
-        {{ t('components.library.radios.Builder.header.builder') }}
-      </h1>
-      <p>
-        {{ t('components.library.radios.Builder.description.builder') }}
-      </p>
-      <Spacer />
+    <Header
+      :h1="t('components.library.radios.Builder.header.builder')"
+      page-heading
+      icon="bi-boombox large"
+    >
       <Layout form>
+        <p>
+          {{ t('components.library.radios.Builder.description.builder') }}
+        </p>
         <Alert
           v-if="success"
           green
@@ -257,70 +274,134 @@ const save = async () => {
           :custom-radio-id="id"
         />
       </Layout>
-      <div class="ui form">
-        <div class="inline field">
-          <label
-            id="radioFilterLabel"
-            for="radio-filters"
-          >{{ t('components.library.radios.Builder.label.filter') }}</label>
-          <select
-            id="radio-filters"
-            v-model="currentFilterType"
-            class="ui dropdown"
-          >
-            <option value="">
-              {{ t('components.library.radios.Builder.option.filter') }}
-            </option>
-            <option
-              v-for="f in availableFilters"
-              :key="f.label"
-              :value="f.type"
-            >
-              {{ f.label }}
-            </option>
-          </select>
+    </Header>
+
+    <Section>
+      <!-- Add -->
+
+      <Layout
+        flex
+      >
+        <Heading
+          :h3="t('components.library.radios.Builder.label.filter')"
+          caption
+          style="align-self: center;"
+        />
+        <Spacer grow />
+        <Layout
+          flex
+        >
           <Button
-            id="addFilter"
-            primary
-            :disabled="!currentFilterType"
-            @click="add"
+            v-for="f in availableFilters"
+            :key="f.label"
+            :value="f.type"
+            icon="bi-plus"
+            low-height
+            thin-font
+            :disabled="f.type !== 'tag'"
+            @click="() => { currentFilterType = f.type; add(f.type); }"
           >
-            {{ t('components.library.radios.Builder.button.filter') }}
+            {{ f.label }}
           </Button>
-        </div>
-        <p v-if="currentFilter">
-          {{ currentFilter.help_text }}
-        </p>
-      </div>
-      <table class="ui table">
+        </Layout>
+      </Layout>
+
+      <!-- List of filters -->
+
+      <!-- TODO: Use new Table component. -->
+
+      <table v-if="filters.length>0">
         <thead>
           <tr>
-            <th class="two wide">
+            <th>
               {{ t('components.library.radios.Builder.table.filter.header.name') }}
             </th>
-            <th class="one wide">
+            <th style="opacity: 0;">
               {{ t('components.library.radios.Builder.table.filter.header.exclude') }}
             </th>
-            <th class="six wide">
+            <th style="opacity: 0;">
               {{ t('components.library.radios.Builder.table.filter.header.config') }}
             </th>
-            <th class="five wide">
+            <!-- TODO: Re-implement candidates checking for each filter -->
+            <!-- <th>
               {{ t('components.library.radios.Builder.table.filter.header.candidates') }}
-            </th>
-            <th class="two wide">
+            </th> -->
+            <th style="opacity: 0;">
               {{ t('components.library.radios.Builder.table.filter.header.actions') }}
             </th>
           </tr>
         </thead>
         <tbody>
-          <builder-filter
+          <!-- Filter -->
+
+          <tr
             v-for="(f, index) in filters"
             :key="f.hash"
-            v-model:data="filters[index]!"
-            @delete="deleteFilter(index)"
-          />
+          >
+            <!-- Row: Name (Label) -->
+
+            <td>{{ f.filter.label }}</td>
+
+            <!-- Row: Exclude? -->
+
+            <td>
+              <Toggle
+                v-model="f.config.not"
+                :label="t('components.library.radios.Filter.excludeLabel')"
+              />
+            </td>
+
+            <!-- Row: Config (List of FilterFields) -->
+
+            <td>
+              <!-- A multi-select from a pool of type `playlist`, `tag` or `artist` -->
+
+              <!-- TODO: Implement on-the-fly search for artists and playlists -->
+
+              <Pills
+                v-if="f.config.type === 'tag'"
+                :get="model => {
+                  /* Overwrite the current filter */
+                  f.config.names = model.currents.map(item => item.label)
+                }"
+                :set="model =>({
+                  /* Load/initialize filter at `index` */
+                  currents: f.config.names.map(name => ({ label: name, type: 'preset' as const })),
+                  others: dataStore.tags().value.map(({ name }) => ({ type: 'preset' as const, label: name }))
+                })
+                "
+              />
+            </td>
+            <!-- TODO:  Query candidates for each filter -->
+
+            <!-- <td>
+                {{ t('components.library.radios.Filter.matchingTracks', checkResult.candidates.count) }}
+            </td> -->
+
+            <!-- Row: Remove this filter -->
+
+            <td>
+              <Button
+                destructive
+                ghost
+                @click="filters.splice(index, 1)"
+              >
+                {{ t('components.library.radios.Filter.removeButton') }}
+              </Button>
+            </td>
+          </tr>
         </tbody>
       </table>
+
+      <!-- Info -->
+
+      <Alert
+        v-if="currentFilter"
+        blue
+      >
+        {{ currentFilter.help_text }}
+      </Alert>
+
       <template v-if="checkResult && checkResult.candidates && checkResult.candidates.count">
         <h3 class="ui header">
           {{ t('components.library.radios.Builder.header.matches', checkResult.candidates.count) }}
@@ -334,6 +415,18 @@ const save = async () => {
           :display-actions="false"
         />
       </template>
-    </section>
+    </Section>
   </Layout>
 </template>
+
+<style scoped>
+  th {
+    text-align: left;
+  }
+  td:last-child {
+    text-align: right;
+  }
+  td:not(:last-child) {
+    padding-right: 16px;
+  }
+</style>

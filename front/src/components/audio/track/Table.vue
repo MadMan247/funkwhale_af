@@ -197,7 +197,7 @@ function openTrackModal(track: Track, index: number) {
       <Loader v-if="isLoading" />
 
       <Table
-        :grid-template-columns="['48px', '56px', 'auto', 'auto', 'auto', '56px', '64px', '48px']"
+        :grid-template-columns="['48px', '56px', 'auto', 'auto', 'auto', '56px', '64px', ...(showDuration? ['48px' as const] : [])]"
         :header-props="{ 'table-header': true }"
       >
         <template #header>
@@ -213,9 +213,8 @@ function openTrackModal(track: Track, index: number) {
             <span v-if="showArtist">{{ labels.artist }}</span>
           </label>
           <label />
-          <label>
+          <label v-if="showDuration">
             <i
-              v-if="showDuration"
               class="bi bi-clock"
             />
           </label>
@@ -225,8 +224,8 @@ function openTrackModal(track: Track, index: number) {
         <track-row
           v-for="(track, index) in allTracks"
           :key="`${track.id} ${track.position}`"
-          :track="track"
-          :index="index"
+          :track
+          :index
           :tracks="allTracks"
           :show-album="showAlbum"
           :show-artist="showArtist"
