@@ -56,7 +56,7 @@ const getErrorData = (upload: Upload) => {
   return {
     errorCode,
     supportUrl: 'https://forum.funkwhale.audio/t/support',
-    documentationUrl: `https://docs.funkwhale.audio/users/upload.html#${errorCode}`,
+    documentationUrl: `https://docs.funkwhale.audio/user/upload.html#${errorCode}`,
     label: errorCode === 'invalid_metadata'
       ? t('components.library.ImportStatusModal.error.invalidMetadata.label')
       : t('components.library.ImportStatusModal.error.unknownError.label'),

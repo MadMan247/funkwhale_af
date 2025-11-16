@@ -467,7 +467,7 @@ One of our most requested missing features is now available!
 Starting with Funkwhale 0.20,
 Funkwhale will automatically extract genre information from uploaded files and associate it
 with the corresponding tracks in the form of tags (similar to Mastodon or Twitter hashtags).
-Please refer to [our tagging documentation](https://docs.funkwhale.audio/users/upload.html#tagging-files)
+Please refer to [our tagging documentation](https://docs.funkwhale.audio/user/upload.html#tagging-files)
 for more information regarding the tagging process.
 
 Tags can also be associated with artists and albums, and updated after upload through the UI using
@@ -498,7 +498,7 @@ Federation of the reports will be supported in a future release.
 For more information about this feature, please check out our documentation:
 
 - [User documentation](https://docs.funkwhale.audio/moderator/reports.html)
-- [Moderator documentation](https://docs.funkwhale.audio/users/reports.html)
+- [Moderator documentation](https://docs.funkwhale.audio/user/reports.html)
 
 ### Account deletion
 
@@ -510,7 +510,7 @@ to other known servers on the federation.
 
 For more information about this feature, please check out our documentation:
 
-- [User documentation](https://docs.funkwhale.audio/users/account.html)
+- [User documentation](https://docs.funkwhale.audio/user/account.html)
 
 ### Landing and about page redesign [Manual action suggested]
 
@@ -1196,7 +1196,7 @@ Bugfixes:
 
 Documentation:
 
-- Added user upload documentation at https://docs.funkwhale.audio/users/upload.html
+- Added user upload documentation at https://docs.funkwhale.audio/user/upload.html
 
 ## 0.18 "Naomi" (2019-01-22)
 

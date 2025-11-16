@@ -95,14 +95,15 @@ fetchToken()
       {{ t('components.auth.SubsonicTokenForm.message.unavailable') }}
     </p>
     <p>
-      {{ t('components.auth.SubsonicTokenForm.description.subsonic.paragraph1') }}&nbsp;{{ t('components.auth.SubsonicTokenForm.description.subsonic.paragraph2') }}
+      {{ t('components.auth.SubsonicTokenForm.description.subsonic.paragraph1')
+      }}&nbsp;{{ t('components.auth.SubsonicTokenForm.description.subsonic.paragraph2') }}
     </p>
     <p>
       {{ t('components.auth.SubsonicTokenForm.description.subsonic.paragraph3') }}
     </p>
     <p>
       <a
-        href="https://docs.funkwhale.audio/users/apps.html#subsonic-compatible-clients"
+        href="https://docs.funkwhale.audio/user/apps.html#subsonic-compatible-clients"
         target="_blank"
       >
         {{ t('components.auth.SubsonicTokenForm.link.apps') }}

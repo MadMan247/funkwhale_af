@@ -259,7 +259,7 @@ whenever(() => store.state.auth.authenticated, () => {
       <Card
         :title=" t('components.Home.link.userGuides.label') "
         icon="bi-book-half large"
-        to="https://docs.funkwhale.audio/users/index.html"
+        to="https://docs.funkwhale.audio/user/index.html"
       >
         <p> {{ t('components.Home.link.userGuides.description') }} </p>
       </Card>
