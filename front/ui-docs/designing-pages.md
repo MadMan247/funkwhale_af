@@ -1,3 +1,7 @@
+---
+layout: page
+---
+
 <script setup lang="ts">
 import { ref } from 'vue'
 
@@ -7,6 +11,8 @@ import Section from '~/components/ui/Section.vue'
 
 const alignLeft = ref(false)
 </script>
+
+<div id="is-overview-page" />
 
 # Designing Pages
 
@@ -54,7 +60,4 @@ Sections and their contents are automatically aligned to the default grid.
 
 ---
 
-<Card to="navigation"
-    title="Designing user navigation and routes"
-    min-content
-  />
+Read more: [Designing user navigation and routes](navigation)

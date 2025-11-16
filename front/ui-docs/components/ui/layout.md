@@ -1,21 +1,27 @@
+---
+layout: page
+---
+
 <script setup>
 import { ref } from 'vue'
 
-import Card from '~/components/ui/Card.vue'
-import Alert from '~/components/ui/Alert.vue'
-import Layout from '~/components/ui/Layout.vue'
-import Spacer from '~/components/ui/Spacer.vue'
-import Tab from '~/components/ui/Tab.vue'
-import Tabs from '~/components/ui/Tabs.vue'
-import Toggle from '~/components/ui/Toggle.vue'
-import Button from '~/components/ui/Button.vue'
+import Card from '@ui/Card.vue'
+import Alert from '@ui/Alert.vue'
+import Layout from '@ui/Layout.vue'
+import Spacer from '@ui/Spacer.vue'
+import Tab from '@ui/Tab.vue'
+import Tabs from '@ui/Tabs.vue'
+import Toggle from '@ui/Toggle.vue'
+import Button from '@ui/Button.vue'
+
+import LayoutA11y from '@/examples/Layout.a11y.vue'
 
 const isGrowing = ref(true)
 const noGap = ref(true)
 </script>
 
 ```ts
-import Layout from "~/components/ui/Layout.vue"
+import Layout from "@ui/Layout.vue"
 ```
 
 # Layout
@@ -193,3 +199,23 @@ Note that you can set the minimum space occupied by the `Spacer` with its `size`
 </div>
 
 </Layout>
+
+::: tip Using this component
+
+## A11y Checklist
+
+- [ ] Choose semantic container types (nav, aside, header, etc.) appropriate to the content's purpose. [1.3.1](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-1)
+- [ ] Make sure content order in the markup makes sense when read linearly (important for screen readers and small screen devices). [1.3.2](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-2)
+- [ ] If your layout reflows or changes based on screen size, ensure content remains readable without horizontal scrolling at 400% zoom. [1.4.10](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-4-10)
+- [ ] Use consistent layout patterns for similar types of content across pages (e.g., same grid structure for article lists). [3.2.3](https://accessibility.education.gov.uk/guidelines/wcag/explorer#3-2-3)
+- [ ] For layouts containing forms or interactive elements, make sure the tab order matches the visual layout. [2.4.3](https://accessibility.education.gov.uk/guidelines/wcag/explorer#2-4-3)
+
+##Accessible layout
+
+<LayoutA11y />
+
+<<<@/examples/Layout.a11y.vue#snippet{vue-html}
+
+[Test this component in isolation against WCAG2 criteria](/maintaining-accessibility#layout)
+
+:::

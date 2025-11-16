@@ -1,15 +1,25 @@
+---
+layout: page
+---
+
 <script setup lang="ts">
 import { ref } from 'vue'
 
-import Input from '~/components/ui/Input.vue'
-import Tabs from '~/components/ui/Tabs.vue'
-import Tab from '~/components/ui/Tab.vue'
+import Input from '@ui/Input.vue'
+import Tabs from '@ui/Tabs.vue'
+import Tab from '@ui/Tab.vue'
 
 const search = ref('')
 </script>
 
+::: warning
+
+This component is currently not used in the Funkwhale app. See [Nav](./nav) for an alternative that supports all features of this component and fixes the accessibility issues.
+
+:::
+
 ```ts
-import Tabs from "~/components/ui/Tabs.vue"
+import Tabs from "@ui/Tabs.vue"
 ```
 
 # Tabs
@@ -82,8 +92,22 @@ You can add a template to the right side of the tabs using the `#tabs-right` dir
 
 ## Tabs and routes
 
-If the tab content covers most of the page, users will expect that they can navigate to the previous tab with the "back" button of the browser ([See Navigation](./navigation.md)).
+If the tab content covers most of the page, users will expect that they can navigate to the previous tab with the "back" button of the browser ([See Navigation](/navigation.md)).
 
 In this case, add the `:to` prop to each tab, and place a `RouterView` with the intended props of the route's component into its default slot.
 
 Note that this only compares the name. Make sure to add a `name` field to identify paths in your router config!
+
+::: tip Using this component
+
+## Accessible tabs
+
+See [Nav](./nav#accessible-nav) for a full-featured, accessible alternative.
+
+[Relevant WCAG2 criteria](/maintaining-accessibility#tabs)
+
+## A11y Checklist
+
+See [Nav](./nav#a11y-checklist)
+
+:::

@@ -1,3 +1,7 @@
+---
+layout: page
+---
+
 <script setup lang="ts">
 import type { Track, User } from "~/types";
 
@@ -91,6 +95,12 @@ const user: User = {
 }
 </script>
 
+::: warning
+
+This component is tightly coupled with the Funkwhale app frontend in will be moved into ``/front/components` eventually.
+
+:::
+
 ```ts
 import Activity from "~/components/ui/Activity.vue"
 ```
@@ -109,6 +119,9 @@ Activities display history entries for a Funkwhale pod. Each item contains the f
 | ------- | ------------ | --------- | -------------------------------------------- |
 | `track` | Track object | Yes       | The track to render in the activity entry.   |
 | `user`  | User object  | Yes       | The user associated with the activity entry. |
+
+> [!NOTE]
+> Track images are purely decorative (`alt=""`)
 
 ## Single items
 

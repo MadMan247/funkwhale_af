@@ -1,3 +1,7 @@
+---
+layout: page
+---
+
 <script setup lang="ts">
 import { color, setColors } from "~/composables/color"
 import { useRoute } from "vue-router"
@@ -13,7 +17,12 @@ const route = useRoute();
 const here = route.path
 </script>
 
+<div id="is-overview-page" />
+
 # Using Color
+
+> [!IMPORTANT]
+> Never rely on color alone to convey relevant information. Many people will not perceive certain colors, so give them other affordances to understand the meaning of a given alert.
 
 ## Add color via props
 

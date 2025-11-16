@@ -1,11 +1,21 @@
+---
+layout: page
+---
+
 <script setup lang="ts">
-import Toc from '~/components/ui/Toc.vue'
-import Section from '~/components/ui/Section.vue'
-import Spacer from '~/components/ui/Spacer.vue'
+import Toc from '@ui/Toc.vue'
+import Section from '@ui/Section.vue'
+import Spacer from '@ui/Spacer.vue'
 </script>
 
+::: warning
+
+This component is currently undergoing renovation. Check back later to test it when overhauled.
+
+:::
+
 ```ts
-import Toc from "~/components/ui/Toc.vue"
+import Toc from "@ui/Toc.vue"
 ```
 
 # Table of Contents
@@ -174,3 +184,15 @@ You can specify the heading level you want to render in the table of contents by
   </Section>
 </Toc>
 </ClientOnly>
+
+::: tip Using this component
+
+## Accessible toggle
+
+[Test this component in isolation against WCAG2 criteria](/maintaining-accessibility#toc)
+
+## A11y Checklist
+
+This component is currently undergoing renovation. Check back later.
+
+:::

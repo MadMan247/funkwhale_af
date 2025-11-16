@@ -1,21 +1,31 @@
-<script setup>
+---
+layout: page
+---
+
+<script setup lang="ts">
 import { computed, ref } from 'vue'
 
-import Pill from '~/components/ui/Pill.vue'
-import Button from '~/components/ui/Button.vue'
-import Spacer from '~/components/ui/Spacer.vue'
-import Layout from '~/components/ui/Layout.vue'
+import Pill from '@ui/Pill.vue'
+import Button from '@ui/Button.vue'
+import Spacer from '@ui/Spacer.vue'
+import Layout from '@ui/Layout.vue'
 
-const current = ref({ type: 'custom', label: 'I-am-custom.-Change-me!' })
-const others = ref([
+import PillA11y from "@/examples/Pill.a11y.vue"
+
+type Item = { type: 'preset' | 'custom', label: string }
+
+const current = ref<Item>({ type: 'custom', label: 'I-am-custom.-Change-me!' })
+const others = ref<Item[]>([
     { type: 'preset', label: 'Preset-1' },
     { type: 'preset', label: 'Preset-2' },
     { type: 'preset', label: 'Preset-3' },
   ])
+
+const alert = ( message: string ) => window?.alert(message);
 </script>
 
 ```ts
-import Pill from "~/components/ui/Pill.vue"
+import Pill from "@ui/Pill.vue"
 ```
 
 # Pill
@@ -24,11 +34,19 @@ Pills are decorative elements that display information about content they attach
 
 You can add text to pills by adding it between the `<Pill>` tags. Alternatively, you can set `v-model` and [make the pill editable](#editable-pill).
 
-| Prop    | Data type                                                                                       | Required? | Default     | Description            |
-| ------- | ----------------------------------------------------------------------------------------------- | --------- | ----------- | ---------------------- |
-| `color` | `primary` \| `secondary` \| `destructive` \| `blue` \| `red` \| `purple` \| `green` \| `yellow` | No        | `secondary` | Renders a colored pill |
+```ts
+{ noUnderline?: true,
+  cancel?: string,
+  autofocus?: boolean
+} & (PastelProps | ColorProps | DefaultProps)
+  & VariantProps
+  & RaisedProps
+```
 
 -> [Let the user create lists of pills](./pills)
+
+> [!NOTE]
+> Make sure to convey the intent of the pill in an accessible way. Do not omit the text content. If you are forced to use only icons/images as the contents of a pill, label them with meaningful `alt` text. [Read more on form field labelling](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-1d)
 
 ### Primary
 
@@ -140,7 +158,7 @@ Funkwhale pills support a range of pastel colors to create visually appealing in
   Yellow pill
 </Pill>
 
-## Image pill
+## Add an image
 
 Image pills contain a small circular image on their left. These can be used for decorative links such as artist links. To created an image pill, insert a link to the image between the pill tags as a `<template>`.
 
@@ -212,9 +230,37 @@ const others = ref([
   v-model:others="others"
 />
 
-## Add an action
+## Add a primary action
 
-<Button primary ghost icon="bi-trash"/>
+```vue-html
+<Pill @click="alert('Primary')"> Open alert on click </Pill>
+```
+
+<Pill @click="alert('Primary')"> Open alert on click </Pill>
+
+If the pill content does not describe what the pill does, add an accessible label:
+
+<Pill
+@click="alert('Deleted')"
+aria-label="Delete the pill">
+<template #image>
+<i class="bi bi-trash" />
+</template>I want to be deleted
+</Pill>
+
+## Add a secondary action
+
+<Pill
+@click="alert('Edited')"
+aria-label="Edit the pill">
+I can be edited
+<template #action>
+<Button ghost primary round icon="bi-x"
+aria-label="Deselect"
+@click.stop.prevent="alert('Deselected')"
+/>
+</template>
+</Pill>
 
 ```vue-html
 <Pill
@@ -223,6 +269,7 @@ const others = ref([
 >
   <template #action>
     <Button ghost primary round icon="bi-x"
+    aria-label="Deselect"
       title="Deselect"
       @click.stop.prevent="() => {
         if (customTag.current.type === 'custom')
@@ -263,3 +310,19 @@ With the css variable `--cursor`, you can override the default (pointer):
 ```css
 --cursor: text;
 ```
+
+::: tip Using this component
+
+## A11y Checklist
+
+- [ ] Pill content is meaningful and descriptive. If using only images/icons, provide appropriate text alternatives. [1.1.1](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-1-1)
+- [ ] When using colors to convey information (e.g., status or categories), ensure the information is also conveyed through text. [1.4.1](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-4-1)
+- [ ] Action buttons (like delete or edit) have clear, descriptive labels. [2.4.6](https://accessibility.education.gov.uk/guidelines/wcag/explorer#2-4-6)
+
+## Accessible pill
+
+<PillA11y />
+
+[Test this component in isolation against WCAG2 criteria](/maintaining-accessibility#pill)
+
+:::

@@ -1,3 +1,9 @@
+---
+layout: page
+---
+
+<div id="is-overview-page" />
+
 # Using Components
 
 We distinguish between components that are coupled with funkwhale-specific datatypes and "pure" user interface components:
@@ -5,7 +11,7 @@ We distinguish between components that are coupled with funkwhale-specific datat
 - Funkwhale-specific components such as `Activity` or `AlbumCard` import from `types.ts`.
 - Pure UI components (found in `src/components/ui`) are independent from Funkwhale. Think of `Button`, `Tabs` or `Layout`
 
----
+**Jump to chapter:**
 
 [[toc]]
 

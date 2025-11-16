@@ -1,11 +1,15 @@
+---
+layout: page
+---
+
 <script setup lang="ts">
 import { ref } from 'vue'
 import { unionBy, union } from 'lodash-es'
 
-import Pills from '~/components/ui/Pills.vue';
-import Button from '~/components/ui/Button.vue';
-import Spacer from '~/components/ui/Spacer.vue';
-import Layout from '~/components/ui/Layout.vue';
+import Pills from '@ui/Pills.vue'
+import Button from '@ui/Button.vue'
+import Spacer from '@ui/Spacer.vue'
+import Layout from '@ui/Layout.vue'
 
 type Item = { type: 'custom' | 'preset', label: string }
 type Model = {
@@ -59,13 +63,22 @@ const setTags = (v: string[]) => {
 </script>
 
 ```ts
-import Pills from "~/components/ui/Pills.vue"
+import Pills from "@ui/Pills.vue"
 ```
 
 # Pills
 
 Show a dense list of pills representing tags, categories or options.
 Users can select a subset of given options and create new ones.
+
+<<<@/../src/components/ui/Pills.vue#props{ts}
+
+<<<@/../src/components/ui/Pills.vue#model{ts}
+
+The reactive functions `get` and `set` are named from the perspective of the app.
+
+- Use `get` to read the user-updated pills into your app.
+- Use `set` to write your app's state back into the pills.
 
 The model you provide will be mutated by this component:
 
@@ -84,6 +97,9 @@ type Model = {
   others?: Item[],
 }
 ```
+
+> [!NOTE]
+> To convey the intent of the pills editor, define a meaningful text label with the `label` prop. [Read more on form field labelling](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-1d)
 
 ## No pills
 
@@ -301,3 +317,21 @@ const setTags = (v: string[]) => {
 </template>
 
 <!-- prettier-ignore-end -->
+
+::: tip Using this component
+
+## A11y Checklist
+
+- [ ] The label is meaningful and helps the user understand the effects of selecting or editing pills. For example, in a search bar, selecting "Tags" would imply these tags constitute a search filter, whereas inside a playlist editor, they would change the playlist's tags. [1.3.1](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-1)
+
+## Accessible pills
+
+<<<@/examples/Forms.a11y.vue#pills
+
+Guide: [Creating accessible forms](/forms#accessible-forms)
+
+[See the complete Form example code](/forms#model)
+
+[Test this component in isolation against WCAG2 criteria](/maintaining-accessibility#pills)
+
+:::

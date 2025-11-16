@@ -1,16 +1,21 @@
+---
+layout: page
+---
+
 <script setup lang="ts">
 import { ref } from 'vue'
-import { SUPPORTED_LOCALES, setI18nLanguage } from '~/init/locale'
 
-import Button from "~/components/ui/Button.vue"
-import OptionsButton from "~/components/ui/button/Options.vue"
-import Pill from "~/components/ui/Pill.vue"
-import Popover from "~/components/ui/Popover.vue"
-import PopoverCheckbox from "~/components/ui/popover/PopoverCheckbox.vue"
-import PopoverItem from "~/components/ui/popover/PopoverItem.vue"
-import PopoverRadio from "~/components/ui/popover/PopoverRadio.vue"
-import PopoverSubmenu from "~/components/ui/popover/PopoverSubmenu.vue"
-import Toggle from "~/components/ui/Toggle.vue"
+import Button from "@ui/Button.vue"
+import OptionsButton from "@ui/button/Options.vue"
+import Pill from "@ui/Pill.vue"
+import Popover from "@ui/Popover.vue"
+import PopoverCheckbox from "@ui/popover/PopoverCheckbox.vue"
+import PopoverItem from "@ui/popover/PopoverItem.vue"
+import PopoverRadio from "@ui/popover/PopoverRadio.vue"
+import PopoverSubmenu from "@ui/popover/PopoverSubmenu.vue"
+import Toggle from "@ui/Toggle.vue"
+
+import PopoverA11y from '@/examples/Popover.a11y.vue'
 
 // String values
 
@@ -26,7 +31,7 @@ const share = ref(false)
 
 // Alert control
 
-const alert = (message: string) => window.alert(message)
+const alert = (message: string) => window?.alert(message)
 
 // Menu controls
 
@@ -42,10 +47,23 @@ const linksMenu = ref(false)
 const fullMenu= ref(false)
 const isOpen = ref(false)
 const keepOpen = ref(false)
+
+// Locale chooser
+
+const SUPPORTED_LOCALES = [
+  { language: 'english', key: 'en' },
+  { language: 'french', key: 'fr' }
+]
 </script>
 
+::: warning
+
+This component will be deprecated soon and replaced with a `Menu` component that implements more Accessibility best practices.
+
+:::
+
 ```ts
-import Popover from "~/components/ui/Popover.vue"
+import Popover from "@ui/Popover.vue"
 ```
 
 # Popover (Dropdown Menu)
@@ -60,42 +78,42 @@ This component has severe usability issues and cannot be used as-is.
 
 > I can't operate the popup with a keyboard. Remove barrier for people not using a mouse.
 
-- ✅ All items can be focused and activated by `Space`
-  (use `<button>` element instead of `<div>`)
+✅ All items can be focused and activated by `Space`
+(use `<button>` element instead of `<div>`)
 
-- **Tab order:** Users can go to the next and previous items with `Tab` and `Shift+Tab`. When they have opened a sub-menu, the next focusable element is inside the sub-menu. When they have closed it, the focus jumps back to where it was.
+**Tab order:** Users can go to the next and previous items with `Tab` and `Shift+Tab`. When they have opened a sub-menu, the next focusable element is inside the sub-menu. When they have closed it, the focus jumps back to where it was.
 
-- **Dismissal:** Users can close a menu or sub-menu with `ESC`
+**Dismissal:** Users can close a menu or sub-menu with `ESC`
 
-- **Arrow keys:** Users can move up and down a menu, open sub-menus with `->` and close them with `<-`. I have added something like this to `Tabs.vue`, for reference.
+**Arrow keys:** Users can move up and down a menu, open sub-menus with `->` and close them with `<-`. For reference, this pattern is properly implemented in `Nav.vue`.
 
 ### Implement expected behavior
 
 > Switching to submenus is error-prone. When moving cursor into freshly opened submenu, it should not close if the cursor crosses another menu item.
 
-<img style="mix-blend-mode:multiply; width: 50%; float:right;" src="./popover/image.png" />
+<img style="mix-blend-mode:hard-light; width: 50%; float:right;" src="./popover/image.png" />
 
-- **Dead triangle:** Add a triangular invisible node that covers the possible paths from the current mouse position to the menu items.
+**Dead triangle:** Add a triangular invisible node that covers the possible paths from the current mouse position to the menu items.
 
 ---
 
 > Large menus disappear. I can't scroll to see all options.
 
-- **Submenu-to-Modal:** Lists longer than 12 or so items are not recommended and should be replaced with modals.
+**Submenu-to-Modal:** Lists longer than 12 or so items are not recommended and should be replaced with modals.
 
 ---
 
 > Submenus open without a delay, and they don't close unless I click somewhere outside them, which goes against established expectations.
 
-- **Expansion delay:** Sub-menus open after 200ms
+**Expansion delay:** Sub-menus open after 200ms
 
-- **Auto-close:** Sub-menus close when the outside is hovered. There may be a delay of 200ms. Menus close when they lose focus.
+**Auto-close:** Sub-menus close when the outside is hovered. There may be a delay of 200ms. Menus close when they lose focus.
 
 ---
 
 Common UI libraries in the Vue ecosystem such as vuetify or shadcn-vue all implement these features. It may be prudent to use their components.
 
-::: tip Quick mitigation tactics:
+### Quick mitigation tactics
 
 - Place complex interfaces into nested [`Modal`](./modal)s
 - Place long lists into [native `<Select>` elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select)
@@ -110,9 +128,9 @@ Common uses:
 - Settings menus
 - Context menus (right-click menus)
 
-| Prop   | Data type | Required? | Description                                                |
-| ------ | --------- | --------- | ---------------------------------------------------------- |
-| `open` | Boolean   | No        | Controls whether the popover is open. Defaults to `false`. |
+<<<@/../src/components/ui/Popover.vue#props{ts}
+
+<<<@/../src/components/ui/Popover.vue#model{ts}
 
 [[toc]]
 
@@ -132,6 +150,9 @@ Common uses:
 
 Destructure the function `toggleOpen` and let
 a [default dropdown button: `OptionsButton`](./button/options.md) trigger it. This way, the state of the component is encapsulated.
+
+> [!Note]
+> When the user selects an action, the popover menu flashes [twice (<= 3 times, as recommended by the WCAG)](https://www.w3.org/WAI/WCAG22/Understanding/three-flashes-or-below-threshold.html) before closing (see PopoverItem.vue for the exact constants).
 
 ## Bind to `isOpen`
 
@@ -230,7 +251,7 @@ By default, the popover closes when a radiobutton, link, or other item is chosen
 <Popover v-model="keepOpen">
   <Toggle v-model="keepOpen" label="Show privacy controls" />
   <template #items>
-    <PopoverRadio v-model="bcPrivacy" :choices="privacyChoices" keep-open />
+    <PopoverRadio v-model="bcPrivacy" :choices="privacyChoices" />
   </template>
 </Popover>
 
@@ -248,7 +269,7 @@ The popover item (`PopoverItem`) is a simple button that uses [Vue event handlin
 
 ```vue{10-13}
 <script setup lang="ts">
-  const alert = (message: string) => window.alert(message)
+  const alert = (message: string) => window?.alert(message)
   const open = ref(false)
 </script>
 
@@ -607,7 +628,7 @@ const privacyChoices = ["private", "pod", "public"];
           <PopoverItem
             v-for="(language, key) in SUPPORTED_LOCALES"
             :key="key"
-            @click="setI18nLanguage(key)"
+            @click="()=>{ alert(`Chosen language: ${language} (${key})`) }"
           >
             {{ language }}
           </PopoverItem>
@@ -727,9 +748,11 @@ const privacyChoices = ["private", "pod", "public"];
       <i class="bi bi-music-note-list" />
       Change language
       <template #items>
-        <PopoverItem v-for="(language, key) in SUPPORTED_LOCALES"
-        :key="key"
-        @click="setI18nLanguage(key)" >
+        <PopoverItem
+          v-for="(language, key) in SUPPORTED_LOCALES"
+          :key="key"
+          @click="()=>{ alert(`Chosen language: ${language} (${key})`) }"
+        >
           {{ language }}
         </PopoverItem>
       </template>
@@ -814,3 +837,26 @@ const privacyChoices = ["private", "pod", "public"];
     </PopoverItem>
   </template>
 </Popover>
+
+::: tip Using this component
+
+## A11y Checklist
+
+- [ ] All menu items can be accessed and activated using the keyboard. [2.1.1](https://accessibility.education.gov.uk/guidelines/wcag/explorer#2-1-1)
+- [ ] Focus moves into the popover when opened and returns to the trigger element when closed. Make sure the first popover item is focusable. [2.4.3](https://accessibility.education.gov.uk/guidelines/wcag/explorer#2-4-3)
+- [ ] Content remains visible when hovering over it and doesn't disappear unexpectedly. [1.4.13](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-4-13)
+- [ ] The trigger button has a clear label that indicates it will open a menu. [4.1.2](https://accessibility.education.gov.uk/guidelines/wcag/explorer#4-1-2)
+- [ ] If menu items use icons, they have appropriate text alternatives that describe their purpose. [1.1.1](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-1-1)
+
+## Accessible Popover
+
+- Add `autofocus` to the first item of any menu or submenu. This will move the focus into the popover as it opens, and move it back to the previous position when it closes.
+- Make sure to add the `to` prop (for navigation purposes) or `@click` props (triggering an action) to each `PopoverItem` for automatic compatibility with assistive technology.
+
+<PopoverA11y />
+
+<<<@/examples/Popover.a11y.vue#snippet{vue-html}
+
+[Test this component in isolation against WCAG2 criteria](/maintaining-accessibility#popover)
+
+:::

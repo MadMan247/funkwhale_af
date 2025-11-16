@@ -1,11 +1,18 @@
+---
+layout: page
+---
+
 <script setup lang="ts">
-import { ref } from 'vue';
-import Alert from '~/components/ui/Alert.vue'
-import Button from '~/components/ui/Button.vue'
-import Layout from '~/components/ui/Layout.vue'
-import Spacer from '~/components/ui/Spacer.vue'
-import Input from '~/components/ui/Input.vue'
-import Card from '~/components/ui/Card.vue'
+import { ref } from 'vue'
+
+import Alert from '@ui/Alert.vue'
+import Button from '@ui/Button.vue'
+import Layout from '@ui/Layout.vue'
+import Spacer from '@ui/Spacer.vue'
+import Input from '@ui/Input.vue'
+import Card from '@ui/Card.vue'
+
+import SpacerA11y from '@/examples/Spacer.a11y.vue'
 
 const size = ref(32)
 </script>
@@ -18,7 +25,7 @@ const size = ref(32)
 </style>
 
 ```ts
-import Spacer from '~/components/ui/Spacer.vue'
+import Spacer from '@ui/Spacer.vue'
 ```
 
 # Spacer
@@ -184,3 +191,19 @@ By default, a spacer is square. You can make it horizontal with `h` and vertical
   <Spacer v :size="size * 4" style="border:5px dashed;" />
 </Card>
 </Layout>
+
+::: tip Using this component
+
+## A11y Checklist
+
+- [ ] When spacers create visual hierarchy, make sure the markup corresponds.
+
+## Accessible spacer
+
+<SpacerA11y />
+
+<<<@/examples/Spacer.a11y.vue#snippet{vue-html}
+
+[Test this component in isolation against WCAG2 criteria](/maintaining-accessibility#spacer)
+
+:::

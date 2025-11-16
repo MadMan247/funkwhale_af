@@ -1,12 +1,18 @@
+---
+layout: page
+---
+
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue'
 
-import Alert from '~/components/ui/Alert.vue'
-import Button from '~/components/ui/Button.vue'
-import Input from '~/components/ui/Input.vue'
-import Modal from '~/components/ui/Modal.vue'
-import Layout from '~/components/ui/Layout.vue'
-import Spacer from '~/components/ui/Spacer.vue'
+import Alert from '@ui/Alert.vue'
+import Button from '@ui/Button.vue'
+import Input from '@ui/Input.vue'
+import Modal from '@ui/Modal.vue'
+import Layout from '@ui/Layout.vue'
+import Spacer from '@ui/Spacer.vue'
+
+import ModalA11y from '@/examples/Modal.a11y.vue'
 
 const isOpen = ref(false)
 const isOpen2 = ref(false)
@@ -30,15 +36,24 @@ const input = ref('Episcosaurus')
 </script>
 
 ```ts
-import Modal from "~/components/ui/Modal.vue"
+import Modal from "@ui/Modal.vue"
 ```
 
 # Modal
 
-| Prop      | Data type         | Required? | Default | Description                        |
-| --------- | ----------------- | --------- | ------- | ---------------------------------- |
-| `title`   | `string`          | Yes       |         | The modal title                    |
-| `v-model` | `true` \| `false` | No        |         | Whether the modal is isOpen or not |
+Let users finish a workflow inside a floating window without sending them to a new page. While the modal is open, users cannot interact with the rest of the app.
+
+```ts
+{
+  title: string,
+  isdestructive?: true,
+  cancel?: string | true,
+  icon?: string,
+  autofocus?: true | 'off'
+  maximizeSize?: true
+  priority?: number
+} & (ColorProps | DefaultProps)
+```
 
 <Layout flex>
 
@@ -62,6 +77,9 @@ import Modal from "~/components/ui/Modal.vue"
 </div>
 
 </Layout>
+
+> [!NOTE]
+> The `title` prop doubles as an accessible name for the whole modal.
 
 ## Add actions
 
@@ -361,3 +379,23 @@ Use the `priority` prop (default: 0) to override the layering behavior.
 ### Designing for small screens
 
 On slim phones, with the default 32px paddings, the content may only be 260px wide (Galaxy S5). Make sure the content wraps accordingly.
+
+::: tip Using this component
+
+## A11y Checklist
+
+- [ ] If the modal contains any images or icons, they have appropriate text alternatives. [1.1.1](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-1-1)
+- [ ] The modal has a clear, descriptive title that indicates its purpose. [1.3.1](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-1)
+- [ ] Actions have clear, descriptive labels that indicate their purpose. For example "Upload all files" instead of just "Yes", even if the title of the modal would be "Do you want to upload all these files?". [2.4.6](https://accessibility.education.gov.uk/guidelines/wcag/explorer#2-4-6)
+- [ ] For multi-step modals, users can easily understand their current location in the process. [2.4.8](https://accessibility.education.gov.uk/guidelines/wcag/explorer#2-4-8)
+- [ ] Opening the modal doesn't trigger unexpected changes elsewhere in the application. [3.2.2](https://accessibility.education.gov.uk/guidelines/wcag/explorer#3-2-2)
+- [ ] If the primary purpose of the modal is to confirm a destructive action, users are clearly warned about the consequences and can easily cancel it. [3.3.4](https://accessibility.education.gov.uk/guidelines/wcag/explorer#3-3-4)
+- [ ] Critical actions (especially destructive ones) are visually distinct from routine actions. [3.3.2](https://accessibility.education.gov.uk/guidelines/wcag/explorer#3-3-2)
+
+## Accessible modal
+
+<ModalA11y />
+
+[Test this component in isolation against WCAG2 criteria](/maintaining-accessibility#modal)
+
+:::

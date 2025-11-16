@@ -1,12 +1,18 @@
+---
+layout: page
+---
+
 <script setup lang="ts">
-import Button from '~/components/ui/Button.vue'
-import Layout from '~/components/ui/Layout.vue'
+import Button from '@ui/Button.vue'
+import Layout from '@ui/Layout.vue'
+
+import ButtonAlly from '@/examples/Button.a11y.vue'
 
 const click = ():Promise<void> => new Promise(resolve => setTimeout(resolve, 1000))
 </script>
 
 ```ts
-import Button from "~/components/ui/Button.vue"
+import Button from "@ui/Button.vue"
 ```
 
 # Button
@@ -35,6 +41,9 @@ Buttons are UI elements that users can interact with to perform actions and mani
   & WidthProps
   & AlignmentProps
 ```
+
+> [!NOTE]
+> The hidden label of an icon-only button defaults to the icon's name. Use text labels for better accessibility. You can add a hidden label with the `aria-label` attribute (not yet implemented for split buttons).
 
 ## Action
 
@@ -433,6 +442,7 @@ You can use [Bootstrap Icons](https://icons.getbootstrap.com/) in your button co
 - Icon buttons shrink down to the icon size if you don't pass any content. If you want to keep the button at full width with just an icon, add `button-width` as a prop.
 - When combining icons with other content, prefix the icon prop with `right ` to place it after the content.
 - To make icons large, add ` large` to the icon prop.
+- Note that buttons without any visible label create barriers for the users, and only use them where the icon itself is a specific and recognisable label (for example for "Play" or "Pause"). Cases such as Ellipsis, Caret or Hamburger icons for progressive disclosure, or Pencil icons for "Edit" links need to be tested in actual use situations.
 
 :::
 
@@ -478,8 +488,8 @@ See [Using width](/using-width) and [Using alignment](/using-alignment)
     <Button alignSelf="end">🐌</Button>
     <hr />
     <Button alignText="start">🐌</Button>
-    <Button alignText="center">🐌</Button>
     <Button alignText="end">🐌</Button>
+    <Button alignText="center">🐌</Button>
 ```
 
   <Layout class="preview solid primary" stack no-gap>
@@ -518,3 +528,23 @@ after the button is gone. See the `Modal` component ([docs](./modal)) for a comp
 **If pressing ENTER implicitly activates the button** (and only then), give the button a `fake-focus` attribute.
 It indicates that "pressing the enter key has the same effect as pressing this button". An example is a "Best match"
 button under an input where the user can search for matching items. This is implemented [in the `Pill` component](./pill)
+
+::: tip Using this component
+
+## A11y Checklist
+
+- [ ] If using an icon-only button, provide a meaningful label via `aria-label`. [1.1.1](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-1-1)
+- [ ] The button has sufficient contrast (4.5:1) against its background for text. [1.4.3](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-4-3)
+- [ ] Interactive elements of the button have sufficient contrast (3:1). [1.4.11](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-4-11)
+- [ ] When using `autofocus`, ensure it doesn't interrupt a more important user task. [2.4.3](https://accessibility.education.gov.uk/guidelines/wcag/explorer#2-4-3)
+- [ ] Button text clearly denotes the expected outcome or action. [2.4.6](https://accessibility.education.gov.uk/guidelines/wcag/explorer#2-4-6)
+- [ ] For buttons that toggle states, use `aria-pressed` to indicate the current state. [4.1.2](https://accessibility.education.gov.uk/guidelines/wcag/explorer#4-1-2)
+- [ ] During loading states, convey the status to screen readers (e.g., "Loading..." text or `aria-busy="true"`). [4.1.3](https://accessibility.education.gov.uk/guidelines/wcag/explorer#4-1-3)
+
+## Accessible button
+
+<ButtonA11y />
+
+[Test this component in isolation against WCAG2 criteria](/maintaining-accessibility#button)
+
+:::

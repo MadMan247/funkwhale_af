@@ -1,9 +1,15 @@
+---
+layout: page
+---
+
 <script setup>
-  import Heading from "~/components/ui/Heading.vue"
+import Heading from "@ui/Heading.vue"
+
+import HeadingAlly from '@/examples/Heading.a11y.vue'
 </script>
 
 ```ts
-import Heading from "~/components/ui/Heading.vue"
+import Heading from "@ui/Heading.vue"
 ```
 
 # Heading
@@ -115,3 +121,25 @@ A card may have a secondary title, [as exemplified in the designs](https://desig
     (After)
   </template>
 </Heading>
+
+::: tip Using this component
+
+## A11y Checklist
+
+- [ ] Content is organized under headings that describe the following section. [1.3.1](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-1)
+- [ ] Heading text clearly and concisely describes the section content. [1.3.1](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-1)
+- [ ] Heading levels follow a logical order and, if possible, don't skip a level. [1.3.1](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-1)
+- [ ] Each page has exactly one main heading (h1). [1.3.1](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-1)
+- [ ] Heading text has sufficient contrast (4.5:1) against its background. [1.4.3](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-4-3)
+- [ ] Headings are used to label page sections, not for styling text. Visual sizes help users understand the relative importance of headings. [2.4.6](https://accessibility.education.gov.uk/guidelines/wcag/explorer#2-4-6)
+- [ ] If using `before` or `after` slots, ensure the added content maintains heading semantics. [4.1.2](https://accessibility.education.gov.uk/guidelines/wcag/explorer#4-1-2)
+
+## Accessible heading
+
+<HeadingA11y />
+
+<<<@/examples/Heading.a11y.vue#snippet{vue-html}
+
+[Test this component in isolation against WCAG2 criteria](/maintaining-accessibility#heading)
+
+:::

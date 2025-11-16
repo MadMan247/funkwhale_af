@@ -1,8 +1,14 @@
+---
+layout: page
+---
+
 <script setup lang="ts">
 import { ref } from 'vue'
 
-import Spacer from "~/components/ui/Spacer.vue"
-import Slider from '~/components/ui/Slider.vue'
+import Spacer from "@ui/Spacer.vue"
+import Slider from '@ui/Slider.vue'
+
+import FormsA11y from "@/examples/Forms.a11y.vue"
 
 const options = {
   me: "Only I can find and edit this",
@@ -16,7 +22,7 @@ const optionWithUndefined = ref<keyof typeof options | undefined>(undefined)
 </script>
 
 ```ts
-import Slider from "~/components/ui/Slider.vue"
+import Slider from "@ui/Slider.vue"
 ```
 
 # Slider
@@ -43,9 +49,12 @@ const option = ref<keyof typeof options>("me");
 <Spacer />
 <Slider :options="options" v-model="option" label="Privacy level" />
 
+> [!NOTE]
+> To convey the intent of the input field, [add either a text label (`label` prop) or a custom, screenreader-friendly label template](#add-a-label). [Read more on form field labelling](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-1d)
+
 ## Add a label
 
-You can either specify the `label` prop or add custom Html into the `#label` slot.
+Either specify the `label` prop or add custom Html into the `#label` slot.
 
 ## Autofocus
 
@@ -98,3 +107,22 @@ const optionWithUndefined = ref<keyof typeof options | undefined>(undefined)
 - Constant dimensions, fitting the largest text box
 
 - Not to be confused with a pearls navigation patterns (list of dots; indicates temporal range)
+
+---
+
+::: tip Using this component
+
+## A11y Checklist
+
+- [ ] The `label` prop or accessible elements inside the `#label` slot describe the purpose of the slider. [1.3.1d](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-1d)
+- [ ] If the value can change without direct input from the user, announce those value changes programmatically when appropriate (use `aria-live` or similar attributes for dynamic updates). [4.1.3](https://accessibility.educity.gov.uk/guidelines/wcag/explorer#4-1-3)
+
+## Accessible slider
+
+<<<@/examples/Forms.a11y.vue#slider
+
+[See the complete Form example](/forms#accessible-forms)
+
+[Test this component in isolation against WCAG2 criteria](/maintaining-accessibility#slider)
+
+:::

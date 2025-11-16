@@ -1,12 +1,18 @@
+---
+layout: page
+---
+
 <script setup lang="ts">
 import { useModal, fromProps, notUndefined } from '~/ui/composables/useModal.ts'
 
-import Modal from '~/components/ui/Modal.vue'
-import Link from '~/components/ui/Link.vue'
-import Button from '~/components/ui/Button.vue'
-import Layout from '~/components/ui/Layout.vue'
-import Card from '~/components/ui/Card.vue'
-import Alert from '~/components/ui/Alert.vue'
+import Modal from '@ui/Modal.vue'
+import Link from '@ui/Link.vue'
+import Button from '@ui/Button.vue'
+import Layout from '@ui/Layout.vue'
+import Card from '@ui/Card.vue'
+import Alert from '@ui/Alert.vue'
+
+import LinkA11y from '@/examples/Link.a11y.vue'
 
 const { to, isOpen } = useModal('flag')
 </script>
@@ -19,19 +25,13 @@ import Link from "~/components/ui/Link.vue"
 
 Users can navigate by following Links. They expect that in contrast to clicking a [button](button), following a link does not manipulate items or trigger any action.
 
-This component will render as [an `<a>` element [MDN]](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a).
+This component will render inline as [an `<a>` element [MDN]](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a): <Link to="/">Home</Link>
 
 ```vue-html
-
 <Link to="/">
   Home
 </Link>
-
 ```
-
-<Link to="/">
-  Home
-</Link>
 
 Instead of a route, you can set the prop `to` to any web address starting with `http`.
 
@@ -59,15 +59,15 @@ This is particularly useful for modals.
 
 See [Using color](/using-color)
 
-<Layout grid solid default style="place-items: baseline;">
+<!--<Layout grid solid default style="place-items: baseline;" class="funkwhale">
 
-<Card full title="">
+<Card full title="">-->
 
 <p>
-  A paragraph of text with an inline (uncolored) link: <Link to="/"> no color </Link>
+  A paragraph of text with an inline (uncolored) link: <Link to="https://funkwhale.audio"> no color </Link>
 </p>
 
-<Layout flex>
+<!--<Layout flex>
   <Link default to="/">
     default
   </Link>
@@ -107,9 +107,9 @@ See [Using color](/using-color)
 
 _Only use on top of solid surfaces, else the text may be unreadable!_
 
-<Alert v-for="color in ['default', 'primary', 'secondary', 'destructive']" :class="color">
+<Alert v-for="class in ['default', 'primary', 'secondary', 'destructive']" :class>
   <Link outline to="/">
-    {{ color }} outline
+    {{ class }} outline
   </Link>
 </Alert>
 
@@ -132,7 +132,7 @@ _Only use on top of solid surfaces, else the text may be unreadable!_
 </Layout>
 </Card>
 
-</Layout>
+</Layout>-->
 
 ## Shapes
 
@@ -168,7 +168,7 @@ You can use [Bootstrap Icons](https://icons.getbootstrap.com/) in your link comp
 ```
 
 <Layout flex>
-<Link :to  icon="bi-three-dots-vertical" />
+<Link :to icon="bi-three-dots-vertical" />
 <Link :to primary solid round icon="bi-save"/>
 <Link :to solid destructive icon="bi-trash">
   Delete
@@ -215,8 +215,51 @@ See [Using width](/using-width) and [Using alignment](/using-alignment).
     <Link solid primary alignSelf="center" to="/">🐌</Link>
     <Link solid primary alignSelf="end" to="/">🐌</Link>
     <hr />
-    <Link solid primary alignText="left" to="/">🐌</Link>
+    <Link solid primary alignText="start" to="/">🐌</Link>
     <Link solid primary alignText="center" to="/">🐌</Link>
-    <Link solid primary alignText="right" to="/">🐌</Link>
+    <Link solid primary alignText="end" to="/">🐌</Link>
   </Layout>
 </Layout>
+
+## Add an icon
+
+::: info
+
+The hidden label of an icon-only link defaults to the icon's name. Use text labels for better accessibility. In a future version, this component will support authoring a hidden label.
+
+Note that buttons without any visible label create barriers for the users, and only use them where the icon itself is a specific and recognisable label (for example for "Play" or "Pause"). Cases such as Ellipsis, Caret or Hamburger icons for progressive disclosure, or Pencil icons for "Edit" links need to be tested in actual use situations.
+
+:::
+
+Use [Bootstrap Icons](https://icons.getbootstrap.com/) such as 'list-check' or 'list-ol' for the `icon` prop.
+
+::: tip How-to
+
+**Full-width icon button**: Icon buttons shrink down to the icon size if you don't pass any content. If you want to keep the button at full width with just an icon, add `button-width` as a prop.
+
+**Right-aligned icon**: When combining icons with other content, prefix the icon prop with `right ` to place it after the content.
+
+**Large icon**: To make icons large, add ` large` to the icon prop.
+
+:::
+
+---
+
+::: tip Using this component
+
+## A11y Checklist
+
+- [ ] Link text clearly indicates its destination or purpose without relying on surrounding context. [1.1.1](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-1-1)
+- [ ] If using an icon-only link, provide a meaningful label via `aria-label` that describes the destination. [1.1.1](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-1-1)
+- [ ] Links have sufficient contrast (4.5:1) against their background. Choose appropriate color props. [1.4.3](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-4-3)
+- [ ] Link purpose can be determined from the link text alone (when the link is not part of a larger element like a Card). [2.4.4](https://accessibility.education.gov.uk/guidelines/wcag/explorer#2-4-4)
+
+## Accessible links
+
+<LinkA11y />
+
+<<<@/examples/Link.a11y.vue#snippet{vue-html}
+
+[Test this component in isolation against WCAG2 criteria](/maintaining-accessibility#link)
+
+:::

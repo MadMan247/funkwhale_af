@@ -1,10 +1,16 @@
+---
+layout: page
+---
+
 <script setup>
 import Card from "~/components/ui/Card.vue"
 import Layout from "~/components/ui/Layout.vue"
 import Button from "~/components/ui/Button.vue"
 </script>
 
-# Using alignments
+<div id="is-overview-page" />
+
+# Using alignment
 
 You can align items inside `flex` and `grid` layouts.
 

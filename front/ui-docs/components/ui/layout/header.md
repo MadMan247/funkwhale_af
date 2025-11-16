@@ -1,81 +1,63 @@
+---
+layout: page
+---
+
 <script setup lang="ts">
-import Header from '~/components/ui/Header.vue'
-import Layout from '~/components/ui/Layout.vue'
-import Spacer from '~/components/ui/Spacer.vue'
-import Button from '~/components/ui/Button.vue'
+import Header from '@ui/Header.vue'
+import Layout from '@ui/Layout.vue'
+import Spacer from '@ui/Spacer.vue'
+import Button from '@ui/Button.vue'
+
+import HeaderA11y from '@/examples/Header.a11y.vue'
 </script>
 
 ```ts
-import Header from '~/components/ui/Header.vue'
+import Header from '@ui/Header.vue'
 ```
 
 # Page header
 
 Place the `Header` at the beginning of a page. Choose an appropriate heading level: `h1` or `h2` or `h3`. Choose `h1` unless the header is part of a page subsection or a modal. You can use all props for [Heading](../heading.md), including the [stylistic variants](../heading.md#visual-sizes-for-page-sections-and-subsections) such as `radio` or `page-heading`.
 
-```vue-html
-<Header
-  page-heading
-  h1="My title"
-/>
-```
-
-<Header
-  page-heading
-  h1="My title"
-/>
+<<<@/../src/components/ui/Header.vue#props{ts}
 
 For a detailed explanation of the props, read [the entry on `Section`](section.md)
 
-### Add an image
+```vue-html
+<Header
+  page-heading
+  h1="My title"
+/>
+```
+
+<Layout article>
+<Header
+  page-heading
+  h1="My title"
+/>
+</Layout>
+
+## Add an image
 
 Use the `<template #image>` slot to place a picture to the left of the header.
 
-```vue-html
-<Header h1="My title">
-  <template #image>
-    <img
-    style="width: 196px;"
-    src="https://images.unsplash.com/photo-1524650359799-842906ca1c06?ixlib=rb-1.2.1&dl=te-nguyen-Wt7XT1R6sjU-unsplash.jpg&w=640&q=80&fm=jpg&crop=entropy&cs=tinysrgb" />
-  </template>
-  <div style="height: 48px;">
-    My subtitle
-  </div>
-  <Layout flex gap-8>
-    <Button outline square>A</Button>
-    <Button outline square>B</Button>
-    <Spacer h grow />
-    <Button outline square>C</Button>
-  </Layout>
-</Header>
-```
+<HeaderA11y article />
 
-<Header h1="My title">
-  <template #image>
-    <img
-    style="width: 196px;"
-    src="https://images.unsplash.com/photo-1524650359799-842906ca1c06?ixlib=rb-1.2.1&dl=te-nguyen-Wt7XT1R6sjU-unsplash.jpg&w=640&q=80&fm=jpg&crop=entropy&cs=tinysrgb" />
-  </template>
-  <div style="height: 48px;">
-    My subtitle
-  </div>
-  <Layout flex gap-8>
-    <Button outline square>A</Button>
-    <Button outline square>B</Button>
-    <Spacer h grow />
-    <Button outline square>C</Button>
-  </Layout>
-</Header>
+<<<@/examples/Header.a11y.vue#snippet{vue-html}
 
-::: tip Responsive layout:
+## Add an action to the right of the heading
+
+-> Use the `action` prop [which is the same as in the `Section` component](/components/ui/layout/section#provide-an-action).
+
+::: tip Tuning the layout
+
+## Responsive design
 
 On narrow screens, the header will first wrap between image and title/content area.
 
 Make sure to keep the minimum width of the title and the content area narrow to prevent unnecessary wrapping.
 
-:::
-
-::: tip Spacing:
+## Consistent spacing
 
 The distance between the image and the content area is 24px (`gap-24`). The title baseline is at 68px below top.
 
@@ -83,6 +65,24 @@ The distance between the image and the content area is 24px (`gap-24`). The titl
 
 :::
 
-### Add an action to the right of the heading
+::: tip Using this component
 
--> Use the `action` prop [which is the same as in the `Section` component](/components/ui/layout/section#provide-an-action).
+## A11y Checklist
+
+- [ ] Content is organized under headers that describe the following section. [1.3.1](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-1)
+- [ ] Heading text (prop: `h1`, `h2` etc.) clearly and concisely describes the section content. [1.3.1](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-1)
+- [ ] Heading levels follow a logical order and, if possible, don't skip a level. [1.3.1](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-1)
+- [ ] Each page has exactly one main heading (h1). [1.3.1](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-1)
+- [ ] Make sure content order in the markup makes sense when read linearly (important for screen readers and small screen devices). [1.3.2](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-2)
+- [ ] If your layout reflows or changes based on screen size, ensure content remains readable without horizontal scrolling at 400% zoom. [1.4.10](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-4-10)
+- [ ] For headers containing forms or interactive elements, make sure the tab order matches the visual layout. [2.4.3](https://accessibility.education.gov.uk/guidelines/wcag/explorer#2-4-3)
+
+## Accessible header
+
+<HeaderA11y class="solid" />
+
+<<<@/examples/Header.a11y.vue#snippet{vue-html}
+
+[Test this component in isolation against WCAG2 criteria](/maintaining-accessibility#header)
+
+:::

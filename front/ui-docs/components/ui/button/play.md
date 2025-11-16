@@ -1,9 +1,14 @@
+---
+layout: page
+---
+
 <script setup>
-import PlayButton from '~/components/ui/button/Play.vue'
+import PlayButton from '@ui/button/Play.vue'
+import Layout from '@ui/Layout.vue'
 </script>
 
 ```ts
-import PlayButton from "~/components/ui/button/Play.vue"
+import PlayButton from "@ui/button/Play.vue"
 ```
 
 # Play Button
@@ -14,4 +19,8 @@ The play button is a specialized button used in many places across the Funkwhale
 <PlayButton />
 ```
 
-<PlayButton />
+<Layout article>
+  <PlayButton />
+</Layout>
+
+This component extends [the Button component](../button)

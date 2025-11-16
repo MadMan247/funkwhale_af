@@ -1,11 +1,17 @@
+---
+layout: page
+---
+
 <script setup lang="ts">
-import Table from "~/components/ui/Table.vue";
-import Link from "~/components/ui/Link.vue";
-import Button from "~/components/ui/Button.vue"; // Need to import this, else vitepress will not load the stylesheet with the colors.
+import Table from "@ui/Table.vue";
+import Link from "@ui/Link.vue";
+import Button from "@ui/Button.vue"; // Need to import this, else vitepress will not load the stylesheet with the colors.
+
+import TableA11y from "@/examples/Table.a11y.vue"
 </script>
 
 ```ts
-import Table from '~/components/ui/Table.vue'
+import Table from '@ui/Table.vue'
 ```
 
 # Table
@@ -209,3 +215,25 @@ Note that `style` properties may not have an effect because the header section i
     <Button low-height primary @click="console.log('clicked 2')">2</Button>
   </template>
 </Table>
+
+::: tip Using this component
+
+## A11y Checklist
+
+- [ ] Make sure content order in the markup makes sense when read linearly (important for screen readers and small screen devices). [1.3.2](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-2)
+- [ ] If your layout reflows or changes based on screen size, ensure content remains readable without horizontal scrolling at 400% zoom. [1.4.10](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-4-10)
+- [ ] For table cells containing forms or interactive elements, make sure the tab order matches the visual layout. [2.4.3](https://accessibility.education.gov.uk/guidelines/wcag/explorer#2-4-3)
+
+Note that the current implementation does not use the semantic HTML5 element `<table>` by default. You may want to use semantic elements for the table slots to ensure screen readers and other assistive technology recognizes it as a table.
+
+## Accessible table
+
+<Layout article flex>
+  <Table-a11y />
+</Layout>
+
+<<<@/examples/Table.a11y.vue#snippet{vue-html}
+
+[Test this component in isolation against WCAG2 criteria](/maintaining-accessibility#table)
+
+:::

@@ -1,11 +1,15 @@
+---
+layout: page
+---
+
 <script setup>
 import { ref, computed } from 'vue';
 
-import Select from "~/components/ui/Select.vue";
-import Button from "~/components/ui/Button.vue";
-import Layout from "~/components/ui/Layout.vue";
-import Modal from "~/components/ui/Modal.vue";
-import Heading from "~/components/ui/Heading.vue";
+import Select from "@ui/Select.vue";
+import Button from "@ui/Button.vue";
+import Layout from "@ui/Layout.vue";
+import Modal from "@ui/Modal.vue";
+import Heading from "@ui/Heading.vue";
 
 const current = ref(2);
 const options = ref({1: 'One', 2: 'Two', 3: 'Three'});
@@ -18,7 +22,7 @@ const isOpen = ref(false);
 </script>
 
 ```ts
-import Select from "~/components/ui/Select.vue"
+import Select from "@ui/Select.vue"
 ```
 
 # Select
@@ -65,9 +69,14 @@ const options = ref({
 
 </Layout>
 
+> [!NOTE]
+> To convey the intent of the selection control, [add either a text label (`label` prop) or a custom, screenreader-friendly label template](#add-a-custom-label). [Read more on form field labelling](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-1d)
+>
+> In addition, [use `type` and `autocomplete` attributes to make use of the existing taxonomy of machine-readable semantic markup](https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose). (Vue will add any additional attributes to the `<select>` node at compile-time).
+
 ## Add a custom label
 
-The select supports a `label` slot for custom label content instead of using the `label` prop.
+The select supports a `label` slot for custom label content if the text-only `label` prop is not flexible enough.
 
 <Layout flex>
 
@@ -252,3 +261,23 @@ The Select component supports standard color and variant props from [the color c
 </Layout>
 
 <!-- prettier-ignore-end -->
+
+::: tip Using this component
+
+## A11y Checklist
+
+- [ ] The label clearly describes the input purpose. [1.3.1](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-1d)
+- [ ] If you are collecting user information, add appropriate `type` and `autocomplete` attributes. [1.3.5](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-5)
+- [ ] If the select is required, this is clearly indicated in the label. [3.3.2](https://accessibility.education.gov.uk/guidelines/wcag/explorer#3-3-2)
+- [ ] Any validation errors are clearly identified and described to the user. [3.3.1](https://accessibility.education.gov.uk/guidelines/wcag/explorer#3-3-1)
+- [ ] Error messages suggest how to fix such problems. [3.3.3](https://accessibility.education.gov.uk/guidelines/wcag/explorer#3-3-3)
+
+## Accessible select
+
+<<<@/examples/Forms.a11y.vue#select
+
+[See the complete Form example](/forms#accessible-forms)
+
+[Test this component in isolation against WCAG2 criteria](/maintaining-accessibility#select)
+
+:::

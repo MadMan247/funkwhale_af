@@ -1,15 +1,21 @@
+---
+layout: page
+---
+
 <script setup lang="ts">
 import { ref } from 'vue'
 
 import { type Track, type User } from '~/types'
 
-import Card from '~/components/ui/Card.vue'
-import Layout from '~/components/ui/Layout.vue'
-import Toggle from '~/components/ui/Toggle.vue'
-import Spacer from '~/components/ui/Spacer.vue'
-import Pill from '~/components/ui/Pill.vue'
-import Activity from '~/components/ui/Activity.vue'
-import Section from '~/components/ui/Section.vue'
+import Card from '@ui/Card.vue'
+import Layout from '@ui/Layout.vue'
+import Toggle from '@ui/Toggle.vue'
+import Spacer from '@ui/Spacer.vue'
+import Pill from '@ui/Pill.vue'
+import Activity from '@ui/Activity.vue'
+import Section from '@ui/Section.vue'
+
+import SectionA11y from "@/examples/Section.a11y.vue"
 
 const alignLeft = ref(true)
 
@@ -105,21 +111,25 @@ const sections = ref<boolean[]>([false, false, false])
 </script>
 
 ```ts
-import Section from '~/components/ui/Section.vue'
+import Section from '@ui/Section.vue'
 ```
 
 # Layout section
 
-Sections divide the page vertically. Choose an appropriate heading level for each section.
+Sections divide the page vertically
+
+<<<@/../src/components/ui/Section.vue#props{ts}
+
+Choose an appropriate heading level for each section.
 You can use all props for [Heading](../heading.md), including `h1` to `h6` and [stylistic variants](../heading.md#visual-sizes-for-page-sections-and-subsections) such as `radio` or `page-heading`.
 
 ```vue-html
 <Section h1="My title" />
 ```
 
-<Spacer />
-
-<Section h1="My title" />
+<Layout article class="default">
+  <Section h1="My title" />
+</Layout>
 
 ```vue-html
 <Section
@@ -128,12 +138,12 @@ You can use all props for [Heading](../heading.md), including `h1` to `h6` and [
 />
 ```
 
-<Spacer />
-
-<Section
+<Layout article class="default">
+  <Section
   h2="My title"
   radio
 />
+</Layout>
 
 ## Align the section
 
@@ -145,17 +155,7 @@ You can use all props for [Heading](../heading.md), including `h1` to `h6` and [
 
 The section aligns its title and items to a grid, following the designs. To make sure the header of a section exactly aligns with its contents, set the item width (in number of columns). For example,
 
-<style module>
-  .table {
-    margin: 0 -184px;
-    transform: scale(80%);
-  }
-  .table div[class*='language-'] {
-    margin: -8px -16px !important;
-  }
-</style>
-
-<Layout grid :class="$style.table">
+<Layout article grid>
 <Card title="Mixed content">
 
 ```vue-html
@@ -179,13 +179,13 @@ The section aligns its title and items to a grid, following the designs. To make
 </Card>
 </Layout>
 
-For a complete overview of column widths for common funkwhale components, see [the table in using-width](../using-width.md#widths-in-the-grid)
+For a complete overview of column widths for common funkwhale components, see [the table in using-width](/using-width.md#widths-in-the-grid)
 
 ### Move individual items within and across grid-cells
 
 For child items, you can use all known CSS grid placement techniques:
 
-<Layout grid :class="$style.table">
+<Layout article grid>
 <Card title="Stretch over all columns">
 
 ```css
@@ -240,8 +240,7 @@ You can use all [`Link` props](../link.md) or [`Button` props](../button.md) ins
 />
 ```
 
-<Spacer />
-<Layout stack gap-64>
+<Layout article stack gap-64>
   <Section
     h2="With a link"
     :action="{
@@ -276,8 +275,7 @@ You can use all [`Link` props](../link.md) or [`Button` props](../button.md) ins
 </Section>
 ```
 
-<Spacer />
-
+<Layout article>
 <Section
   icon="bi-heart"
 >
@@ -287,6 +285,7 @@ You can use all [`Link` props](../link.md) or [`Button` props](../button.md) ins
     <Pill>#Phonologics</Pill>
   </template>
 </Section>
+</Layout>
 
 ## Set gaps between consecutive sections
 
@@ -342,7 +341,7 @@ Note the spacer above the layout. By default, sections begin at the baseline of 
 </Layout>
 ```
 
-<Layout flex>
+<Layout article flex class="default">
 <Toggle v-model="alignLeft" label="Left-align the layout"/>
 </Layout>
 
@@ -350,7 +349,7 @@ Note the spacer above the layout. By default, sections begin at the baseline of 
 
 <Spacer />
 
-<Layout stack gap-64 class="preview" style="margin: 0 -40px; padding: 0 25px;">
+<Layout article stack gap-64 class="default">
 
   <Section
     :alignLeft="alignLeft"
@@ -413,6 +412,7 @@ const sections = ref([false, false, false])
 </Section>
 ```
 
+<Layout article>
 <Section
   v-for="(section, index) in sections"
   :key="`${index}${section}`"
@@ -429,16 +429,19 @@ const sections = ref([false, false, false])
     full
   />
 </Section>
+</Layout>
 
 ## Add a badge
 
 - Add `badge="loading"` to show a spinner after the heading
 - Add `badge="1" to show an encircled number after the heading
 
+<Layout article class="default">
 <Section
   h1="Heading"
-  badge="1"
+  :badge=1
 />
+</Layout>
 
 ## Responsivity
 
@@ -446,3 +449,22 @@ const sections = ref([false, false, false])
 - On a typical laptop screen, you may have 4 album cards or 3 activities side-by-side. On a typical mobile screen, you will have one medium card or two small ones in a row.
 - The remaining space is evenly distributed.
 - Title rows align with the content below them. The action on the right will always end with the last item in the grid. Resize the window to observe how the items move.
+
+::: tip Using this component
+
+## A11y Checklist
+
+- [ ] Heading text, if present, clearly and concisely describes the section content. Heading levels follow a logical order and, if possible, don't skip a level. Each page has exactly one main heading (h1). [1.3.1](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-1)
+- [ ] Make sure content order in the markup makes sense when read linearly (important for screen readers and small screen devices). [1.3.2](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-2)
+- [ ] If your layout reflows or changes based on screen size, ensure content remains readable without horizontal scrolling at 400% zoom. [1.4.10](https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-4-10)
+- [ ] For sections containing forms or interactive elements, make sure the tab order matches the visual layout. [2.4.3](https://accessibility.education.gov.uk/guidelines/wcag/explorer#2-4-3)
+
+## Accessible section
+
+<SectionA11y />
+
+<<<@/examples/Section.a11y.vue#snippet{vue-html}
+
+[Test this component in isolation against WCAG2 criteria](/maintaining-accessibility#layout)
+
+:::
