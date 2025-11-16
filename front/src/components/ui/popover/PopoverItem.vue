@@ -4,15 +4,19 @@ import { type RouterLinkProps, RouterLink } from 'vue-router'
 import { POPOVER_CONTEXT_INJECTION_KEY, type PopoverContext } from '~/injection-keys'
 import { refDebounced } from '@vueuse/core'
 
-import Button from '~/components/ui/Button.vue'
+import Button from '../Button.vue'
 
 const animation = ref<'none' | 'flash'>('none')
+
+// A11y: Make sure that the flash duration is at least 1/3 the closing delay to prevent more than 3 consecutive flashes!
+// See https://www.w3.org/WAI/WCAG22/Understanding/three-flashes-or-below-threshold.html
+const flashDuration = '150ms'
+const closingDelay = 300
 
 const emit = defineEmits<{ setId: [value: number] }>()
 
 const isOpen = ref(true)
-// Delay closing by 300ms
-const isOpenDelayed = refDebounced(isOpen, () => isOpen.value ? 0 : 300)
+const isOpenDelayed = refDebounced(isOpen, () => isOpen.value ? 0 : closingDelay)
 
 const { parentPopoverContext, to } = defineProps<{
   parentPopoverContext?: PopoverContext;
@@ -122,7 +126,7 @@ div { color:var(--fw-text-color); }
   border-radius: var(--fw-border-radius);
   white-space: nowrap;
   color: var(--color) !important;
-  animation: v-bind('animation') 0.15s steps(1, end) 1 reverse;
+  animation: v-bind('animation') v-bind('flashDuration') steps(1, end) 1 reverse;
 
   &:hover {
     background-color: var(--hover-background-color);

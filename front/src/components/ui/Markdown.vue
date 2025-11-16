@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { char, createRegExp, exactly, global, oneOrMore, word } from 'magic-regexp/further-magic'
 import showdown from 'showdown'
 
-import SanitizedHtml from './SanitizedHtml.vue'
+import SanitizedHtml from '@ui/SanitizedHtml.vue'
 
 interface Props {
   md: string

@@ -10,17 +10,23 @@ import { type ColorProps, type DefaultProps, type RaisedProps, color } from '~/c
 
 -> See ui-docs
 
+-> Great resource for expected functionality: https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/menu_role
+
 */
 
+// #region model
 const isOpen = defineModel<boolean>({ default: false })
+// #endregion model
 
 // Delay closing by 300ms, but allow immediate closing
 const shouldDelayClose = ref(true)
 const isOpenDelayed = refDebounced(isOpen, () => isOpen.value ? 0 : (shouldDelayClose.value ? 300 : 0))
 
+// #region props
 const { positioning = 'vertical', ...colorProps } = defineProps<{
   positioning?: 'horizontal' | 'vertical'
 } & (ColorProps | DefaultProps) & RaisedProps>()
+// #endregion props
 
 // Template refs
 const popover = ref()

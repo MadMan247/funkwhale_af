@@ -278,9 +278,10 @@
   }
 
   .purple {
-    --color: var(--fw-gray-970);
+    --color: var(--fw-gray-100);
     --color-over-transparent: var(--background-color);
     --background-color: var(--fw-pastel-purple-1);
+    --hover-color: color-mix(in oklab, white 80%, var(--fw-pastel-purple-1));
     --hover-background-color: var(--fw-pastel-purple-2);
     &.raised,
     .action > button {
@@ -617,11 +618,15 @@
   :is(button, input, a):focus-visible {
     outline: 4px solid var(--focus-ring-color);
     outline-offset: -4px;
+    &:is(a) {
+      outline-offset: -0.1ch;
+    }
   }
 
   // (3b) Applying colors to things with explicit Variant props
 
   .solid,
+  &.solid,
   .alert > .actions > button,
   button:not(:is(.ghost, .outline, .tabs-item)) {
     color: var(--color);

@@ -16,28 +16,31 @@ const logger = useLogger()
 const combinations = reactive(new Map())
 
 const current = new Set()
-useEventListener(window, 'keydown', (event) => {
-  if (!event.key) return
 
-  const target = event.target as HTMLElement
-  if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return
+if (!import.meta.env.SSR) {
+  useEventListener(window, 'keydown', (event) => {
+    if (!event.key) return
 
-  current.add(event.key.toLowerCase())
+    const target = event.target as HTMLElement
+    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return
 
-  const currentArray = [...current]
-  for (const [requiredKeys, { handler, prevent }] of combinations.entries()) {
-    if (isEqual(currentArray, requiredKeys)) {
-      if (prevent) event.preventDefault()
-      handler()
+    current.add(event.key.toLowerCase())
+
+    const currentArray = [...current]
+    for (const [requiredKeys, { handler, prevent }] of combinations.entries()) {
+      if (isEqual(currentArray, requiredKeys)) {
+        if (prevent) event.preventDefault()
+        handler()
+      }
     }
-  }
-})
+  })
 
-useEventListener(window, 'keyup', (event) => {
-  if (event.key) {
-    current.delete(event.key.toLowerCase())
-  }
-})
+  useEventListener(window, 'keyup', (event) => {
+    if (event.key) {
+      current.delete(event.key.toLowerCase())
+    }
+  })
+}
 
 export default (key: KeyFilter, handler: () => unknown, prevent = false) => {
   const combination = (Array.isArray(key) ? key : [key as string]).map(key => {

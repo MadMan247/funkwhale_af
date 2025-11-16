@@ -2,9 +2,13 @@
 import { type PastelProps, color } from '~/composables/color'
 import { type AlignmentProps, align } from '~/composables/alignment'
 
-import Layout from '~/components/ui/Layout.vue'
+import Layout from '@ui/Layout.vue'
 
-export type Props = PastelProps & AlignmentProps
+// #region props
+export type Props = {
+  role?: 'log' | 'status' | 'alert' | 'progressbar' | 'marquee' | 'timer'
+} & PastelProps & AlignmentProps
+// #endregion props
 
 const props = defineProps<Props>()
 </script>
@@ -12,7 +16,7 @@ const props = defineProps<Props>()
 <template>
   <div
     class="funkwhale alert"
-    role="alert"
+    :role="role || 'alert'"
     v-bind="{
       ...$attrs,
       ...color(props, ['solid'])(

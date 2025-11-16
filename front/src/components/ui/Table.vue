@@ -2,11 +2,14 @@
 defineProps<{
   gridTemplateColumns:(`${number}${'px' | 'fr'}` | 'auto')[]
   headerProps?: { [key: string]: unknown }
+  isTable?: boolean
 }>()
 </script>
 
 <template>
-  <section
+  <!-- TODO: Refactor to use semantic elements `td`, `tr`, `th`, `table`, `caption`. See https://accessibility.education.gov.uk/guidelines/wcag/explorer#1-3-1a for details.-->
+  <component
+    :is="isTable ? 'table' : 'section'"
     :class="$style.table"
     :style="`grid-template-columns: ${gridTemplateColumns.join(' ')};`"
   >
@@ -17,7 +20,7 @@ defineProps<{
       <slot name="header" />
     </span>
     <slot />
-  </section>
+  </component>
 </template>
 
 <style module>

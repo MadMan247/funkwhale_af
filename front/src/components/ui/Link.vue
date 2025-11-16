@@ -53,7 +53,6 @@ onMounted(() => {
 </script>
 
 <template>
-  {{ isExternalLink? ' ' : '  ' }}
   <component
     :is="isExternalLink ? 'a' : RouterLink"
     v-bind="color(props, ['interactive'])(
@@ -63,6 +62,7 @@ onMounted(() => {
         align(props, 'solid' in props ? { alignText: 'center' } : {})(
         )))"
     ref="link"
+    :aria-label="isIconOnly&&icon ? icon.replace('bi bi-', '') : undefined"
     :autofocus="autofocus || undefined"
     :class="[
       $attrs.class,
@@ -103,14 +103,21 @@ onMounted(() => {
 
   padding: calc(var(--padding) / 2 - var(--shift-by)) var(--padding) calc(var(--padding) / 2 + var(--shift-by)) var(--padding);
 
-  &.is-icon-only {
+  &.is-icon-only.link {
     padding: var(--padding);
   }
 
-  &.no-spacing {
+  /* Inline Link: */
+  &.no-spacing.link:not(.is-icon-only) {
     padding: 0;
     margin: 0;
     font-size: 1em;
+    outline-offset: 4px;
+  }
+
+  /* Link with background shape: */
+  &.link.link:not(.is-icon-only) {
+    outline-offset: 2px;
   }
 
   // Font

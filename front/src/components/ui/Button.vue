@@ -5,7 +5,7 @@ import { type ColorProps, type VariantProps, type DefaultProps, type RaisedProps
 import { type WidthProps, width } from '~/composables/width'
 import { type AlignmentProps, align } from '~/composables/alignment'
 
-import Loader from '~/components/ui/Loader.vue'
+import Loader from '@ui/Loader.vue'
 
 const props = defineProps<{
   thinFont?: true
@@ -159,6 +159,8 @@ onUnmounted(() =>
 
   <!-- Not a split button -->
 
+  <!-- TODO: Refactor button to require an accessible label in the props (either `label:string` or `hiddenLabel:string` for icon-only buttons) -->
+
   <button
     v-else
     ref="button"
@@ -169,6 +171,7 @@ onUnmounted(() =>
     :disabled="disabled || undefined"
     :autofocus="autofocus || undefined"
     class="funkwhale button"
+    :aria-label="isIconOnly ? icon : $attrs['aria-label'] ? $attrs['aria-label'] as string : ''"
     :aria-pressed="props.ariaPressed"
     :class="{
       'is-loading': isLoading,
@@ -204,6 +207,8 @@ onUnmounted(() =>
 </template>
 
 <style lang="scss">
+/*TODO: Check if we want to implement W3C recommended pointers (as Tailwind v4 is going that route, it's going to be the default again)*/
+
 .funkwhale {
   &.split-button {
     cursor: var(--cursor, pointer);

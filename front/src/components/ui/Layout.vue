@@ -8,7 +8,7 @@ const props = defineProps<{
   noRule?: true,
   noWrap?: true,
 } & { [P in 'stack' | 'grid' | 'flex' | 'columns' | 'row' | 'page']?: true | string }
-  & { [C in 'nav' | 'ul' | 'aside' | 'header' | 'footer' | 'main' | 'label' | 'form' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5']?: true }
+  & { [C in 'nav' | 'ul' | 'aside' | 'article' | 'header' | 'footer' | 'main' | 'label' | 'form' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5']?: true }
   & { [G in 'no-gap' | `gap-${'4' | '8' | '12' | '16' | '32' | '48' | '64' | '84' | 'auto'}` ]?: true }
   &(PastelProps | ColorProps | DefaultProps)
   & RaisedProps
@@ -38,7 +38,7 @@ const attributes = computed(() => ({
 
 <template>
   <component
-    :is="props.nav ? 'nav' : props.ul ? 'ul' : props.aside ? 'aside' : props.header ? 'header' : props.footer ? 'footer' : props.main ? 'main' : props.label ? 'label' : props.form ? 'form' : props.h1 ? 'h1' : props.h2 ? 'h2' : props.h3 ? 'h3' : props.h4 ? 'h4' : props.h5 ? 'h5' : 'div'"
+    :is="props.nav ? 'nav' : props.ul ? 'ul' : props.aside ? 'aside' : props.article ? 'article' : props.header ? 'header' : props.footer ? 'footer' : props.main ? 'main' : props.label ? 'label' : props.form ? 'form' : props.h1 ? 'h1' : props.h2 ? 'h2' : props.h3 ? 'h3' : props.h4 ? 'h4' : props.h5 ? 'h5' : 'div'"
     :class="[
       $style.layout,
       ('noGap' in props && props.noGap === true) || $style.gap,
@@ -83,8 +83,6 @@ const attributes = computed(() => ({
     grid-template-columns:
       repeat(auto-fit, v-bind(columnWidth));
     grid-auto-flow: row dense;
-    /* If the grid has a fixed size smaller than its container, center it */
-    place-content: center;
     align-items: baseline;
   }
 
@@ -92,8 +90,6 @@ const attributes = computed(() => ({
     display: grid;
     grid: v-bind("props.grid");
     grid-auto-flow: row dense;
-    /* If the grid has a fixed size smaller than its container, center it */
-    place-content: center;
   }
 
   &[layout=grid] > *, &[layout=grid-custom] > * {

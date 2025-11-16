@@ -1,15 +1,17 @@
 <script setup lang="ts">
+import { useId } from 'vue'
 import type { ComponentProps } from 'vue-component-type-helpers'
 
 import { computed } from 'vue'
 
-import Layout from '~/components/ui/Layout.vue'
-import Spacer from '~/components/ui/Spacer.vue'
-import Button from '~/components/ui/Button.vue'
-import Link from '~/components/ui/Link.vue'
-import Heading from '~/components/ui/Heading.vue'
-import Loader from '~/components/ui/Loader.vue'
+import Layout from '@ui/Layout.vue'
+import Spacer from '@ui/Spacer.vue'
+import Button from '@ui/Button.vue'
+import Link from '@ui/Link.vue'
+import Heading from '@ui/Heading.vue'
+import Loader from '@ui/Loader.vue'
 
+// #region props
 const props = defineProps<{
   columnsPerItem?: 1 | 2 | 3 | 4
   alignLeft?: boolean
@@ -23,6 +25,9 @@ const props = defineProps<{
 } & {
   [Operation in 'expand' | 'collapse']?: () => void
 }>()
+// #endregion props
+
+const id = useId()
 
 const hasContent = computed(() => {
   // @ts-expect-error too complex type thingy
@@ -39,7 +44,10 @@ const headingProps = computed(() =>
 </script>
 
 <template>
-  <section style="flex-grow: 1;">
+  <section
+    style="flex-grow: 1;"
+    :aria-labelledby="id"
+  >
     <Layout
       header
       v-bind="columnsPerItem
@@ -78,7 +86,10 @@ const headingProps = computed(() =>
             <slot name="topleft" />
 
             <!-- @vue-ignore -->
-            <Heading v-bind="headingProps" />
+            <Heading
+              v-bind="headingProps"
+              :id
+            />
           </Button>
           <i
             :class="!!expand ? 'bi bi-chevron-down' : 'bi bi-chevron-up'"
@@ -102,6 +113,7 @@ const headingProps = computed(() =>
           <slot name="topleft" />
           <Heading
             v-bind="headingProps"
+            :id
             style="
               padding: 0 0 24px 0;
               margin: 0;
@@ -133,7 +145,7 @@ const headingProps = computed(() =>
 
         <!-- Action! You can either specify `to` or `onClick`. -->
         <!-- Note: We cannot simplify with  `<component is="action && 'to' in action ? Link : Button"` due to a Vue bug -->
-
+        <!-- TODO: Refactor to a `topright` slot (for simplicity and composability) and make sure to pay extra attention to layout edge cases. -->
         <template v-if="action">
           <Link
             v-if="'to' in action"
@@ -159,7 +171,7 @@ const headingProps = computed(() =>
     <!-- Love: https://css-tricks.com/css-grid-can-do-auto-height-transitions/ -->
 
     <Layout
-      main
+      role="group"
       :inert="!!expand"
       :style="`${
         'alignLeft' in props && props.alignLeft

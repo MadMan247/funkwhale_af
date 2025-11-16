@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { color } from '~/composables/color'
 
+// TODO: Rename `big` to `large` for parity with large icons, and design appropriate tokens for consistency and customization (theming)
 const { big } = defineProps<{
   big?: boolean
-  label?: string
+  label: string
 }>()
 
 const isOn = defineModel<boolean>()
@@ -21,7 +22,9 @@ const diameter = big ? '28px' : '20px'
       type="checkbox"
       style="opacity: 0; /* Hide even before stylesheet is loaded */"
     >
-    <span v-if="label">{{ label }}</span>
+    <!-- TODO: Consider refactoring to use slot instead of label for feature parity with other labeled components -->
+    <!-- TODO: Document layout quirks when combining with multi-row components (e.g. labeled input, pills) in a toolbar-style row -->
+    <span>{{ label }}</span>
   </label>
 </template>
 

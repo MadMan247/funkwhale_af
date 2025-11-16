@@ -17,7 +17,8 @@
     "paths": {
       "#/*": ["src/worker/*"],
       "?/*": ["test/*"],
-      "~/*": ["src/*"]
+      "~/*": ["src/*"],
+      "@ui/*": ["src/components/ui/*"]
     }
   },
   "include": [
@@ -32,11 +33,6 @@
     "ui-docs/**/*.md",
     "eslint.config.mjs",
     "cypress.config.ts"
-  ],
-  "exclude": [
-    "ui-docs/components/ui/link.md",
-    "ui-docs/components/ui/popover.md",
-    "ui-docs/using-color.md"
   ],
   "vueCompilerOptions": {
     "module": "esnext",

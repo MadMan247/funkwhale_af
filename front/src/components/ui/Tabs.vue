@@ -2,8 +2,8 @@
 import { type TabProps, TABS_INJECTION_KEY } from '~/injection-keys'
 import { computed, provide, reactive, ref, watch } from 'vue'
 
-import Button from '~/components/ui/Button.vue'
-import Link from '~/components/ui/Link.vue'
+import Button from '@ui/Button.vue'
+import Link from '@ui/Link.vue'
 import { useRoute } from 'vue-router'
 
 const currentTitle = ref<TabProps['title']>('')
@@ -34,6 +34,7 @@ watch(tabs, () => {
 
 <template>
   <div class="funkwhale tabs">
+    <!-- TODO: Either delete this component or integrate Nav which now implements all relevant features. This component is not accessible enough. -->
     <div class="tabs-header">
       <component
         :is="tab.to ? Link : Button"

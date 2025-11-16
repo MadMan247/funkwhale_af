@@ -1,10 +1,14 @@
-<script setup lang="ts" generic="T extends string">
+<script setup lang="ts" generic="T extends string | number">
 import { ref, computed, onMounted } from 'vue'
+import { useId } from 'vue'
 
-import Layout from '~/components/ui/Layout.vue'
-import Spacer from '~/components/ui/Spacer.vue'
-import Markdown from '~/components/ui/Markdown.vue'
+import Layout from '@ui/Layout.vue'
+import Spacer from '@ui/Spacer.vue'
+import Markdown from '@ui/Markdown.vue'
 
+const id = useId()
+
+// TODO: Make label prop non-optional. It'll be used with aria-labeledby.
 const props = defineProps<{
   label?: string,
   options: Record<T, string>,
@@ -36,6 +40,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <!-- TODO(ally): Decide which label should label which control. Probably the label is for the slider, and the three buttons have their content as label. Open question: Is focusability necessary? -->
   <Layout
     stack
     no-gap
@@ -50,16 +55,16 @@ onMounted(() => {
     <!-- Label -->
 
     <label
-      v-if="$slots['label']"
+      :id
       :class="$style.label"
     >
-      <slot name="label" />
-    </label>
-    <label
-      v-if="label"
-      :class="$style.label"
-    >
-      {{ label }}
+      <slot
+        v-if="$slots['label']"
+        name="label"
+      />
+      <template v-else>
+        {{ label }}
+      </template>
     </label>
 
     <!-- List of options -->
@@ -75,6 +80,7 @@ onMounted(() => {
         style="flex-basis: var(--step-size); padding-bottom: 8px;"
         type="button"
         tabindex="-1"
+        aria-hidden="true"
         @click="() => { model = key; input.focus(); }"
       >
         {{ key }}
@@ -89,6 +95,7 @@ onMounted(() => {
         v-model="index"
         type="range"
         style="width: var(--slider-width); cursor: pointer;"
+        :aria-labelledby="id"
         :max="keys.length - 1"
         :autofocus="autofocus || undefined"
       >

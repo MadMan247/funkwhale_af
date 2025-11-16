@@ -6,11 +6,11 @@ import { uniqBy } from 'lodash-es'
 import { stringSimilarity } from "string-similarity-js";
 import { useI18n } from 'vue-i18n'
 
-import Layout from './Layout.vue'
-import Button from './Button.vue'
-import Input from './Input.vue'
-import Popover from './Popover.vue'
-import PopoverItem from './popover/PopoverItem.vue'
+import Layout from '@ui/Layout.vue'
+import Button from '@ui/Button.vue'
+import Input from '@ui/Input.vue'
+import Popover from '@ui/Popover.vue'
+import PopoverItem from '@ui/popover/PopoverItem.vue'
 
 const { t } = useI18n()
 
@@ -24,6 +24,9 @@ const emit = defineEmits<{
 
 /* Model */
 
+// TODO(a11y): Specify precise role (such as status, presentation, checkbox etc.) - currently, it's always `button`.
+// This opens an important library architecture decision: Are UI components organized by how they look (Pill, Button, Card...) or by how they behave (Section, Update, Link, SingleSelect, MultiSelect, EitherOr, Trigger, ModalDialog...)? Either way, we'll need to declare valid combinations of shape * behavior for each component (and component variant)
+// For the upcoming refactoring and design documents, I feel like we should move from self-contained UI primitives towards composable UX primitives! This will make readoning about possible workflows much easier, and add to the maintainability of the code.
 const props = defineProps<{
   noUnderline?: true,
   cancel?: string,
@@ -208,6 +211,7 @@ const other = computed(() => (option: Item) => ({
   action: option.type === 'custom'
     ? {
       title: t('vui.delete'),
+      'aria-label': t('vui.delete'),
       icon: 'bi-trash',
       onClick: () => {
         if (!currentItem.value || !otherItems.value) return;
@@ -224,6 +228,7 @@ const current = computed(() => (
       ? {
         attributes: {
           title: t('vui.resetTo', { previousValue: (previousValue || currentItem.value)?.label }),
+          'aria-label': t('vui.resetTo', { previousValue: (previousValue || currentItem.value)?.label }),
           icon: 'bi-arrow-counterclockwise'
         },
         onClick: () => {
@@ -235,6 +240,7 @@ const current = computed(() => (
       ? {
         attributes: {
           title: t('vui.deletItem', { item: currentItem.value.label }),
+          'aria-label': t('vui.deletItem', { item: currentItem.value.label }),
           icon: 'bi-trash',
           destructive: true
         },
@@ -251,6 +257,7 @@ const current = computed(() => (
       ? {
         attributes: {
           title: t('vui.addItem', { item: currentItem.value.label }),
+          'aria-label': t('vui.addItem', { item: currentItem.value.label }),
           icon: 'bi-plus',
           'solid': !match.value,
           primary: true

@@ -1,14 +1,19 @@
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue'
 
-type Size = 'no-size' | `size-${'4' | '8' | '12' | '16' | '20' | '32' | '46' | '64'}`
-
-const props = defineProps<{
-  grow?:true;
-  shrink?:true;
-  title?:string;
-} & { [Direction in 'h' | 'v']? : true }
-  &({ [S in Size]? : true } | {size?:number})>()
+const props = defineProps < {
+  grow?: true;
+  shrink?: true;
+  title?: string;
+} & {
+  [Direction in 'h' | 'v']?: true
+} & {
+  [Element in 'li']?: true
+} &({
+  [S in 'no-size' | `size-${'4' | '8' | '12' | '16' | '20' | '32' | '46' | '64'}`]? : true
+} | {
+  size?:number
+})>()
 
 const minSize = 0
 
@@ -33,9 +38,13 @@ watchEffect(() => {
 </script>
 
 <template>
-  <div :class="[$style.spacer, grow && 'grow', title && $style['has-title']]">
+  <component
+    :is="(['li'] as const).find(tag => props[tag]) || 'div'"
+    :class="[$style.spacer, grow && 'grow', title && $style['has-title']]"
+    aria-hidden="true"
+  >
     <slot />
-  </div>
+  </component>
 </template>
 
 <style module lang="scss">

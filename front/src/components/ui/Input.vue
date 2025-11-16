@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, onUnmounted, ref, defineExpose } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, defineExpose, useId } from 'vue'
 import { useI18n } from 'vue-i18n'
 import onKeyboardShortcut from '~/composables/onKeyboardShortcut'
 import { type ColorProps, type VariantProps, type DefaultProps, type RaisedProps, type PastelProps, color } from '~/composables/color.ts'
 import { type WidthProps, width } from '~/composables/width'
 
-import Button from '~/components/ui/Button.vue'
-import Layout from '~/components/ui/Layout.vue'
+import Button from '@ui/Button.vue'
+import Layout from '@ui/Layout.vue'
 
+// TODO: Tighten types and expand taxonomy: `['password' | 'search' | 'username' | 'numeric' | 'email']?: true`
 const { icon, placeholder, ...props } = defineProps<{
   icon?: string;
   placeholder?: string;
@@ -29,6 +30,8 @@ const { icon, placeholder, ...props } = defineProps<{
 
 const isShowingPassword = ref(false)
 onKeyboardShortcut('escape', () => isShowingPassword.value = false)
+
+const id = useId()
 
 // TODO: Accept fallback $attrs:  `const fallthroughAttrs = useAttrs()`
 
@@ -89,6 +92,7 @@ const model = defineModel<string | number>({ required: true })
       v-bind="{ ...$attrs, ...attributes, ...color(props, ['solid', 'default', 'secondary'])(width(props)()) }"
       ref="input"
       v-model="model"
+      :class="$style.showsTooltip"
       :autofocus="autofocus || undefined"
       :placeholder="placeholder"
       @click.stop
@@ -128,17 +132,22 @@ const model = defineModel<string | number>({ required: true })
     <!-- Password -->
     <button
       v-if="props.password"
+      :class="$style.showsTooltip"
       v-bind="{ ...$attrs, ...attributes, ...color(props, ['solid', 'default', 'secondary'])() }"
       style="background:transparent; border:none; appearance:none; height:calc(100% - 16px); color:var(--color); cursor:pointer;"
       role="switch"
       type="button"
       class="input-right show-password"
       :title="isShowingPassword ? t('vui.aria.password.hide') : t('vui.aria.password.show')"
-      :aria-label="isShowingPassword ? t('vui.aria.password.hide') : t('vui.aria.password.show')"
+      :aria-checked="isShowingPassword"
+      :aria-labelledby="id"
       @click="isShowingPassword = !isShowingPassword"
       @blur="(e) => { if (e.relatedTarget && 'value' in e.relatedTarget && e.relatedTarget.value === model) isShowingPassword = isShowingPassword; else isShowingPassword = false; }"
     >
-      <i class="bi bi-eye" />
+      <i
+        class="bi bi-eye"
+        role="presentation"
+      />
     </button>
 
     <!-- Search -->
@@ -155,6 +164,8 @@ const model = defineModel<string | number>({ required: true })
 
     <Button
       v-if="props.reset"
+      :class="$style.showsTooltip"
+      :aria-labelledby="id"
       ghost
       primary
       square-small
@@ -163,10 +174,23 @@ const model = defineModel<string | number>({ required: true })
       :on-click="reset"
       :title="t('components.library.EditForm.button.reset')"
     />
+
+    <!-- Floating label for icon-buttons -->
+    <label
+      :id
+      :class="$style.floating"
+    >
+      {{ props.reset
+        ? t('components.library.EditForm.button.reset')
+        : props.password ? (
+          isShowingPassword ? t('vui.aria.password.hide') : t('vui.aria.password.show')
+        ) : '' }}
+    </label>
   </Layout>
 </template>
 
 <style>
+/* TODO: Move into the style module block so as to not pollute global namespace*/
 .funkwhale.input {
   position: relative;
   flex-grow: 1;
@@ -302,5 +326,22 @@ const model = defineModel<string | number>({ required: true })
     /* Make button fit snuggly into rounded border */
     border-radius: 4px;
   }
+}
+</style>
+<style module>
+:has(>.showsTooltip:hover)>label.floating:not(:empty) {
+    opacity: 1;
+}
+label.floating {
+    position: absolute;
+    opacity: 0;
+    transition: opacity .2s;
+    right: 8px;
+    bottom: 37px;
+    font-size: 12px;
+    background: var(--background-color);
+    padding: 0 8px;
+    outline: .5px solid currentcolor;
+    pointer-events: none;
 }
 </style>

@@ -5,8 +5,8 @@ import { computed } from 'vue'
 
 import { type Track, type User } from '~/types'
 
-import OptionsButton from '~/components/ui/button/Options.vue'
-import PlayButton from '~/components/ui/button/Play.vue'
+import OptionsButton from '@ui/button/Options.vue'
+import PlayButton from '@ui/button/Play.vue'
 
 // TODO (2.0.0+): Move into app namespace because this component uses funkwhale types
 
@@ -18,10 +18,17 @@ const { track, user } = defineProps<{ track: Track, user: User }>()
 
 const router = useRouter()
 
-const navigate = (to: 'track' | 'user') =>
+const navigate = (to: 'track' | 'user') => {
+  if (import.meta.env.VITE_VP_DOCS) {
   to === 'track'
+    ? window?.alert("Navigating to track")
+    : window?.alert(`Navigating to user profile ${profileParams.value}`)
+  } else {
+    to === 'track'
     ? router.push({ name: 'library.tracks.detail', params: { id: track.id } })
     : router.push({ name: 'profile.full', params: profileParams.value })
+  }
+}
 
 const profileParams = computed(() => {
   const [username, domain] = user.full_username.split('@')
@@ -30,12 +37,16 @@ const profileParams = computed(() => {
 </script>
 
 <template>
+  <!-- TODO: Move this component out of the ui library and into the app namespace. It is coupled with Funkwhale API specific types. -->
   <div
     class="funkwhale activity"
     @click="navigate('track')"
   >
     <div class="activity-image">
-      <img :src="track.cover?.urls.original">
+      <img
+        :src="track.cover?.urls.original"
+        alt=""
+      >
       <PlayButton
         :round="false"
         :shadow="false"

@@ -1,22 +1,23 @@
 <script setup lang="ts">
-import { computed, getCurrentInstance } from 'vue'
+import { computed, getCurrentInstance, useId } from 'vue'
 
 import { type RouterLinkProps, RouterLink } from 'vue-router'
 import { type ColorProps, type DefaultProps, type PastelProps, type RaisedProps, type VariantProps, color } from '~/composables/color'
 import { type WidthProps, width } from '~/composables/width'
 
-import TagsList from '~/components/tags/List.vue'
-import Alert from './Alert.vue'
-import { type Props as AlertProps } from './Alert.vue'
-import Layout from './Layout.vue'
-import Spacer from './Spacer.vue'
+import Pill from '@ui/Pill.vue'
+import Alert from '@ui/Alert.vue'
+import { type Props as AlertProps } from '@ui/Alert.vue'
+import Layout from '@ui/Layout.vue'
+import Spacer from '@ui/Spacer.vue'
 
+// #region props
 const props = defineProps<{
   title: string
   category?: true | 'h1' | 'h2' | 'h3' | 'h4' | 'h5'
 
   tags?: string[]
-  image?: string | { src: string, style?: 'withPadding' }
+  image?: string | { src: string, style?: 'withPadding', label?: string }
   icon?: string
 
   flat?: true
@@ -28,8 +29,12 @@ const props = defineProps<{
   & VariantProps
   & WidthProps
   >()
+// #endregion props
+
+const titleId = `title-${useId()}`
 
 const tags = computed(() => {
+  // TODO: Do we want to display only 2 tags? I found this confusing... what's the purpose?
   return props.tags?.slice(0, 2)
 })
 
@@ -53,7 +58,7 @@ const attributes = computed(() =>
   <Layout
     stack
     no-gap
-    :class="[{ [$style.card]: true, [$style['is-category']]: category }, 'card']"
+    :class="[{ [$style.card]: true, [$style['is-category']]: category===true }, 'card']"
     v-bind="{...attributes, ...$attrs, class: `${attributes.class} ${$attrs.class}`}"
   >
     <!-- Link -->
@@ -62,12 +67,14 @@ const attributes = computed(() =>
       v-if="props.to && isExternalLink"
       :class="$style.covering"
       :href="to?.toString()"
+      :aria-labelledby="titleId"
       target="_blank"
     />
     <RouterLink
       v-if="props.to && !isExternalLink"
       :class="$style.covering"
       :to="props.to"
+      :aria-labelledby="titleId"
     />
 
     <!-- Image -->
@@ -83,8 +90,10 @@ const attributes = computed(() =>
     </div>
     <img
       v-else-if="image"
-      :src="image?.src"
-      :class="[{ [$style.image]: true, [$style['with-padding']]: image?.style === 'withPadding' }, 'card-image']"
+      :src="image.src"
+      :alt="image.label || ''"
+      :title="image.label"
+      :class="[{ [$style.image]: true, [$style['with-padding']]: image.style === 'withPadding' }, 'card-image']"
     >
     <Spacer
       v-else
@@ -96,12 +105,16 @@ const attributes = computed(() =>
     <i
       v-if="props.icon"
       :class="[$style.icon, 'bi', icon]"
+      role="img"
+      :aria-label="`${props.icon.replace('bi-', '').replace('-lg', '')} icon`"
     />
 
     <!-- Title -->
 
+    <!-- TODO: Use new `Heading` component instead! -->
     <component
       :is="typeof category === 'string' ? category : 'h6'"
+      :id="titleId"
       :class="$style.title"
     >
       {{ title }}
@@ -123,6 +136,7 @@ const attributes = computed(() =>
       v-bind="alertProps"
       :class="$style.alert"
     >
+      <!-- TODO: Place `alertProps` into slot props :-) -->
       <slot name="alert" />
     </Alert>
 
@@ -132,13 +146,12 @@ const attributes = computed(() =>
       gap-4
       :class="$style.tags"
     >
-      <TagsList
-        label-classes="tiny"
-        :truncate-size="8"
-        :limit="2"
-        :show-more="false"
-        :tags="tags"
-      />
+      <Pill
+        v-for="(tag, index) in tags"
+        :key="index"
+      >
+        {{ tag }}
+      </Pill>
     </Layout>
 
     <Layout
@@ -279,7 +292,7 @@ const attributes = computed(() =>
 
   >.tags {
     padding: 0 var(--fw-card-padding);
-    margin-top: 8px;
+    margin: 8px  -4px 0px -4px;
   }
 
   >.content {

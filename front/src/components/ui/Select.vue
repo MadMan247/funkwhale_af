@@ -3,11 +3,12 @@ import { nextTick, onMounted, onUnmounted, ref, computed, type Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { type ColorProps, type VariantProps, type DefaultProps, type RaisedProps, type PastelProps, color } from '~/composables/color.ts'
 
-import Button from '~/components/ui/Button.vue'
-import Layout from '~/components/ui/Layout.vue'
+import Button from '@ui/Button.vue'
+import Layout from '@ui/Layout.vue'
 
 /** Select a value from a list of labeled options. */
 
+// TODO: Add machine-readable semantics with `type` and `autocomplete` attributes (https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose)
 const props = defineProps<{
     icon?: string;
     placeholder?: string;
@@ -73,6 +74,7 @@ const reset = () => { current.value = initial.value }
       {{ label }}
     </span>
 
+    <!-- TODO: Add a11y props for better discoverability of accessibility-enhancing attributes instead of lumping them under $attrs -->
     <select
       v-bind="{...$attrs, ...color(props, ['solid', 'secondary'])()}"
       ref="select"

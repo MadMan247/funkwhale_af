@@ -52,7 +52,7 @@ const { container = true } = defineProps<{ container?: boolean }>()
 
 .loader {
   border-radius: 50%;
-  animation: spin 0.6s linear infinite;
+  animation: spin 0.6s linear 8; /* spin 8x, i.e. 4.9s ;-) */
 
   font-size: 1.2em;
   position: absolute;

@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import type { ComponentProps } from 'vue-component-type-helpers'
 
-import Layout from '~/components/ui/Layout.vue'
-import Spacer from '~/components/ui/Spacer.vue'
-import Button from '~/components/ui/Button.vue'
-import Link from '~/components/ui/Link.vue'
-import Heading from '~/components/ui/Heading.vue'
+import Layout from '@ui/Layout.vue'
+import Spacer from '@ui/Spacer.vue'
+import Button from '@ui/Button.vue'
+import Link from '@ui/Link.vue'
+import Heading from '@ui/Heading.vue'
 
 const actionComponents
   = { Button, Link }
 
+// TODO: h1 | h2 | ... should be a required prop
+// TODO: Unify the heading prop declaration with the other components that offer it
+
+// #region props
 const props = defineProps<{
   columnsPerItem?: 1 | 2 | 3 | 4
   alignLeft?: boolean
@@ -23,6 +27,7 @@ const props = defineProps<{
 } & {
   [Operation in 'expand' | 'collapse']?: () => void
 }>()
+// #endregion props
 </script>
 
 <template>
@@ -56,12 +61,12 @@ const props = defineProps<{
         />
         <div
           v-if="icon"
-          style="display: flex; justify-content: center; align-items: center; width: 48px;"
+          :style="`display: flex; justify-content: center; align-items: center; width: 48px; align-self: first baseline; font-size: ${icon.includes('large') ? 32 : 18}px;`"
         >
           <i
             :class="['bi', icon]"
-            style="font-size: 18px;"
-          />
+            style="transform: translateY(-1px);"
+          /> &nbsp;
         </div>
         <slot name="topleft" />
         <!-- The inferred type of props occasionally overloads the typescript compiler. -->

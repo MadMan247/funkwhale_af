@@ -3,13 +3,14 @@ import { nextTick, computed, ref, type ComputedRef, onMounted } from 'vue'
 import { useTextareaAutosize, computedWithControl, useManualRefHistory, watchDebounced } from '@vueuse/core'
 import { useI18n } from "vue-i18n"
 
-import Button from './Button.vue'
-import Spacer from './Spacer.vue'
-import Markdown from './Markdown.vue'
-import Layout from './Layout.vue'
+import Button from '@ui/Button.vue'
+import Spacer from '@ui/Spacer.vue'
+import Markdown from '@ui/Markdown.vue'
+import Layout from '@ui/Layout.vue'
 
 const { t } = useI18n()
 
+// #region props
 const { charLimit = Infinity, placeholder = '', initialLines: minLines = 3, ...props } = defineProps<{
   label?: string,
   placeholder?: string,
@@ -18,8 +19,11 @@ const { charLimit = Infinity, placeholder = '', initialLines: minLines = 3, ...p
   autofocus?: true,
   required?: true
 }>()
+// #endregion props
 
+// #region model
 const model = defineModel<string>({ required: true })
+// #endregion model
 
 const { undo, redo, commit: commitHistory, last } = useManualRefHistory(model)
 const textarea = ref()
@@ -248,7 +252,7 @@ onMounted(() => {
       />
       <label
         class="textarea-buttons"
-        :for="preview ? 'expanded-preview-button' : 'nothing'"
+        :for="preview ? 'expanded-preview-button' : undefined"
       >
         <Button
           secondary

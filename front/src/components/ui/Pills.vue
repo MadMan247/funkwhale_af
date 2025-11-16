@@ -6,12 +6,13 @@ import { color } from '~/composables/color'
 
 import { uniqBy } from 'lodash-es'
 
-import Pill from './Pill.vue'
-import Layout from './Layout.vue'
-import Button from './Button.vue'
+import Pill from '@ui/Pill.vue'
+import Layout from '@ui/Layout.vue'
+import Button from '@ui/Button.vue'
 
 const { t } = useI18n()
 
+// #region props
 /**
  * Use `get` to read the pills into your app.
  * Use `set` to write your app's state back into the pills.
@@ -24,8 +25,11 @@ const props = defineProps<{
   get: (v: Model) => void,
   set: (v: Model) => Model
 }>()
+// #endregion props
 
+// #region model
 const model = ref<Model>({ currents: [] })
+// #endregion model
 
 type Item = { type: 'custom' | 'preset', label: string }
 type Model = { currents: Item[], others?: Item[] }
@@ -91,6 +95,7 @@ onMounted(() => {
 
     <!-- List of Pills -->
 
+    <!-- TODO: Check if this needs to be implemented as <ul><li>...</ul> for semantics and accessibility -->
     <Layout
       flex
       gap-4
@@ -100,6 +105,7 @@ onMounted(() => {
       }"
       :class="$style.list"
     >
+      <!-- TODO(a11y): Label editing operation in an accessible way -->
       <Pill
         v-for="(_, index) in model.currents"
         :key="index+1000*(nextIndex || 0)"
@@ -134,6 +140,7 @@ onMounted(() => {
             round
             icon="bi-x"
             :title="t('vui.deselect')"
+            :aria-label="t('vui.deselect')"
             @click.stop.prevent="() => {
               if (!model.others) return
               model.others.push({ ...model.currents[index]! });
