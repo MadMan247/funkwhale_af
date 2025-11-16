@@ -4,9 +4,9 @@ import { useI18n } from 'vue-i18n'
 import { ref, computed, watch } from 'vue'
 import { isMobileView } from '~/composables/screen'
 
-import Button from '~/components/ui/Button.vue'
-import Input from '~/components/ui/Input.vue'
-import Spacer from '~/components/ui/Spacer.vue'
+import Button from '@ui/Button.vue'
+import Input from '@ui/Input.vue'
+import Spacer from '@ui/Spacer.vue'
 
 const { t } = useI18n()
 
@@ -106,6 +106,7 @@ watch(page, (_) => {
       </li>
 
       <Spacer
+        li
         no-size
         grow
       />
@@ -136,6 +137,7 @@ watch(page, (_) => {
       </template>
 
       <Spacer
+        li
         no-size
         grow
       />

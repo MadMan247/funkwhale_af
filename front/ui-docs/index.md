@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Layout from '../src/components/ui/Layout.vue'
-import Card from '../src/components/ui/Card.vue'
+import Layout from '@ui/Layout.vue'
+import Card from '@ui/Card.vue'
 </script>
 
 # Funkwhale design component library
@@ -8,11 +8,12 @@ import Card from '../src/components/ui/Card.vue'
 ## Plan
 
 <Layout flex>
-    <Card default raised to="/designing-pages"
+    <Card solid blue flat to="/designing-pages"
         title="Designing pages"
         min-content
     />
-    <Card default raised to="https://design.funkwhale.audio"
+    <Card solid blue flat to="https://design.funkwhale.audio"
+        icon="bi-box-arrow-up-right"
         title="UI designs" >
     Check out the design system on our Penpot.
     </Card>
@@ -21,21 +22,30 @@ import Card from '../src/components/ui/Card.vue'
 ## Use
 
 <Layout flex>
-    <Card default raised to='/using-components'
+    <Card solid yellow flat to='/using-components'
     title="Using components"
     min-content
     />
-    <Card default raised to="/using-color"
+    <Card solid yellow flat to="/using-color"
     title="Adding Color"
     min-content
     />
-    <Card default raised to="/using-width"
+    <Card solid yellow flat to="/using-width"
     title="Setting width and height"
     min-content
     />
-    <Card default raised to="/using-alignment"
+    <Card solid yellow flat to="/using-alignment"
     title="Aligning elements"
     min-content
+    />
+</Layout>
+
+## Maintain
+
+<Layout flex>
+    <Card solid purple flat to="/maintaining-accessibility"
+        title="Keeping the UI components accessible"
+        min-content
     />
 </Layout>
 
