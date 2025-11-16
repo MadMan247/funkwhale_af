@@ -408,11 +408,11 @@ build_docs:
     - cd docs
     - make install
   script:
-    - make build-all BUILD_DIR=../public
+    - make build-all BUILD_DIR=../public/docs
   artifacts:
     expire_in: 2 weeks
     paths:
-      - public
+      - public/docs
 
 build_front:
   stage: build
@@ -493,15 +493,34 @@ deploy_docs:
   stage: publish
   needs:
     - job: build_docs
+    - job: build_ui_docs
       artifacts: true
   rules:
     - if: $CI_COMMIT_BRANCH =~ /(stable|develop)/
 
-  image: $CI_REGISTRY/funkwhale/ci/python:3.11
+  image: $CI_REGISTRY/funkwhale/ci/python:3.13
   variables:
     GIT_STRATEGY: none
   script:
-    - rsync -r --delete -e "ssh -p 2282" $CI_PROJECT_DIR/public/ docs@docs.funkwhale.audio:/htdocs/$CI_COMMIT_REF_NAME
+    - rsync -r --delete -e "ssh -p 2282" $CI_PROJECT_DIR/public/docs/ docs@docs.funkwhale.audio:/htdocs/$CI_COMMIT_REF_NAME
+    - rsync -r --delete -e "ssh -p 2281" $CI_PROJECT_DIR/public/ui-docs/types/ ui@ui.funkwhale.audio:/htdocs/
+    - rsync -r --delete -e "ssh -p 2281" $CI_PROJECT_DIR/public/ui-docs/dist/ ui@ui.funkwhale.audio:/htdocs/$CI_COMMIT_REF_NAME/
+
+# ui-docs
+build_ui_docs:
+  stage: build
+  image: $CI_REGISTRY/funkwhale/ci/node-python:22
+  cache:
+    - *yarn_cache
+  before_script:
+    - cd front
+    - npm install -g corepack
+    - corepack enable
+    - yarn install
+  script: yarn build:docs
+  artifacts:
+    paths:
+      - public/ui-docs
 
 docker:
   interruptible: false

@@ -179,7 +179,7 @@ The section aligns its title and items to a grid, following the designs. To make
 </Card>
 </Layout>
 
-For a complete overview of column widths for common funkwhale components, see [the table in using-width](/using-width.md#widths-in-the-grid)
+For a complete overview of column widths for common funkwhale components, see [the table in using-width](../../../using-width.md#widths-in-the-grid)
 
 ### Move individual items within and across grid-cells
 

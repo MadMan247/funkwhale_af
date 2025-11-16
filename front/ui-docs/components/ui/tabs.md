@@ -92,7 +92,7 @@ You can add a template to the right side of the tabs using the `#tabs-right` dir
 
 ## Tabs and routes
 
-If the tab content covers most of the page, users will expect that they can navigate to the previous tab with the "back" button of the browser ([See Navigation](/navigation.md)).
+If the tab content covers most of the page, users will expect that they can navigate to the previous tab with the "back" button of the browser ([See Navigation](./nav.md)).
 
 In this case, add the `:to` prop to each tab, and place a `RouterView` with the intended props of the route's component into its default slot.
 
