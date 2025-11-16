@@ -3,9 +3,10 @@ layout: page
 ---
 
 <script setup lang="ts">
-import Table from "@ui/Table.vue";
-import Link from "@ui/Link.vue";
-import Button from "@ui/Button.vue"; // Need to import this, else vitepress will not load the stylesheet with the colors.
+import Table from "@ui/Table.vue"
+import Link from "@ui/Link.vue"
+import Button from "@ui/Button.vue"
+import Layout from "@ui/Layout.vue"
 
 import TableA11y from "@/examples/Table.a11y.vue"
 </script>

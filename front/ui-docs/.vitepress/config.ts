@@ -15,7 +15,7 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: 'Home', link: 'https://funkwhale.audio' },
-      { text: 'Gitlab', link: 'https://dev.funkwhale.audio/funkwhale/ui' },
+      { text: 'Gitlab', link: 'https://dev.funkwhale.audio/funkwhale/ui' }
     ],
     sidebar: [
       { text: 'Designing Pages', link: '/designing-pages' },
@@ -31,8 +31,8 @@ export default defineConfig({
           { text: 'Button', link: '/components/ui/button',
             items: [
               { text: 'Options Button', link: '/components/ui/button/options' },
-              { text: 'Play Button', link: '/components/ui/button/play' },
-            ],
+              { text: 'Play Button', link: '/components/ui/button/play' }
+            ]
           },
           { text: 'Card', link: '/components/ui/card' },
           {
@@ -49,8 +49,8 @@ export default defineConfig({
               { text: 'Select', link: '/components/ui/select' },
               { text: 'Slider', link: '/components/ui/slider' },
               { text: 'Textarea', link: '/components/ui/textarea' },
-              { text: 'Toggle', link: '/components/ui/toggle' },
-            ],
+              { text: 'Toggle', link: '/components/ui/toggle' }
+            ]
           },
           { text: 'Heading', link: '/components/ui/heading' },
           {
@@ -63,7 +63,7 @@ export default defineConfig({
               { text: "Using `columns`", link: "/components/ui/layout/columns" },
               { text: "Using `flex`", link: "/components/ui/layout/flex" },
               { text: "Using `grid`", link: "/components/ui/layout/grid" },
-              { text: "Using `stack`", link: "/components/ui/layout/stack" },
+              { text: "Using `stack`", link: "/components/ui/layout/stack" }
             ]
           },
           { text: 'Loader', link: '/components/ui/loader' },
@@ -75,16 +75,16 @@ export default defineConfig({
               { text: 'Nav', link: '/components/ui/nav' },
               { text: 'Pagination', link: '/components/ui/pagination' },
               { text: 'Table of Contents', link: '/components/ui/toc' },
-              { text: 'Tabs', link: '/components/ui/tabs' },
-            ],
+              { text: 'Tabs', link: '/components/ui/tabs' }
+            ]
           },
-          { text: 'Popover (Dropdown Menu)', link: '/components/ui/popover' },
-        ],
-      },
+          { text: 'Popover (Dropdown Menu)', link: '/components/ui/popover' }
+        ]
+      }
     ],
     search: {
-      provider: 'local',
-    },
+      provider: 'local'
+    }
   },
   vite: {
     resolve: {
@@ -92,16 +92,16 @@ export default defineConfig({
         {
           find: /^~\/(.*)/,
           replacement: fileURLToPath(
-            new URL('../../src/$1', import.meta.url),
-          ),
+            new URL('../../src/$1', import.meta.url)
+          )
         },
         {
           find: /^@ui\/(.*)/,
           replacement: fileURLToPath(
-            new URL('../../src/components/ui/$1', import.meta.url),
-          ),
-        },
-      ],
-    },
-  },
+            new URL('../../src/components/ui/$1', import.meta.url)
+          )
+        }
+      ]
+    }
+  }
 })

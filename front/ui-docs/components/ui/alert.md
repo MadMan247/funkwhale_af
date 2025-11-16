@@ -9,7 +9,7 @@ import Layout from "@ui/Layout.vue"
 
 import AlertColors from '@/examples/Alert.colors.vue'
 import AlertActions from '@/examples/Alert.actions.vue'
-import AlertAlly from '@/examples/Alert.a11y.vue'
+import AlertA11y from '@/examples/Alert.a11y.vue'
 </script>
 
 ```ts

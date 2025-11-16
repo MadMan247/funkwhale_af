@@ -3,14 +3,11 @@ layout: page
 ---
 
 <script setup lang="ts">
-import { useModal, fromProps, notUndefined } from '~/ui/composables/useModal.ts'
+import { useModal } from '~/ui/composables/useModal.ts'
 
 import Modal from '@ui/Modal.vue'
 import Link from '@ui/Link.vue'
-import Button from '@ui/Button.vue'
 import Layout from '@ui/Layout.vue'
-import Card from '@ui/Card.vue'
-import Alert from '@ui/Alert.vue'
 
 import LinkA11y from '@/examples/Link.a11y.vue'
 
@@ -48,7 +45,7 @@ In addition to the standard Vue `RouterLink` path matching function, we use this
 
 This is particularly useful for modals.
 
-<Link ghost :to="useModal('flag').to">
+<Link ghost :to>
   Open modal
 </Link>
 

@@ -75,7 +75,7 @@ Add one of these props to your `Layout` component to turn them into semantic con
 
 ## Common props
 
-### `gap-x`: Set the gap to one of the defaults
+### `gap-*`: Set the gap to one of the defaults
 
 ```ts
 `gap-${'4' | '8' | '12' | '16' | '24' | '32' | '48' | '64' | 'auto'}`
@@ -91,7 +91,7 @@ const noGap = ref(true);
 </script>
 
 <template>
-  <Toggle v-model="noGap" />
+  <Toggle v-model="noGap" label="no-gap" />
 
   <Layout flex :no-gap="noGap || undefined">
     <Card title="A" small />
@@ -102,7 +102,7 @@ const noGap = ref(true);
 </template>
 ```
 
-<div class="preview" style="width:0">
+<div class="preview solid default" style="width: 8rem">
   <Toggle v-model="noGap" label="no-gap" />
 
 ---
@@ -136,7 +136,7 @@ const isGrowing = ref(true);
 </script>
 
 <template>
-  <Toggle v-model="isGrowing" />
+  <Toggle v-model="isGrowing" label="Grow spacers" />
 
   <Layout stack style="height:25em;">
     <Alert red />
@@ -147,8 +147,8 @@ const isGrowing = ref(true);
 </template>
 ```
 
-<div class="preview">
-<Toggle v-model="isGrowing" label="grow"/>
+<div class="preview solid default">
+<Toggle v-model="isGrowing" label="Grow spacers" />
 
 ---
 
@@ -170,7 +170,7 @@ Note that you can set the minimum space occupied by the `Spacer` with its `size`
 
 ```vue
 <template>
-  <Toggle v-model="isGrowing" />
+  <Toggle v-model="isGrowing" label="Grow spacers" />
 
   <Layout stack style="height:35em;">
     <Alert blue />
@@ -184,7 +184,7 @@ Note that you can set the minimum space occupied by the `Spacer` with its `size`
 ```
 
 <div class="preview" style="width:0">
-<Toggle v-model="isGrowing" />
+<Toggle v-model="isGrowing" label="Grow spacers" />
 
 ---
 
@@ -210,7 +210,7 @@ Note that you can set the minimum space occupied by the `Spacer` with its `size`
 - [ ] Use consistent layout patterns for similar types of content across pages (e.g., same grid structure for article lists). [3.2.3](https://accessibility.education.gov.uk/guidelines/wcag/explorer#3-2-3)
 - [ ] For layouts containing forms or interactive elements, make sure the tab order matches the visual layout. [2.4.3](https://accessibility.education.gov.uk/guidelines/wcag/explorer#2-4-3)
 
-##Accessible layout
+## Accessible layout
 
 <LayoutA11y />
 

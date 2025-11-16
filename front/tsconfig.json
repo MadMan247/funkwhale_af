@@ -30,10 +30,11 @@
     "test/**/*.ts",
     "src/docs/vite.config.ts",
     "src/docs/**/*.ts",
-    "ui-docs/**/*.md",
+    "ui-docs/**/*.ts",
     "eslint.config.mjs",
     "cypress.config.ts"
   ],
+  "exclude": ["ui-docs/**/*.md"],
   "vueCompilerOptions": {
     "module": "esnext",
     "vitePressExtensions": [".md"],

@@ -61,6 +61,7 @@ const navigateTo = ( index: number ) => {
 
 const computedTabs = computed(() => tabs.value.map((tab, index) => ({
   ...tab,
+  key: index,
   'aria-selected': currentIndex.value === index || undefined,
   ...(isTabs ? ({
     tabindex: index === currentIndex.value ? 0 : -1,
@@ -70,7 +71,6 @@ const computedTabs = computed(() => tabs.value.map((tab, index) => ({
     'aria-posinset': index + 1,
     'aria-setsize': tabs.value.length,
     'aria-pressed': undefined,
-    key: currentIndex.value,
     autofocus: isCurrentIndexIntentional() &&  currentIndex.value === index,
     onClick: () => {
       navigateTo(index)
@@ -89,8 +89,8 @@ const computedTabs = computed(() => tabs.value.map((tab, index) => ({
     }
   } ): ({
     to: 'to' in tab ? tab.to : ''
-  }))
-})
+  } ))
+} as const)
 ))
 const tabpanels = computed(() => tabs.value.map((_, index) => ({
   'aria-labelledby':  id+index+'tab',

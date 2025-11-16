@@ -16,6 +16,7 @@ const tabs = ref([{
   badge: 3
 }])
 // #endregion model
+
 const isOn=ref<boolean[]>([false, true, false])
 </script>
 

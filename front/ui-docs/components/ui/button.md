@@ -6,7 +6,7 @@ layout: page
 import Button from '@ui/Button.vue'
 import Layout from '@ui/Layout.vue'
 
-import ButtonAlly from '@/examples/Button.a11y.vue'
+import ButtonA11y from '@/examples/Button.a11y.vue'
 
 const click = ():Promise<void> => new Promise(resolve => setTimeout(resolve, 1000))
 </script>
@@ -544,6 +544,8 @@ button under an input where the user can search for matching items. This is impl
 ## Accessible button
 
 <ButtonA11y />
+
+<<<@/examples/Button.a11y.vue#snippet{vue-html}
 
 [Test this component in isolation against WCAG2 criteria](/maintaining-accessibility#button)
 

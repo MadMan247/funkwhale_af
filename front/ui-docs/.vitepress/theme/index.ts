@@ -30,7 +30,7 @@ export default {
         {
           path: '/:pathMatch(.*)*',
           name: 'CatchAll',
-          component: CatchAll,
+          component: CatchAll
         }]
     })
 

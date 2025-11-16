@@ -6,9 +6,7 @@ layout: page
 import { ref } from 'vue'
 
 import Spacer from "@ui/Spacer.vue"
-import Slider from '@ui/Slider.vue'
-
-import FormsA11y from "@/examples/Forms.a11y.vue"
+import Slider from "@ui/Slider.vue"
 
 const options = {
   me: "Only I can find and edit this",

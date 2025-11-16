@@ -12,7 +12,7 @@ export default defineConfig({
       '?': fileURLToPath(new URL('../test', import.meta.url)),
       '~': fileURLToPath(new URL('../src', import.meta.url)),
       '@ui': fileURLToPath(new URL('../src/components/ui', import.meta.url)),
-      '@': fileURLToPath(new URL('./', import.meta.url)),
+      '@': fileURLToPath(new URL('./', import.meta.url))
     }
   },
 

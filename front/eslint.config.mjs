@@ -4,6 +4,7 @@ import html from 'eslint-plugin-html'
 import vue from 'eslint-plugin-vue'
 import globals from 'globals'
 import jsoncParser from 'jsonc-eslint-parser'
+import pluginVueA11y from 'eslint-plugin-vuejs-accessibility'
 
 export default defineConfigWithVueTs(
   vueTsConfigs.recommended,
@@ -106,6 +107,19 @@ export default defineConfigWithVueTs(
   },
 
   {
-    ignores: ['src/locales/*.json', '**/dist', '**/stats.html', 'ui-docs/.vitepress', 'ui-docs/components']
+    files: ['ui-docs/**'],
+    rules: {
+      '@intlify/vue-i18n/no-raw-text': 'off'
+    }
+  },
+
+  ...pluginVueA11y.configs['flat/recommended'].map((config) => ({
+    ...config,
+    files: ['src/components/ui/**.vue', 'ui-docs/**.vue'],
+    rules: { 'vuejs-accessibility/no-autofocus': 'off' }
+  })),
+
+  {
+    ignores: ['src/locales/*.json', '**/dist', '**/stats.html', 'ui-docs/.vitepress/cache', 'ui-docs/.vitepress/.vite', 'src/components/ui/Activity.vue']
   }
 )

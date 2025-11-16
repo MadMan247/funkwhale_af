@@ -7,8 +7,6 @@ import Toggle from '@ui/Toggle.vue'
 import Layout from '@ui/Layout.vue'
 import Button from '@ui/Button.vue' // needs to be imported so that we can use colors...
 
-import FormsA11y from '@/examples/Forms.a11y.vue'
-
 import { ref } from 'vue'
 
 const toggle = ref(false)

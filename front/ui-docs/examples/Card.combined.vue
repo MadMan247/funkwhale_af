@@ -3,6 +3,7 @@ import Card from "@ui/Card.vue"
 import Alert from "@ui/Alert.vue"
 import Link from "@ui/Link.vue"
 import Button from "@ui/Button.vue"
+import Layout from "@ui/Layout.vue"
 
 const alert = ( message: string ) => window?.alert(message)
 </script>

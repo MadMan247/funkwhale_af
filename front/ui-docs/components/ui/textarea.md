@@ -9,8 +9,6 @@ import Textarea from '@ui/Textarea.vue'
 import Button from '@ui/Button.vue'
 import Spacer from '@ui/Spacer.vue'
 
-import FormsA11y from '@/examples/Forms.a11y.vue'
-
 const text = ref('# Funk\nwhale')
 const text1 = ref('# Funk\nwhale')
 const text2 = ref('0123456789abcdefghij')

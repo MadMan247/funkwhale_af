@@ -52,6 +52,8 @@ Create a pagination bar by passing the number of pages to the `pages` prop. Use 
 
 <PaginationA11y />
 
+<<<@/examples/Pagination.a11y.vue#snippet{vue-html}
+
 [Test this component in isolation against WCAG2 criteria](/maintaining-accessibility#pagination)
 
 :::

@@ -5,7 +5,7 @@ layout: page
 <script setup>
 import Heading from "@ui/Heading.vue"
 
-import HeadingAlly from '@/examples/Heading.a11y.vue'
+import HeadingA11y from '@/examples/Heading.a11y.vue'
 </script>
 
 ```ts
