@@ -192,7 +192,7 @@
       },
       "meta": {
         "end": "Кінець",
-        "queuePosition": "Композиція {index} з {довжиною}",
+        "queuePosition": "Композиція {index} з {length}",
         "startTime": "00:00",
         "unknownAlbum": "Невідомий альбом",
         "unknownArtist": "Невідомий виконавець"
@@ -503,7 +503,7 @@
           "unmute": "Увімкнути звук"
         },
         "meta": {
-          "position": "{index} з {довжини}",
+          "position": "{index} з {length}",
           "unknownAlbum": "Невідомий альбом",
           "unknownArtist": "Невідомий художник"
         }
@@ -720,7 +720,7 @@
       },
       "Authorize": {
         "button": {
-          "authorize": "Авторизувати {додаток}"
+          "authorize": "Авторизувати {app}"
         },
         "header": {
           "access": "{app_name} хоче отримати доступ до вашого облікового запису Funkwhale",
@@ -1202,8 +1202,8 @@
       },
       "Duration": {
         "meta": {
-          "hours": "{годин} год {хвилин} хв",
-          "minutes": "{хвилин} хв"
+          "hours": "{hours} год {minutes} хв",
+          "minutes": "{minutes} хв"
         }
       },
       "EmptyState": {
@@ -1260,7 +1260,7 @@
       },
       "UserLink": {
         "link": {
-          "username": "{'@'}{ім'я користувача}"
+          "username": "{'@'}{username}"
         }
       },
       "UserMenu": {
@@ -1433,7 +1433,7 @@
           "tracks": "Треки"
         },
         "meta": {
-          "volume": "Том {номер}"
+          "volume": "Том {number}"
         }
       },
       "AlbumDropdown": {
@@ -1707,8 +1707,8 @@
               "size": "Розмір",
               "status": "Статус"
             },
-            "progress": "{відсоток}%",
-            "progressNum": "{поточний} / {загальний}",
+            "progress": "{percent}%",
+            "progressNum": "{current} / {total}",
             "status": {
               "pending": "Очікує на розгляд",
               "uploaded": "Завантажено",
@@ -1936,7 +1936,7 @@
           "track": {
             "bitrate": {
               "label": "Бітрейт",
-              "value": "{бітрейт}/с"
+              "value": "{bitrate}/s"
             },
             "codec": "Кодек",
             "downloads": "Завантаження",
@@ -3132,7 +3132,7 @@
       },
       "useReport": {
         "account": {
-          "label": "Повідомити про порушення {'@'}{ім'я користувача}",
+          "label": "Повідомити про порушення {'@'}{username}",
           "typeLabel": "Обліковий запис"
         },
         "album": {
@@ -3750,7 +3750,7 @@
             "audioContent": {
               "bitrate": {
                 "label": "Бітрейт",
-                "value": "{бітрейт}/с"
+                "value": "{bitrate}/s"
               },
               "cachedSize": "Розмір кешу",
               "duration": "Тривалість",
@@ -4394,7 +4394,7 @@
             "currentUsage": "{currentAmount} використано на {max} дозволених",
             "errored": "Файли з помилками",
             "pending": "Файли, що очікують на розгляд",
-            "percentUsed": "{прогрес}%",
+            "percentUsed": "{progress}%",
             "skipped": "Пропущені файли"
           },
           "link": {
