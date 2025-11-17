@@ -470,6 +470,44 @@ You can use [Bootstrap Icons](https://icons.getbootstrap.com/) in your button co
 </Button>
 </Layout>
 
+## Add a badge
+
+A badge strongly urges the user to take a destructive or maintenance action. Only use when all of the following criteria are met:
+
+1. A maintenance problem **calls for immediate action**
+2. The button or link is **the fastest way to get there**
+3. The user needs to take a maintenance action to **make the badge disappear**
+
+Typical example include:
+
+- A message inboxes where the primary feature is reading and archiving messages (in Funkwhale: User messages)
+- A moderation feature where reports need to be answered
+
+You can also use badges to show result numbers, but more subtle affordances are preferable. Users **expect to be able to eliminate the badge** through maintenance action (criterion 3).
+
+<Button
+  square
+  round
+  :badge="3"
+  icon="bi-person"
+/>
+
+The default badge color is yellow. To differentiate priority levels or types of badges, you can use different colors. Note that many users cannot perceive the difference between certain colors, so don't use this feature for essential functionality. As of now, you can use any class name as the first word in the `badge` prop. Combine several classes with `.` (dot).
+
+```vue-html
+<span v-for="(color, index) in ['red', 'blue', 'green', 'violet', 'primary', 'secondary', 'secondary.raised']">
+    <Button :badge="`${color} ${index}`">
+        {{ color }}
+    </Button>
+</span>
+```
+
+<span v-for="(color, index) in ['red', 'blue', 'green', 'violet', 'primary', 'secondary', 'secondary.raised']">
+    <Button :badge="`${color} ${index}`">
+        {{ color }}
+    </Button>
+</span>
+
 ## Set width and alignment
 
 See [Using width](/using-width) and [Using alignment](/using-alignment)

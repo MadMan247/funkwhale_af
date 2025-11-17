@@ -10,7 +10,7 @@ import Layout from '@ui/Layout.vue'
 type Tab = {
   title: string,
   icon?: string,
-  badge?: string | number,
+  badge?: string | number | false,
   to?: RouterLinkProps['to']
 }
 
@@ -112,9 +112,10 @@ const tabpanels = computed(() => tabs.value.map((_, index) => ({
   >
     <component
       :is="isTabs ? Button : Link"
-      v-for="tab in computedTabs"
+      v-for="{ badge, ...tab } in computedTabs"
       v-bind="tab"
       :key="tab.key"
+      :badge="isTabs && badge"
       ghost
       min-content
       :class="$style.tab"
@@ -129,10 +130,10 @@ const tabpanels = computed(() => tabs.value.map((_, index) => ({
         >{{ tab.title }}</span>
         <span :class="$style.realTitle">{{ tab.title }}</span>
         <span
-          v-if="tab.badge"
+          v-if="badge && !isTabs"
           :class="$style.badge"
         >
-          {{ tab.badge }}
+          {{ badge }}
         </span>
       </Layout>
     </component>
@@ -146,53 +147,53 @@ const tabpanels = computed(() => tabs.value.map((_, index) => ({
 <style module>
 .tablist {
     .realTitle {
-    font-size: 16px;
-    font-weight: 400;
+        font-size: 16px;
+        font-weight: 400;
     }
 
     .falseTitle[aria-hidden="true"] {
-    font-size: 16px;
-    font-weight: 900;
-    opacity: 0;
-    pointer-events: none;
-    max-height: 0;
-    overflow: hidden;
+        font-size: 16px;
+        font-weight: 900;
+        opacity: 0;
+        pointer-events: none;
+        max-height: 0;
+        overflow: hidden;
     }
 
     .tab {
-    --hover-background-color: transparent;
-    --exact-active-background-color: transparent;
+        --hover-background-color: transparent;
+        --exact-active-background-color: transparent;
     }
 
     .tab:global(.router-link-exact-active) .realTitle {
-    font-weight: 900;
+        font-weight: 900;
     }
 
     .tab[aria-selected] .realTitle:after {
-    content: '';
-    display: block;
-    height: 4px;
-    background-color: var(--fw-secondary);
-    margin: 0 auto;
-    width: calc(10% + 2rem);
-    position: absolute;
-    inset: auto 0 -14px 0;
-    border-radius: 100vh;
+        content: '';
+        display: block;
+        height: 4px;
+        background-color: var(--fw-secondary);
+        margin: 0 auto;
+        width: calc(10% + 2rem);
+        position: absolute;
+        inset: auto 0 -14px 0;
+        border-radius: 100vh;
     }
 
     .badge {
-    display: block;
-    height: 16px;
-    background-color: var(--fw-secondary);
-    width: 16px;
-    position: absolute;
-    inset: -10px -14px auto auto;
-    border-radius: 100vh;
-    font-size: 10px;
-    font-weight: 900;
-    padding: 5px;
-    line-height: 5px;
-    color: black;
+        display: block;
+        height: 16px;
+        background-color: var(--fw-secondary);
+        width: 16px;
+        position: absolute;
+        inset: -10px -14px auto auto;
+        border-radius: 100vh;
+        font-size: 10px;
+        font-weight: 900;
+        padding: 5px;
+        line-height: 5px;
+        color: var(--background-color);
     }
 }
 </style>

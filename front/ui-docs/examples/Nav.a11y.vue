@@ -8,7 +8,7 @@ import Toggle from '@ui/Toggle.vue'
 // #region model
 const tabs = ref([{
   title: "Tab A",
-  badge: 1
+  badge: "secondary.raised.primary 1"
 }, {
   title: "Tab B"
 }, {

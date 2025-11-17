@@ -25,6 +25,19 @@ You can add a `badge` or an `icon` to each tab link.
 
 Choose a unique `tabQueryField` to enable tabbing functionality. It allows users to reload or share the page without losing the active tab state. See the example below to learn how to make your tabbed interfaces accessible.
 
+## Add a badge to a tab or link
+
+A badge strongly urges the user to take a destructive or maintenance action. Only use when all of the following criteria are met:
+
+1. A maintenance problem **calls for immediate action**
+2. The button or link is **the fastest way to get there**
+3. The user needs to take a maintenance action to **make the badge disappear**
+
+Typical example include:
+
+- A message inboxes where the primary feature is reading and archiving messages (in Funkwhale: User messages)
+- A moderation feature where reports need to be answered
+
 ::: tip Using this component
 
 ## A11y Checklist

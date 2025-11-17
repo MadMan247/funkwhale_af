@@ -20,6 +20,10 @@ const props = defineProps<{
 
   onClick?: (...args: any[]) => void | Promise<void> // The default fallback is `submit`
 
+  badge?: number | string | false
+
+  /* TODO: Clean up the unhealthy design of a split-button feature */
+
   split?: boolean // Add this prop for split button support
   splitIcon?: string // Add this prop for the split button icon
   splitTitle?: string // Add this prop
@@ -38,14 +42,22 @@ const props = defineProps<{
 
 const slots = useSlots()
 
-// TODO: Refactor this once upload button progress indicator can be tested (in Sidebar.vue)
+// TODO: Test upload button progress indicator (in Sidebar.vue)
+// TODO: Find a simpler implementation. This has too much cognitive load!
 const isIconOnly = computed(() =>
-  !!props.icon
-  && (!slots.default
-    || ('square' in props && props.square)
-    || ('squareSmall' in props && props.squareSmall)
-  )
+  !slots.default // button has no content
+    && ( !!props.icon
+        || ('square' in props && props.square)
+        || ('squareSmall' in props && props.squareSmall)
+    )
 )
+
+const [badgeColor, badgeContent]
+  = props.badge
+    ? String(props.badge).split(' ').length == 2
+      ? String(props.badge).split(' ')
+      : [null, props.badge]
+      : [null, null]
 
 const isSplitIconOnly = computed(() => !!props.splitIcon && !props.splitTitle)
 
@@ -194,6 +206,12 @@ onUnmounted(() =>
       v-if="icon && icon.startsWith('right ')"
       :class="['bi', icon.replace('right ', '')]"
     />
+    <span
+      v-if="badgeContent"
+      :class="[$style.badge, ...(badgeColor || 'yellow').split('.'), 'solid']"
+    >
+      {{ badgeContent }}
+    </span>
     <div
       v-if="isLoading"
       style="position: relative;"
@@ -325,4 +343,19 @@ onUnmounted(() =>
     }
   }
 }
+</style>
+
+<style module>
+  .badge.badge.badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    border-radius: 100%;
+    font-size: 12px;
+    line-height: 18px;
+    height: 20px;
+    width: 20px;
+    text-align: center;
+    display: block;
+  }
 </style>

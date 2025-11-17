@@ -51,10 +51,12 @@ const labels = computed(() => ({
     raised
   >
     <Button
+      :key="store.state.ui.notifications.inbox"
       round
       square-small
       ghost
       class="user-menu"
+      :badge="store.state.ui.notifications.inbox>0 && `secondary.raised ${store.state.ui.notifications.inbox}`"
       :aria-pressed="isOpen ? true : undefined"
       @click="isOpen = !isOpen"
     >

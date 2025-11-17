@@ -83,20 +83,15 @@ const moderationNotifications = computed(() =>
         >
           <Button
             v-if="store.state.auth.availablePermissions['settings'] || store.state.auth.availablePermissions['moderation']"
+            :key="moderationNotifications"
             round
             square-small
             ghost
             icon="bi-wrench"
+            :badge="moderationNotifications > 0 && `secondary.raised ${moderationNotifications }`"
             :aria-pressed="isOpen ? true : undefined"
             @click="isOpen = !isOpen"
-          >
-            <div
-              v-if="moderationNotifications > 0"
-              :class="['ui', 'accent', 'mini', 'bottom floating', 'circular', 'label']"
-            >
-              {{ moderationNotifications }}
-            </div>
-          </Button>
+          />
           <template #items>
             <PopoverItem
               v-if="store.state.auth.availablePermissions['library']"
