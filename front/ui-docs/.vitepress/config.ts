@@ -6,7 +6,6 @@ export default defineConfig({
   title: 'Funkwhale UI',
   cleanUrls: true,
   cacheDir: './.vitepress/.vite',
-  outDir: '../../public/ui-docs',
   markdown: {
     lineNumbers: true,
     config: (md) => {
@@ -16,7 +15,7 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: 'Home', link: 'https://funkwhale.audio' },
-      { text: 'Gitlab', link: 'https://dev.funkwhale.audio/funkwhale/ui' }
+      { text: 'Gitlab', link: 'https://dev.funkwhale.audio/funkwhale/funkwhale' }
     ],
     sidebar: [
       { text: 'Designing Pages', link: '/designing-pages' },

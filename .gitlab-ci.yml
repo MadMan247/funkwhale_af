@@ -503,7 +503,7 @@ deploy_docs:
     GIT_STRATEGY: none
   script:
     - rsync -r --delete -e "ssh -p 2282" $CI_PROJECT_DIR/public/docs/ docs@docs.funkwhale.audio:/htdocs/$CI_COMMIT_REF_NAME
-    - rsync -r --delete -e "ssh -p 2281" $CI_PROJECT_DIR/public/ui-docs/ ui@ui.funkwhale.audio:/htdocs/$CI_COMMIT_REF_NAME/
+    - rsync -r --delete -e "ssh -p 2281" $CI_PROJECT_DIR/front/ui-docs/.vitepress/dist/ ui@ui.funkwhale.audio:/htdocs/
 
 # ui-docs
 build_ui_docs:
@@ -519,7 +519,7 @@ build_ui_docs:
   script: yarn build:docs
   artifacts:
     paths:
-      - public/ui-docs
+      - front/ui-docs/.vitepress/dist
 
 docker:
   interruptible: false
