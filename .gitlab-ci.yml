@@ -503,8 +503,7 @@ deploy_docs:
     GIT_STRATEGY: none
   script:
     - rsync -r --delete -e "ssh -p 2282" $CI_PROJECT_DIR/public/docs/ docs@docs.funkwhale.audio:/htdocs/$CI_COMMIT_REF_NAME
-    - rsync -r --delete -e "ssh -p 2281" $CI_PROJECT_DIR/public/ui-docs/types/ ui@ui.funkwhale.audio:/htdocs/
-    - rsync -r --delete -e "ssh -p 2281" $CI_PROJECT_DIR/public/ui-docs/dist/ ui@ui.funkwhale.audio:/htdocs/$CI_COMMIT_REF_NAME/
+    - rsync -r --delete -e "ssh -p 2281" $CI_PROJECT_DIR/public/ui-docs/ ui@ui.funkwhale.audio:/htdocs/$CI_COMMIT_REF_NAME/
 
 # ui-docs
 build_ui_docs:
