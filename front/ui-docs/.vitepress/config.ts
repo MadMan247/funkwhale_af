@@ -6,6 +6,7 @@ export default defineConfig({
   title: 'Funkwhale UI',
   cleanUrls: true,
   cacheDir: './.vitepress/.vite',
+  outDir: '../../public/ui-docs',
   markdown: {
     lineNumbers: true,
     config: (md) => {
