@@ -25,6 +25,16 @@ You can add a `badge` or an `icon` to each tab link.
 
 Choose a unique `tabQueryField` to enable tabbing functionality. It allows users to reload or share the page without losing the active tab state. See the example below to learn how to make your tabbed interfaces accessible.
 
+If you do not include the `tabQueryField`, you are limited to one `Nav` per page, and changing to another tab will reload the whole page.
+
+::: tip Adding multiple tab regions to one page
+
+If you add several tabbed regions into your page, make sure they have distinct queryField values so that they operate independently. In some cases you may want to use the same queryField, for example in a documentation where users can switch between `yarn` and `npm` and you have several code blocks that would all switch between the two options in a synchronized way.
+
+You can even persist these choices across pages by telling Vue RouterLinks to preserve the corresponding route parameter.
+
+:::
+
 ## Add a badge to a tab or link
 
 A badge strongly urges the user to take a destructive or maintenance action. Only use when all of the following criteria are met:

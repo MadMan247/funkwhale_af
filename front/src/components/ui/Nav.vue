@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="T extends 'tabs' | 'links'">
-import { computed, useId } from 'vue'
-import { type RouterLinkProps, useRoute, useRouter} from 'vue-router'
+import { computed, useId, nextTick } from 'vue'
+import { type RouterLinkProps, useRoute, useRouter } from 'vue-router'
 
 import Link from '@ui/Link.vue'
 import Button from '@ui/Button.vue'
@@ -23,75 +23,83 @@ const props = defineProps<{
   tabQueryField?: string
 }>()
 
-const isTabs = 'tabQueryField' in props
+const isTabs = !!props['tabQueryField']
 const router = useRouter()
 const route = useRoute()
 const id = useId();
 
 const currentIndex = computed(() => {
-  if ('tabQueryField' in props) {
+  if (isTabs) {
     const queryValue = route.query[props.tabQueryField as string]
     const indexString = Array.isArray(queryValue)
                 ? queryValue[0] ?? '0'
                 : queryValue ?? '0'
     return parseInt(indexString)
   }
-  return tabs.value.findIndex(tab => 'to' in tab && (tab.to === route.path || tab.to! === route.fullPath))
+  return tabs.value.findIndex(tab =>
+      'to' in tab && tab.to && router.resolve(tab.to).path === route.path
+    )
 })
-
-const isCurrentIndexIntentional = ()=> {
-  const queryValue = route.query[props.tabQueryField as string]
-  return Array.isArray(queryValue)
-    ? queryValue.length>0
-    : !!queryValue
-}
 
 const navigateTo = ( index: number ) => {
   if (index<0) index = tabs.value.length-1
-  if (index>tabs.value.length-1) index=0
+  if (index>tabs.value.length-1) index = 0
 
-  router.replace({
-   ...route,
-    query: {
-      ...route.query,
-      [props.tabQueryField as string]: index
+  if (isTabs) {
+    router.replace({
+    ...route,
+      query: {
+        ...route.query,
+        [props.tabQueryField as string]: index
+      }
+    })
+  } else {
+    const targetTab = tabs.value[index];
+    if (targetTab && targetTab.to) {
+      router.replace(targetTab.to);
     }
+  }
+
+  nextTick(() => {
+    document.getElementById(id+index+'tab')?.focus()
   })
 }
 
 const computedTabs = computed(() => tabs.value.map((tab, index) => ({
   ...tab,
   key: index,
+  id: id+index+'tab',
   'aria-selected': currentIndex.value === index || undefined,
+  tabindex: index === currentIndex.value ? 0 : -1,
+  onKeydown: (e: KeyboardEvent) => {
+    if (['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp', 'Home', 'End'].includes(e.key))
+      e.preventDefault()
+    if (['ArrowRight', 'ArrowDown'].includes(e.key))
+      return navigateTo(index+1)
+    if (['ArrowLeft', 'ArrowUp'].includes(e.key))
+      return navigateTo(index-1)
+    if (['Home'].includes(e.key))
+      return navigateTo(0)
+    if (['End'].includes(e.key))
+      return navigateTo(Number.MAX_SAFE_INTEGER)
+  },
   ...(isTabs ? ({
-    tabindex: index === currentIndex.value ? 0 : -1,
-    id: id+index+'tab',
     role: 'tab',
     'aria-controls': id+index+'tabpanel',
     'aria-posinset': index + 1,
     'aria-setsize': tabs.value.length,
     'aria-pressed': undefined,
-    autofocus: isCurrentIndexIntentional() &&  currentIndex.value === index,
+    '_____myIndex': index,
+    '_____currentIndex': currentIndex.value,
     onClick: () => {
       navigateTo(index)
-    },
-    onKeydown: (e: KeyboardEvent) => {
-      if (['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp', 'Home', 'End'].includes(e.key))
-        e.preventDefault()
-      if (['ArrowRight', 'ArrowDown'].includes(e.key))
-        return navigateTo(index+1)
-      if (['ArrowLeft', 'ArrowUp'].includes(e.key))
-        return navigateTo(index-1)
-      if (['Home'].includes(e.key))
-        return navigateTo(0)
-      if (['End'].includes(e.key))
-        return navigateTo(Number.MAX_SAFE_INTEGER)
     }
   } ): ({
     to: 'to' in tab ? tab.to : ''
   } ))
 } as const)
 ))
+
 const tabpanels = computed(() => tabs.value.map((_, index) => ({
   'aria-labelledby':  id+index+'tab',
   role: 'tabpanel',
@@ -163,22 +171,24 @@ const tabpanels = computed(() => tabs.value.map((_, index) => ({
     .tab {
         --hover-background-color: transparent;
         --exact-active-background-color: transparent;
-    }
 
-    .tab:global(.router-link-exact-active) .realTitle {
-        font-weight: 900;
-    }
+        &:is([aria-selected], [aria-current]){
+            .realTitle {
+                font-weight: 900;
 
-    .tab[aria-selected] .realTitle:after {
-        content: '';
-        display: block;
-        height: 4px;
-        background-color: var(--fw-secondary);
-        margin: 0 auto;
-        width: calc(10% + 2rem);
-        position: absolute;
-        inset: auto 0 -14px 0;
-        border-radius: 100vh;
+                &:after {
+                    content: '';
+                    display: block;
+                    height: 4px;
+                    background-color: var(--fw-secondary);
+                    margin: 0 auto;
+                    width: calc(10% + 2rem);
+                    position: absolute;
+                    inset: auto 0 -14px 0;
+                    border-radius: 100vh;
+                }
+            }
+        }
     }
 
     .badge {
