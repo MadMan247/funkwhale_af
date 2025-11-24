@@ -23379,14 +23379,16 @@ components:
           type: array
           items:
             type: string
-        codeOfConduct:
+        rules:
+          type: string
+          readOnly: true
+        terms:
           type: string
           readOnly: true
       required:
       - actorId
       - allowList
       - banner
-      - codeOfConduct
       - contactEmail
       - content
       - defaultUploadQuota
@@ -23398,8 +23400,10 @@ components:
       - longDescription
       - nodeName
       - private
+      - rules
       - shortDescription
       - supportedUploadExtensions
+      - terms
     MetadataContent:
       type: object
       properties:

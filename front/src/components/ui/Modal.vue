@@ -25,7 +25,9 @@ const props = withDefaults(
       maximizeSize?: true,
       priority?: number
     } & (ColorProps | DefaultProps)>(),
-    { title: '' }
+    { title: '',
+      priority: 0
+    }
 )
 
 const isOpen = defineModel<boolean>({ default: false })
@@ -75,6 +77,7 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
       <div
         v-if="isOpen"
         class="funkwhale overlay"
+        :style="`z-index: calc(9001 + ${priority});`"
         @click.exact.stop="isOpen = false"
       >
         <div
@@ -298,9 +301,6 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
 
   position: fixed;
   inset: 0;
-
-  z-index: 9001;
-  z-index: v-bind("9001 + (priority || 0)");
 
   display: flex;
   align-items: center;

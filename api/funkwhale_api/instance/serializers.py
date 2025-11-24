@@ -205,14 +205,14 @@ class Metadata21Serializer(MetadataSerializer):
     location = serializers.CharField()
     content = MetadataContentSerializer()
     features = serializers.ListField(child=serializers.CharField())
-    codeOfConduct = serializers.SerializerMethodField()
+    rules = serializers.SerializerMethodField()
+    terms = serializers.SerializerMethodField()
 
-    def get_codeOfConduct(self, obj) -> str:
-        return (
-            full_url("/about/pod#rules")
-            if obj["preferences"].get("instance__rules")
-            else ""
-        )
+    def get_rules(self, obj) -> str:
+        return obj["preferences"].get("instance__rules")
+
+    def get_terms(self, obj) -> str:
+        return obj["preferences"].get("instance__terms")
 
 
 class NodeInfo20Serializer(serializers.Serializer):
@@ -253,6 +253,9 @@ class NodeInfo20Serializer(serializers.Serializer):
 class NodeInfo21Serializer(NodeInfo20Serializer):
     version = serializers.SerializerMethodField()
     software = SoftwareSerializer_v2()
+    protocols = serializers.SerializerMethodField()
+    services = ServicesSerializer(default={})
+    openRegistrations = serializers.SerializerMethodField()
 
     def get_version(self, obj) -> str:
         return "2.1"

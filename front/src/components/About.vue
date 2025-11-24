@@ -10,15 +10,31 @@ import type { components } from '~/generated/types.ts'
 import SignupForm from '~/components/auth/SignupForm.vue'
 import LogoText from '~/components/LogoText.vue'
 import useMarkdown from '~/composables/useMarkdown'
+import { useModal } from '~/ui/composables/useModal.ts'
+
+import HeaderImage from './HeaderImage.vue'
 
 import Link from '~/components/ui/Link.vue'
 import Card from '~/components/ui/Card.vue'
 import Button from '~/components/ui/Button.vue'
 import Layout from '~/components/ui/Layout.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Modal from '~/components/ui/Modal.vue'
+import Table from '~/components/ui/Table.vue'
+import SanitizedHtml from '~/components/ui/SanitizedHtml.vue'
+import Heading from '~/components/ui/Heading.vue'
 
 const store = useStore()
 const nodeinfo = computed(() => store.state.instance.nodeinfo)
 
+// Problem: When binding this to a CSS variable, it is only available in the current DOM nodes and its descendants. We cannot use it as a CSS variable in a teleported `<Modal>`.
+const backgroundImage = computed(() =>
+  banner.value
+    ? `url(${store.getters['instance/absoluteUrl'](banner.value)})`
+    : 'radial-gradient(circle at 80%, rgb(55, 122, 170), transparent), linear-gradient(135deg, rgb(40, 88, 125) 0%, rgb(64, 190, 220) 100%)'
+)
+
+const { isOpen, to } = useModal('pod')
 const { t } = useI18n()
 const labels = computed(() => ({
   title: t('components.About.title')
@@ -40,12 +56,12 @@ const stats = computed(() => {
   const info = nodeinfo.value ?? {} as components['schemas']['NodeInfo21']
 
   const data = {
-    users: info.usage.users.activeMonth || null,
-    hours: info.metadata.content.local.hoursOfContent || null,
-    artists: info.metadata.content.local.artists || null,
-    albums: info.metadata.content.local.releases || null,
-    tracks: info.metadata.content.local.recordings || null,
-    listenings: info.metadata.usage?.listenings.total || null
+    users: info.usage?.users.activeMonth || null,
+    hours: info.metadata?.content.local.hoursOfContent || null,
+    artists: info.metadata?.content.local.artists || null,
+    albums: info.metadata?.content.local.releases || null,
+    tracks: info.metadata?.content.local.recordings || null,
+    listenings: info.metadata?.usage?.listenings.total || null
   }
 
   return { users, hours, data }
@@ -54,16 +70,6 @@ const stats = computed(() => {
 const openRegistrations = computed(() => get(nodeinfo.value, 'openRegistrations'))
 
 const defaultUploadQuota = computed(() => humanSize(get(nodeinfo.value, 'metadata.defaultUploadQuota', 0) * 1000 * 1000))
-
-const headerStyle = computed(() => {
-  if (!banner.value) {
-    return ''
-  }
-
-  return {
-    backgroundImage: `url(${store.getters['instance/absoluteUrl'](banner.value)})`
-  }
-})
 
 const longDescription = useMarkdown(() => get(nodeinfo.value, 'metadata.longDescription', ''))
 const rules = useMarkdown(() => get(nodeinfo.value, 'metadata.rules', ''))
@@ -77,7 +83,7 @@ const anonymousCanListen = computed(() => {
 const allowListEnabled = computed(() => get(nodeinfo.value, 'metadata.allowList.enabled'))
 const version = computed(() => get(nodeinfo.value, 'software.version'))
 const federationEnabled = computed(() => {
-  const features = get(nodeinfo.value, 'metadata.metadata.feature', []) as string[]
+  const features = get(nodeinfo.value, 'metadata.features', []) as string[]
   const hasAnonymousCanListen = features.includes('federation')
   return hasAnonymousCanListen
 })
@@ -94,11 +100,8 @@ const federationEnabled = computed(() => {
 
     <Link
       to="/"
-      width="full"
-      align-text="stretch"
-      style="width:min(480px, 100%)"
     >
-      <logo-text />
+      <LogoText style="width: 100%;" />
     </Link>
 
     <h2 class="header">
@@ -109,14 +112,20 @@ const federationEnabled = computed(() => {
       {{ t('components.About.description.funkwhale') }}
     </p>
 
+    <!-- Top row -->
     <Layout
       flex
       style="justify-content: center;"
     >
+      <!-- Login / Greeting Card -->
+
       <Card
         v-if="!store.state.auth.authenticated"
+        small
+        flat
+        blue
+        solid
         :title="t('components.About.header.signup')"
-        width="256px"
       >
         <template v-if="openRegistrations">
           <p>
@@ -166,8 +175,9 @@ const federationEnabled = computed(() => {
 
       <Card
         v-else
+        flat
+        solid
         :title="t('components.About.message.greeting', {username: store.state.auth.username})"
-        width="256px"
       >
         <p v-if="defaultUploadQuota">
           {{ t('components.About.description.quota', {quota: defaultUploadQuota}) }}
@@ -177,71 +187,71 @@ const federationEnabled = computed(() => {
           <Button
             full
             disabled
-          >
-            {{ t('components.About.message.loggedIn') }}
-          </Button>
+            :title="t('components.About.message.loggedIn')"
+            style="opacity:0;"
+          />
         </template>
       </Card>
 
+      <!-- Pod Card and modal -->
       <Card
-        :title="podName"
-        width="256px"
+        :to
+        solid
+        primary
+        :title=" t('components.About.header.aboutPod')"
+        icon="bi-music-note-beamed"
       >
-        <section
-          :class="['ui', 'head', {'with-background': banner}, 'vertical', 'center', 'aligned', 'stripe', 'segment']"
-          :style="headerStyle"
-        >
-          <h1>
-            <i class="music icon" />
-          </h1>
-        </section>
-        <div class="content pod-description">
-          <h3
-            id="description"
-            class="ui header"
-          >
-            {{ t('components.About.header.aboutPod') }}
-          </h3>
+        <template #image>
+          <HeaderImage
+            :title="podName"
+            :background-image
+          />
+        </template>
+        <div :class="$style.noUnderline">
           <div
             v-if="shortDescription"
-            class="sub header"
           >
             {{ shortDescription }}
           </div>
           <p v-else>
             {{ t('components.About.placeholder.noDescription') }}
           </p>
+          <Spacer size-8 />
+          <hr>
+          <Spacer size-8 />
 
-          <template v-if="stats">
-            <div class="statistics-container ui doubling grid">
-              <div class="two column row">
-                <div class="column">
-                  <span class="statistics-figure ui text">
-                    <span class="ui big text"><strong>{{ stats.users?.toLocaleString(store.state.ui.momentLocale) }}</strong></span>
-                    <br>
-                    {{ stats.users ? t('components.About.stat.activeUsers', stats.users) : "" }}
-                  </span>
-                </div>
-                <div class="column">
-                  <span class="statistics-figure ui text">
-                    <span class="ui big text"><strong>{{ stats.hours ? stats.hours.toLocaleString(store.state.ui.momentLocale) : "" }}</strong></span>
-                    <br>
-                    {{ stats.hours ? t('components.About.stat.hoursOfMusic', stats.hours) : "" }}
-                  </span>
-                </div>
+          <Layout
+            v-if="stats"
+            flex
+            style="justify-content:space-evenly"
+          >
+            <div v-if="stats.hours">
+              <div style="font-size: 28px; font-weight: 700; color: var(--fw-blue-500); text-decoration-color: transparent !important;">
+                {{ stats.hours.toLocaleString(store.state.ui.momentLocale) }}
+              </div>
+              <div style="font-size: 14px; text-decoration-color:transparent !important;">
+                {{ t('components.AboutPod.stat.hoursOfMusic', stats.hours) }}
               </div>
             </div>
-          </template>
+
+            <div v-if="stats.users">
+              <div style="font-size: 28px; font-weight: 700; color: var(--color); opacity: .5; text-decoration-color: transparent !important;">
+                {{ stats.users.toLocaleString(store.state.ui.momentLocale) }}
+              </div>
+              <div style="font-size: 14px; text-decoration-color: transparent !important;">
+                {{ t('components.AboutPod.stat.activeUsers', stats.users) }}
+              </div>
+            </div>
+          </Layout>
+          <Spacer size-8 />
+          <hr>
         </div>
 
-        <template #action>
-          <Link
-            align-text="center"
-            to="/about/pod"
-          >
-            {{ t('components.About.link.learnMore') }}
-          </Link>
-        </template>
+
+        <Heading
+          caption
+          :h2=" t('components.About.link.learnMore')"
+        />
       </Card>
     </Layout>
 
@@ -250,7 +260,6 @@ const federationEnabled = computed(() => {
       style="justify-content: center;"
     >
       <Card
-        width="256px"
         to="/"
         :title="t('components.About.header.publicContent')"
         icon="bi-box-arrow-up-right"
@@ -260,358 +269,269 @@ const federationEnabled = computed(() => {
       </Card>
 
       <Card
-        width="256px"
-        :title="t('components.About.link.findOtherPod')"
         to="https://funkwhale.audio/#get-started"
+        :title="t('components.About.link.findOtherPod')"
         icon="bi-box-arrow-up-right"
       >
         {{ t('components.About.description.publicContent') }}
       </Card>
 
       <Card
-        width="256px"
-        :title="t('components.About.header.findApp')"
         to="https://funkwhale.audio/apps"
+        :title="t('components.About.header.findApp')"
         icon="bi-box-arrow-up-right"
       >
         {{ t('components.About.description.findApp') }}
       </Card>
     </Layout>
 
-    <section
-      :class="['ui', 'head', {'with-background': banner}, 'vertical', 'center', 'aligned', 'stripe', 'segment']"
-      :style="headerStyle"
-    >
-      <h1>
-        <i class="music icon" />
-        {{ podName }}
-      </h1>
-    </section>
-
     <!-- About Pod -->
-    <div class="about-pod-info-container">
-      <div class="about-pod-info-toc">
-        <div class="ui vertical pointing secondary menu">
-          <router-link
-            to="/about/pod"
-            class="item"
-          >
-            {{ t('components.AboutPod.link.about') }}
-          </router-link>
-          <router-link
-            to="/about/pod#rules"
-            class="item"
-          >
-            {{ t('components.AboutPod.link.rules') }}
-          </router-link>
-          <router-link
-            to="/about/pod#terms"
-            class="item"
-          >
-            {{ t('components.AboutPod.link.terms') }}
-          </router-link>
-          <router-link
-            to="/about/pod#features"
-            class="item"
-          >
-            {{ t('components.AboutPod.link.features') }}
-          </router-link>
-          <router-link
-            v-if="stats"
-            to="/about/pod#statistics"
-            class="item"
-          >
-            {{ t('components.AboutPod.link.statistics') }}
-          </router-link>
-        </div>
-      </div>
 
-      <div class="about-pod-info">
-        <h2
-          id="description about-this-pod"
-          class="ui header"
+    <Modal
+      v-model="isOpen"
+      title=""
+      raised
+      solid
+    >
+      <HeaderImage
+        :title="podName"
+        :background-image
+        icon="bi-music-note-beamed"
+        overflowing
+      />
+      <Layout grid>
+        <!-- Pod Description Card -->
+        <Card
+          :title=" t('components.About.header.aboutPod')"
+          icon="bi-info-circle-fill large"
+          solid
+          secondary
+          :class="{ [$style.multiRow]: longDescription }"
+          :full="longDescription.length > 600 || undefined"
         >
-          {{ t('components.AboutPod.header.about') }}
-        </h2>
-        <sanitized-html
-          v-if="longDescription"
-          :html="longDescription"
-        />
-        <p v-else>
-          {{ t('components.AboutPod.placeholder.noDescription') }}
-        </p>
+          <SanitizedHtml
+            v-if="longDescription"
+            :html="longDescription"
+          />
+          <p v-else>
+            {{ t('components.AboutPod.placeholder.noDescription') }}
+          </p>
+        </Card>
 
-        <h3
-          id="rules"
-          class="ui header"
+        <!-- Rules Card -->
+        <Card
+          solid
+          :title="t('components.AboutPod.header.rules')"
+          icon="bi-flag-fill"
+          :class="{ [$style.multiRow]: rules }"
+          :full="rules.length > 600 || undefined"
         >
-          {{ t('components.AboutPod.header.rules') }}
-        </h3>
-        <sanitized-html
-          v-if="rules"
-          :html="rules"
-        />
-        <p v-else>
-          {{ t('components.AboutPod.placeholder.noRules') }}
-        </p>
+          <SanitizedHtml
+            v-if="rules"
+            :html="rules"
+          />
+          <p v-else>
+            {{ t('components.AboutPod.placeholder.noRules') }}
+          </p>
+        </Card>
 
-        <h3
-          id="terms"
-          class="ui header"
+        <!-- Terms Card -->
+        <Card
+          solid
+          :title="t('components.AboutPod.header.terms')"
+          icon="bi-shield-shaded"
+          :class="{ [$style.multiRow]: terms }"
+          :full="terms.length > 600 || undefined"
         >
-          {{ t('components.AboutPod.header.terms') }}
-        </h3>
-        <sanitized-html
-          v-if="terms"
-          :html="terms"
-        />
-        <p v-else>
-          {{ t('components.AboutPod.placeholder.noTerms') }}
-        </p>
+          <SanitizedHtml
+            v-if="terms"
+            :html="terms"
+          />
+          <p v-else>
+            {{ t('components.AboutPod.placeholder.noTerms') }}
+          </p>
+        </Card>
 
-        <h3
-          id="features"
-          class="header"
+        <!-- Features Card -->
+        <Card
+          solid
+          :title="t('components.AboutPod.header.features')"
+          icon="bi-gear-fill"
+          :class="{ [$style.multiRow]: true }"
         >
-          {{ t('components.AboutPod.header.features') }}
-        </h3>
-        <div class="features-container ui two column stackable grid">
-          <div class="column">
-            <table class="ui very basic table unstackable">
-              <tbody>
-                <tr>
-                  <td>
-                    {{ t('components.AboutPod.feature.version') }}
-                  </td>
-                  <td
-                    v-if="version"
-                    class="right aligned"
-                  >
-                    <span class="features-status ui text">
-                      {{ version }}
-                    </span>
-                  </td>
-                  <td
-                    v-else
-                    class="right aligned"
-                  >
-                    <span class="features-status ui text">
-                      {{ t('components.AboutPod.notApplicable') }}
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    {{ t('components.AboutPod.feature.federation') }}
-                  </td>
-                  <td
-                    v-if="federationEnabled"
-                    class="right aligned"
-                  >
-                    <span class="features-status ui text">
-                      <i class="check icon" />
-                      {{ t('components.AboutPod.feature.status.enabled') }}
-                    </span>
-                  </td>
-                  <td
-                    v-else
-                    class="right aligned"
-                  >
-                    <span class="features-status ui text">
-                      <i class="x icon" />
-                      {{ t('components.AboutPod.feature.status.disabled') }}
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    {{ t('components.AboutPod.feature.allowList') }}
-                  </td>
-                  <td
-                    v-if="allowListEnabled"
-                    class="right aligned"
-                  >
-                    <span class="features-status ui text">
-                      <i class="check icon" />
-                      {{ t('components.AboutPod.feature.status.enabled') }}
-                    </span>
-                  </td>
-                  <td
-                    v-else
-                    class="right aligned"
-                  >
-                    <span class="features-status ui text">
-                      <i class="x icon" />
-                      {{ t('components.AboutPod.feature.status.disabled') }}
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="column">
-            <table class="ui very basic table unstackable">
-              <tbody>
-                <tr>
-                  <td>
-                    {{ t('components.AboutPod.feature.anonymousAccess') }}
-                  </td>
-                  <td
-                    v-if="anonymousCanListen"
-                    class="right aligned"
-                  >
-                    <span class="features-status ui text">
-                      <i class="check icon" />
-                      {{ t('components.AboutPod.feature.status.enabled') }}
-                    </span>
-                  </td>
-                  <td
-                    v-else
-                    class="right aligned"
-                  >
-                    <span class="features-status ui text">
-                      <i class="x icon" />
-                      {{ t('components.AboutPod.feature.status.disabled') }}
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    {{ t('components.AboutPod.feature.registrations') }}
-                  </td>
-                  <td
-                    v-if="openRegistrations"
-                    class="right aligned"
-                  >
-                    <span class="features-status ui text">
-                      <i class="check icon" />
-                      {{ t('components.AboutPod.feature.status.open') }}
-                    </span>
-                  </td>
-                  <td
-                    v-else
-                    class="right aligned"
-                  >
-                    <span class="features-status ui text">
-                      <i class="x icon" />
-                      {{ t('components.AboutPod.feature.status.closed') }}
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    {{ t('components.AboutPod.feature.quota') }}
-                  </td>
-                  <td
-                    v-if="defaultUploadQuota"
-                    class="right aligned"
-                  >
-                    <span class="features-status ui text">
-                      {{ defaultUploadQuota }}
-                    </span>
-                  </td>
-                  <td
-                    v-else
-                    class="right aligned"
-                  >
-                    <span class="features-status ui text">
-                      {{ t('components.AboutPod.notApplicable') }}
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+          <Table :grid-template-columns="['1fr', 'auto']">
+            <span>{{ t('components.AboutPod.feature.version') }}</span>
+            <span v-if="version">{{ version }}</span>
+            <span v-else>{{ t('components.AboutPod.notApplicable') }}</span>
 
-        <template v-if="stats">
-          <h3
-            id="statistics"
-            class="header"
+            <span>{{ t('components.AboutPod.feature.federation') }}</span>
+            <span v-if="federationEnabled">
+              <i
+                class="bi bi-check-circle-fill"
+                style="color: var(--fw-pastel-green-4);"
+              />&nbsp;
+              {{ t('components.AboutPod.feature.status.enabled') }}
+            </span>
+            <span v-else>
+              <i
+                class="bi bi-x-circle-fill"
+                style="color: var(--fw-red-500);"
+              />&nbsp;
+              {{ t('components.AboutPod.feature.status.disabled') }}
+            </span>
+
+            <span>{{ t('components.AboutPod.feature.allowList') }}</span>
+            <span v-if="allowListEnabled">
+              <i
+                class="bi bi-check-circle-fill"
+                style="color: var(--fw-pastel-green-4);"
+              />&nbsp;
+              {{ t('components.AboutPod.feature.status.enabled') }}
+            </span>
+            <span v-else>
+              <i
+                class="bi bi-x-circle-fill"
+                style="color: var(--fw-red-500);"
+              />&nbsp;
+              {{ t('components.AboutPod.feature.status.disabled') }}
+            </span>
+
+            <span>{{ t('components.AboutPod.feature.anonymousAccess') }}</span>
+            <span v-if="anonymousCanListen">
+              <i
+                class="bi bi-check-circle-fill"
+                style="color: var(--fw-pastel-green-4);"
+              />&nbsp;
+              {{ t('components.AboutPod.feature.status.enabled') }}
+            </span>
+            <span v-else>
+              <i
+                class="bi bi-x-circle-fill"
+                style="color: var(--fw-red-500);"
+              />&nbsp;
+              {{ t('components.AboutPod.feature.status.disabled') }}
+            </span>
+
+            <span>{{ t('components.AboutPod.feature.registrations') }}</span>
+            <span v-if="openRegistrations">
+              <i
+                class="bi bi-check-circle-fill"
+                style="color: var(--fw-pastel-green-4);"
+              />&nbsp;
+              {{ t('components.AboutPod.feature.status.open') }}
+            </span>
+            <span v-else>
+              <i
+                class="bi bi-x-circle-fill"
+                style="color: var(--fw-red-500);"
+              />&nbsp;
+              {{ t('components.AboutPod.feature.status.closed') }}
+            </span>
+
+            <span>{{ t('components.AboutPod.feature.quota') }}</span>
+            <span v-if="defaultUploadQuota">{{ defaultUploadQuota }}</span>
+            <span v-else>{{ t('components.AboutPod.notApplicable') }}</span>
+          </Table>
+        </Card>
+
+        <!-- Statistics Card -->
+        <Card
+          v-if="stats"
+          :title="t('components.AboutPod.header.statistics')"
+          solid
+          icon="bi-bar-chart-fill"
+          :class="{ [$style.multiRow]: true }"
+        >
+          <Spacer size-16 />
+          <Layout
+            flex
+            style="justify-content:space-evenly"
           >
-            {{ t('components.AboutPod.header.statistics') }}
-          </h3>
-          <div class="statistics-container">
-            <div
-              v-if="stats.hours"
-              class="statistics-statistic"
-            >
-              <span class="statistics-figure ui text">
-                <span class="ui big text"><strong>{{ stats.hours.toLocaleString(store.state.ui.momentLocale) }}</strong></span>
-                <br>
+            <div v-if="stats.hours">
+              <div style="font-size: 28px; font-weight: 700; color: var(--fw-blue-500);">
+                {{ stats.hours.toLocaleString(store.state.ui.momentLocale) }}
+              </div>
+              <div style="font-size: 14px;">
                 {{ t('components.AboutPod.stat.hoursOfMusic', stats.hours) }}
-              </span>
+              </div>
             </div>
-            <div
-              v-if="stats.data.artists"
-              class="statistics-statistic"
-            >
-              <span class="statistics-figure ui text">
-                <span class="ui big text"><strong>{{ stats.data.artists.toLocaleString(store.state.ui.momentLocale) }}</strong></span>
-                <br>
+
+            <div v-if="stats.data.artists">
+              <div style="font-size: 28px; font-weight: 700; color: var(--fw-blue-500);">
+                {{ stats.data.artists.toLocaleString(store.state.ui.momentLocale) }}
+              </div>
+              <div style="font-size: 14px;">
                 {{ t('components.AboutPod.stat.artistsCount', stats.data.artists) }}
-              </span>
+              </div>
             </div>
-            <div
-              v-if="stats.data.albums"
-              class="statistics-statistic"
-            >
-              <span class="statistics-figure ui text">
-                <span class="ui big text"><strong>{{ stats.data.albums.toLocaleString(store.state.ui.momentLocale) }}</strong></span>
-                <br>
+
+            <div v-if="stats.data.albums">
+              <div style="font-size: 28px; font-weight: 700; color: var(--fw-blue-500);">
+                {{ stats.data.albums.toLocaleString(store.state.ui.momentLocale) }}
+              </div>
+              <div style="font-size: 14px;">
                 {{ t('components.AboutPod.stat.albumsCount', stats.data.albums) }}
-              </span>
+              </div>
             </div>
-            <div
-              v-if="stats.data.tracks"
-              class="statistics-statistic"
-            >
-              <span class="statistics-figure ui text">
-                <span class="ui big text"><strong>{{ stats.data.tracks.toLocaleString(store.state.ui.momentLocale) }}</strong></span>
-                <br>
+
+            <div v-if="stats.data.tracks">
+              <div style="font-size: 28px; font-weight: 700; color: var(--fw-blue-500);">
+                {{ stats.data.tracks.toLocaleString(store.state.ui.momentLocale) }}
+              </div>
+              <div style="font-size: 14px;">
                 {{ t('components.AboutPod.stat.tracksCount', stats.data.tracks) }}
-              </span>
+              </div>
             </div>
-            <div
-              v-if="stats.users"
-              class="statistics-statistic"
-            >
-              <span class="statistics-figure ui text">
-                <span class="ui big text"><strong>{{ stats.users.toLocaleString(store.state.ui.momentLocale) }}</strong></span>
-                <br>
+
+            <div v-if="stats.users">
+              <div style="font-size: 28px; font-weight: 700; color: var(--fw-blue-500);">
+                {{ stats.users.toLocaleString(store.state.ui.momentLocale) }}
+              </div>
+              <div style="font-size: 14px;">
                 {{ t('components.AboutPod.stat.activeUsers', stats.users) }}
-              </span>
+              </div>
             </div>
-            <div
-              v-if="stats.data.listenings"
-              class="statistics-statistic"
-            >
-              <span class="statistics-figure ui text">
-                <span class="ui big text"><strong>{{ stats.data.listenings.toLocaleString(store.state.ui.momentLocale) }}</strong></span>
-                <br>
+
+            <div v-if="stats.data.listenings">
+              <div style="font-size: 28px; font-weight: 700; color: var(--fw-blue-500);">
+                {{ stats.data.listenings.toLocaleString(store.state.ui.momentLocale) }}
+              </div>
+              <div style="font-size: 14px;">
                 {{ t('components.AboutPod.stat.listeningsCount', stats.data.listenings) }}
-              </span>
+              </div>
             </div>
-          </div>
-        </template>
+          </Layout>
+        </Card>
 
-        <template v-if="contactEmail">
-          <h3
-            id="contact"
-            class="ui header"
-          >
-            {{ t('components.AboutPod.header.contact') }}
-          </h3>
-          <a
-            v-if="contactEmail"
-            :href="`mailto:${contactEmail}`"
-          >
+        <!-- Contact Card -->
+        <Card
+          v-if="contactEmail"
+          solid
+          primary
+          :title="t('components.AboutPod.header.contact')"
+          icon="bi-envelope-fill large"
+          :class="{ [$style.multiRow]: true }"
+          :to="`mailto:${contactEmail}`"
+        >
+          <p>
             {{ t('components.AboutPod.message.contact', { contactEmail }) }}
-          </a>
-        </template>
-
-        <div class="ui hidden divider" />
-      </div>
-    </div>
+          </p>
+        </Card>
+      </Layout>
+    </Modal>
   </Layout>
 </template>
+
+<style module>
+    .multiRow {
+        grid-row: span 2;
+    }
+
+    /* TODO: This does not work (Firefox v141.0.3, NixOS Linux) */
+    .noUnderline, .noUnderline div,  :hover .noUnderline * {
+        text-decoration-color: transparent !important;
+
+        hr { border-color: var(--color); }
+    }
+
+</style>

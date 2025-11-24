@@ -337,42 +337,36 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * @description Reads and updates UserModel fields
+        /** @description Reads and updates UserModel fields
          *     Accepts GET, PUT, PATCH methods.
          *
          *     Default accepted fields: username, first_name, last_name
          *     Default display fields: pk, username, email, first_name, last_name
          *     Read-only fields: pk, email
          *
-         *     Returns UserModel fields.
-         */
+         *     Returns UserModel fields. */
         get: operations["get_auth_user"];
-        /**
-         * @description Reads and updates UserModel fields
+        /** @description Reads and updates UserModel fields
          *     Accepts GET, PUT, PATCH methods.
          *
          *     Default accepted fields: username, first_name, last_name
          *     Default display fields: pk, username, email, first_name, last_name
          *     Read-only fields: pk, email
          *
-         *     Returns UserModel fields.
-         */
+         *     Returns UserModel fields. */
         put: operations["update_auth_user"];
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        /**
-         * @description Reads and updates UserModel fields
+        /** @description Reads and updates UserModel fields
          *     Accepts GET, PUT, PATCH methods.
          *
          *     Default accepted fields: username, first_name, last_name
          *     Default display fields: pk, username, email, first_name, last_name
          *     Read-only fields: pk, email
          *
-         *     Returns UserModel fields.
-         */
+         *     Returns UserModel fields. */
         patch: operations["partial_update_auth_user"];
         trace?: never;
     };
@@ -527,11 +521,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * @description Return all the favorites of the current user, with only limited data
+        /** @description Return all the favorites of the current user, with only limited data
          *     to have a performant endpoint and avoid lots of queries just to display
-         *     favorites status in the UI
-         */
+         *     favorites status in the UI */
         get: operations["get_all_favorite_tracks"];
         put?: never;
         post?: never;
@@ -724,11 +716,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * @description Return all the subscriptions of the current user, with only limited data
+        /** @description Return all the subscriptions of the current user, with only limited data
          *     to have a performant endpoint and avoid lots of queries just to display
-         *     subscription status in the UI
-         */
+         *     subscription status in the UI */
         get: operations["get_all_federation_library_follows"];
         put?: never;
         post?: never;
@@ -809,11 +799,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * @description Return all the subscriptions of the current user, with only limited data
+        /** @description Return all the subscriptions of the current user, with only limited data
          *     to have a performant endpoint and avoid lots of queries just to display
-         *     subscription status in the UI
-         */
+         *     subscription status in the UI */
         get: operations["get_all_federation_library_follows_2"];
         put?: never;
         post?: never;
@@ -864,8 +852,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description str(object='') -> str
+        /** @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -874,8 +861,7 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'.
-         */
+         *     errors defaults to 'strict'. */
         post: operations["create_federation_inbox_action"];
         delete?: never;
         options?: never;
@@ -970,12 +956,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * @description - list preferences
+        /** @description - list preferences
          *     - detail given preference
          *     - batch update preferences
-         *     - update a single preference
-         */
+         *     - update a single preference */
         get: operations["get_instance_admin_settings"];
         put?: never;
         post?: never;
@@ -992,30 +976,24 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * @description - list preferences
+        /** @description - list preferences
          *     - detail given preference
          *     - batch update preferences
-         *     - update a single preference
-         */
+         *     - update a single preference */
         get: operations["get_instance_admin_setting"];
-        /**
-         * @description - list preferences
+        /** @description - list preferences
          *     - detail given preference
          *     - batch update preferences
-         *     - update a single preference
-         */
+         *     - update a single preference */
         put: operations["update_instance_admin_setting"];
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        /**
-         * @description - list preferences
+        /** @description - list preferences
          *     - detail given preference
          *     - batch update preferences
-         *     - update a single preference
-         */
+         *     - update a single preference */
         patch: operations["partial_update_instance_admin_setting"];
         trace?: never;
     };
@@ -1028,12 +1006,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description Update multiple preferences at once
+        /** @description Update multiple preferences at once
          *
          *     this is a long method because we ensure everything is valid
-         *     before actually persisting the changes
-         */
+         *     before actually persisting the changes */
         post: operations["create_instance_admin_setting_bulk"];
         delete?: never;
         options?: never;
@@ -1242,8 +1218,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description str(object='') -> str
+        /** @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -1252,8 +1227,7 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'.
-         */
+         *     errors defaults to 'strict'. */
         post: operations["admin_create_account_action"];
         delete?: never;
         options?: never;
@@ -1382,8 +1356,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description str(object='') -> str
+        /** @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -1392,8 +1365,7 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'.
-         */
+         *     errors defaults to 'strict'. */
         post: operations["admin_create_federation_domain_action"];
         delete?: never;
         options?: never;
@@ -1458,8 +1430,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description str(object='') -> str
+        /** @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -1468,8 +1439,7 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'.
-         */
+         *     errors defaults to 'strict'. */
         post: operations["admin_create_album_action"];
         delete?: never;
         options?: never;
@@ -1534,8 +1504,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description str(object='') -> str
+        /** @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -1544,8 +1513,7 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'.
-         */
+         *     errors defaults to 'strict'. */
         post: operations["admin_create_artist_action"];
         delete?: never;
         options?: never;
@@ -1610,8 +1578,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description str(object='') -> str
+        /** @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -1620,8 +1587,7 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'.
-         */
+         *     errors defaults to 'strict'. */
         post: operations["admin_create_library_action"];
         delete?: never;
         options?: never;
@@ -1686,8 +1652,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description str(object='') -> str
+        /** @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -1696,8 +1661,7 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'.
-         */
+         *     errors defaults to 'strict'. */
         post: operations["admin_create_track_action"];
         delete?: never;
         options?: never;
@@ -1746,8 +1710,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description str(object='') -> str
+        /** @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -1756,8 +1719,7 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'.
-         */
+         *     errors defaults to 'strict'. */
         post: operations["admin_create_upload_action"];
         delete?: never;
         options?: never;
@@ -1934,8 +1896,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description str(object='') -> str
+        /** @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -1944,8 +1905,7 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'.
-         */
+         *     errors defaults to 'strict'. */
         post: operations["admin_create_tag_action"];
         delete?: never;
         options?: never;
@@ -1994,8 +1954,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description str(object='') -> str
+        /** @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -2004,8 +1963,7 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'.
-         */
+         *     errors defaults to 'strict'. */
         post: operations["admin_create_invitation_action"];
         delete?: never;
         options?: never;
@@ -2212,10 +2170,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * @description This is a viewset that list applications that have access to the request user
-         *     account, to allow revoking tokens easily.
-         */
+        /** @description This is a viewset that list applications that have access to the request user
+         *     account, to allow revoking tokens easily. */
         get: operations["get_oauth_grants"];
         put?: never;
         post?: never;
@@ -2232,17 +2188,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * @description This is a viewset that list applications that have access to the request user
-         *     account, to allow revoking tokens easily.
-         */
+        /** @description This is a viewset that list applications that have access to the request user
+         *     account, to allow revoking tokens easily. */
         get: operations["get_oauth_grant"];
         put?: never;
         post?: never;
-        /**
-         * @description This is a viewset that list applications that have access to the request user
-         *     account, to allow revoking tokens easily.
-         */
+        /** @description This is a viewset that list applications that have access to the request user
+         *     account, to allow revoking tokens easily. */
         delete: operations["delete_oauth_grant"];
         options?: never;
         head?: never;
@@ -2704,11 +2656,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * @description Return all the subscriptions of the current user, with only limited data
+        /** @description Return all the subscriptions of the current user, with only limited data
          *     to have a performant endpoint and avoid lots of queries just to display
-         *     subscription status in the UI
-         */
+         *     subscription status in the UI */
         get: operations["get_all_subscriptions"];
         put?: never;
         post?: never;
@@ -2911,8 +2861,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description str(object='') -> str
+        /** @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -2921,8 +2870,7 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'.
-         */
+         *     errors defaults to 'strict'. */
         post: operations["create_upload_action"];
         delete?: never;
         options?: never;
@@ -3362,42 +3310,36 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * @description Reads and updates UserModel fields
+        /** @description Reads and updates UserModel fields
          *     Accepts GET, PUT, PATCH methods.
          *
          *     Default accepted fields: username, first_name, last_name
          *     Default display fields: pk, username, email, first_name, last_name
          *     Read-only fields: pk, email
          *
-         *     Returns UserModel fields.
-         */
+         *     Returns UserModel fields. */
         get: operations["get_auth_user_2"];
-        /**
-         * @description Reads and updates UserModel fields
+        /** @description Reads and updates UserModel fields
          *     Accepts GET, PUT, PATCH methods.
          *
          *     Default accepted fields: username, first_name, last_name
          *     Default display fields: pk, username, email, first_name, last_name
          *     Read-only fields: pk, email
          *
-         *     Returns UserModel fields.
-         */
+         *     Returns UserModel fields. */
         put: operations["update_auth_user_2"];
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        /**
-         * @description Reads and updates UserModel fields
+        /** @description Reads and updates UserModel fields
          *     Accepts GET, PUT, PATCH methods.
          *
          *     Default accepted fields: username, first_name, last_name
          *     Default display fields: pk, username, email, first_name, last_name
          *     Read-only fields: pk, email
          *
-         *     Returns UserModel fields.
-         */
+         *     Returns UserModel fields. */
         patch: operations["partial_update_auth_user_2"];
         trace?: never;
     };
@@ -3552,11 +3494,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * @description Return all the favorites of the current user, with only limited data
+        /** @description Return all the favorites of the current user, with only limited data
          *     to have a performant endpoint and avoid lots of queries just to display
-         *     favorites status in the UI
-         */
+         *     favorites status in the UI */
         get: operations["get_all_favorite_tracks_2"];
         put?: never;
         post?: never;
@@ -3749,11 +3689,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * @description Return all the subscriptions of the current user, with only limited data
+        /** @description Return all the subscriptions of the current user, with only limited data
          *     to have a performant endpoint and avoid lots of queries just to display
-         *     subscription status in the UI
-         */
+         *     subscription status in the UI */
         get: operations["get_all_federation_library_follows_3"];
         put?: never;
         post?: never;
@@ -3834,11 +3772,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * @description Return all the subscriptions of the current user, with only limited data
+        /** @description Return all the subscriptions of the current user, with only limited data
          *     to have a performant endpoint and avoid lots of queries just to display
-         *     subscription status in the UI
-         */
+         *     subscription status in the UI */
         get: operations["get_all_federation_library_follows_4"];
         put?: never;
         post?: never;
@@ -3889,8 +3825,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description str(object='') -> str
+        /** @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -3899,8 +3834,7 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'.
-         */
+         *     errors defaults to 'strict'. */
         post: operations["create_federation_inbox_action_2"];
         delete?: never;
         options?: never;
@@ -3995,12 +3929,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * @description - list preferences
+        /** @description - list preferences
          *     - detail given preference
          *     - batch update preferences
-         *     - update a single preference
-         */
+         *     - update a single preference */
         get: operations["get_instance_admin_settings_2"];
         put?: never;
         post?: never;
@@ -4017,30 +3949,24 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * @description - list preferences
+        /** @description - list preferences
          *     - detail given preference
          *     - batch update preferences
-         *     - update a single preference
-         */
+         *     - update a single preference */
         get: operations["get_instance_admin_setting_2"];
-        /**
-         * @description - list preferences
+        /** @description - list preferences
          *     - detail given preference
          *     - batch update preferences
-         *     - update a single preference
-         */
+         *     - update a single preference */
         put: operations["update_instance_admin_setting_2"];
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        /**
-         * @description - list preferences
+        /** @description - list preferences
          *     - detail given preference
          *     - batch update preferences
-         *     - update a single preference
-         */
+         *     - update a single preference */
         patch: operations["partial_update_instance_admin_setting_2"];
         trace?: never;
     };
@@ -4053,12 +3979,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description Update multiple preferences at once
+        /** @description Update multiple preferences at once
          *
          *     this is a long method because we ensure everything is valid
-         *     before actually persisting the changes
-         */
+         *     before actually persisting the changes */
         post: operations["create_instance_admin_setting_bulk_2"];
         delete?: never;
         options?: never;
@@ -4267,8 +4191,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description str(object='') -> str
+        /** @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -4277,8 +4200,7 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'.
-         */
+         *     errors defaults to 'strict'. */
         post: operations["admin_create_account_action_2"];
         delete?: never;
         options?: never;
@@ -4407,8 +4329,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description str(object='') -> str
+        /** @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -4417,8 +4338,7 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'.
-         */
+         *     errors defaults to 'strict'. */
         post: operations["admin_create_federation_domain_action_2"];
         delete?: never;
         options?: never;
@@ -4483,8 +4403,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description str(object='') -> str
+        /** @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -4493,8 +4412,7 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'.
-         */
+         *     errors defaults to 'strict'. */
         post: operations["admin_create_album_action_2"];
         delete?: never;
         options?: never;
@@ -4559,8 +4477,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description str(object='') -> str
+        /** @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -4569,8 +4486,7 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'.
-         */
+         *     errors defaults to 'strict'. */
         post: operations["admin_create_artist_action_2"];
         delete?: never;
         options?: never;
@@ -4635,8 +4551,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description str(object='') -> str
+        /** @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -4645,8 +4560,7 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'.
-         */
+         *     errors defaults to 'strict'. */
         post: operations["admin_create_library_action_2"];
         delete?: never;
         options?: never;
@@ -4711,8 +4625,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description str(object='') -> str
+        /** @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -4721,8 +4634,7 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'.
-         */
+         *     errors defaults to 'strict'. */
         post: operations["admin_create_track_action_2"];
         delete?: never;
         options?: never;
@@ -4771,8 +4683,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description str(object='') -> str
+        /** @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -4781,8 +4692,7 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'.
-         */
+         *     errors defaults to 'strict'. */
         post: operations["admin_create_upload_action_2"];
         delete?: never;
         options?: never;
@@ -4959,8 +4869,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description str(object='') -> str
+        /** @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -4969,8 +4878,7 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'.
-         */
+         *     errors defaults to 'strict'. */
         post: operations["admin_create_tag_action_2"];
         delete?: never;
         options?: never;
@@ -5019,8 +4927,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description str(object='') -> str
+        /** @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -5029,8 +4936,7 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'.
-         */
+         *     errors defaults to 'strict'. */
         post: operations["admin_create_invitation_action_2"];
         delete?: never;
         options?: never;
@@ -5240,10 +5146,8 @@ export interface paths {
         /** @description Handle GET requests: instantiate a blank version of the form. */
         get: operations["get_oauth_authorize"];
         put: operations["update_oauth_authorize"];
-        /**
-         * @description Handle POST requests: instantiate a form instance with the passed
-         *     POST variables and then check if it's valid.
-         */
+        /** @description Handle POST requests: instantiate a form instance with the passed
+         *     POST variables and then check if it's valid. */
         post: operations["create_oauth_authorize"];
         delete?: never;
         options?: never;
@@ -5258,10 +5162,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * @description This is a viewset that list applications that have access to the request user
-         *     account, to allow revoking tokens easily.
-         */
+        /** @description This is a viewset that list applications that have access to the request user
+         *     account, to allow revoking tokens easily. */
         get: operations["get_oauth_grants_2"];
         put?: never;
         post?: never;
@@ -5278,17 +5180,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * @description This is a viewset that list applications that have access to the request user
-         *     account, to allow revoking tokens easily.
-         */
+        /** @description This is a viewset that list applications that have access to the request user
+         *     account, to allow revoking tokens easily. */
         get: operations["get_oauth_grant_2"];
         put?: never;
         post?: never;
-        /**
-         * @description This is a viewset that list applications that have access to the request user
-         *     account, to allow revoking tokens easily.
-         */
+        /** @description This is a viewset that list applications that have access to the request user
+         *     account, to allow revoking tokens easily. */
         delete: operations["delete_oauth_grant_2"];
         options?: never;
         head?: never;
@@ -5881,11 +5779,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * @description Return all the subscriptions of the current user, with only limited data
+        /** @description Return all the subscriptions of the current user, with only limited data
          *     to have a performant endpoint and avoid lots of queries just to display
-         *     subscription status in the UI
-         */
+         *     subscription status in the UI */
         get: operations["get_all_subscriptions_2"];
         put?: never;
         post?: never;
@@ -6088,8 +5984,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * @description str(object='') -> str
+        /** @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -6098,8 +5993,7 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'.
-         */
+         *     errors defaults to 'strict'. */
         post: operations["create_upload_action_2"];
         delete?: never;
         options?: never;
@@ -7419,7 +7313,7 @@ export interface components {
             /** Format: email */
             readonly submitter_email: string | null;
             /** @default [] */
-            notes: components["schemas"]["ManageBaseNote"][] | null;
+            notes: components["schemas"]["ManageBaseNote"][];
         };
         ManageReportRequest: {
             type: components["schemas"]["ReportTypeEnum"];
@@ -7429,7 +7323,7 @@ export interface components {
             target_owner?: components["schemas"]["ManageBaseActorRequest"];
             submitter?: components["schemas"]["ManageBaseActorRequest"];
             /** @default [] */
-            notes: components["schemas"]["ManageBaseNoteRequest"][] | null;
+            notes: components["schemas"]["ManageBaseNoteRequest"][];
         };
         ManageTag: {
             readonly id: number;
@@ -7770,7 +7664,8 @@ export interface components {
             location: string;
             content: components["schemas"]["MetadataContent"];
             features: string[];
-            readonly codeOfConduct: string;
+            readonly rules: string;
+            readonly terms: string;
         };
         MetadataContent: {
             local: components["schemas"]["MetadataContentLocal"];
@@ -7836,12 +7731,10 @@ export interface components {
             readonly version: string;
             software: components["schemas"]["Software"];
             readonly protocols: unknown[];
-            /**
-             * @default {
+            /** @default {
              *       "inbound": [],
              *       "outbound": []
-             *     }
-             */
+             *     } */
             services: components["schemas"]["Services"];
             readonly openRegistrations: boolean;
             readonly usage: components["schemas"]["Usage"];
@@ -7851,12 +7744,10 @@ export interface components {
             readonly version: string;
             software: components["schemas"]["SoftwareSerializer_v2"];
             readonly protocols: unknown[];
-            /**
-             * @default {
+            /** @default {
              *       "inbound": [],
              *       "outbound": []
-             *     }
-             */
+             *     } */
             services: components["schemas"]["Services"];
             readonly openRegistrations: boolean;
             readonly usage: components["schemas"]["Usage"];
@@ -7865,29 +7756,21 @@ export interface components {
         NodeInfoLibrary: {
             federationEnabled: boolean;
             anonymousCanListen: boolean;
-            /**
-             * @default {
+            /** @default {
              *       "total": 0
-             *     }
-             */
+             *     } */
             tracks: components["schemas"]["TotalCount"];
-            /**
-             * @default {
+            /** @default {
              *       "total": 0
-             *     }
-             */
+             *     } */
             artists: components["schemas"]["TotalCount"];
-            /**
-             * @default {
+            /** @default {
              *       "total": 0
-             *     }
-             */
+             *     } */
             albums: components["schemas"]["TotalCount"];
-            /**
-             * @default {
+            /** @default {
              *       "hours": 0
-             *     }
-             */
+             *     } */
             music: components["schemas"]["TotalHours"];
         };
         Oembed: {
@@ -8553,7 +8436,7 @@ export interface components {
             target_owner?: components["schemas"]["ManageBaseActorRequest"];
             submitter?: components["schemas"]["ManageBaseActorRequest"];
             /** @default [] */
-            notes: components["schemas"]["ManageBaseNoteRequest"][] | null;
+            notes: components["schemas"]["ManageBaseNoteRequest"][];
         };
         PatchedManageUserRequest: {
             /** Name of User */
@@ -9197,8 +9080,7 @@ export interface operations {
                 include_channels?: boolean;
                 library?: string;
                 mbid?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -9211,8 +9093,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-artist_credit__artist__modification_date" | "-creation_date" | "-random" | "-related" | "-release_date" | "-title" | "artist_credit__artist__modification_date" | "creation_date" | "random" | "related" | "release_date" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -9324,8 +9205,7 @@ export interface operations {
                 include_channels?: boolean;
                 library?: string;
                 mbid?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -9338,8 +9218,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-artist_credit__artist__modification_date" | "-creation_date" | "-random" | "-related" | "-release_date" | "-title" | "artist_credit__artist__modification_date" | "creation_date" | "random" | "related" | "release_date" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -9414,8 +9293,7 @@ export interface operations {
                 include_channels?: boolean;
                 library?: string;
                 mbid?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -9428,8 +9306,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-artist_credit__artist__modification_date" | "-creation_date" | "-random" | "-related" | "-release_date" | "-title" | "artist_credit__artist__modification_date" | "creation_date" | "random" | "related" | "release_date" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -9475,8 +9352,7 @@ export interface operations {
                 include_channels?: boolean;
                 library?: string;
                 mbid?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -9489,8 +9365,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-artist_credit__artist__modification_date" | "-creation_date" | "-random" | "-related" | "-release_date" | "-title" | "artist_credit__artist__modification_date" | "creation_date" | "random" | "related" | "release_date" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -9564,8 +9439,7 @@ export interface operations {
                 name__icontains?: string;
                 name__iexact?: string;
                 name__startswith?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `id` - Id
                  *     * `-id` - Id (descending)
@@ -9578,8 +9452,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-creation_date" | "-id" | "-modification_date" | "-name" | "-random" | "-related" | "creation_date" | "id" | "modification_date" | "name" | "random" | "related")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -9643,8 +9516,7 @@ export interface operations {
                 name__icontains?: string;
                 name__iexact?: string;
                 name__startswith?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `id` - Id
                  *     * `-id` - Id (descending)
@@ -9657,8 +9529,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-creation_date" | "-id" | "-modification_date" | "-name" | "-random" | "-related" | "creation_date" | "id" | "modification_date" | "name" | "random" | "related")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -9732,8 +9603,7 @@ export interface operations {
                 name__icontains?: string;
                 name__iexact?: string;
                 name__startswith?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `id` - Id
                  *     * `-id` - Id (descending)
@@ -9746,8 +9616,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-creation_date" | "-id" | "-modification_date" | "-name" | "-random" | "-related" | "creation_date" | "id" | "modification_date" | "name" | "random" | "related")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -9792,8 +9661,7 @@ export interface operations {
                 name__icontains?: string;
                 name__iexact?: string;
                 name__startswith?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `id` - Id
                  *     * `-id` - Id (descending)
@@ -9806,8 +9674,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-creation_date" | "-id" | "-modification_date" | "-name" | "-random" | "-related" | "creation_date" | "id" | "modification_date" | "name" | "random" | "related")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -10186,16 +10053,14 @@ export interface operations {
             query?: {
                 external?: boolean;
                 hidden?: boolean;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
                  *     * `modification_date` - Modification date
                  *     * `-modification_date` - Modification date (descending)
                  *     * `random` - Random
-                 *     * `-random` - Random (descending)
-                 */
+                 *     * `-random` - Random (descending) */
                 ordering?: ("-creation_date" | "-modification_date" | "-random" | "creation_date" | "modification_date" | "random")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -11596,12 +11461,10 @@ export interface operations {
                 page?: number;
                 /** @description Number of results to return per page. */
                 page_size?: number;
-                /**
-                 * @description * `me` - Only me
+                /** @description * `me` - Only me
                  *     * `followers` - Me and my followers
                  *     * `instance` - Everyone on my instance, and my followers
-                 *     * `everyone` - Everyone, including people on other instances
-                 */
+                 *     * `everyone` - Everyone, including people on other instances */
                 privacy_level?: "everyone" | "followers" | "instance" | "me";
                 q?: string;
                 scope?: string;
@@ -11786,14 +11649,12 @@ export interface operations {
                 /** @description Number of results to return per page. */
                 page_size?: number;
                 q?: string;
-                /**
-                 * @description * `Person` - Person
+                /** @description * `Person` - Person
                  *     * `Tombstone` - Tombstone
                  *     * `Application` - Application
                  *     * `Group` - Group
                  *     * `Organization` - Organization
-                 *     * `Service` - Service
-                 */
+                 *     * `Service` - Service */
                 type?: "Application" | "Group" | "Organization" | "Person" | "Service" | "Tombstone";
             };
             header?: never;
@@ -12299,11 +12160,9 @@ export interface operations {
     admin_get_artists: {
         parameters: {
             query?: {
-                /**
-                 * @description * `music` - music
+                /** @description * `music` - music
                  *     * `podcast` - podcast
-                 *     * `other` - other
-                 */
+                 *     * `other` - other */
                 content_category?: "music" | "other" | "podcast";
                 fid?: string;
                 mbid?: string;
@@ -12429,27 +12288,23 @@ export interface operations {
                 domain?: string;
                 fid?: string;
                 name?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
                  *     * `uploads_count` - Uploads count
                  *     * `-uploads_count` - Uploads count (descending)
                  *     * `followers_count` - Followers count
-                 *     * `-followers_count` - Followers count (descending)
-                 */
+                 *     * `-followers_count` - Followers count (descending) */
                 ordering?: ("-creation_date" | "-followers_count" | "-uploads_count" | "creation_date" | "followers_count" | "uploads_count")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
                 /** @description Number of results to return per page. */
                 page_size?: number;
-                /**
-                 * @description * `me` - Only me
+                /** @description * `me` - Only me
                  *     * `followers` - Me and my followers
                  *     * `instance` - Everyone on my instance, and my followers
-                 *     * `everyone` - Everyone, including people on other instances
-                 */
+                 *     * `everyone` - Everyone, including people on other instances */
                 privacy_level?: "everyone" | "followers" | "instance" | "me";
                 q?: string;
             };
@@ -12743,17 +12598,14 @@ export interface operations {
                 domain?: string;
                 fid?: string;
                 import_reference?: string;
-                /**
-                 * @description * `draft` - Draft
+                /** @description * `draft` - Draft
                  *     * `pending` - Pending
                  *     * `finished` - Finished
                  *     * `errored` - Errored
-                 *     * `skipped` - Skipped
-                 */
+                 *     * `skipped` - Skipped */
                 import_status?: "draft" | "errored" | "finished" | "pending" | "skipped";
                 mimetype?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -12766,8 +12618,7 @@ export interface operations {
                  *     * `bitrate` - Bitrate
                  *     * `-bitrate` - Bitrate (descending)
                  *     * `duration` - Duration
-                 *     * `-duration` - Duration (descending)
-                 */
+                 *     * `-duration` - Duration (descending) */
                 ordering?: ("-accessed_date" | "-bitrate" | "-creation_date" | "-duration" | "-modification_date" | "-size" | "accessed_date" | "bitrate" | "creation_date" | "duration" | "modification_date" | "size")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -13126,13 +12977,11 @@ export interface operations {
                 page_size?: number;
                 q?: string;
                 submitter_email?: string;
-                /**
-                 * @description * `takedown_request` - Takedown request
+                /** @description * `takedown_request` - Takedown request
                  *     * `invalid_metadata` - Invalid metadata
                  *     * `illegal_content` - Illegal content
                  *     * `offensive_content` - Offensive content
-                 *     * `other` - Other
-                 */
+                 *     * `other` - Other */
                 type?: "illegal_content" | "invalid_metadata" | "offensive_content" | "other" | "takedown_request";
             };
             header?: never;
@@ -13238,11 +13087,9 @@ export interface operations {
                 /** @description Number of results to return per page. */
                 page_size?: number;
                 q?: string;
-                /**
-                 * @description * `pending` - Pending
+                /** @description * `pending` - Pending
                  *     * `refused` - Refused
-                 *     * `approved` - Approved
-                 */
+                 *     * `approved` - Approved */
                 status?: "approved" | "pending" | "refused";
                 /** @description * `signup` - Sign-up */
                 type?: "signup";
@@ -13635,12 +13482,10 @@ export interface operations {
                 permission_library?: boolean;
                 permission_moderation?: boolean;
                 permission_settings?: boolean;
-                /**
-                 * @description * `me` - Only me
+                /** @description * `me` - Only me
                  *     * `followers` - Me and my followers
                  *     * `instance` - Everyone on my instance, and my followers
-                 *     * `everyone` - Everyone, including people on other instances
-                 */
+                 *     * `everyone` - Everyone, including people on other instances */
                 privacy_level?: "everyone" | "followers" | "instance" | "me";
                 q?: string;
             };
@@ -15199,16 +15044,14 @@ export interface operations {
         parameters: {
             query?: {
                 name?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `name` - Name
                  *     * `-name` - Name (descending)
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
                  *     * `length` - Length
-                 *     * `-length` - Length (descending)
-                 */
+                 *     * `-length` - Length (descending) */
                 ordering?: ("-creation_date" | "-length" | "-name" | "creation_date" | "length" | "name")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -15301,8 +15144,7 @@ export interface operations {
                 library?: string;
                 license?: string;
                 mbid?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -15325,8 +15167,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-album__release_date" | "-album__title" | "-artist_credit__artist__modification_date" | "-artist_credit__artist__name" | "-creation_date" | "-disc_number" | "-position" | "-random" | "-related" | "-size" | "-title" | "album__release_date" | "album__title" | "artist_credit__artist__modification_date" | "artist_credit__artist__name" | "creation_date" | "disc_number" | "position" | "random" | "related" | "size" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -15334,12 +15175,10 @@ export interface operations {
                 page_size?: number;
                 playable?: boolean;
                 q?: string;
-                /**
-                 * @description * `0` - low
+                /** @description * `0` - low
                  *     * `1` - medium
                  *     * `2` - high
-                 *     * `3` - very_high
-                 */
+                 *     * `3` - very_high */
                 quality?: 0 | 1 | 2 | 3;
                 related?: string;
                 scope?: string;
@@ -15421,8 +15260,7 @@ export interface operations {
                 library?: string;
                 license?: string;
                 mbid?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -15445,8 +15283,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-album__release_date" | "-album__title" | "-artist_credit__artist__modification_date" | "-artist_credit__artist__name" | "-creation_date" | "-disc_number" | "-position" | "-random" | "-related" | "-size" | "-title" | "album__release_date" | "album__title" | "artist_credit__artist__modification_date" | "artist_credit__artist__name" | "creation_date" | "disc_number" | "position" | "random" | "related" | "size" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -15454,12 +15291,10 @@ export interface operations {
                 page_size?: number;
                 playable?: boolean;
                 q?: string;
-                /**
-                 * @description * `0` - low
+                /** @description * `0` - low
                  *     * `1` - medium
                  *     * `2` - high
-                 *     * `3` - very_high
-                 */
+                 *     * `3` - very_high */
                 quality?: 0 | 1 | 2 | 3;
                 related?: string;
                 scope?: string;
@@ -15530,8 +15365,7 @@ export interface operations {
                 library?: string;
                 license?: string;
                 mbid?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -15554,8 +15388,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-album__release_date" | "-album__title" | "-artist_credit__artist__modification_date" | "-artist_credit__artist__name" | "-creation_date" | "-disc_number" | "-position" | "-random" | "-related" | "-size" | "-title" | "album__release_date" | "album__title" | "artist_credit__artist__modification_date" | "artist_credit__artist__name" | "creation_date" | "disc_number" | "position" | "random" | "related" | "size" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -15563,12 +15396,10 @@ export interface operations {
                 page_size?: number;
                 playable?: boolean;
                 q?: string;
-                /**
-                 * @description * `0` - low
+                /** @description * `0` - low
                  *     * `1` - medium
                  *     * `2` - high
-                 *     * `3` - very_high
-                 */
+                 *     * `3` - very_high */
                 quality?: 0 | 1 | 2 | 3;
                 related?: string;
                 scope?: string;
@@ -15610,8 +15441,7 @@ export interface operations {
                 library?: string;
                 license?: string;
                 mbid?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -15634,8 +15464,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-album__release_date" | "-album__title" | "-artist_credit__artist__modification_date" | "-artist_credit__artist__name" | "-creation_date" | "-disc_number" | "-position" | "-random" | "-related" | "-size" | "-title" | "album__release_date" | "album__title" | "artist_credit__artist__modification_date" | "artist_credit__artist__name" | "creation_date" | "disc_number" | "position" | "random" | "related" | "size" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -15643,12 +15472,10 @@ export interface operations {
                 page_size?: number;
                 playable?: boolean;
                 q?: string;
-                /**
-                 * @description * `0` - low
+                /** @description * `0` - low
                  *     * `1` - medium
                  *     * `2` - high
-                 *     * `3` - very_high
-                 */
+                 *     * `3` - very_high */
                 quality?: 0 | 1 | 2 | 3;
                 related?: string;
                 scope?: string;
@@ -15712,13 +15539,11 @@ export interface operations {
                 album_artist?: string;
                 channel?: string;
                 import_reference?: string;
-                /**
-                 * @description * `draft` - Draft
+                /** @description * `draft` - Draft
                  *     * `pending` - Pending
                  *     * `finished` - Finished
                  *     * `errored` - Errored
-                 *     * `skipped` - Skipped
-                 */
+                 *     * `skipped` - Skipped */
                 import_status?: ("draft" | "errored" | "finished" | "pending" | "skipped")[];
                 include_channels?: boolean;
                 library?: string;
@@ -16207,8 +16032,7 @@ export interface operations {
                 include_channels?: boolean;
                 library?: string;
                 mbid?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -16221,8 +16045,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-artist_credit__artist__modification_date" | "-creation_date" | "-random" | "-related" | "-release_date" | "-title" | "artist_credit__artist__modification_date" | "creation_date" | "random" | "related" | "release_date" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -16334,8 +16157,7 @@ export interface operations {
                 include_channels?: boolean;
                 library?: string;
                 mbid?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -16348,8 +16170,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-artist_credit__artist__modification_date" | "-creation_date" | "-random" | "-related" | "-release_date" | "-title" | "artist_credit__artist__modification_date" | "creation_date" | "random" | "related" | "release_date" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -16424,8 +16245,7 @@ export interface operations {
                 include_channels?: boolean;
                 library?: string;
                 mbid?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -16438,8 +16258,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-artist_credit__artist__modification_date" | "-creation_date" | "-random" | "-related" | "-release_date" | "-title" | "artist_credit__artist__modification_date" | "creation_date" | "random" | "related" | "release_date" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -16485,8 +16304,7 @@ export interface operations {
                 include_channels?: boolean;
                 library?: string;
                 mbid?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -16499,8 +16317,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-artist_credit__artist__modification_date" | "-creation_date" | "-random" | "-related" | "-release_date" | "-title" | "artist_credit__artist__modification_date" | "creation_date" | "random" | "related" | "release_date" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -16574,8 +16391,7 @@ export interface operations {
                 name__icontains?: string;
                 name__iexact?: string;
                 name__startswith?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `id` - Id
                  *     * `-id` - Id (descending)
@@ -16588,8 +16404,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-creation_date" | "-id" | "-modification_date" | "-name" | "-random" | "-related" | "creation_date" | "id" | "modification_date" | "name" | "random" | "related")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -16653,8 +16468,7 @@ export interface operations {
                 name__icontains?: string;
                 name__iexact?: string;
                 name__startswith?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `id` - Id
                  *     * `-id` - Id (descending)
@@ -16667,8 +16481,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-creation_date" | "-id" | "-modification_date" | "-name" | "-random" | "-related" | "creation_date" | "id" | "modification_date" | "name" | "random" | "related")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -16742,8 +16555,7 @@ export interface operations {
                 name__icontains?: string;
                 name__iexact?: string;
                 name__startswith?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `id` - Id
                  *     * `-id` - Id (descending)
@@ -16756,8 +16568,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-creation_date" | "-id" | "-modification_date" | "-name" | "-random" | "-related" | "creation_date" | "id" | "modification_date" | "name" | "random" | "related")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -16802,8 +16613,7 @@ export interface operations {
                 name__icontains?: string;
                 name__iexact?: string;
                 name__startswith?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `id` - Id
                  *     * `-id` - Id (descending)
@@ -16816,8 +16626,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-creation_date" | "-id" | "-modification_date" | "-name" | "-random" | "-related" | "creation_date" | "id" | "modification_date" | "name" | "random" | "related")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -17196,16 +17005,14 @@ export interface operations {
             query?: {
                 external?: boolean;
                 hidden?: boolean;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
                  *     * `modification_date` - Modification date
                  *     * `-modification_date` - Modification date (descending)
                  *     * `random` - Random
-                 *     * `-random` - Random (descending)
-                 */
+                 *     * `-random` - Random (descending) */
                 ordering?: ("-creation_date" | "-modification_date" | "-random" | "creation_date" | "modification_date" | "random")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -18606,12 +18413,10 @@ export interface operations {
                 page?: number;
                 /** @description Number of results to return per page. */
                 page_size?: number;
-                /**
-                 * @description * `me` - Only me
+                /** @description * `me` - Only me
                  *     * `followers` - Me and my followers
                  *     * `instance` - Everyone on my instance, and my followers
-                 *     * `everyone` - Everyone, including people on other instances
-                 */
+                 *     * `everyone` - Everyone, including people on other instances */
                 privacy_level?: "everyone" | "followers" | "instance" | "me";
                 q?: string;
                 scope?: string;
@@ -18796,14 +18601,12 @@ export interface operations {
                 /** @description Number of results to return per page. */
                 page_size?: number;
                 q?: string;
-                /**
-                 * @description * `Person` - Person
+                /** @description * `Person` - Person
                  *     * `Tombstone` - Tombstone
                  *     * `Application` - Application
                  *     * `Group` - Group
                  *     * `Organization` - Organization
-                 *     * `Service` - Service
-                 */
+                 *     * `Service` - Service */
                 type?: "Application" | "Group" | "Organization" | "Person" | "Service" | "Tombstone";
             };
             header?: never;
@@ -19309,11 +19112,9 @@ export interface operations {
     admin_get_artists_2: {
         parameters: {
             query?: {
-                /**
-                 * @description * `music` - music
+                /** @description * `music` - music
                  *     * `podcast` - podcast
-                 *     * `other` - other
-                 */
+                 *     * `other` - other */
                 content_category?: "music" | "other" | "podcast";
                 fid?: string;
                 mbid?: string;
@@ -19439,27 +19240,23 @@ export interface operations {
                 domain?: string;
                 fid?: string;
                 name?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
                  *     * `uploads_count` - Uploads count
                  *     * `-uploads_count` - Uploads count (descending)
                  *     * `followers_count` - Followers count
-                 *     * `-followers_count` - Followers count (descending)
-                 */
+                 *     * `-followers_count` - Followers count (descending) */
                 ordering?: ("-creation_date" | "-followers_count" | "-uploads_count" | "creation_date" | "followers_count" | "uploads_count")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
                 /** @description Number of results to return per page. */
                 page_size?: number;
-                /**
-                 * @description * `me` - Only me
+                /** @description * `me` - Only me
                  *     * `followers` - Me and my followers
                  *     * `instance` - Everyone on my instance, and my followers
-                 *     * `everyone` - Everyone, including people on other instances
-                 */
+                 *     * `everyone` - Everyone, including people on other instances */
                 privacy_level?: "everyone" | "followers" | "instance" | "me";
                 q?: string;
             };
@@ -19753,17 +19550,14 @@ export interface operations {
                 domain?: string;
                 fid?: string;
                 import_reference?: string;
-                /**
-                 * @description * `draft` - Draft
+                /** @description * `draft` - Draft
                  *     * `pending` - Pending
                  *     * `finished` - Finished
                  *     * `errored` - Errored
-                 *     * `skipped` - Skipped
-                 */
+                 *     * `skipped` - Skipped */
                 import_status?: "draft" | "errored" | "finished" | "pending" | "skipped";
                 mimetype?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -19776,8 +19570,7 @@ export interface operations {
                  *     * `bitrate` - Bitrate
                  *     * `-bitrate` - Bitrate (descending)
                  *     * `duration` - Duration
-                 *     * `-duration` - Duration (descending)
-                 */
+                 *     * `-duration` - Duration (descending) */
                 ordering?: ("-accessed_date" | "-bitrate" | "-creation_date" | "-duration" | "-modification_date" | "-size" | "accessed_date" | "bitrate" | "creation_date" | "duration" | "modification_date" | "size")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -20136,13 +19929,11 @@ export interface operations {
                 page_size?: number;
                 q?: string;
                 submitter_email?: string;
-                /**
-                 * @description * `takedown_request` - Takedown request
+                /** @description * `takedown_request` - Takedown request
                  *     * `invalid_metadata` - Invalid metadata
                  *     * `illegal_content` - Illegal content
                  *     * `offensive_content` - Offensive content
-                 *     * `other` - Other
-                 */
+                 *     * `other` - Other */
                 type?: "illegal_content" | "invalid_metadata" | "offensive_content" | "other" | "takedown_request";
             };
             header?: never;
@@ -20248,11 +20039,9 @@ export interface operations {
                 /** @description Number of results to return per page. */
                 page_size?: number;
                 q?: string;
-                /**
-                 * @description * `pending` - Pending
+                /** @description * `pending` - Pending
                  *     * `refused` - Refused
-                 *     * `approved` - Approved
-                 */
+                 *     * `approved` - Approved */
                 status?: "approved" | "pending" | "refused";
                 /** @description * `signup` - Sign-up */
                 type?: "signup";
@@ -20645,12 +20434,10 @@ export interface operations {
                 permission_library?: boolean;
                 permission_moderation?: boolean;
                 permission_settings?: boolean;
-                /**
-                 * @description * `me` - Only me
+                /** @description * `me` - Only me
                  *     * `followers` - Me and my followers
                  *     * `instance` - Everyone on my instance, and my followers
-                 *     * `everyone` - Everyone, including people on other instances
-                 */
+                 *     * `everyone` - Everyone, including people on other instances */
                 privacy_level?: "everyone" | "followers" | "instance" | "me";
                 q?: string;
             };
@@ -22419,16 +22206,14 @@ export interface operations {
         parameters: {
             query?: {
                 name?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `name` - Name
                  *     * `-name` - Name (descending)
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
                  *     * `length` - Length
-                 *     * `-length` - Length (descending)
-                 */
+                 *     * `-length` - Length (descending) */
                 ordering?: ("-creation_date" | "-length" | "-name" | "creation_date" | "length" | "name")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -22521,8 +22306,7 @@ export interface operations {
                 library?: string;
                 license?: string;
                 mbid?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -22545,8 +22329,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-album__release_date" | "-album__title" | "-artist_credit__artist__modification_date" | "-artist_credit__artist__name" | "-creation_date" | "-disc_number" | "-position" | "-random" | "-related" | "-size" | "-title" | "album__release_date" | "album__title" | "artist_credit__artist__modification_date" | "artist_credit__artist__name" | "creation_date" | "disc_number" | "position" | "random" | "related" | "size" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -22554,12 +22337,10 @@ export interface operations {
                 page_size?: number;
                 playable?: boolean;
                 q?: string;
-                /**
-                 * @description * `0` - low
+                /** @description * `0` - low
                  *     * `1` - medium
                  *     * `2` - high
-                 *     * `3` - very_high
-                 */
+                 *     * `3` - very_high */
                 quality?: 0 | 1 | 2 | 3;
                 related?: string;
                 scope?: string;
@@ -22641,8 +22422,7 @@ export interface operations {
                 library?: string;
                 license?: string;
                 mbid?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -22665,8 +22445,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-album__release_date" | "-album__title" | "-artist_credit__artist__modification_date" | "-artist_credit__artist__name" | "-creation_date" | "-disc_number" | "-position" | "-random" | "-related" | "-size" | "-title" | "album__release_date" | "album__title" | "artist_credit__artist__modification_date" | "artist_credit__artist__name" | "creation_date" | "disc_number" | "position" | "random" | "related" | "size" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -22674,12 +22453,10 @@ export interface operations {
                 page_size?: number;
                 playable?: boolean;
                 q?: string;
-                /**
-                 * @description * `0` - low
+                /** @description * `0` - low
                  *     * `1` - medium
                  *     * `2` - high
-                 *     * `3` - very_high
-                 */
+                 *     * `3` - very_high */
                 quality?: 0 | 1 | 2 | 3;
                 related?: string;
                 scope?: string;
@@ -22750,8 +22527,7 @@ export interface operations {
                 library?: string;
                 license?: string;
                 mbid?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -22774,8 +22550,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-album__release_date" | "-album__title" | "-artist_credit__artist__modification_date" | "-artist_credit__artist__name" | "-creation_date" | "-disc_number" | "-position" | "-random" | "-related" | "-size" | "-title" | "album__release_date" | "album__title" | "artist_credit__artist__modification_date" | "artist_credit__artist__name" | "creation_date" | "disc_number" | "position" | "random" | "related" | "size" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -22783,12 +22558,10 @@ export interface operations {
                 page_size?: number;
                 playable?: boolean;
                 q?: string;
-                /**
-                 * @description * `0` - low
+                /** @description * `0` - low
                  *     * `1` - medium
                  *     * `2` - high
-                 *     * `3` - very_high
-                 */
+                 *     * `3` - very_high */
                 quality?: 0 | 1 | 2 | 3;
                 related?: string;
                 scope?: string;
@@ -22830,8 +22603,7 @@ export interface operations {
                 library?: string;
                 license?: string;
                 mbid?: string;
-                /**
-                 * @description Ordering
+                /** @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -22854,8 +22626,7 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending)
-                 */
+                 *     * `-related` - Related (descending) */
                 ordering?: ("-album__release_date" | "-album__title" | "-artist_credit__artist__modification_date" | "-artist_credit__artist__name" | "-creation_date" | "-disc_number" | "-position" | "-random" | "-related" | "-size" | "-title" | "album__release_date" | "album__title" | "artist_credit__artist__modification_date" | "artist_credit__artist__name" | "creation_date" | "disc_number" | "position" | "random" | "related" | "size" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -22863,12 +22634,10 @@ export interface operations {
                 page_size?: number;
                 playable?: boolean;
                 q?: string;
-                /**
-                 * @description * `0` - low
+                /** @description * `0` - low
                  *     * `1` - medium
                  *     * `2` - high
-                 *     * `3` - very_high
-                 */
+                 *     * `3` - very_high */
                 quality?: 0 | 1 | 2 | 3;
                 related?: string;
                 scope?: string;
@@ -22932,13 +22701,11 @@ export interface operations {
                 album_artist?: string;
                 channel?: string;
                 import_reference?: string;
-                /**
-                 * @description * `draft` - Draft
+                /** @description * `draft` - Draft
                  *     * `pending` - Pending
                  *     * `finished` - Finished
                  *     * `errored` - Errored
-                 *     * `skipped` - Skipped
-                 */
+                 *     * `skipped` - Skipped */
                 import_status?: ("draft" | "errored" | "finished" | "pending" | "skipped")[];
                 include_channels?: boolean;
                 library?: string;

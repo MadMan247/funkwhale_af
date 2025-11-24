@@ -219,7 +219,7 @@ const save = async () => {
           </option>
         </select>
         <div v-else-if="setting.field.widget.class === 'ImageWidget'">
-          <!-- TODO: Implement image input -->
+          <!-- TODO: Implement image input https://dev.funkwhale.audio/funkwhale/funkwhale/-/issues/2512 -->
 
           <!-- @vue-ignore -->
           <Input
