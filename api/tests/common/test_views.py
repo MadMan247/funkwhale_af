@@ -10,7 +10,7 @@ def test_can_detail_mutation(logged_in_api_client, factories):
     mutation = factories["common.Mutation"](
         payload={}, target=factories["music.Artist"]()
     )
-    url = reverse("api:v1:mutations-detail", kwargs={"uuid": mutation.uuid})
+    url = reverse("api:v2:mutations-detail", kwargs={"uuid": mutation.uuid})
 
     response = logged_in_api_client.get(url)
 
@@ -24,7 +24,7 @@ def test_can_list_mutations(logged_in_api_client, factories):
     mutation = factories["common.Mutation"](
         payload={}, target=factories["music.Artist"]()
     )
-    url = reverse("api:v1:mutations-list")
+    url = reverse("api:v2:mutations-list")
 
     response = logged_in_api_client.get(url)
 
@@ -40,7 +40,7 @@ def test_can_destroy_mutation_creator(logged_in_api_client, factories):
     mutation = factories["common.Mutation"](
         target=track, type="update", payload={}, created_by=actor
     )
-    url = reverse("api:v1:mutations-detail", kwargs={"uuid": mutation.uuid})
+    url = reverse("api:v2:mutations-detail", kwargs={"uuid": mutation.uuid})
 
     response = logged_in_api_client.delete(url)
 
@@ -51,7 +51,7 @@ def test_can_destroy_mutation_not_creator(logged_in_api_client, factories):
     logged_in_api_client.user.create_actor()
     track = factories["music.Track"]()
     mutation = factories["common.Mutation"](type="update", target=track, payload={})
-    url = reverse("api:v1:mutations-detail", kwargs={"uuid": mutation.uuid})
+    url = reverse("api:v2:mutations-detail", kwargs={"uuid": mutation.uuid})
 
     response = logged_in_api_client.delete(url)
 
@@ -67,7 +67,7 @@ def test_can_destroy_mutation_has_perm(logged_in_api_client, factories, mocker):
     has_perm = mocker.patch(
         "funkwhale_api.common.mutations.registry.has_perm", return_value=True
     )
-    url = reverse("api:v1:mutations-detail", kwargs={"uuid": mutation.uuid})
+    url = reverse("api:v2:mutations-detail", kwargs={"uuid": mutation.uuid})
 
     response = logged_in_api_client.delete(url)
 
@@ -88,7 +88,7 @@ def test_can_approve_reject_mutation_with_perm(
     has_perm = mocker.patch(
         "funkwhale_api.common.mutations.registry.has_perm", return_value=True
     )
-    url = reverse(f"api:v1:mutations-{endpoint}", kwargs={"uuid": mutation.uuid})
+    url = reverse(f"api:v2:mutations-{endpoint}", kwargs={"uuid": mutation.uuid})
 
     response = logged_in_api_client.post(url)
 
@@ -124,7 +124,7 @@ def test_cannot_approve_reject_applied_mutation(
         target=track, type="update", payload={}, is_applied=True
     )
     mocker.patch("funkwhale_api.common.mutations.registry.has_perm", return_value=True)
-    url = reverse(f"api:v1:mutations-{endpoint}", kwargs={"uuid": mutation.uuid})
+    url = reverse(f"api:v2:mutations-{endpoint}", kwargs={"uuid": mutation.uuid})
 
     response = logged_in_api_client.post(url)
 
@@ -146,7 +146,7 @@ def test_cannot_approve_reject_without_perm(
     track = factories["music.Track"]()
     mutation = factories["common.Mutation"](target=track, type="update", payload={})
     mocker.patch("funkwhale_api.common.mutations.registry.has_perm", return_value=False)
-    url = reverse(f"api:v1:mutations-{endpoint}", kwargs={"uuid": mutation.uuid})
+    url = reverse(f"api:v2:mutations-{endpoint}", kwargs={"uuid": mutation.uuid})
 
     response = logged_in_api_client.post(url)
 
@@ -168,7 +168,7 @@ def test_rate_limit(logged_in_api_client, now_time, settings, mocker):
         "enabled": settings.THROTTLING_ENABLED,
     }
     get_status = mocker.spy(throttling, "get_status")
-    url = reverse("api:v1:rate-limit")
+    url = reverse("api:v2:rate-limit")
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 200
@@ -192,7 +192,7 @@ def test_attachment_proxy_redirects_original(
     avatar_content = avatar.read()
     fetch_remote_attachment = mocker.spy(tasks, "fetch_remote_attachment")
     m = r_mock.get(attachment.url, body=io.BytesIO(avatar_content))
-    proxy_url = reverse("api:v1:attachments-proxy", kwargs={"uuid": attachment.uuid})
+    proxy_url = reverse("api:v2:attachments-proxy", kwargs={"uuid": attachment.uuid})
 
     response = logged_in_api_client.get(proxy_url, {"next": next})
     attachment.refresh_from_db()
@@ -217,7 +217,7 @@ def test_attachment_proxy_dont_crash_on_long_filename(
 
     avatar_content = avatar.read()
     r_mock.get(attachment.url, body=io.BytesIO(avatar_content))
-    proxy_url = reverse("api:v1:attachments-proxy", kwargs={"uuid": attachment.uuid})
+    proxy_url = reverse("api:v2:attachments-proxy", kwargs={"uuid": attachment.uuid})
 
     response = logged_in_api_client.get(proxy_url, {"next": next})
     attachment.refresh_from_db()
@@ -230,7 +230,7 @@ def test_attachment_proxy_dont_crash_on_long_filename(
 
 def test_attachment_create(logged_in_api_client, avatar):
     actor = logged_in_api_client.user.create_actor()
-    url = reverse("api:v1:attachments-list")
+    url = reverse("api:v2:attachments-list")
     content = avatar.read()
     avatar.seek(0)
     payload = {"file": avatar}
@@ -245,7 +245,7 @@ def test_attachment_create(logged_in_api_client, avatar):
 def test_attachment_destroy(factories, logged_in_api_client):
     actor = logged_in_api_client.user.create_actor()
     attachment = factories["common.Attachment"](actor=actor)
-    url = reverse("api:v1:attachments-detail", kwargs={"uuid": attachment.uuid})
+    url = reverse("api:v2:attachments-detail", kwargs={"uuid": attachment.uuid})
     response = logged_in_api_client.delete(url)
 
     assert response.status_code == 204
@@ -256,7 +256,7 @@ def test_attachment_destroy(factories, logged_in_api_client):
 def test_attachment_destroy_not_owner(factories, logged_in_api_client):
     logged_in_api_client.user.create_actor()
     attachment = factories["common.Attachment"]()
-    url = reverse("api:v1:attachments-detail", kwargs={"uuid": attachment.uuid})
+    url = reverse("api:v2:attachments-detail", kwargs={"uuid": attachment.uuid})
     response = logged_in_api_client.delete(url)
 
     assert response.status_code == 403
@@ -265,7 +265,7 @@ def test_attachment_destroy_not_owner(factories, logged_in_api_client):
 
 def test_render_fails_for_no_text(api_client):
     payload = {}
-    url = reverse("api:v1:text-preview")
+    url = reverse("api:v2:text-preview")
     response = api_client.post(url, payload)
 
     expected = {"detail": "Invalid input"}
@@ -275,7 +275,7 @@ def test_render_fails_for_no_text(api_client):
 
 def test_can_render_text_preview(api_client, db):
     payload = {"text": "Hello world"}
-    url = reverse("api:v1:text-preview")
+    url = reverse("api:v2:text-preview")
     response = api_client.post(url, payload)
 
     expected = {"rendered": utils.render_html(payload["text"], "text/markdown")}
@@ -285,7 +285,7 @@ def test_can_render_text_preview(api_client, db):
 
 def test_can_render_text_preview_permissive(api_client, db):
     payload = {"text": "Hello world", "permissive": True}
-    url = reverse("api:v1:text-preview")
+    url = reverse("api:v2:text-preview")
     response = api_client.post(url, payload)
 
     expected = {

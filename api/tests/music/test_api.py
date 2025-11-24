@@ -11,10 +11,10 @@ DATA_DIR = os.path.dirname(os.path.abspath(__file__))
 @pytest.mark.parametrize(
     "route,method",
     [
-        ("api:v1:tags-list", "get"),
-        ("api:v1:tracks-list", "get"),
-        ("api:v1:artists-list", "get"),
-        ("api:v1:albums-list", "get"),
+        ("api:v2:tags-list", "get"),
+        ("api:v2:tracks-list", "get"),
+        ("api:v2:artists-list", "get"),
+        ("api:v2:albums-list", "get"),
     ],
 )
 def test_can_restrict_api_views_to_authenticated_users(

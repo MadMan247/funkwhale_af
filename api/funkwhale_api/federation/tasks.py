@@ -192,10 +192,9 @@ def fetch_nodeinfo(domain_name):
     serializer.is_valid(raise_exception=True)
     nodeinfo_url = None
     for link in serializer.validated_data["links"]:
-        if link["rel"] == "http://nodeinfo.diaspora.software/ns/schema/2.0":
+        if link["rel"] == "https://docs.funkwhale.audio/swagger/schema.yml":
             nodeinfo_url = link["href"]
             break
-
     response = s.get(url=nodeinfo_url)
     response.raise_for_status()
     return response.json()

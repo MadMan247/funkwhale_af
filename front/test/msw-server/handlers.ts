@@ -26,1307 +26,1307 @@ const next = (apiKey: string) => {
 }
 
 export const handlers = [
-  http.get(`${baseURL}/api/v1/activity/`, async () => {
+  http.get(`${baseURL}/api/v2/activity/`, async () => {
     const resultArray = [[undefined, { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/activity/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/activity/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/albums/`, async () => {
+  http.get(`${baseURL}/api/v2/albums/`, async () => {
     const resultArray = [[getGetAlbums200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/albums/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/albums/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/albums/`, async () => {
+  http.post(`${baseURL}/api/v2/albums/`, async () => {
     const resultArray = [[getCreateAlbum201Response(), { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/albums/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/albums/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/albums/:id/`, async () => {
+  http.get(`${baseURL}/api/v2/albums/:id/`, async () => {
     const resultArray = [[getGetAlbum200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/albums/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/albums/:id/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/albums/:id/`, async () => {
+  http.delete(`${baseURL}/api/v2/albums/:id/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/albums/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/albums/:id/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/albums/:id/fetches/`, async () => {
+  http.get(`${baseURL}/api/v2/albums/:id/fetches/`, async () => {
     const resultArray = [[getGetAlbumFetches200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/albums/:id/fetches/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/albums/:id/fetches/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/albums/:id/fetches/`, async () => {
+  http.post(`${baseURL}/api/v2/albums/:id/fetches/`, async () => {
     const resultArray = [[getCreateAlbumFetch200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/albums/:id/fetches/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/albums/:id/fetches/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/albums/:id/libraries/`, async () => {
+  http.get(`${baseURL}/api/v2/albums/:id/libraries/`, async () => {
     const resultArray = [[getGetAlbumLibraries200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/albums/:id/libraries/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/albums/:id/libraries/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/albums/:id/mutations/`, async () => {
+  http.get(`${baseURL}/api/v2/albums/:id/mutations/`, async () => {
     const resultArray = [[getGetAlbumMutations200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/albums/:id/mutations/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/albums/:id/mutations/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/albums/:id/mutations/`, async () => {
+  http.post(`${baseURL}/api/v2/albums/:id/mutations/`, async () => {
     const resultArray = [[getCreateAlbumMutation200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/albums/:id/mutations/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/albums/:id/mutations/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/artists/`, async () => {
+  http.get(`${baseURL}/api/v2/artists/`, async () => {
     const resultArray = [[getGetArtists200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/artists/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/artists/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/artists/:id/`, async () => {
+  http.get(`${baseURL}/api/v2/artists/:id/`, async () => {
     const resultArray = [[getGetArtist200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/artists/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/artists/:id/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/artists/:id/fetches/`, async () => {
+  http.get(`${baseURL}/api/v2/artists/:id/fetches/`, async () => {
     const resultArray = [[getGetArtistFetches200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/artists/:id/fetches/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/artists/:id/fetches/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/artists/:id/fetches/`, async () => {
+  http.post(`${baseURL}/api/v2/artists/:id/fetches/`, async () => {
     const resultArray = [[getCreateArtistFetch200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/artists/:id/fetches/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/artists/:id/fetches/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/artists/:id/libraries/`, async () => {
+  http.get(`${baseURL}/api/v2/artists/:id/libraries/`, async () => {
     const resultArray = [[getGetArtistLibraries200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/artists/:id/libraries/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/artists/:id/libraries/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/artists/:id/mutations/`, async () => {
+  http.get(`${baseURL}/api/v2/artists/:id/mutations/`, async () => {
     const resultArray = [[getGetArtistMutations200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/artists/:id/mutations/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/artists/:id/mutations/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/artists/:id/mutations/`, async () => {
+  http.post(`${baseURL}/api/v2/artists/:id/mutations/`, async () => {
     const resultArray = [[getCreateArtistMutation200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/artists/:id/mutations/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/artists/:id/mutations/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/attachments/`, async () => {
+  http.post(`${baseURL}/api/v2/attachments/`, async () => {
     const resultArray = [[getCreateAttachment201Response(), { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/attachments/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/attachments/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/attachments/:uuid/`, async () => {
+  http.get(`${baseURL}/api/v2/attachments/:uuid/`, async () => {
     const resultArray = [[getGetAttachment200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/attachments/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/attachments/:uuid/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/attachments/:uuid/`, async () => {
+  http.delete(`${baseURL}/api/v2/attachments/:uuid/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/attachments/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/attachments/:uuid/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/attachments/:uuid/proxy/`, async () => {
+  http.get(`${baseURL}/api/v2/attachments/:uuid/proxy/`, async () => {
     const resultArray = [[getGetAttachmentProxy200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/attachments/:uuid/proxy/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/attachments/:uuid/proxy/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/auth/password/change/`, async () => {
+  http.post(`${baseURL}/api/v2/auth/password/change/`, async () => {
     const resultArray = [[getChangePassword200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/auth/password/change/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/auth/password/change/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/auth/password/reset/`, async () => {
+  http.post(`${baseURL}/api/v2/auth/password/reset/`, async () => {
     const resultArray = [[getResetPassword200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/auth/password/reset/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/auth/password/reset/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/auth/password/reset/confirm/`, async () => {
+  http.post(`${baseURL}/api/v2/auth/password/reset/confirm/`, async () => {
     const resultArray = [[getConfirmPasswordReset200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/auth/password/reset/confirm/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/auth/password/reset/confirm/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/auth/registration/`, async () => {
+  http.post(`${baseURL}/api/v2/auth/registration/`, async () => {
     const resultArray = [[getRegister201Response(), { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/auth/registration/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/auth/registration/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/auth/registration/change-password/`, async () => {
+  http.post(`${baseURL}/api/v2/auth/registration/change-password/`, async () => {
     const resultArray = [[getChangePassword2200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/auth/registration/change-password/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/auth/registration/change-password/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/auth/registration/verify-email/`, async () => {
+  http.post(`${baseURL}/api/v2/auth/registration/verify-email/`, async () => {
     const resultArray = [[undefined, { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/auth/registration/verify-email/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/auth/registration/verify-email/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/auth/user/`, async () => {
+  http.get(`${baseURL}/api/v2/auth/user/`, async () => {
     const resultArray = [[getGetAuthUser200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/auth/user/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/auth/user/`) % resultArray.length])
   }),
-  http.put(`${baseURL}/api/v1/auth/user/`, async () => {
+  http.put(`${baseURL}/api/v2/auth/user/`, async () => {
     const resultArray = [[getUpdateAuthUser200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`put /api/v1/auth/user/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`put /api/v2/auth/user/`) % resultArray.length])
   }),
-  http.patch(`${baseURL}/api/v1/auth/user/`, async () => {
+  http.patch(`${baseURL}/api/v2/auth/user/`, async () => {
     const resultArray = [[getPartialUpdateAuthUser200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`patch /api/v1/auth/user/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`patch /api/v2/auth/user/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/channels/`, async () => {
+  http.get(`${baseURL}/api/v2/channels/`, async () => {
     const resultArray = [[getGetChannels200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/channels/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/channels/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/channels/`, async () => {
+  http.post(`${baseURL}/api/v2/channels/`, async () => {
     const resultArray = [[getCreateChannel201Response(), { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/channels/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/channels/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/channels/:composite/`, async () => {
+  http.get(`${baseURL}/api/v2/channels/:composite/`, async () => {
     const resultArray = [[getGetChannel200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/channels/:composite/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/channels/:composite/`) % resultArray.length])
   }),
-  http.put(`${baseURL}/api/v1/channels/:composite/`, async () => {
+  http.put(`${baseURL}/api/v2/channels/:composite/`, async () => {
     const resultArray = [[getUpdateChannel200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`put /api/v1/channels/:composite/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`put /api/v2/channels/:composite/`) % resultArray.length])
   }),
-  http.patch(`${baseURL}/api/v1/channels/:composite/`, async () => {
+  http.patch(`${baseURL}/api/v2/channels/:composite/`, async () => {
     const resultArray = [[getPartialUpdateChannel200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`patch /api/v1/channels/:composite/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`patch /api/v2/channels/:composite/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/channels/:composite/`, async () => {
+  http.delete(`${baseURL}/api/v2/channels/:composite/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/channels/:composite/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/channels/:composite/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/channels/:composite/rss/`, async () => {
+  http.get(`${baseURL}/api/v2/channels/:composite/rss/`, async () => {
     const resultArray = [[getGetChannelRss200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/channels/:composite/rss/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/channels/:composite/rss/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/channels/:composite/subscribe/`, async () => {
+  http.post(`${baseURL}/api/v2/channels/:composite/subscribe/`, async () => {
     const resultArray = [[getSubscribeChannel200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/channels/:composite/subscribe/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/channels/:composite/subscribe/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/channels/:composite/unsubscribe/`, async () => {
+  http.post(`${baseURL}/api/v2/channels/:composite/unsubscribe/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/channels/:composite/unsubscribe/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/channels/:composite/unsubscribe/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/channels/:composite/unsubscribe/`, async () => {
+  http.delete(`${baseURL}/api/v2/channels/:composite/unsubscribe/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/channels/:composite/unsubscribe/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/channels/:composite/unsubscribe/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/channels/metadata-choices/`, async () => {
+  http.get(`${baseURL}/api/v2/channels/metadata-choices/`, async () => {
     const resultArray = [[getGetChannelMetadataChoices200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/channels/metadata-choices/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/channels/metadata-choices/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/channels/rss-subscribe/`, async () => {
+  http.post(`${baseURL}/api/v2/channels/rss-subscribe/`, async () => {
     const resultArray = [[getSubscribeChannelRss200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/channels/rss-subscribe/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/channels/rss-subscribe/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/favorites/tracks/`, async () => {
+  http.get(`${baseURL}/api/v2/favorites/tracks/`, async () => {
     const resultArray = [[getGetFavoriteTracks200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/favorites/tracks/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/favorites/tracks/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/favorites/tracks/`, async () => {
+  http.post(`${baseURL}/api/v2/favorites/tracks/`, async () => {
     const resultArray = [[getFavoriteTrack201Response(), { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/favorites/tracks/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/favorites/tracks/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/favorites/tracks/:id/`, async () => {
+  http.delete(`${baseURL}/api/v2/favorites/tracks/:id/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/favorites/tracks/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/favorites/tracks/:id/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/favorites/tracks/all/`, async () => {
+  http.get(`${baseURL}/api/v2/favorites/tracks/all/`, async () => {
     const resultArray = [[getGetAllFavoriteTracks200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/favorites/tracks/all/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/favorites/tracks/all/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/favorites/tracks/remove/`, async () => {
+  http.post(`${baseURL}/api/v2/favorites/tracks/remove/`, async () => {
     const resultArray = [[getUnfavoriteTrack2200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/favorites/tracks/remove/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/favorites/tracks/remove/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/favorites/tracks/remove/`, async () => {
+  http.delete(`${baseURL}/api/v2/favorites/tracks/remove/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/favorites/tracks/remove/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/favorites/tracks/remove/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/federation/actors/:fullUsername/`, async () => {
+  http.get(`${baseURL}/api/v2/federation/actors/:fullUsername/`, async () => {
     const resultArray = [[getGetFederationActor200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/federation/actors/:fullUsername/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/federation/actors/:fullUsername/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/federation/actors/:fullUsername/libraries/`, async () => {
+  http.get(`${baseURL}/api/v2/federation/actors/:fullUsername/libraries/`, async () => {
     const resultArray = [[getGetFederationActorLibrary200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/federation/actors/:fullUsername/libraries/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/federation/actors/:fullUsername/libraries/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/federation/domains/`, async () => {
+  http.get(`${baseURL}/api/v2/federation/domains/`, async () => {
     const resultArray = [[getGetFederationDomains200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/federation/domains/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/federation/domains/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/federation/domains/:name/`, async () => {
+  http.get(`${baseURL}/api/v2/federation/domains/:name/`, async () => {
     const resultArray = [[getGetFederationDomain200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/federation/domains/:name/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/federation/domains/:name/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/federation/fetches/`, async () => {
+  http.post(`${baseURL}/api/v2/federation/fetches/`, async () => {
     const resultArray = [[getCreateFederationFetch201Response(), { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/federation/fetches/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/federation/fetches/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/federation/fetches/:id/`, async () => {
+  http.get(`${baseURL}/api/v2/federation/fetches/:id/`, async () => {
     const resultArray = [[getGetFederationFetch200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/federation/fetches/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/federation/fetches/:id/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/federation/follows/library/`, async () => {
+  http.get(`${baseURL}/api/v2/federation/follows/library/`, async () => {
     const resultArray = [[getGetFederationLibraryFollows200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/federation/follows/library/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/federation/follows/library/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/federation/follows/library/`, async () => {
+  http.post(`${baseURL}/api/v2/federation/follows/library/`, async () => {
     const resultArray = [[getCreateFederationLibraryFollow201Response(), { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/federation/follows/library/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/federation/follows/library/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/federation/follows/library/:uuid/`, async () => {
+  http.get(`${baseURL}/api/v2/federation/follows/library/:uuid/`, async () => {
     const resultArray = [[getGetFederationLibraryFollow200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/federation/follows/library/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/federation/follows/library/:uuid/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/federation/follows/library/:uuid/`, async () => {
+  http.delete(`${baseURL}/api/v2/federation/follows/library/:uuid/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/federation/follows/library/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/federation/follows/library/:uuid/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/federation/follows/library/:uuid/accept/`, async () => {
+  http.post(`${baseURL}/api/v2/federation/follows/library/:uuid/accept/`, async () => {
     const resultArray = [
       [undefined, { status: 204 }],
       [undefined, { status: 404 }]
     ] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/federation/follows/library/:uuid/accept/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/federation/follows/library/:uuid/accept/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/federation/follows/library/:uuid/reject/`, async () => {
+  http.post(`${baseURL}/api/v2/federation/follows/library/:uuid/reject/`, async () => {
     const resultArray = [[getRejectFederationLibraryFollow200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/federation/follows/library/:uuid/reject/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/federation/follows/library/:uuid/reject/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/federation/follows/library/all/`, async () => {
+  http.get(`${baseURL}/api/v2/federation/follows/library/all/`, async () => {
     const resultArray = [[getGetAllFederationLibraryFollows200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/federation/follows/library/all/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/federation/follows/library/all/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/federation/follows/user/`, async () => {
+  http.get(`${baseURL}/api/v2/federation/follows/user/`, async () => {
     const resultArray = [[getGetFederationReceivedFollows200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/federation/follows/user/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/federation/follows/user/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/federation/follows/user/`, async () => {
+  http.post(`${baseURL}/api/v2/federation/follows/user/`, async () => {
     const resultArray = [[getCreateFederationUserFollow201Response(), { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/federation/follows/user/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/federation/follows/user/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/federation/follows/user/:uuid/`, async () => {
+  http.get(`${baseURL}/api/v2/federation/follows/user/:uuid/`, async () => {
     const resultArray = [[getGetFederationUserFollow200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/federation/follows/user/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/federation/follows/user/:uuid/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/federation/follows/user/:uuid/`, async () => {
+  http.delete(`${baseURL}/api/v2/federation/follows/user/:uuid/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/federation/follows/user/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/federation/follows/user/:uuid/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/federation/follows/user/:uuid/accept/`, async () => {
+  http.post(`${baseURL}/api/v2/federation/follows/user/:uuid/accept/`, async () => {
     const resultArray = [
       [undefined, { status: 204 }],
       [undefined, { status: 404 }]
     ] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/federation/follows/user/:uuid/accept/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/federation/follows/user/:uuid/accept/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/federation/follows/user/:uuid/reject/`, async () => {
+  http.post(`${baseURL}/api/v2/federation/follows/user/:uuid/reject/`, async () => {
     const resultArray = [[getRejectFederationUserFollow200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/federation/follows/user/:uuid/reject/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/federation/follows/user/:uuid/reject/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/federation/follows/user/all/`, async () => {
+  http.get(`${baseURL}/api/v2/federation/follows/user/all/`, async () => {
     const resultArray = [[getGetAllFederationLibraryFollows2200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/federation/follows/user/all/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/federation/follows/user/all/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/federation/inbox/`, async () => {
+  http.get(`${baseURL}/api/v2/federation/inbox/`, async () => {
     const resultArray = [[getGetFederationInboxes200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/federation/inbox/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/federation/inbox/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/federation/inbox/:id/`, async () => {
+  http.get(`${baseURL}/api/v2/federation/inbox/:id/`, async () => {
     const resultArray = [[getGetFederationInbox200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/federation/inbox/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/federation/inbox/:id/`) % resultArray.length])
   }),
-  http.put(`${baseURL}/api/v1/federation/inbox/:id/`, async () => {
+  http.put(`${baseURL}/api/v2/federation/inbox/:id/`, async () => {
     const resultArray = [[getUpdateFederationInbox200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`put /api/v1/federation/inbox/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`put /api/v2/federation/inbox/:id/`) % resultArray.length])
   }),
-  http.patch(`${baseURL}/api/v1/federation/inbox/:id/`, async () => {
+  http.patch(`${baseURL}/api/v2/federation/inbox/:id/`, async () => {
     const resultArray = [[getPartialUpdateFederationInbox200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`patch /api/v1/federation/inbox/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`patch /api/v2/federation/inbox/:id/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/federation/inbox/action/`, async () => {
+  http.post(`${baseURL}/api/v2/federation/inbox/action/`, async () => {
     const resultArray = [[getCreateFederationInboxAction200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/federation/inbox/action/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/federation/inbox/action/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/federation/libraries/:uuid/`, async () => {
+  http.get(`${baseURL}/api/v2/federation/libraries/:uuid/`, async () => {
     const resultArray = [[getGetFederationLibrary200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/federation/libraries/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/federation/libraries/:uuid/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/federation/libraries/:uuid/scan/`, async () => {
+  http.post(`${baseURL}/api/v2/federation/libraries/:uuid/scan/`, async () => {
     const resultArray = [[getCreateFederationLibraryScan200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/federation/libraries/:uuid/scan/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/federation/libraries/:uuid/scan/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/federation/libraries/fetch/`, async () => {
+  http.post(`${baseURL}/api/v2/federation/libraries/fetch/`, async () => {
     const resultArray = [[getCreateFederationLibraryFetch200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/federation/libraries/fetch/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/federation/libraries/fetch/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/history/listenings/`, async () => {
+  http.get(`${baseURL}/api/v2/history/listenings/`, async () => {
     const resultArray = [[getGetHistoryListenings200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/history/listenings/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/history/listenings/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/history/listenings/`, async () => {
+  http.post(`${baseURL}/api/v2/history/listenings/`, async () => {
     const resultArray = [[getCreateHistoryListening201Response(), { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/history/listenings/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/history/listenings/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/history/listenings/:id/`, async () => {
+  http.get(`${baseURL}/api/v2/history/listenings/:id/`, async () => {
     const resultArray = [[getGetHistoryListening200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/history/listenings/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/history/listenings/:id/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/instance/admin/settings/`, async () => {
+  http.get(`${baseURL}/api/v2/instance/admin/settings/`, async () => {
     const resultArray = [[getGetInstanceAdminSettings200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/instance/admin/settings/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/instance/admin/settings/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/instance/admin/settings/:id/`, async () => {
+  http.get(`${baseURL}/api/v2/instance/admin/settings/:id/`, async () => {
     const resultArray = [[getGetInstanceAdminSetting200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/instance/admin/settings/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/instance/admin/settings/:id/`) % resultArray.length])
   }),
-  http.put(`${baseURL}/api/v1/instance/admin/settings/:id/`, async () => {
+  http.put(`${baseURL}/api/v2/instance/admin/settings/:id/`, async () => {
     const resultArray = [[getUpdateInstanceAdminSetting200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`put /api/v1/instance/admin/settings/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`put /api/v2/instance/admin/settings/:id/`) % resultArray.length])
   }),
-  http.patch(`${baseURL}/api/v1/instance/admin/settings/:id/`, async () => {
+  http.patch(`${baseURL}/api/v2/instance/admin/settings/:id/`, async () => {
     const resultArray = [[getPartialUpdateInstanceAdminSetting200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`patch /api/v1/instance/admin/settings/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`patch /api/v2/instance/admin/settings/:id/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/instance/admin/settings/bulk/`, async () => {
+  http.post(`${baseURL}/api/v2/instance/admin/settings/bulk/`, async () => {
     const resultArray = [[getCreateInstanceAdminSettingBulk200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/instance/admin/settings/bulk/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/instance/admin/settings/bulk/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/instance/nodeinfo/2.0/`, async () => {
+  http.get(`${baseURL}/api/v2/instance/nodeinfo/2.0/`, async () => {
     const resultArray = [[getGetNodeInfo20200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/instance/nodeinfo/2.0/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/instance/nodeinfo/2.0/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/instance/settings/`, async () => {
+  http.get(`${baseURL}/api/v2/instance/settings/`, async () => {
     const resultArray = [[getGetInstanceSettings200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/instance/settings/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/instance/settings/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/instance/spa-manifest.json`, async () => {
+  http.get(`${baseURL}/api/v2/instance/spa-manifest.json`, async () => {
     const resultArray = [[getGetSpaManifest200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/instance/spa-manifest.json`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/instance/spa-manifest.json`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/libraries/`, async () => {
+  http.get(`${baseURL}/api/v2/libraries/`, async () => {
     const resultArray = [[getGetLibraries200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/libraries/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/libraries/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/libraries/:uuid/`, async () => {
+  http.get(`${baseURL}/api/v2/libraries/:uuid/`, async () => {
     const resultArray = [[getGetLibrary200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/libraries/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/libraries/:uuid/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/libraries/fs-import/`, async () => {
+  http.get(`${baseURL}/api/v2/libraries/fs-import/`, async () => {
     const resultArray = [[undefined, { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/libraries/fs-import/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/libraries/fs-import/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/libraries/fs-import/`, async () => {
+  http.post(`${baseURL}/api/v2/libraries/fs-import/`, async () => {
     const resultArray = [[undefined, { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/libraries/fs-import/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/libraries/fs-import/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/libraries/fs-import/`, async () => {
+  http.delete(`${baseURL}/api/v2/libraries/fs-import/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/libraries/fs-import/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/libraries/fs-import/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/licenses/`, async () => {
+  http.get(`${baseURL}/api/v2/licenses/`, async () => {
     const resultArray = [[getGetLicenses200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/licenses/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/licenses/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/licenses/:code/`, async () => {
+  http.get(`${baseURL}/api/v2/licenses/:code/`, async () => {
     const resultArray = [[getGetLicense200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/licenses/:code/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/licenses/:code/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/listen/:uuid/`, async () => {
+  http.get(`${baseURL}/api/v2/listen/:uuid/`, async () => {
     const resultArray = [[getGetListen200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/listen/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/listen/:uuid/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/accounts/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/accounts/`, async () => {
     const resultArray = [[getAdminGetAccounts200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/accounts/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/accounts/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/accounts/:id/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/accounts/:id/`, async () => {
     const resultArray = [[getAdminGetAccount200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/accounts/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/accounts/:id/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/accounts/:id/stats/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/accounts/:id/stats/`, async () => {
     const resultArray = [[getAdminGetAccountStats200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/accounts/:id/stats/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/accounts/:id/stats/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/manage/accounts/action/`, async () => {
+  http.post(`${baseURL}/api/v2/manage/accounts/action/`, async () => {
     const resultArray = [[getAdminCreateAccountAction200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/manage/accounts/action/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/manage/accounts/action/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/channels/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/channels/`, async () => {
     const resultArray = [[getAdminGetChannels200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/channels/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/channels/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/channels/:composite/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/channels/:composite/`, async () => {
     const resultArray = [[getAdminGetChannel200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/channels/:composite/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/channels/:composite/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/manage/channels/:composite/`, async () => {
+  http.delete(`${baseURL}/api/v2/manage/channels/:composite/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/manage/channels/:composite/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/manage/channels/:composite/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/channels/:composite/stats/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/channels/:composite/stats/`, async () => {
     const resultArray = [[getAdminGetChannelStats200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/channels/:composite/stats/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/channels/:composite/stats/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/federation/domains/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/federation/domains/`, async () => {
     const resultArray = [[getAdminGetFederationDomains200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/federation/domains/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/federation/domains/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/manage/federation/domains/`, async () => {
+  http.post(`${baseURL}/api/v2/manage/federation/domains/`, async () => {
     const resultArray = [[getAdminCreateFederationDomain201Response(), { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/manage/federation/domains/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/manage/federation/domains/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/federation/domains/:name/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/federation/domains/:name/`, async () => {
     const resultArray = [[getAdminGetFederationDomain200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/federation/domains/:name/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/federation/domains/:name/`) % resultArray.length])
   }),
-  http.put(`${baseURL}/api/v1/manage/federation/domains/:name/`, async () => {
+  http.put(`${baseURL}/api/v2/manage/federation/domains/:name/`, async () => {
     const resultArray = [[getAdminUpdateFederationDomain200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`put /api/v1/manage/federation/domains/:name/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`put /api/v2/manage/federation/domains/:name/`) % resultArray.length])
   }),
-  http.patch(`${baseURL}/api/v1/manage/federation/domains/:name/`, async () => {
+  http.patch(`${baseURL}/api/v2/manage/federation/domains/:name/`, async () => {
     const resultArray = [[getAdminPartialUpdateFederationDomain200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`patch /api/v1/manage/federation/domains/:name/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`patch /api/v2/manage/federation/domains/:name/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/federation/domains/:name/nodeinfo/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/federation/domains/:name/nodeinfo/`, async () => {
     const resultArray = [[getAdminGetFederationDomainNodeinfo200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/federation/domains/:name/nodeinfo/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/federation/domains/:name/nodeinfo/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/federation/domains/:name/stats/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/federation/domains/:name/stats/`, async () => {
     const resultArray = [[getAdminGetFederationDomainStats200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/federation/domains/:name/stats/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/federation/domains/:name/stats/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/manage/federation/domains/action/`, async () => {
+  http.post(`${baseURL}/api/v2/manage/federation/domains/action/`, async () => {
     const resultArray = [[getAdminCreateFederationDomainAction200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/manage/federation/domains/action/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/manage/federation/domains/action/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/library/albums/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/library/albums/`, async () => {
     const resultArray = [[getAdminGetAlbums200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/library/albums/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/library/albums/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/library/albums/:id/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/library/albums/:id/`, async () => {
     const resultArray = [[getAdminGetAlbum200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/library/albums/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/library/albums/:id/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/manage/library/albums/:id/`, async () => {
+  http.delete(`${baseURL}/api/v2/manage/library/albums/:id/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/manage/library/albums/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/manage/library/albums/:id/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/library/albums/:id/stats/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/library/albums/:id/stats/`, async () => {
     const resultArray = [[getAdminGetLibraryAlbumStats200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/library/albums/:id/stats/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/library/albums/:id/stats/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/manage/library/albums/action/`, async () => {
+  http.post(`${baseURL}/api/v2/manage/library/albums/action/`, async () => {
     const resultArray = [[getAdminCreateAlbumAction200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/manage/library/albums/action/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/manage/library/albums/action/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/library/artists/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/library/artists/`, async () => {
     const resultArray = [[getAdminGetArtists200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/library/artists/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/library/artists/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/library/artists/:id/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/library/artists/:id/`, async () => {
     const resultArray = [[getAdminGetArtist200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/library/artists/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/library/artists/:id/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/manage/library/artists/:id/`, async () => {
+  http.delete(`${baseURL}/api/v2/manage/library/artists/:id/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/manage/library/artists/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/manage/library/artists/:id/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/library/artists/:id/stats/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/library/artists/:id/stats/`, async () => {
     const resultArray = [[getAdminGetLibraryArtistStats200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/library/artists/:id/stats/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/library/artists/:id/stats/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/manage/library/artists/action/`, async () => {
+  http.post(`${baseURL}/api/v2/manage/library/artists/action/`, async () => {
     const resultArray = [[getAdminCreateArtistAction200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/manage/library/artists/action/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/manage/library/artists/action/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/library/libraries/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/library/libraries/`, async () => {
     const resultArray = [[getAdminGetLibraries200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/library/libraries/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/library/libraries/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/library/libraries/:uuid/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/library/libraries/:uuid/`, async () => {
     const resultArray = [[getAdminGetLibrary200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/library/libraries/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/library/libraries/:uuid/`) % resultArray.length])
   }),
-  http.put(`${baseURL}/api/v1/manage/library/libraries/:uuid/`, async () => {
+  http.put(`${baseURL}/api/v2/manage/library/libraries/:uuid/`, async () => {
     const resultArray = [[getAdminUpdateLibrary200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`put /api/v1/manage/library/libraries/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`put /api/v2/manage/library/libraries/:uuid/`) % resultArray.length])
   }),
-  http.patch(`${baseURL}/api/v1/manage/library/libraries/:uuid/`, async () => {
+  http.patch(`${baseURL}/api/v2/manage/library/libraries/:uuid/`, async () => {
     const resultArray = [[getAdminPartialUpdateLibrary200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`patch /api/v1/manage/library/libraries/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`patch /api/v2/manage/library/libraries/:uuid/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/manage/library/libraries/:uuid/`, async () => {
+  http.delete(`${baseURL}/api/v2/manage/library/libraries/:uuid/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/manage/library/libraries/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/manage/library/libraries/:uuid/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/library/libraries/:uuid/stats/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/library/libraries/:uuid/stats/`, async () => {
     const resultArray = [[getAdminGetLibraryStats200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/library/libraries/:uuid/stats/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/library/libraries/:uuid/stats/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/manage/library/libraries/action/`, async () => {
+  http.post(`${baseURL}/api/v2/manage/library/libraries/action/`, async () => {
     const resultArray = [[getAdminCreateLibraryAction200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/manage/library/libraries/action/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/manage/library/libraries/action/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/library/tracks/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/library/tracks/`, async () => {
     const resultArray = [[getAdminGetTracks200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/library/tracks/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/library/tracks/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/library/tracks/:id/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/library/tracks/:id/`, async () => {
     const resultArray = [[getAdminGetTrack200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/library/tracks/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/library/tracks/:id/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/manage/library/tracks/:id/`, async () => {
+  http.delete(`${baseURL}/api/v2/manage/library/tracks/:id/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/manage/library/tracks/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/manage/library/tracks/:id/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/library/tracks/:id/stats/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/library/tracks/:id/stats/`, async () => {
     const resultArray = [[getAdminGetTrackStats200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/library/tracks/:id/stats/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/library/tracks/:id/stats/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/manage/library/tracks/action/`, async () => {
+  http.post(`${baseURL}/api/v2/manage/library/tracks/action/`, async () => {
     const resultArray = [[getAdminCreateTrackAction200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/manage/library/tracks/action/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/manage/library/tracks/action/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/library/uploads/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/library/uploads/`, async () => {
     const resultArray = [[getAdminGetUploads200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/library/uploads/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/library/uploads/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/library/uploads/:uuid/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/library/uploads/:uuid/`, async () => {
     const resultArray = [[getAdminGetUpload200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/library/uploads/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/library/uploads/:uuid/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/manage/library/uploads/:uuid/`, async () => {
+  http.delete(`${baseURL}/api/v2/manage/library/uploads/:uuid/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/manage/library/uploads/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/manage/library/uploads/:uuid/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/manage/library/uploads/action/`, async () => {
+  http.post(`${baseURL}/api/v2/manage/library/uploads/action/`, async () => {
     const resultArray = [[getAdminCreateUploadAction200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/manage/library/uploads/action/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/manage/library/uploads/action/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/moderation/instance-policies/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/moderation/instance-policies/`, async () => {
     const resultArray = [[getModerationGetInstancePolicies200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/moderation/instance-policies/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/moderation/instance-policies/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/manage/moderation/instance-policies/`, async () => {
+  http.post(`${baseURL}/api/v2/manage/moderation/instance-policies/`, async () => {
     const resultArray = [[getModerationCreateInstancePolicy201Response(), { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/manage/moderation/instance-policies/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/manage/moderation/instance-policies/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/moderation/instance-policies/:id/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/moderation/instance-policies/:id/`, async () => {
     const resultArray = [[getModerationGetInstancePolicy200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/moderation/instance-policies/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/moderation/instance-policies/:id/`) % resultArray.length])
   }),
-  http.put(`${baseURL}/api/v1/manage/moderation/instance-policies/:id/`, async () => {
+  http.put(`${baseURL}/api/v2/manage/moderation/instance-policies/:id/`, async () => {
     const resultArray = [[getModerationUpdateInstancePolicy200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`put /api/v1/manage/moderation/instance-policies/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`put /api/v2/manage/moderation/instance-policies/:id/`) % resultArray.length])
   }),
-  http.patch(`${baseURL}/api/v1/manage/moderation/instance-policies/:id/`, async () => {
+  http.patch(`${baseURL}/api/v2/manage/moderation/instance-policies/:id/`, async () => {
     const resultArray = [[getModerationPartialUpdateInstancePolicy200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`patch /api/v1/manage/moderation/instance-policies/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`patch /api/v2/manage/moderation/instance-policies/:id/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/manage/moderation/instance-policies/:id/`, async () => {
+  http.delete(`${baseURL}/api/v2/manage/moderation/instance-policies/:id/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/manage/moderation/instance-policies/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/manage/moderation/instance-policies/:id/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/moderation/notes/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/moderation/notes/`, async () => {
     const resultArray = [[getModerationGetNotes200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/moderation/notes/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/moderation/notes/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/manage/moderation/notes/`, async () => {
+  http.post(`${baseURL}/api/v2/manage/moderation/notes/`, async () => {
     const resultArray = [[getModerationCreateNote201Response(), { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/manage/moderation/notes/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/manage/moderation/notes/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/moderation/notes/:uuid/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/moderation/notes/:uuid/`, async () => {
     const resultArray = [[getModerationGetNote200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/moderation/notes/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/moderation/notes/:uuid/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/manage/moderation/notes/:uuid/`, async () => {
+  http.delete(`${baseURL}/api/v2/manage/moderation/notes/:uuid/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/manage/moderation/notes/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/manage/moderation/notes/:uuid/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/moderation/reports/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/moderation/reports/`, async () => {
     const resultArray = [[getModerationGetReports200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/moderation/reports/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/moderation/reports/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/moderation/reports/:uuid/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/moderation/reports/:uuid/`, async () => {
     const resultArray = [[getModerationGetReport200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/moderation/reports/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/moderation/reports/:uuid/`) % resultArray.length])
   }),
-  http.put(`${baseURL}/api/v1/manage/moderation/reports/:uuid/`, async () => {
+  http.put(`${baseURL}/api/v2/manage/moderation/reports/:uuid/`, async () => {
     const resultArray = [[getModerationUpdateReport200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`put /api/v1/manage/moderation/reports/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`put /api/v2/manage/moderation/reports/:uuid/`) % resultArray.length])
   }),
-  http.patch(`${baseURL}/api/v1/manage/moderation/reports/:uuid/`, async () => {
+  http.patch(`${baseURL}/api/v2/manage/moderation/reports/:uuid/`, async () => {
     const resultArray = [[getModerationPartialUpdateReport200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`patch /api/v1/manage/moderation/reports/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`patch /api/v2/manage/moderation/reports/:uuid/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/moderation/requests/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/moderation/requests/`, async () => {
     const resultArray = [[getModerationGetRequests200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/moderation/requests/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/moderation/requests/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/moderation/requests/:uuid/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/moderation/requests/:uuid/`, async () => {
     const resultArray = [[getModerationGetRequest200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/moderation/requests/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/moderation/requests/:uuid/`) % resultArray.length])
   }),
-  http.put(`${baseURL}/api/v1/manage/moderation/requests/:uuid/`, async () => {
+  http.put(`${baseURL}/api/v2/manage/moderation/requests/:uuid/`, async () => {
     const resultArray = [[getModerationUpdateRequest200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`put /api/v1/manage/moderation/requests/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`put /api/v2/manage/moderation/requests/:uuid/`) % resultArray.length])
   }),
-  http.patch(`${baseURL}/api/v1/manage/moderation/requests/:uuid/`, async () => {
+  http.patch(`${baseURL}/api/v2/manage/moderation/requests/:uuid/`, async () => {
     const resultArray = [[getModerationPartialUpdateRequest200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`patch /api/v1/manage/moderation/requests/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`patch /api/v2/manage/moderation/requests/:uuid/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/tags/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/tags/`, async () => {
     const resultArray = [[getAdminGetTags200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/tags/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/tags/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/manage/tags/`, async () => {
+  http.post(`${baseURL}/api/v2/manage/tags/`, async () => {
     const resultArray = [[getAdminCreateTag201Response(), { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/manage/tags/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/manage/tags/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/tags/:name/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/tags/:name/`, async () => {
     const resultArray = [[getAdminGetTag200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/tags/:name/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/tags/:name/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/manage/tags/:name/`, async () => {
+  http.delete(`${baseURL}/api/v2/manage/tags/:name/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/manage/tags/:name/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/manage/tags/:name/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/manage/tags/action/`, async () => {
+  http.post(`${baseURL}/api/v2/manage/tags/action/`, async () => {
     const resultArray = [[getAdminCreateTagAction200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/manage/tags/action/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/manage/tags/action/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/users/invitations/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/users/invitations/`, async () => {
     const resultArray = [[getAdminGetInvitations200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/users/invitations/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/users/invitations/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/manage/users/invitations/`, async () => {
+  http.post(`${baseURL}/api/v2/manage/users/invitations/`, async () => {
     const resultArray = [[getAdminCreateInvitation201Response(), { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/manage/users/invitations/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/manage/users/invitations/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/users/invitations/:id/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/users/invitations/:id/`, async () => {
     const resultArray = [[getAdminGetInvitation200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/users/invitations/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/users/invitations/:id/`) % resultArray.length])
   }),
-  http.put(`${baseURL}/api/v1/manage/users/invitations/:id/`, async () => {
+  http.put(`${baseURL}/api/v2/manage/users/invitations/:id/`, async () => {
     const resultArray = [[getAdminUpdateInvitation200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`put /api/v1/manage/users/invitations/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`put /api/v2/manage/users/invitations/:id/`) % resultArray.length])
   }),
-  http.patch(`${baseURL}/api/v1/manage/users/invitations/:id/`, async () => {
+  http.patch(`${baseURL}/api/v2/manage/users/invitations/:id/`, async () => {
     const resultArray = [[getAdminPartialUpdateInvitation200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`patch /api/v1/manage/users/invitations/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`patch /api/v2/manage/users/invitations/:id/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/manage/users/invitations/action/`, async () => {
+  http.post(`${baseURL}/api/v2/manage/users/invitations/action/`, async () => {
     const resultArray = [[getAdminCreateInvitationAction200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/manage/users/invitations/action/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/manage/users/invitations/action/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/users/users/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/users/users/`, async () => {
     const resultArray = [[getAdminGetUsers200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/users/users/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/users/users/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/manage/users/users/:id/`, async () => {
+  http.get(`${baseURL}/api/v2/manage/users/users/:id/`, async () => {
     const resultArray = [[getAdminGetUser200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/manage/users/users/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/manage/users/users/:id/`) % resultArray.length])
   }),
-  http.put(`${baseURL}/api/v1/manage/users/users/:id/`, async () => {
+  http.put(`${baseURL}/api/v2/manage/users/users/:id/`, async () => {
     const resultArray = [[getAdminUpdateUser200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`put /api/v1/manage/users/users/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`put /api/v2/manage/users/users/:id/`) % resultArray.length])
   }),
-  http.patch(`${baseURL}/api/v1/manage/users/users/:id/`, async () => {
+  http.patch(`${baseURL}/api/v2/manage/users/users/:id/`, async () => {
     const resultArray = [[getAdminPartialUpdateUser200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`patch /api/v1/manage/users/users/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`patch /api/v2/manage/users/users/:id/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/moderation/content-filters/`, async () => {
+  http.get(`${baseURL}/api/v2/moderation/content-filters/`, async () => {
     const resultArray = [[getGetModerationContentFilters200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/moderation/content-filters/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/moderation/content-filters/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/moderation/content-filters/`, async () => {
+  http.post(`${baseURL}/api/v2/moderation/content-filters/`, async () => {
     const resultArray = [[getCreateModerationContentFilter201Response(), { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/moderation/content-filters/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/moderation/content-filters/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/moderation/content-filters/:uuid/`, async () => {
+  http.get(`${baseURL}/api/v2/moderation/content-filters/:uuid/`, async () => {
     const resultArray = [[getGetModerationContentFilter200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/moderation/content-filters/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/moderation/content-filters/:uuid/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/moderation/content-filters/:uuid/`, async () => {
+  http.delete(`${baseURL}/api/v2/moderation/content-filters/:uuid/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/moderation/content-filters/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/moderation/content-filters/:uuid/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/moderation/reports/`, async () => {
+  http.post(`${baseURL}/api/v2/moderation/reports/`, async () => {
     const resultArray = [[getCreateModerationReport201Response(), { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/moderation/reports/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/moderation/reports/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/mutations/`, async () => {
+  http.get(`${baseURL}/api/v2/mutations/`, async () => {
     const resultArray = [[getGetMutations200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/mutations/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/mutations/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/mutations/:uuid/`, async () => {
+  http.get(`${baseURL}/api/v2/mutations/:uuid/`, async () => {
     const resultArray = [[getGetMutation200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/mutations/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/mutations/:uuid/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/mutations/:uuid/`, async () => {
+  http.delete(`${baseURL}/api/v2/mutations/:uuid/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/mutations/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/mutations/:uuid/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/mutations/:uuid/approve/`, async () => {
+  http.post(`${baseURL}/api/v2/mutations/:uuid/approve/`, async () => {
     const resultArray = [[getApproveMutation200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/mutations/:uuid/approve/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/mutations/:uuid/approve/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/mutations/:uuid/reject/`, async () => {
+  http.post(`${baseURL}/api/v2/mutations/:uuid/reject/`, async () => {
     const resultArray = [[getRejectMutation200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/mutations/:uuid/reject/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/mutations/:uuid/reject/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/oauth/apps/`, async () => {
+  http.get(`${baseURL}/api/v2/oauth/apps/`, async () => {
     const resultArray = [[getGetOauthApps200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/oauth/apps/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/oauth/apps/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/oauth/apps/`, async () => {
+  http.post(`${baseURL}/api/v2/oauth/apps/`, async () => {
     const resultArray = [[getCreateOauthApp201Response(), { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/oauth/apps/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/oauth/apps/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/oauth/apps/:clientId/`, async () => {
+  http.get(`${baseURL}/api/v2/oauth/apps/:clientId/`, async () => {
     const resultArray = [[getGetOauthApp200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/oauth/apps/:clientId/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/oauth/apps/:clientId/`) % resultArray.length])
   }),
-  http.put(`${baseURL}/api/v1/oauth/apps/:clientId/`, async () => {
+  http.put(`${baseURL}/api/v2/oauth/apps/:clientId/`, async () => {
     const resultArray = [[getUpdateOauthApp200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`put /api/v1/oauth/apps/:clientId/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`put /api/v2/oauth/apps/:clientId/`) % resultArray.length])
   }),
-  http.patch(`${baseURL}/api/v1/oauth/apps/:clientId/`, async () => {
+  http.patch(`${baseURL}/api/v2/oauth/apps/:clientId/`, async () => {
     const resultArray = [[getPartialUpdateOauthApp200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`patch /api/v1/oauth/apps/:clientId/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`patch /api/v2/oauth/apps/:clientId/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/oauth/apps/:clientId/`, async () => {
+  http.delete(`${baseURL}/api/v2/oauth/apps/:clientId/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/oauth/apps/:clientId/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/oauth/apps/:clientId/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/oauth/apps/:clientId/refresh-token/`, async () => {
+  http.post(`${baseURL}/api/v2/oauth/apps/:clientId/refresh-token/`, async () => {
     const resultArray = [[getRefreshOauthToken200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/oauth/apps/:clientId/refresh-token/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/oauth/apps/:clientId/refresh-token/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/oauth/grants/`, async () => {
+  http.get(`${baseURL}/api/v2/oauth/grants/`, async () => {
     const resultArray = [[getGetOauthGrants200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/oauth/grants/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/oauth/grants/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/oauth/grants/:clientId/`, async () => {
+  http.get(`${baseURL}/api/v2/oauth/grants/:clientId/`, async () => {
     const resultArray = [[getGetOauthGrant200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/oauth/grants/:clientId/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/oauth/grants/:clientId/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/oauth/grants/:clientId/`, async () => {
+  http.delete(`${baseURL}/api/v2/oauth/grants/:clientId/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/oauth/grants/:clientId/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/oauth/grants/:clientId/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/oembed/`, async () => {
+  http.get(`${baseURL}/api/v2/oembed/`, async () => {
     const resultArray = [[getGetOembed200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/oembed/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/oembed/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/playlists/`, async () => {
+  http.get(`${baseURL}/api/v2/playlists/`, async () => {
     const resultArray = [[getGetPlaylists200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/playlists/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/playlists/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/playlists/`, async () => {
+  http.post(`${baseURL}/api/v2/playlists/`, async () => {
     const resultArray = [[getCreatePlaylist201Response(), { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/playlists/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/playlists/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/playlists/:uuid/`, async () => {
+  http.get(`${baseURL}/api/v2/playlists/:uuid/`, async () => {
     const resultArray = [[getGetPlaylist200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/playlists/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/playlists/:uuid/`) % resultArray.length])
   }),
-  http.put(`${baseURL}/api/v1/playlists/:uuid/`, async () => {
+  http.put(`${baseURL}/api/v2/playlists/:uuid/`, async () => {
     const resultArray = [[getUpdatePlaylist200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`put /api/v1/playlists/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`put /api/v2/playlists/:uuid/`) % resultArray.length])
   }),
-  http.patch(`${baseURL}/api/v1/playlists/:uuid/`, async () => {
+  http.patch(`${baseURL}/api/v2/playlists/:uuid/`, async () => {
     const resultArray = [[getPartialUpdatePlaylist200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`patch /api/v1/playlists/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`patch /api/v2/playlists/:uuid/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/playlists/:uuid/`, async () => {
+  http.delete(`${baseURL}/api/v2/playlists/:uuid/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/playlists/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/playlists/:uuid/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/playlists/:uuid/add/`, async () => {
+  http.post(`${baseURL}/api/v2/playlists/:uuid/add/`, async () => {
     const resultArray = [[getAddToPlaylist200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/playlists/:uuid/add/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/playlists/:uuid/add/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/playlists/:uuid/albums/`, async () => {
+  http.get(`${baseURL}/api/v2/playlists/:uuid/albums/`, async () => {
     const resultArray = [[getGetPlaylistAlbums200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/playlists/:uuid/albums/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/playlists/:uuid/albums/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/playlists/:uuid/artists/`, async () => {
+  http.get(`${baseURL}/api/v2/playlists/:uuid/artists/`, async () => {
     const resultArray = [[getGetPlaylistArtists200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/playlists/:uuid/artists/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/playlists/:uuid/artists/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/playlists/:uuid/clear/`, async () => {
+  http.delete(`${baseURL}/api/v2/playlists/:uuid/clear/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/playlists/:uuid/clear/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/playlists/:uuid/clear/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/playlists/:uuid/move/`, async () => {
+  http.post(`${baseURL}/api/v2/playlists/:uuid/move/`, async () => {
     const resultArray = [[getReorderTrackInPlaylist200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/playlists/:uuid/move/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/playlists/:uuid/move/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/playlists/:uuid/remove/`, async () => {
+  http.post(`${baseURL}/api/v2/playlists/:uuid/remove/`, async () => {
     const resultArray = [[getRemoveFromPlaylist2200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/playlists/:uuid/remove/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/playlists/:uuid/remove/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/playlists/:uuid/remove/`, async () => {
+  http.delete(`${baseURL}/api/v2/playlists/:uuid/remove/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/playlists/:uuid/remove/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/playlists/:uuid/remove/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/playlists/:uuid/tracks/`, async () => {
+  http.get(`${baseURL}/api/v2/playlists/:uuid/tracks/`, async () => {
     const resultArray = [[getGetPlaylistTracks200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/playlists/:uuid/tracks/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/playlists/:uuid/tracks/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/plugins/`, async () => {
+  http.get(`${baseURL}/api/v2/plugins/`, async () => {
     const resultArray = [[undefined, { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/plugins/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/plugins/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/plugins/`, async () => {
+  http.post(`${baseURL}/api/v2/plugins/`, async () => {
     const resultArray = [[undefined, { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/plugins/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/plugins/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/plugins/:id/`, async () => {
+  http.get(`${baseURL}/api/v2/plugins/:id/`, async () => {
     const resultArray = [[undefined, { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/plugins/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/plugins/:id/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/plugins/:id/disable/`, async () => {
+  http.post(`${baseURL}/api/v2/plugins/:id/disable/`, async () => {
     const resultArray = [[undefined, { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/plugins/:id/disable/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/plugins/:id/disable/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/plugins/:id/enable/`, async () => {
+  http.post(`${baseURL}/api/v2/plugins/:id/enable/`, async () => {
     const resultArray = [[undefined, { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/plugins/:id/enable/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/plugins/:id/enable/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/plugins/:id/scan/`, async () => {
+  http.post(`${baseURL}/api/v2/plugins/:id/scan/`, async () => {
     const resultArray = [[undefined, { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/plugins/:id/scan/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/plugins/:id/scan/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/radios/radios/`, async () => {
+  http.get(`${baseURL}/api/v2/radios/radios/`, async () => {
     const resultArray = [[getGetRadios200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/radios/radios/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/radios/radios/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/radios/radios/`, async () => {
+  http.post(`${baseURL}/api/v2/radios/radios/`, async () => {
     const resultArray = [[getCreateRadio201Response(), { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/radios/radios/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/radios/radios/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/radios/radios/:id/`, async () => {
+  http.get(`${baseURL}/api/v2/radios/radios/:id/`, async () => {
     const resultArray = [[getGetRadio200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/radios/radios/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/radios/radios/:id/`) % resultArray.length])
   }),
-  http.put(`${baseURL}/api/v1/radios/radios/:id/`, async () => {
+  http.put(`${baseURL}/api/v2/radios/radios/:id/`, async () => {
     const resultArray = [[getUpdateRadio200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`put /api/v1/radios/radios/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`put /api/v2/radios/radios/:id/`) % resultArray.length])
   }),
-  http.patch(`${baseURL}/api/v1/radios/radios/:id/`, async () => {
+  http.patch(`${baseURL}/api/v2/radios/radios/:id/`, async () => {
     const resultArray = [[getPartialUpdateRadio200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`patch /api/v1/radios/radios/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`patch /api/v2/radios/radios/:id/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/radios/radios/:id/`, async () => {
+  http.delete(`${baseURL}/api/v2/radios/radios/:id/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/radios/radios/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/radios/radios/:id/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/radios/radios/:id/tracks/`, async () => {
+  http.get(`${baseURL}/api/v2/radios/radios/:id/tracks/`, async () => {
     const resultArray = [[getGetRadioTrack200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/radios/radios/:id/tracks/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/radios/radios/:id/tracks/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/radios/radios/filters/`, async () => {
+  http.get(`${baseURL}/api/v2/radios/radios/filters/`, async () => {
     const resultArray = [[getGetRadioFilter200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/radios/radios/filters/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/radios/radios/filters/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/radios/radios/validate/`, async () => {
+  http.post(`${baseURL}/api/v2/radios/radios/validate/`, async () => {
     const resultArray = [[getValidateRadio200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/radios/radios/validate/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/radios/radios/validate/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/radios/sessions/`, async () => {
+  http.post(`${baseURL}/api/v2/radios/sessions/`, async () => {
     const resultArray = [[getCreateRadioSession201Response(), { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/radios/sessions/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/radios/sessions/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/radios/sessions/:id/`, async () => {
+  http.get(`${baseURL}/api/v2/radios/sessions/:id/`, async () => {
     const resultArray = [[getGetRadioSession200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/radios/sessions/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/radios/sessions/:id/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/radios/tracks/`, async () => {
+  http.post(`${baseURL}/api/v2/radios/tracks/`, async () => {
     const resultArray = [[getGetNextRadioTrack201Response(), { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/radios/tracks/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/radios/tracks/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/rate-limit/`, async () => {
+  http.get(`${baseURL}/api/v2/rate-limit/`, async () => {
     const resultArray = [[getGetRateLimit200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/rate-limit/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/rate-limit/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/search`, async () => {
+  http.get(`${baseURL}/api/v2/search`, async () => {
     const resultArray = [[getGetSearchResults200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/search`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/search`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/stream/:uuid/`, async () => {
+  http.get(`${baseURL}/api/v2/stream/:uuid/`, async () => {
     const resultArray = [[getGetTrackStream200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/stream/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/stream/:uuid/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/subscriptions/`, async () => {
+  http.get(`${baseURL}/api/v2/subscriptions/`, async () => {
     const resultArray = [[getGetSubscriptions200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/subscriptions/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/subscriptions/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/subscriptions/:uuid/`, async () => {
+  http.get(`${baseURL}/api/v2/subscriptions/:uuid/`, async () => {
     const resultArray = [[getGetSubscription200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/subscriptions/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/subscriptions/:uuid/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/subscriptions/all/`, async () => {
+  http.get(`${baseURL}/api/v2/subscriptions/all/`, async () => {
     const resultArray = [[getGetAllSubscriptions200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/subscriptions/all/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/subscriptions/all/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/tags/`, async () => {
+  http.get(`${baseURL}/api/v2/tags/`, async () => {
     const resultArray = [[getGetTags200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/tags/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/tags/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/tags/:name/`, async () => {
+  http.get(`${baseURL}/api/v2/tags/:name/`, async () => {
     const resultArray = [[getGetTag200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/tags/:name/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/tags/:name/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/text-preview/`, async () => {
+  http.post(`${baseURL}/api/v2/text-preview/`, async () => {
     const resultArray = [
       [getPreviewText200Response(), { status: 200 }],
       [getPreviewText400Response(), { status: 400 }]
     ] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/text-preview/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/text-preview/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/tracks/`, async () => {
+  http.get(`${baseURL}/api/v2/tracks/`, async () => {
     const resultArray = [[getGetTracks200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/tracks/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/tracks/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/tracks/:id/`, async () => {
+  http.get(`${baseURL}/api/v2/tracks/:id/`, async () => {
     const resultArray = [[getGetTrack200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/tracks/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/tracks/:id/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/tracks/:id/`, async () => {
+  http.delete(`${baseURL}/api/v2/tracks/:id/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/tracks/:id/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/tracks/:id/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/tracks/:id/fetches/`, async () => {
+  http.get(`${baseURL}/api/v2/tracks/:id/fetches/`, async () => {
     const resultArray = [[getGetTrackFetches200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/tracks/:id/fetches/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/tracks/:id/fetches/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/tracks/:id/fetches/`, async () => {
+  http.post(`${baseURL}/api/v2/tracks/:id/fetches/`, async () => {
     const resultArray = [[getCreateTrackFetch200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/tracks/:id/fetches/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/tracks/:id/fetches/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/tracks/:id/libraries/`, async () => {
+  http.get(`${baseURL}/api/v2/tracks/:id/libraries/`, async () => {
     const resultArray = [[getGetTrackLibraries200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/tracks/:id/libraries/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/tracks/:id/libraries/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/tracks/:id/mutations/`, async () => {
+  http.get(`${baseURL}/api/v2/tracks/:id/mutations/`, async () => {
     const resultArray = [[getGetTrackMutations200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/tracks/:id/mutations/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/tracks/:id/mutations/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/tracks/:id/mutations/`, async () => {
+  http.post(`${baseURL}/api/v2/tracks/:id/mutations/`, async () => {
     const resultArray = [[getCreateTrackMutation200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/tracks/:id/mutations/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/tracks/:id/mutations/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/uploads/`, async () => {
+  http.get(`${baseURL}/api/v2/uploads/`, async () => {
     const resultArray = [[getGetUploads200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/uploads/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/uploads/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/uploads/`, async () => {
+  http.post(`${baseURL}/api/v2/uploads/`, async () => {
     const resultArray = [[getCreateUpload201Response(), { status: 201 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/uploads/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/uploads/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/uploads/:uuid/`, async () => {
+  http.get(`${baseURL}/api/v2/uploads/:uuid/`, async () => {
     const resultArray = [[getGetUpload200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/uploads/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/uploads/:uuid/`) % resultArray.length])
   }),
-  http.put(`${baseURL}/api/v1/uploads/:uuid/`, async () => {
+  http.put(`${baseURL}/api/v2/uploads/:uuid/`, async () => {
     const resultArray = [[getUpdateUpload200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`put /api/v1/uploads/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`put /api/v2/uploads/:uuid/`) % resultArray.length])
   }),
-  http.patch(`${baseURL}/api/v1/uploads/:uuid/`, async () => {
+  http.patch(`${baseURL}/api/v2/uploads/:uuid/`, async () => {
     const resultArray = [[getPartialUpdateUpload200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`patch /api/v1/uploads/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`patch /api/v2/uploads/:uuid/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/uploads/:uuid/`, async () => {
+  http.delete(`${baseURL}/api/v2/uploads/:uuid/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/uploads/:uuid/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/uploads/:uuid/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/uploads/:uuid/audio-file-metadata/`, async () => {
+  http.get(`${baseURL}/api/v2/uploads/:uuid/audio-file-metadata/`, async () => {
     const resultArray = [[getGetUploadMetadata200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/uploads/:uuid/audio-file-metadata/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/uploads/:uuid/audio-file-metadata/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/uploads/action/`, async () => {
+  http.post(`${baseURL}/api/v2/uploads/action/`, async () => {
     const resultArray = [[getCreateUploadAction200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/uploads/action/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/uploads/action/`) % resultArray.length])
   }),
-  http.patch(`${baseURL}/api/v1/uploads/bulk_update/`, async () => {
+  http.patch(`${baseURL}/api/v2/uploads/bulk_update/`, async () => {
     const resultArray = [[getPartialUpdateUploadBulkUpdate200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`patch /api/v1/uploads/bulk_update/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`patch /api/v2/uploads/bulk_update/`) % resultArray.length])
   }),
-  http.put(`${baseURL}/api/v1/users/:username/`, async () => {
+  http.put(`${baseURL}/api/v2/users/:username/`, async () => {
     const resultArray = [[getUpdateUser200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`put /api/v1/users/:username/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`put /api/v2/users/:username/`) % resultArray.length])
   }),
-  http.patch(`${baseURL}/api/v1/users/:username/`, async () => {
+  http.patch(`${baseURL}/api/v2/users/:username/`, async () => {
     const resultArray = [[getPartialUpdateUser200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`patch /api/v1/users/:username/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`patch /api/v2/users/:username/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/users/:username/subsonic-token/`, async () => {
+  http.get(`${baseURL}/api/v2/users/:username/subsonic-token/`, async () => {
     const resultArray = [[getGetUserSubsonicToken200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/users/:username/subsonic-token/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/users/:username/subsonic-token/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/users/:username/subsonic-token/`, async () => {
+  http.post(`${baseURL}/api/v2/users/:username/subsonic-token/`, async () => {
     const resultArray = [[getCreateUserSubsonicToken200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/users/:username/subsonic-token/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/users/:username/subsonic-token/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/users/:username/subsonic-token/`, async () => {
+  http.delete(`${baseURL}/api/v2/users/:username/subsonic-token/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/users/:username/subsonic-token/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/users/:username/subsonic-token/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/users/change-email/`, async () => {
+  http.post(`${baseURL}/api/v2/users/change-email/`, async () => {
     const resultArray = [
       [undefined, { status: 200 }],
       [undefined, { status: 403 }]
     ] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/users/change-email/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/users/change-email/`) % resultArray.length])
   }),
-  http.get(`${baseURL}/api/v1/users/me/`, async () => {
+  http.get(`${baseURL}/api/v2/users/me/`, async () => {
     const resultArray = [[getGetAuthenticatedUser200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`get /api/v1/users/me/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`get /api/v2/users/me/`) % resultArray.length])
   }),
-  http.delete(`${baseURL}/api/v1/users/me/`, async () => {
+  http.delete(`${baseURL}/api/v2/users/me/`, async () => {
     const resultArray = [[undefined, { status: 204 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`delete /api/v1/users/me/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`delete /api/v2/users/me/`) % resultArray.length])
   }),
-  http.post(`${baseURL}/api/v1/users/settings/`, async () => {
+  http.post(`${baseURL}/api/v2/users/settings/`, async () => {
     const resultArray = [[getUpdateSettings200Response(), { status: 200 }]] as [any, { status: number }][]
 
-    return HttpResponse.json(...resultArray[next(`post /api/v1/users/settings/`) % resultArray.length])
+    return HttpResponse.json(...resultArray[next(`post /api/v2/users/settings/`) % resultArray.length])
   }),
   http.get(`${baseURL}/api/v2/activity/`, async () => {
     const resultArray = [[undefined, { status: 200 }]] as [any, { status: number }][]

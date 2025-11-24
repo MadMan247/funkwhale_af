@@ -275,7 +275,7 @@ def test_can_list_user_plugins(logged_in_api_client):
         user=True,
     )
     plugins.get_plugin_config(name="test_plugin2", user=False)
-    url = reverse("api:v1:plugins-list")
+    url = reverse("api:v2:plugins-list")
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 200
@@ -292,7 +292,7 @@ def test_can_retrieve_user_plugin(logged_in_api_client):
         user=True,
     )
     plugins.get_plugin_config(name="test_plugin2", user=False)
-    url = reverse("api:v1:plugins-detail", kwargs={"pk": "test_plugin"})
+    url = reverse("api:v2:plugins-detail", kwargs={"pk": "test_plugin"})
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 200
@@ -309,7 +309,7 @@ def test_can_update_user_plugin(logged_in_api_client):
         user=True,
     )
     plugins.get_plugin_config(name="test_plugin2", user=False)
-    url = reverse("api:v1:plugins-detail", kwargs={"pk": "test_plugin"})
+    url = reverse("api:v2:plugins-detail", kwargs={"pk": "test_plugin"})
     response = logged_in_api_client.post(url, {"foo": True})
     assert response.status_code == 200
     assert logged_in_api_client.user.plugins.latest("id").conf == {"foo": True}
@@ -327,7 +327,7 @@ def test_can_destroy_user_plugin(logged_in_api_client):
     )
     plugins.set_conf("test_plugin", {"foo": True}, user=logged_in_api_client.user)
     plugins.get_plugin_config(name="test_plugin2", user=False)
-    url = reverse("api:v1:plugins-detail", kwargs={"pk": "test_plugin"})
+    url = reverse("api:v2:plugins-detail", kwargs={"pk": "test_plugin"})
     response = logged_in_api_client.delete(url, {"enabled": True})
     assert response.status_code == 204
 
@@ -343,7 +343,7 @@ def test_can_enable_user_plugin(logged_in_api_client):
         user=True,
     )
     plugins.set_conf("test_plugin", {"foo": True}, user=logged_in_api_client.user)
-    url = reverse("api:v1:plugins-enable", kwargs={"pk": "test_plugin"})
+    url = reverse("api:v2:plugins-enable", kwargs={"pk": "test_plugin"})
     response = logged_in_api_client.post(url)
     assert response.status_code == 200
 
@@ -358,7 +358,7 @@ def test_can_disable_user_plugin(logged_in_api_client):
         user=True,
     )
     plugins.set_conf("test_plugin", {"foo": True}, user=logged_in_api_client.user)
-    url = reverse("api:v1:plugins-disable", kwargs={"pk": "test_plugin"})
+    url = reverse("api:v2:plugins-disable", kwargs={"pk": "test_plugin"})
     response = logged_in_api_client.post(url)
     assert response.status_code == 200
 
@@ -423,7 +423,7 @@ def test_can_trigger_scan(logged_in_api_client, mocker, factories):
     plugins.set_conf(
         "test_plugin", {"library": library.uuid}, user=logged_in_api_client.user
     )
-    url = reverse("api:v1:plugins-scan", kwargs={"pk": "test_plugin"})
+    url = reverse("api:v2:plugins-scan", kwargs={"pk": "test_plugin"})
     plugins.enable_conf("test_plugin", True, logged_in_api_client.user)
     response = logged_in_api_client.post(url)
     assert response.status_code == 200

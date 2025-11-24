@@ -36,7 +36,7 @@ def test_get_serialized_preference(value, preferences):
 
 def test_update_via_api(superuser_api_client, preferences):
     pref_id = "moderation__signup_form_customization"
-    url = reverse("api:v1:instance:admin-settings-bulk")
+    url = reverse("api:v2:instance:admin-settings-bulk")
     new_value = {
         "help_text": {"text": "hello", "content_type": "text/markdown"},
         "fields": [{"required": True, "label": "hello", "input_type": "short_text"}],

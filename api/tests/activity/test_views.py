@@ -9,7 +9,7 @@ def test_activity_view(factories, api_client, preferences, anonymous_user):
     user.create_actor()
     factories["favorites.TrackFavorite"](actor=user.actor)
     factories["history.Listening"]()
-    url = reverse("api:v1:activity-list")
+    url = reverse("api:v2:activity-list")
     objects = utils.get_activity(anonymous_user)
     serializer = serializers.AutoSerializer(objects, many=True)
     response = api_client.get(url)

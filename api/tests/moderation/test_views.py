@@ -8,7 +8,7 @@ def test_restrict_to_own_filters(factories, logged_in_api_client):
         for_artist=True, user=logged_in_api_client.user
     )
     factories["moderation.UserFilter"](for_artist=True)
-    url = reverse("api:v1:moderation:content-filters-list")
+    url = reverse("api:v2:moderation:content-filters-list")
     response = logged_in_api_client.get(url)
     assert response.status_code == 200
     assert response.data["count"] == 1
@@ -17,7 +17,7 @@ def test_restrict_to_own_filters(factories, logged_in_api_client):
 
 def test_create_filter(factories, logged_in_api_client):
     artist = factories["music.Artist"]()
-    url = reverse("api:v1:moderation:content-filters-list")
+    url = reverse("api:v2:moderation:content-filters-list")
     data = {"target": {"type": "artist", "id": artist.pk}}
     response = logged_in_api_client.post(url, data, format="json")
 
@@ -29,7 +29,7 @@ def test_create_filter(factories, logged_in_api_client):
 def test_create_report_logged_in(factories, logged_in_api_client):
     actor = logged_in_api_client.user.create_actor()
     target = factories["music.Artist"]()
-    url = reverse("api:v1:moderation:reports-list")
+    url = reverse("api:v2:moderation:reports-list")
     data = {
         "target": {"type": "artist", "id": target.pk},
         "summary": "Test report",
@@ -44,7 +44,7 @@ def test_create_report_logged_in(factories, logged_in_api_client):
 
 def test_create_report_anonymous(factories, api_client, no_api_auth):
     target = factories["music.Artist"]()
-    url = reverse("api:v1:moderation:reports-list")
+    url = reverse("api:v2:moderation:reports-list")
     data = {
         "target": {"type": "artist", "id": target.pk},
         "summary": "Test report",
@@ -61,7 +61,7 @@ def test_create_report_anonymous(factories, api_client, no_api_auth):
 def test_create_report_and_forward(factories, api_client, no_api_auth, mocker):
     dispatch = mocker.patch("funkwhale_api.federation.routes.outbox.dispatch")
     target = factories["music.Artist"](attributed=True)
-    url = reverse("api:v1:moderation:reports-list")
+    url = reverse("api:v2:moderation:reports-list")
     data = {
         "target": {"type": "artist", "id": target.pk},
         "summary": "Test report",

@@ -241,7 +241,7 @@ Find instructions for [starting multiple instances for federation](#running-mult
 This gives you access to the following:
 
 - The Funkwhale web app on [https://funkwhale.funkwhale.test](https://funkwhale.funkwhale.test)
-- The Funkwhale API on [https://funkwhale.funkwhale.test/api/v1](https://funkwhale.funkwhale.test/api/v1)
+- The Funkwhale API on [https://funkwhale.funkwhale.test/api/v2](https://funkwhale.funkwhale.test/api/v2)
 - The Django admin interface on [https://funkwhale.funkwhale.test/api/admin](https://funkwhale.funkwhale.test/api/admin)
   :::
 

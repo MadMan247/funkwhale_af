@@ -9,7 +9,7 @@ def test_can_authenticate_using_oauth_token_param_in_url(
     )
     token = factories["users.AccessToken"]()
     preferences["common__api_authentication_required"] = True
-    url = reverse("api:v1:tracks-list")
+    url = reverse("api:v2:tracks-list")
     response = client.get(url)
 
     assert response.status_code == 401

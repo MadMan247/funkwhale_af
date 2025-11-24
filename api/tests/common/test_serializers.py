@@ -214,7 +214,7 @@ def test_attachment_serializer_existing_file(factories, to_api_date):
 
 def test_attachment_serializer_remote_file(factories, to_api_date):
     attachment = factories["common.Attachment"](file=None)
-    proxy_url = reverse("api:v1:attachments-proxy", kwargs={"uuid": attachment.uuid})
+    proxy_url = reverse("api:v2:attachments-proxy", kwargs={"uuid": attachment.uuid})
     expected = {
         "uuid": str(attachment.uuid),
         "size": attachment.size,

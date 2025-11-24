@@ -77,11 +77,8 @@ class RadioSession(models.Model):
 
         return new_session_tracks
 
-    def radio(self, api_version):
-        if api_version == 2:
-            from .registries_v2 import registry
-        else:
-            from .registries import registry
+    def radio(self):
+        from .registries import registry
 
         return registry[self.radio_type](session=self)
 

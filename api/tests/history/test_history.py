@@ -14,7 +14,7 @@ def test_logged_in_user_can_create_listening_via_api(
 ):
     track = factories["music.Track"]()
 
-    url = reverse("api:v1:history:listenings-list")
+    url = reverse("api:v2:history:listenings-list")
     logged_in_client.post(url, {"track": track.pk})
 
     listening = models.Listening.objects.latest("id")
@@ -28,7 +28,7 @@ def test_adding_listening_calls_activity_record(
 ):
     track = factories["music.Track"]()
 
-    url = reverse("api:v1:history:listenings-list")
+    url = reverse("api:v2:history:listenings-list")
     logged_in_client.post(url, {"track": track.pk})
 
     listening = models.Listening.objects.latest("id")

@@ -17,7 +17,7 @@ def test_channel_get_rss_url_local(factories):
     channel = factories["audio.Channel"](artist__local=True)
     expected = federation_utils.full_url(
         reverse(
-            "api:v1:channels-rss",
+            "api:v2:channels-rss",
             kwargs={"composite": channel.actor.preferred_username},
         )
     )

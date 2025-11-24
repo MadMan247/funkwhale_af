@@ -101,8 +101,8 @@ const labels = computed(() => ({
 
 // Note: Mind the singular!
 
-type TrackResponse = operations['get_track_2']['responses']['200']['content']['application/json']
-type ArtistResponse = operations['get_artist_2']['responses']['200']['content']['application/json']
+type TrackResponse = operations['get_track']['responses']['200']['content']['application/json']
+type ArtistResponse = operations['get_artist']['responses']['200']['content']['application/json']
 
 /* Too bad the following is just wrong now:
 const params: TrackParams = {

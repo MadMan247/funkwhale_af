@@ -376,7 +376,7 @@ build_api_schema:
     DJANGO_SETTINGS_MODULE: config.settings.local
     POSTGRES_HOST_AUTH_METHOD: trust
     CACHE_URL: 'redis://redis:6379/0'
-    API_TYPE: 'v1'
+    API_TYPE: 'v2'
   before_script:
     - cd api
     - make install

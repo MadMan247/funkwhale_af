@@ -4,951 +4,6 @@
  */
 
 export interface paths {
-    "/api/v1/activity/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_activity"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/albums/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_albums"];
-        put?: never;
-        post: operations["create_album"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/albums/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_album"];
-        put?: never;
-        post?: never;
-        delete: operations["delete_album"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/albums/{id}/fetches/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_album_fetches"];
-        put?: never;
-        post: operations["create_album_fetch"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/albums/{id}/libraries/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_album_libraries"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/albums/{id}/mutations/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_album_mutations"];
-        put?: never;
-        post: operations["create_album_mutation"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/artists/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_artists"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/artists/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_artist"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/artists/{id}/fetches/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_artist_fetches"];
-        put?: never;
-        post: operations["create_artist_fetch"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/artists/{id}/libraries/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_artist_libraries"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/artists/{id}/mutations/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_artist_mutations"];
-        put?: never;
-        post: operations["create_artist_mutation"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/attachments/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["create_attachment"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/attachments/{uuid}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_attachment"];
-        put?: never;
-        post?: never;
-        delete: operations["delete_attachment"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/attachments/{uuid}/proxy/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_attachment_proxy"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/password/change/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description The type of the None singleton. */
-        post: operations["change_password"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/password/reset/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description The type of the None singleton. */
-        post: operations["reset_password"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/password/reset/confirm/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description The type of the None singleton. */
-        post: operations["confirm_password_reset"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/registration/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description The type of the None singleton. */
-        post: operations["register"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/registration/change-password/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description The type of the None singleton. */
-        post: operations["change_password_2"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/registration/verify-email/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description The type of the None singleton. */
-        post: operations["verify_email"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/user/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Reads and updates UserModel fields
-         *     Accepts GET, PUT, PATCH methods.
-         *
-         *     Default accepted fields: username, first_name, last_name
-         *     Default display fields: pk, username, email, first_name, last_name
-         *     Read-only fields: pk, email
-         *
-         *     Returns UserModel fields. */
-        get: operations["get_auth_user"];
-        /** @description Reads and updates UserModel fields
-         *     Accepts GET, PUT, PATCH methods.
-         *
-         *     Default accepted fields: username, first_name, last_name
-         *     Default display fields: pk, username, email, first_name, last_name
-         *     Read-only fields: pk, email
-         *
-         *     Returns UserModel fields. */
-        put: operations["update_auth_user"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** @description Reads and updates UserModel fields
-         *     Accepts GET, PUT, PATCH methods.
-         *
-         *     Default accepted fields: username, first_name, last_name
-         *     Default display fields: pk, username, email, first_name, last_name
-         *     Read-only fields: pk, email
-         *
-         *     Returns UserModel fields. */
-        patch: operations["partial_update_auth_user"];
-        trace?: never;
-    };
-    "/api/v1/channels/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_channels"];
-        put?: never;
-        post: operations["create_channel"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/channels/{composite}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_channel"];
-        put: operations["update_channel"];
-        post?: never;
-        delete: operations["delete_channel"];
-        options?: never;
-        head?: never;
-        patch: operations["partial_update_channel"];
-        trace?: never;
-    };
-    "/api/v1/channels/{composite}/rss/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_channel_rss"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/channels/{composite}/subscribe/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["subscribe_channel"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/channels/{composite}/unsubscribe/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["unsubscribe_channel_2"];
-        delete: operations["unsubscribe_channel"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/channels/metadata-choices/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_channel_metadata_choices"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/channels/rss-subscribe/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["subscribe_channel_rss"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/favorites/tracks/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_favorite_tracks"];
-        put?: never;
-        post: operations["favorite_track"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/favorites/tracks/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete: operations["delete_favorite_track"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/favorites/tracks/all/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Return all the favorites of the current user, with only limited data
-         *     to have a performant endpoint and avoid lots of queries just to display
-         *     favorites status in the UI */
-        get: operations["get_all_favorite_tracks"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/favorites/tracks/remove/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["unfavorite_track_2"];
-        delete: operations["unfavorite_track"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/federation/actors/{full_username}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_federation_actor"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/federation/actors/{full_username}/libraries/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_federation_actor_library"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/federation/domains/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_federation_domains"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/federation/domains/{name}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_federation_domain"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/federation/fetches/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["create_federation_fetch"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/federation/fetches/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_federation_fetch"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/federation/follows/library/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_federation_library_follows"];
-        put?: never;
-        post: operations["create_federation_library_follow"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/federation/follows/library/{uuid}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_federation_library_follow"];
-        put?: never;
-        post?: never;
-        delete: operations["delete_federation_library_follow"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/federation/follows/library/{uuid}/accept/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["accept_federation_library_follow"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/federation/follows/library/{uuid}/reject/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["reject_federation_library_follow"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/federation/follows/library/all/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Return all the subscriptions of the current user, with only limited data
-         *     to have a performant endpoint and avoid lots of queries just to display
-         *     subscription status in the UI */
-        get: operations["get_all_federation_library_follows"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/federation/follows/user/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_federation_received_follows"];
-        put?: never;
-        post: operations["create_federation_user_follow"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/federation/follows/user/{uuid}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_federation_user_follow"];
-        put?: never;
-        post?: never;
-        delete: operations["delete_federation_user_follow"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/federation/follows/user/{uuid}/accept/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["accept_federation_user_follow"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/federation/follows/user/{uuid}/reject/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["reject_federation_user_follow"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/federation/follows/user/all/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Return all the subscriptions of the current user, with only limited data
-         *     to have a performant endpoint and avoid lots of queries just to display
-         *     subscription status in the UI */
-        get: operations["get_all_federation_library_follows_2"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/federation/inbox/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_federation_inboxes"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/federation/inbox/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_federation_inbox"];
-        put: operations["update_federation_inbox"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["partial_update_federation_inbox"];
-        trace?: never;
-    };
-    "/api/v1/federation/inbox/action/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description str(object='') -> str
-         *     str(bytes_or_buffer[, encoding[, errors]]) -> str
-         *
-         *     Create a new string object from the given object. If encoding or
-         *     errors is specified, then the object must expose a data buffer
-         *     that will be decoded using the given encoding and error handler.
-         *     Otherwise, returns the result of object.__str__() (if defined)
-         *     or repr(object).
-         *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'. */
-        post: operations["create_federation_inbox_action"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/federation/libraries/{uuid}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_federation_library"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/federation/libraries/{uuid}/scan/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["create_federation_library_scan"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/federation/libraries/fetch/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["create_federation_library_fetch"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/history/listenings/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_history_listenings"];
-        put?: never;
-        post: operations["create_history_listening"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/history/listenings/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_history_listening"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v1/instance/admin/settings/": {
         parameters: {
             query?: never;
@@ -956,10 +11,12 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description - list preferences
+        /**
+         * @description - list preferences
          *     - detail given preference
          *     - batch update preferences
-         *     - update a single preference */
+         *     - update a single preference
+         */
         get: operations["get_instance_admin_settings"];
         put?: never;
         post?: never;
@@ -976,24 +33,30 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description - list preferences
+        /**
+         * @description - list preferences
          *     - detail given preference
          *     - batch update preferences
-         *     - update a single preference */
+         *     - update a single preference
+         */
         get: operations["get_instance_admin_setting"];
-        /** @description - list preferences
+        /**
+         * @description - list preferences
          *     - detail given preference
          *     - batch update preferences
-         *     - update a single preference */
+         *     - update a single preference
+         */
         put: operations["update_instance_admin_setting"];
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        /** @description - list preferences
+        /**
+         * @description - list preferences
          *     - detail given preference
          *     - batch update preferences
-         *     - update a single preference */
+         *     - update a single preference
+         */
         patch: operations["partial_update_instance_admin_setting"];
         trace?: never;
     };
@@ -1006,10 +69,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Update multiple preferences at once
+        /**
+         * @description Update multiple preferences at once
          *
          *     this is a long method because we ensure everything is valid
-         *     before actually persisting the changes */
+         *     before actually persisting the changes
+         */
         post: operations["create_instance_admin_setting_bulk"];
         delete?: never;
         options?: never;
@@ -1065,1918 +130,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/libraries/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_libraries"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/libraries/{uuid}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_library"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/libraries/fs-import/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_library_fs_import"];
-        put?: never;
-        post: operations["create_library_fs_import"];
-        delete: operations["delete_library_fs_import"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/licenses/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_licenses"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/licenses/{code}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_license"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/listen/{uuid}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_listen"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/accounts/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_accounts"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/accounts/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_account"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/accounts/{id}/stats/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_account_stats"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/accounts/action/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description str(object='') -> str
-         *     str(bytes_or_buffer[, encoding[, errors]]) -> str
-         *
-         *     Create a new string object from the given object. If encoding or
-         *     errors is specified, then the object must expose a data buffer
-         *     that will be decoded using the given encoding and error handler.
-         *     Otherwise, returns the result of object.__str__() (if defined)
-         *     or repr(object).
-         *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'. */
-        post: operations["admin_create_account_action"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/channels/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_channels"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/channels/{composite}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_channel"];
-        put?: never;
-        post?: never;
-        delete: operations["admin_delete_channel"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/channels/{composite}/stats/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_channel_stats"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/federation/domains/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_federation_domains"];
-        put?: never;
-        post: operations["admin_create_federation_domain"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/federation/domains/{name}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_federation_domain"];
-        put: operations["admin_update_federation_domain"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["admin_partial_update_federation_domain"];
-        trace?: never;
-    };
-    "/api/v1/manage/federation/domains/{name}/nodeinfo/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_federation_domain_nodeinfo"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/federation/domains/{name}/stats/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_federation_domain_stats"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/federation/domains/action/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description str(object='') -> str
-         *     str(bytes_or_buffer[, encoding[, errors]]) -> str
-         *
-         *     Create a new string object from the given object. If encoding or
-         *     errors is specified, then the object must expose a data buffer
-         *     that will be decoded using the given encoding and error handler.
-         *     Otherwise, returns the result of object.__str__() (if defined)
-         *     or repr(object).
-         *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'. */
-        post: operations["admin_create_federation_domain_action"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/library/albums/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_albums"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/library/albums/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_album"];
-        put?: never;
-        post?: never;
-        delete: operations["admin_delete_album"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/library/albums/{id}/stats/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_library_album_stats"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/library/albums/action/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description str(object='') -> str
-         *     str(bytes_or_buffer[, encoding[, errors]]) -> str
-         *
-         *     Create a new string object from the given object. If encoding or
-         *     errors is specified, then the object must expose a data buffer
-         *     that will be decoded using the given encoding and error handler.
-         *     Otherwise, returns the result of object.__str__() (if defined)
-         *     or repr(object).
-         *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'. */
-        post: operations["admin_create_album_action"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/library/artists/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_artists"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/library/artists/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_artist"];
-        put?: never;
-        post?: never;
-        delete: operations["admin_delete_artist"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/library/artists/{id}/stats/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_library_artist_stats"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/library/artists/action/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description str(object='') -> str
-         *     str(bytes_or_buffer[, encoding[, errors]]) -> str
-         *
-         *     Create a new string object from the given object. If encoding or
-         *     errors is specified, then the object must expose a data buffer
-         *     that will be decoded using the given encoding and error handler.
-         *     Otherwise, returns the result of object.__str__() (if defined)
-         *     or repr(object).
-         *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'. */
-        post: operations["admin_create_artist_action"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/library/libraries/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_libraries"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/library/libraries/{uuid}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_library"];
-        put: operations["admin_update_library"];
-        post?: never;
-        delete: operations["admin_delete_library"];
-        options?: never;
-        head?: never;
-        patch: operations["admin_partial_update_library"];
-        trace?: never;
-    };
-    "/api/v1/manage/library/libraries/{uuid}/stats/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_library_stats"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/library/libraries/action/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description str(object='') -> str
-         *     str(bytes_or_buffer[, encoding[, errors]]) -> str
-         *
-         *     Create a new string object from the given object. If encoding or
-         *     errors is specified, then the object must expose a data buffer
-         *     that will be decoded using the given encoding and error handler.
-         *     Otherwise, returns the result of object.__str__() (if defined)
-         *     or repr(object).
-         *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'. */
-        post: operations["admin_create_library_action"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/library/tracks/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_tracks"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/library/tracks/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_track"];
-        put?: never;
-        post?: never;
-        delete: operations["admin_delete_track"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/library/tracks/{id}/stats/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_track_stats"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/library/tracks/action/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description str(object='') -> str
-         *     str(bytes_or_buffer[, encoding[, errors]]) -> str
-         *
-         *     Create a new string object from the given object. If encoding or
-         *     errors is specified, then the object must expose a data buffer
-         *     that will be decoded using the given encoding and error handler.
-         *     Otherwise, returns the result of object.__str__() (if defined)
-         *     or repr(object).
-         *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'. */
-        post: operations["admin_create_track_action"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/library/uploads/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_uploads"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/library/uploads/{uuid}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_upload"];
-        put?: never;
-        post?: never;
-        delete: operations["admin_delete_upload"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/library/uploads/action/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description str(object='') -> str
-         *     str(bytes_or_buffer[, encoding[, errors]]) -> str
-         *
-         *     Create a new string object from the given object. If encoding or
-         *     errors is specified, then the object must expose a data buffer
-         *     that will be decoded using the given encoding and error handler.
-         *     Otherwise, returns the result of object.__str__() (if defined)
-         *     or repr(object).
-         *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'. */
-        post: operations["admin_create_upload_action"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/moderation/instance-policies/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["moderation_get_instance_policies"];
-        put?: never;
-        post: operations["moderation_create_instance_policy"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/moderation/instance-policies/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["moderation_get_instance_policy"];
-        put: operations["moderation_update_instance_policy"];
-        post?: never;
-        delete: operations["moderation_delete_instance_policy"];
-        options?: never;
-        head?: never;
-        patch: operations["moderation_partial_update_instance_policy"];
-        trace?: never;
-    };
-    "/api/v1/manage/moderation/notes/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["moderation_get_notes"];
-        put?: never;
-        post: operations["moderation_create_note"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/moderation/notes/{uuid}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["moderation_get_note"];
-        put?: never;
-        post?: never;
-        delete: operations["moderation_delete_note"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/moderation/reports/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["moderation_get_reports"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/moderation/reports/{uuid}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["moderation_get_report"];
-        put: operations["moderation_update_report"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["moderation_partial_update_report"];
-        trace?: never;
-    };
-    "/api/v1/manage/moderation/requests/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["moderation_get_requests"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/moderation/requests/{uuid}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["moderation_get_request"];
-        put: operations["moderation_update_request"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["moderation_partial_update_request"];
-        trace?: never;
-    };
-    "/api/v1/manage/tags/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_tags"];
-        put?: never;
-        post: operations["admin_create_tag"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/tags/{name}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_tag"];
-        put?: never;
-        post?: never;
-        delete: operations["admin_delete_tag"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/tags/action/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description str(object='') -> str
-         *     str(bytes_or_buffer[, encoding[, errors]]) -> str
-         *
-         *     Create a new string object from the given object. If encoding or
-         *     errors is specified, then the object must expose a data buffer
-         *     that will be decoded using the given encoding and error handler.
-         *     Otherwise, returns the result of object.__str__() (if defined)
-         *     or repr(object).
-         *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'. */
-        post: operations["admin_create_tag_action"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/users/invitations/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_invitations"];
-        put?: never;
-        post: operations["admin_create_invitation"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/users/invitations/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_invitation"];
-        put: operations["admin_update_invitation"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["admin_partial_update_invitation"];
-        trace?: never;
-    };
-    "/api/v1/manage/users/invitations/action/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description str(object='') -> str
-         *     str(bytes_or_buffer[, encoding[, errors]]) -> str
-         *
-         *     Create a new string object from the given object. If encoding or
-         *     errors is specified, then the object must expose a data buffer
-         *     that will be decoded using the given encoding and error handler.
-         *     Otherwise, returns the result of object.__str__() (if defined)
-         *     or repr(object).
-         *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'. */
-        post: operations["admin_create_invitation_action"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/users/users/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_users"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/manage/users/users/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["admin_get_user"];
-        put: operations["admin_update_user"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["admin_partial_update_user"];
-        trace?: never;
-    };
-    "/api/v1/moderation/content-filters/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_moderation_content_filters"];
-        put?: never;
-        post: operations["create_moderation_content_filter"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/moderation/content-filters/{uuid}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_moderation_content_filter"];
-        put?: never;
-        post?: never;
-        delete: operations["delete_moderation_content_filter"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/moderation/reports/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["create_moderation_report"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/mutations/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_mutations"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/mutations/{uuid}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_mutation"];
-        put?: never;
-        post?: never;
-        delete: operations["delete_mutation"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/mutations/{uuid}/approve/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["approve_mutation"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/mutations/{uuid}/reject/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["reject_mutation"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/oauth/apps/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_oauth_apps"];
-        put?: never;
-        post: operations["create_oauth_app"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/oauth/apps/{client_id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_oauth_app"];
-        put: operations["update_oauth_app"];
-        post?: never;
-        delete: operations["delete_oauth_app"];
-        options?: never;
-        head?: never;
-        patch: operations["partial_update_oauth_app"];
-        trace?: never;
-    };
-    "/api/v1/oauth/apps/{client_id}/refresh-token/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["refresh_oauth_token"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/oauth/grants/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description This is a viewset that list applications that have access to the request user
-         *     account, to allow revoking tokens easily. */
-        get: operations["get_oauth_grants"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/oauth/grants/{client_id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description This is a viewset that list applications that have access to the request user
-         *     account, to allow revoking tokens easily. */
-        get: operations["get_oauth_grant"];
-        put?: never;
-        post?: never;
-        /** @description This is a viewset that list applications that have access to the request user
-         *     account, to allow revoking tokens easily. */
-        delete: operations["delete_oauth_grant"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/oembed/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_oembed"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/playlists/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_playlists"];
-        put?: never;
-        post: operations["create_playlist"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/playlists/{uuid}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_playlist"];
-        put: operations["update_playlist"];
-        post?: never;
-        delete: operations["delete_playlist"];
-        options?: never;
-        head?: never;
-        patch: operations["partial_update_playlist"];
-        trace?: never;
-    };
-    "/api/v1/playlists/{uuid}/add/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["add_to_playlist"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/playlists/{uuid}/albums/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_playlist_albums"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/playlists/{uuid}/artists/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_playlist_artists"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/playlists/{uuid}/clear/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete: operations["clear_playlist"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/playlists/{uuid}/move/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["reorder_track_in_playlist"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/playlists/{uuid}/remove/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["remove_from_playlist_2"];
-        delete: operations["remove_from_playlist"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/playlists/{uuid}/tracks/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_playlist_tracks"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/plugins/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_plugins"];
-        put?: never;
-        post: operations["create_plugin"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/plugins/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_plugin"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/plugins/{id}/disable/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["disable_plugin"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/plugins/{id}/enable/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["enable_plugin"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/plugins/{id}/scan/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["create_plugin_scan"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/radios/radios/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_radios"];
-        put?: never;
-        post: operations["create_radio"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/radios/radios/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_radio"];
-        put: operations["update_radio"];
-        post?: never;
-        delete: operations["delete_radio"];
-        options?: never;
-        head?: never;
-        patch: operations["partial_update_radio"];
-        trace?: never;
-    };
-    "/api/v1/radios/radios/{id}/tracks/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_radio_track"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/radios/radios/filters/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_radio_filter"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/radios/radios/validate/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["validate_radio"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/radios/sessions/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["create_radio_session"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/radios/sessions/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_radio_session"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/radios/tracks/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["get_next_radio_track"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/rate-limit/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_rate_limit"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/search": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_search_results"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/stream/{uuid}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_track_stream"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/subscriptions/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_subscriptions"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/subscriptions/{uuid}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_subscription"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/subscriptions/all/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Return all the subscriptions of the current user, with only limited data
-         *     to have a performant endpoint and avoid lots of queries just to display
-         *     subscription status in the UI */
-        get: operations["get_all_subscriptions"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tags/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_tags"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tags/{name}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_tag"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/text-preview/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["preview_text"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tracks/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description A simple ViewSet for viewing and editing accounts. */
-        get: operations["get_tracks"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tracks/{id}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description A simple ViewSet for viewing and editing accounts. */
-        get: operations["get_track"];
-        put?: never;
-        post?: never;
-        /** @description A simple ViewSet for viewing and editing accounts. */
-        delete: operations["delete_track"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tracks/{id}/fetches/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description A simple ViewSet for viewing and editing accounts. */
-        get: operations["get_track_fetches"];
-        put?: never;
-        /** @description A simple ViewSet for viewing and editing accounts. */
-        post: operations["create_track_fetch"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tracks/{id}/libraries/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description A simple ViewSet for viewing and editing accounts. */
-        get: operations["get_track_libraries"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tracks/{id}/mutations/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description A simple ViewSet for viewing and editing accounts. */
-        get: operations["get_track_mutations"];
-        put?: never;
-        /** @description A simple ViewSet for viewing and editing accounts. */
-        post: operations["create_track_mutation"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/uploads/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_uploads"];
-        put?: never;
-        post: operations["create_upload"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/uploads/{uuid}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_upload"];
-        put: operations["update_upload"];
-        post?: never;
-        delete: operations["delete_upload"];
-        options?: never;
-        head?: never;
-        patch: operations["partial_update_upload"];
-        trace?: never;
-    };
-    "/api/v1/uploads/{uuid}/audio-file-metadata/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_upload_metadata"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/uploads/action/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description str(object='') -> str
-         *     str(bytes_or_buffer[, encoding[, errors]]) -> str
-         *
-         *     Create a new string object from the given object. If encoding or
-         *     errors is specified, then the object must expose a data buffer
-         *     that will be decoded using the given encoding and error handler.
-         *     Otherwise, returns the result of object.__str__() (if defined)
-         *     or repr(object).
-         *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'. */
-        post: operations["create_upload_action"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/uploads/bulk_update/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** @description Used to move an upload from one library to another. Receive a upload uuid and a privacy_level */
-        patch: operations["partial_update_upload_bulk_update"];
-        trace?: never;
-    };
-    "/api/v1/users/{username}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put: operations["update_user"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["partial_update_user"];
-        trace?: never;
-    };
-    "/api/v1/users/{username}/subsonic-token/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_user_subsonic_token"];
-        put?: never;
-        post: operations["create_user_subsonic_token"];
-        delete: operations["delete_user_subsonic_token"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/users/change-email/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["change_email"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/users/me/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Return information about the current user or delete it */
-        get: operations["get_authenticated_user"];
-        put?: never;
-        post?: never;
-        /** @description Return information about the current user or delete it */
-        delete: operations["delete_authenticated_user"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/users/settings/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["update_settings"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v2/activity/": {
         parameters: {
             query?: never;
@@ -2984,7 +137,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_activity_2"];
+        get: operations["get_activity"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3000,9 +153,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_albums_2"];
+        get: operations["get_albums"];
         put?: never;
-        post: operations["create_album_2"];
+        post: operations["create_album"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3016,10 +169,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_album_2"];
+        get: operations["get_album"];
         put?: never;
         post?: never;
-        delete: operations["delete_album_2"];
+        delete: operations["delete_album"];
         options?: never;
         head?: never;
         patch?: never;
@@ -3032,9 +185,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_album_fetches_2"];
+        get: operations["get_album_fetches"];
         put?: never;
-        post: operations["create_album_fetch_2"];
+        post: operations["create_album_fetch"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3048,7 +201,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_album_libraries_2"];
+        get: operations["get_album_libraries"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3064,9 +217,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_album_mutations_2"];
+        get: operations["get_album_mutations"];
         put?: never;
-        post: operations["create_album_mutation_2"];
+        post: operations["create_album_mutation"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3080,7 +233,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_artists_2"];
+        get: operations["get_artists"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3096,7 +249,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_artist_2"];
+        get: operations["get_artist"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3112,9 +265,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_artist_fetches_2"];
+        get: operations["get_artist_fetches"];
         put?: never;
-        post: operations["create_artist_fetch_2"];
+        post: operations["create_artist_fetch"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3128,7 +281,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_artist_libraries_2"];
+        get: operations["get_artist_libraries"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3144,9 +297,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_artist_mutations_2"];
+        get: operations["get_artist_mutations"];
         put?: never;
-        post: operations["create_artist_mutation_2"];
+        post: operations["create_artist_mutation"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3162,7 +315,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["create_attachment_2"];
+        post: operations["create_attachment"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3176,10 +329,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_attachment_2"];
+        get: operations["get_attachment"];
         put?: never;
         post?: never;
-        delete: operations["delete_attachment_2"];
+        delete: operations["delete_attachment"];
         options?: never;
         head?: never;
         patch?: never;
@@ -3192,7 +345,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_attachment_proxy_2"];
+        get: operations["get_attachment_proxy"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3211,7 +364,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** @description The type of the None singleton. */
-        post: operations["change_password_3"];
+        post: operations["change_password"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3228,7 +381,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** @description The type of the None singleton. */
-        post: operations["reset_password_2"];
+        post: operations["reset_password"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3245,7 +398,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** @description The type of the None singleton. */
-        post: operations["confirm_password_reset_2"];
+        post: operations["confirm_password_reset"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3262,7 +415,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** @description The type of the None singleton. */
-        post: operations["register_2"];
+        post: operations["register"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3279,7 +432,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** @description The type of the None singleton. */
-        post: operations["change_password_4"];
+        post: operations["change_password_2"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3296,7 +449,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** @description The type of the None singleton. */
-        post: operations["verify_email_2"];
+        post: operations["verify_email"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3310,37 +463,43 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description Reads and updates UserModel fields
+        /**
+         * @description Reads and updates UserModel fields
          *     Accepts GET, PUT, PATCH methods.
          *
          *     Default accepted fields: username, first_name, last_name
          *     Default display fields: pk, username, email, first_name, last_name
          *     Read-only fields: pk, email
          *
-         *     Returns UserModel fields. */
-        get: operations["get_auth_user_2"];
-        /** @description Reads and updates UserModel fields
+         *     Returns UserModel fields.
+         */
+        get: operations["get_auth_user"];
+        /**
+         * @description Reads and updates UserModel fields
          *     Accepts GET, PUT, PATCH methods.
          *
          *     Default accepted fields: username, first_name, last_name
          *     Default display fields: pk, username, email, first_name, last_name
          *     Read-only fields: pk, email
          *
-         *     Returns UserModel fields. */
-        put: operations["update_auth_user_2"];
+         *     Returns UserModel fields.
+         */
+        put: operations["update_auth_user"];
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        /** @description Reads and updates UserModel fields
+        /**
+         * @description Reads and updates UserModel fields
          *     Accepts GET, PUT, PATCH methods.
          *
          *     Default accepted fields: username, first_name, last_name
          *     Default display fields: pk, username, email, first_name, last_name
          *     Read-only fields: pk, email
          *
-         *     Returns UserModel fields. */
-        patch: operations["partial_update_auth_user_2"];
+         *     Returns UserModel fields.
+         */
+        patch: operations["partial_update_auth_user"];
         trace?: never;
     };
     "/api/v2/channels/": {
@@ -3350,9 +509,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_channels_2"];
+        get: operations["get_channels"];
         put?: never;
-        post: operations["create_channel_2"];
+        post: operations["create_channel"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3366,13 +525,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_channel_2"];
-        put: operations["update_channel_2"];
+        get: operations["get_channel"];
+        put: operations["update_channel"];
         post?: never;
-        delete: operations["delete_channel_2"];
+        delete: operations["delete_channel"];
         options?: never;
         head?: never;
-        patch: operations["partial_update_channel_2"];
+        patch: operations["partial_update_channel"];
         trace?: never;
     };
     "/api/v2/channels/{composite}/rss/": {
@@ -3382,7 +541,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_channel_rss_2"];
+        get: operations["get_channel_rss"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3400,7 +559,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["subscribe_channel_2"];
+        post: operations["subscribe_channel"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3416,8 +575,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["unsubscribe_channel_4"];
-        delete: operations["unsubscribe_channel_3"];
+        post: operations["unsubscribe_channel_2"];
+        delete: operations["unsubscribe_channel"];
         options?: never;
         head?: never;
         patch?: never;
@@ -3430,7 +589,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_channel_metadata_choices_2"];
+        get: operations["get_channel_metadata_choices"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3448,7 +607,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["subscribe_channel_rss_2"];
+        post: operations["subscribe_channel_rss"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3462,9 +621,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_favorite_tracks_2"];
+        get: operations["get_favorite_tracks"];
         put?: never;
-        post: operations["favorite_track_2"];
+        post: operations["favorite_track"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3481,7 +640,7 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        delete: operations["delete_favorite_track_2"];
+        delete: operations["delete_favorite_track"];
         options?: never;
         head?: never;
         patch?: never;
@@ -3494,10 +653,12 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description Return all the favorites of the current user, with only limited data
+        /**
+         * @description Return all the favorites of the current user, with only limited data
          *     to have a performant endpoint and avoid lots of queries just to display
-         *     favorites status in the UI */
-        get: operations["get_all_favorite_tracks_2"];
+         *     favorites status in the UI
+         */
+        get: operations["get_all_favorite_tracks"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3515,8 +676,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["unfavorite_track_4"];
-        delete: operations["unfavorite_track_3"];
+        post: operations["unfavorite_track_2"];
+        delete: operations["unfavorite_track"];
         options?: never;
         head?: never;
         patch?: never;
@@ -3529,7 +690,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_federation_actor_2"];
+        get: operations["get_federation_actor"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3545,7 +706,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_federation_actor_library_2"];
+        get: operations["get_federation_actor_library"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3561,7 +722,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_federation_domains_2"];
+        get: operations["get_federation_domains"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3577,7 +738,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_federation_domain_2"];
+        get: operations["get_federation_domain"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3595,7 +756,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["create_federation_fetch_2"];
+        post: operations["create_federation_fetch"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3609,7 +770,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_federation_fetch_2"];
+        get: operations["get_federation_fetch"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3625,9 +786,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_federation_library_follows_2"];
+        get: operations["get_federation_library_follows"];
         put?: never;
-        post: operations["create_federation_library_follow_2"];
+        post: operations["create_federation_library_follow"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3641,10 +802,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_federation_library_follow_2"];
+        get: operations["get_federation_library_follow"];
         put?: never;
         post?: never;
-        delete: operations["delete_federation_library_follow_2"];
+        delete: operations["delete_federation_library_follow"];
         options?: never;
         head?: never;
         patch?: never;
@@ -3659,7 +820,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["accept_federation_library_follow_2"];
+        post: operations["accept_federation_library_follow"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3675,7 +836,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["reject_federation_library_follow_2"];
+        post: operations["reject_federation_library_follow"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3689,10 +850,12 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description Return all the subscriptions of the current user, with only limited data
+        /**
+         * @description Return all the subscriptions of the current user, with only limited data
          *     to have a performant endpoint and avoid lots of queries just to display
-         *     subscription status in the UI */
-        get: operations["get_all_federation_library_follows_3"];
+         *     subscription status in the UI
+         */
+        get: operations["get_all_federation_library_follows"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3708,9 +871,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_federation_received_follows_2"];
+        get: operations["get_federation_received_follows"];
         put?: never;
-        post: operations["create_federation_user_follow_2"];
+        post: operations["create_federation_user_follow"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3724,10 +887,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_federation_user_follow_2"];
+        get: operations["get_federation_user_follow"];
         put?: never;
         post?: never;
-        delete: operations["delete_federation_user_follow_2"];
+        delete: operations["delete_federation_user_follow"];
         options?: never;
         head?: never;
         patch?: never;
@@ -3742,7 +905,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["accept_federation_user_follow_2"];
+        post: operations["accept_federation_user_follow"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3758,7 +921,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["reject_federation_user_follow_2"];
+        post: operations["reject_federation_user_follow"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3772,10 +935,12 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description Return all the subscriptions of the current user, with only limited data
+        /**
+         * @description Return all the subscriptions of the current user, with only limited data
          *     to have a performant endpoint and avoid lots of queries just to display
-         *     subscription status in the UI */
-        get: operations["get_all_federation_library_follows_4"];
+         *     subscription status in the UI
+         */
+        get: operations["get_all_federation_library_follows_2"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3791,7 +956,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_federation_inboxes_2"];
+        get: operations["get_federation_inboxes"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3807,13 +972,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_federation_inbox_2"];
-        put: operations["update_federation_inbox_2"];
+        get: operations["get_federation_inbox"];
+        put: operations["update_federation_inbox"];
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["partial_update_federation_inbox_2"];
+        patch: operations["partial_update_federation_inbox"];
         trace?: never;
     };
     "/api/v2/federation/inbox/action/": {
@@ -3825,7 +990,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description str(object='') -> str
+        /**
+         * @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -3834,8 +1000,9 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'. */
-        post: operations["create_federation_inbox_action_2"];
+         *     errors defaults to 'strict'.
+         */
+        post: operations["create_federation_inbox_action"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3849,7 +1016,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_federation_library_2"];
+        get: operations["get_federation_library"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3867,7 +1034,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["create_federation_library_scan_2"];
+        post: operations["create_federation_library_scan"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3883,7 +1050,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["create_federation_library_fetch_2"];
+        post: operations["create_federation_library_fetch"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3897,9 +1064,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_history_listenings_2"];
+        get: operations["get_history_listenings"];
         put?: never;
-        post: operations["create_history_listening_2"];
+        post: operations["create_history_listening"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3913,7 +1080,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_history_listening_2"];
+        get: operations["get_history_listening"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3929,10 +1096,12 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description - list preferences
+        /**
+         * @description - list preferences
          *     - detail given preference
          *     - batch update preferences
-         *     - update a single preference */
+         *     - update a single preference
+         */
         get: operations["get_instance_admin_settings_2"];
         put?: never;
         post?: never;
@@ -3949,24 +1118,30 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description - list preferences
+        /**
+         * @description - list preferences
          *     - detail given preference
          *     - batch update preferences
-         *     - update a single preference */
+         *     - update a single preference
+         */
         get: operations["get_instance_admin_setting_2"];
-        /** @description - list preferences
+        /**
+         * @description - list preferences
          *     - detail given preference
          *     - batch update preferences
-         *     - update a single preference */
+         *     - update a single preference
+         */
         put: operations["update_instance_admin_setting_2"];
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        /** @description - list preferences
+        /**
+         * @description - list preferences
          *     - detail given preference
          *     - batch update preferences
-         *     - update a single preference */
+         *     - update a single preference
+         */
         patch: operations["partial_update_instance_admin_setting_2"];
         trace?: never;
     };
@@ -3979,10 +1154,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Update multiple preferences at once
+        /**
+         * @description Update multiple preferences at once
          *
          *     this is a long method because we ensure everything is valid
-         *     before actually persisting the changes */
+         *     before actually persisting the changes
+         */
         post: operations["create_instance_admin_setting_bulk_2"];
         delete?: never;
         options?: never;
@@ -4045,7 +1222,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_libraries_2"];
+        get: operations["get_libraries"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4061,7 +1238,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_library_2"];
+        get: operations["get_library"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4077,10 +1254,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_library_fs_import_2"];
+        get: operations["get_library_fs_import"];
         put?: never;
-        post: operations["create_library_fs_import_2"];
-        delete: operations["delete_library_fs_import_2"];
+        post: operations["create_library_fs_import"];
+        delete: operations["delete_library_fs_import"];
         options?: never;
         head?: never;
         patch?: never;
@@ -4093,7 +1270,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_licenses_2"];
+        get: operations["get_licenses"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4109,7 +1286,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_license_2"];
+        get: operations["get_license"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4125,7 +1302,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_listen_2"];
+        get: operations["get_listen"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4141,7 +1318,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_accounts_2"];
+        get: operations["admin_get_accounts"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4157,7 +1334,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_account_2"];
+        get: operations["admin_get_account"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4173,7 +1350,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_account_stats_2"];
+        get: operations["admin_get_account_stats"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4191,7 +1368,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description str(object='') -> str
+        /**
+         * @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -4200,8 +1378,9 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'. */
-        post: operations["admin_create_account_action_2"];
+         *     errors defaults to 'strict'.
+         */
+        post: operations["admin_create_account_action"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4215,7 +1394,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_channels_2"];
+        get: operations["admin_get_channels"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4231,10 +1410,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_channel_2"];
+        get: operations["admin_get_channel"];
         put?: never;
         post?: never;
-        delete: operations["admin_delete_channel_2"];
+        delete: operations["admin_delete_channel"];
         options?: never;
         head?: never;
         patch?: never;
@@ -4247,7 +1426,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_channel_stats_2"];
+        get: operations["admin_get_channel_stats"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4263,9 +1442,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_federation_domains_2"];
+        get: operations["admin_get_federation_domains"];
         put?: never;
-        post: operations["admin_create_federation_domain_2"];
+        post: operations["admin_create_federation_domain"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4279,13 +1458,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_federation_domain_2"];
-        put: operations["admin_update_federation_domain_2"];
+        get: operations["admin_get_federation_domain"];
+        put: operations["admin_update_federation_domain"];
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["admin_partial_update_federation_domain_2"];
+        patch: operations["admin_partial_update_federation_domain"];
         trace?: never;
     };
     "/api/v2/manage/federation/domains/{name}/nodeinfo/": {
@@ -4295,7 +1474,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_federation_domain_nodeinfo_2"];
+        get: operations["admin_get_federation_domain_nodeinfo"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4311,7 +1490,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_federation_domain_stats_2"];
+        get: operations["admin_get_federation_domain_stats"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4329,7 +1508,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description str(object='') -> str
+        /**
+         * @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -4338,8 +1518,9 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'. */
-        post: operations["admin_create_federation_domain_action_2"];
+         *     errors defaults to 'strict'.
+         */
+        post: operations["admin_create_federation_domain_action"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4353,7 +1534,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_albums_2"];
+        get: operations["admin_get_albums"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4369,10 +1550,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_album_2"];
+        get: operations["admin_get_album"];
         put?: never;
         post?: never;
-        delete: operations["admin_delete_album_2"];
+        delete: operations["admin_delete_album"];
         options?: never;
         head?: never;
         patch?: never;
@@ -4385,7 +1566,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_library_album_stats_2"];
+        get: operations["admin_get_library_album_stats"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4403,7 +1584,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description str(object='') -> str
+        /**
+         * @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -4412,8 +1594,9 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'. */
-        post: operations["admin_create_album_action_2"];
+         *     errors defaults to 'strict'.
+         */
+        post: operations["admin_create_album_action"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4427,7 +1610,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_artists_2"];
+        get: operations["admin_get_artists"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4443,10 +1626,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_artist_2"];
+        get: operations["admin_get_artist"];
         put?: never;
         post?: never;
-        delete: operations["admin_delete_artist_2"];
+        delete: operations["admin_delete_artist"];
         options?: never;
         head?: never;
         patch?: never;
@@ -4459,7 +1642,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_library_artist_stats_2"];
+        get: operations["admin_get_library_artist_stats"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4477,7 +1660,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description str(object='') -> str
+        /**
+         * @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -4486,8 +1670,9 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'. */
-        post: operations["admin_create_artist_action_2"];
+         *     errors defaults to 'strict'.
+         */
+        post: operations["admin_create_artist_action"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4501,7 +1686,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_libraries_2"];
+        get: operations["admin_get_libraries"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4517,13 +1702,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_library_2"];
-        put: operations["admin_update_library_2"];
+        get: operations["admin_get_library"];
+        put: operations["admin_update_library"];
         post?: never;
-        delete: operations["admin_delete_library_2"];
+        delete: operations["admin_delete_library"];
         options?: never;
         head?: never;
-        patch: operations["admin_partial_update_library_2"];
+        patch: operations["admin_partial_update_library"];
         trace?: never;
     };
     "/api/v2/manage/library/libraries/{uuid}/stats/": {
@@ -4533,7 +1718,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_library_stats_2"];
+        get: operations["admin_get_library_stats"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4551,7 +1736,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description str(object='') -> str
+        /**
+         * @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -4560,8 +1746,9 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'. */
-        post: operations["admin_create_library_action_2"];
+         *     errors defaults to 'strict'.
+         */
+        post: operations["admin_create_library_action"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4575,7 +1762,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_tracks_2"];
+        get: operations["admin_get_tracks"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4591,10 +1778,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_track_2"];
+        get: operations["admin_get_track"];
         put?: never;
         post?: never;
-        delete: operations["admin_delete_track_2"];
+        delete: operations["admin_delete_track"];
         options?: never;
         head?: never;
         patch?: never;
@@ -4607,7 +1794,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_track_stats_2"];
+        get: operations["admin_get_track_stats"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4625,7 +1812,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description str(object='') -> str
+        /**
+         * @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -4634,8 +1822,9 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'. */
-        post: operations["admin_create_track_action_2"];
+         *     errors defaults to 'strict'.
+         */
+        post: operations["admin_create_track_action"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4649,7 +1838,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_uploads_2"];
+        get: operations["admin_get_uploads"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4665,10 +1854,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_upload_2"];
+        get: operations["admin_get_upload"];
         put?: never;
         post?: never;
-        delete: operations["admin_delete_upload_2"];
+        delete: operations["admin_delete_upload"];
         options?: never;
         head?: never;
         patch?: never;
@@ -4683,7 +1872,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description str(object='') -> str
+        /**
+         * @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -4692,8 +1882,9 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'. */
-        post: operations["admin_create_upload_action_2"];
+         *     errors defaults to 'strict'.
+         */
+        post: operations["admin_create_upload_action"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4707,9 +1898,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["moderation_get_instance_policies_2"];
+        get: operations["moderation_get_instance_policies"];
         put?: never;
-        post: operations["moderation_create_instance_policy_2"];
+        post: operations["moderation_create_instance_policy"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4723,13 +1914,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["moderation_get_instance_policy_2"];
-        put: operations["moderation_update_instance_policy_2"];
+        get: operations["moderation_get_instance_policy"];
+        put: operations["moderation_update_instance_policy"];
         post?: never;
-        delete: operations["moderation_delete_instance_policy_2"];
+        delete: operations["moderation_delete_instance_policy"];
         options?: never;
         head?: never;
-        patch: operations["moderation_partial_update_instance_policy_2"];
+        patch: operations["moderation_partial_update_instance_policy"];
         trace?: never;
     };
     "/api/v2/manage/moderation/notes/": {
@@ -4739,9 +1930,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["moderation_get_notes_2"];
+        get: operations["moderation_get_notes"];
         put?: never;
-        post: operations["moderation_create_note_2"];
+        post: operations["moderation_create_note"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4755,10 +1946,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["moderation_get_note_2"];
+        get: operations["moderation_get_note"];
         put?: never;
         post?: never;
-        delete: operations["moderation_delete_note_2"];
+        delete: operations["moderation_delete_note"];
         options?: never;
         head?: never;
         patch?: never;
@@ -4771,7 +1962,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["moderation_get_reports_2"];
+        get: operations["moderation_get_reports"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4787,13 +1978,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["moderation_get_report_2"];
-        put: operations["moderation_update_report_2"];
+        get: operations["moderation_get_report"];
+        put: operations["moderation_update_report"];
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["moderation_partial_update_report_2"];
+        patch: operations["moderation_partial_update_report"];
         trace?: never;
     };
     "/api/v2/manage/moderation/requests/": {
@@ -4803,7 +1994,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["moderation_get_requests_2"];
+        get: operations["moderation_get_requests"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4819,13 +2010,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["moderation_get_request_2"];
-        put: operations["moderation_update_request_2"];
+        get: operations["moderation_get_request"];
+        put: operations["moderation_update_request"];
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["moderation_partial_update_request_2"];
+        patch: operations["moderation_partial_update_request"];
         trace?: never;
     };
     "/api/v2/manage/tags/": {
@@ -4835,9 +2026,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_tags_2"];
+        get: operations["admin_get_tags"];
         put?: never;
-        post: operations["admin_create_tag_2"];
+        post: operations["admin_create_tag"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4851,10 +2042,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_tag_2"];
+        get: operations["admin_get_tag"];
         put?: never;
         post?: never;
-        delete: operations["admin_delete_tag_2"];
+        delete: operations["admin_delete_tag"];
         options?: never;
         head?: never;
         patch?: never;
@@ -4869,7 +2060,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description str(object='') -> str
+        /**
+         * @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -4878,8 +2070,9 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'. */
-        post: operations["admin_create_tag_action_2"];
+         *     errors defaults to 'strict'.
+         */
+        post: operations["admin_create_tag_action"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4893,9 +2086,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_invitations_2"];
+        get: operations["admin_get_invitations"];
         put?: never;
-        post: operations["admin_create_invitation_2"];
+        post: operations["admin_create_invitation"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4909,13 +2102,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_invitation_2"];
-        put: operations["admin_update_invitation_2"];
+        get: operations["admin_get_invitation"];
+        put: operations["admin_update_invitation"];
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["admin_partial_update_invitation_2"];
+        patch: operations["admin_partial_update_invitation"];
         trace?: never;
     };
     "/api/v2/manage/users/invitations/action/": {
@@ -4927,7 +2120,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description str(object='') -> str
+        /**
+         * @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -4936,8 +2130,9 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'. */
-        post: operations["admin_create_invitation_action_2"];
+         *     errors defaults to 'strict'.
+         */
+        post: operations["admin_create_invitation_action"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4951,7 +2146,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_users_2"];
+        get: operations["admin_get_users"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4967,13 +2162,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["admin_get_user_2"];
-        put: operations["admin_update_user_2"];
+        get: operations["admin_get_user"];
+        put: operations["admin_update_user"];
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["admin_partial_update_user_2"];
+        patch: operations["admin_partial_update_user"];
         trace?: never;
     };
     "/api/v2/moderation/content-filters/": {
@@ -4983,9 +2178,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_moderation_content_filters_2"];
+        get: operations["get_moderation_content_filters"];
         put?: never;
-        post: operations["create_moderation_content_filter_2"];
+        post: operations["create_moderation_content_filter"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4999,10 +2194,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_moderation_content_filter_2"];
+        get: operations["get_moderation_content_filter"];
         put?: never;
         post?: never;
-        delete: operations["delete_moderation_content_filter_2"];
+        delete: operations["delete_moderation_content_filter"];
         options?: never;
         head?: never;
         patch?: never;
@@ -5017,7 +2212,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["create_moderation_report_2"];
+        post: operations["create_moderation_report"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5031,7 +2226,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_mutations_2"];
+        get: operations["get_mutations"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5047,10 +2242,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_mutation_2"];
+        get: operations["get_mutation"];
         put?: never;
         post?: never;
-        delete: operations["delete_mutation_2"];
+        delete: operations["delete_mutation"];
         options?: never;
         head?: never;
         patch?: never;
@@ -5065,7 +2260,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["approve_mutation_2"];
+        post: operations["approve_mutation"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5081,7 +2276,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["reject_mutation_2"];
+        post: operations["reject_mutation"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5095,9 +2290,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_oauth_apps_2"];
+        get: operations["get_oauth_apps"];
         put?: never;
-        post: operations["create_oauth_app_2"];
+        post: operations["create_oauth_app"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5111,13 +2306,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_oauth_app_2"];
-        put: operations["update_oauth_app_2"];
+        get: operations["get_oauth_app"];
+        put: operations["update_oauth_app"];
         post?: never;
-        delete: operations["delete_oauth_app_2"];
+        delete: operations["delete_oauth_app"];
         options?: never;
         head?: never;
-        patch: operations["partial_update_oauth_app_2"];
+        patch: operations["partial_update_oauth_app"];
         trace?: never;
     };
     "/api/v2/oauth/apps/{client_id}/refresh-token/": {
@@ -5129,26 +2324,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["refresh_oauth_token_2"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/oauth/authorize/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Handle GET requests: instantiate a blank version of the form. */
-        get: operations["get_oauth_authorize"];
-        put: operations["update_oauth_authorize"];
-        /** @description Handle POST requests: instantiate a form instance with the passed
-         *     POST variables and then check if it's valid. */
-        post: operations["create_oauth_authorize"];
+        post: operations["refresh_oauth_token"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5162,9 +2338,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description This is a viewset that list applications that have access to the request user
-         *     account, to allow revoking tokens easily. */
-        get: operations["get_oauth_grants_2"];
+        /**
+         * @description This is a viewset that list applications that have access to the request user
+         *     account, to allow revoking tokens easily.
+         */
+        get: operations["get_oauth_grants"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5180,14 +2358,18 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description This is a viewset that list applications that have access to the request user
-         *     account, to allow revoking tokens easily. */
-        get: operations["get_oauth_grant_2"];
+        /**
+         * @description This is a viewset that list applications that have access to the request user
+         *     account, to allow revoking tokens easily.
+         */
+        get: operations["get_oauth_grant"];
         put?: never;
         post?: never;
-        /** @description This is a viewset that list applications that have access to the request user
-         *     account, to allow revoking tokens easily. */
-        delete: operations["delete_oauth_grant_2"];
+        /**
+         * @description This is a viewset that list applications that have access to the request user
+         *     account, to allow revoking tokens easily.
+         */
+        delete: operations["delete_oauth_grant"];
         options?: never;
         head?: never;
         patch?: never;
@@ -5200,7 +2382,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_oembed_2"];
+        get: operations["get_oembed"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5216,9 +2398,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_playlists_2"];
+        get: operations["get_playlists"];
         put?: never;
-        post: operations["create_playlist_2"];
+        post: operations["create_playlist"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5232,13 +2414,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_playlist_2"];
-        put: operations["update_playlist_2"];
+        get: operations["get_playlist"];
+        put: operations["update_playlist"];
         post?: never;
-        delete: operations["delete_playlist_2"];
+        delete: operations["delete_playlist"];
         options?: never;
         head?: never;
-        patch: operations["partial_update_playlist_2"];
+        patch: operations["partial_update_playlist"];
         trace?: never;
     };
     "/api/v2/playlists/{uuid}/add/": {
@@ -5250,7 +2432,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["add_to_playlist_2"];
+        post: operations["add_to_playlist"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5264,7 +2446,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_playlist_albums_2"];
+        get: operations["get_playlist_albums"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5280,7 +2462,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_playlist_artists_2"];
+        get: operations["get_playlist_artists"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5299,7 +2481,7 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        delete: operations["clear_playlist_2"];
+        delete: operations["clear_playlist"];
         options?: never;
         head?: never;
         patch?: never;
@@ -5314,7 +2496,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["reorder_track_in_playlist_2"];
+        post: operations["reorder_track_in_playlist"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5330,8 +2512,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["remove_from_playlist_4"];
-        delete: operations["remove_from_playlist_3"];
+        post: operations["remove_from_playlist_2"];
+        delete: operations["remove_from_playlist"];
         options?: never;
         head?: never;
         patch?: never;
@@ -5344,7 +2526,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_playlist_tracks_2"];
+        get: operations["get_playlist_tracks"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5360,9 +2542,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_plugins_2"];
+        get: operations["get_plugins"];
         put?: never;
-        post: operations["create_plugin_2"];
+        post: operations["create_plugin"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5376,7 +2558,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_plugin_2"];
+        get: operations["get_plugin"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5394,7 +2576,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["disable_plugin_2"];
+        post: operations["disable_plugin"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5410,7 +2592,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["enable_plugin_2"];
+        post: operations["enable_plugin"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5426,119 +2608,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["create_plugin_scan_2"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/providers/musicbrainz/artists/{uuid}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_provider_musicbrainz_artist"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/providers/musicbrainz/release-groups/browse/{artist_uuid}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_provider_musicbrainz_release_group_browse"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/providers/musicbrainz/releases/{uuid}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_provider_musicbrainz_release"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/providers/musicbrainz/releases/browse/{release_group_uuid}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_provider_musicbrainz_release_browse"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/providers/musicbrainz/search/artists/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_provider_musicbrainz_search_artist"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/providers/musicbrainz/search/recordings/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_provider_musicbrainz_search_recording"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/providers/musicbrainz/search/releases/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_provider_musicbrainz_search_release"];
-        put?: never;
-        post?: never;
+        post: operations["create_plugin_scan"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5552,9 +2622,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_radios_2"];
+        get: operations["get_radios"];
         put?: never;
-        post: operations["create_radio_2"];
+        post: operations["create_radio"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5568,13 +2638,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_radio_2"];
-        put: operations["update_radio_2"];
+        get: operations["get_radio"];
+        put: operations["update_radio"];
         post?: never;
-        delete: operations["delete_radio_2"];
+        delete: operations["delete_radio"];
         options?: never;
         head?: never;
-        patch: operations["partial_update_radio_2"];
+        patch: operations["partial_update_radio"];
         trace?: never;
     };
     "/api/v2/radios/radios/{id}/tracks/": {
@@ -5584,7 +2654,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_radio_track_2"];
+        get: operations["get_radio_track"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5600,7 +2670,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_radio_filter_2"];
+        get: operations["get_radio_filter"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5618,7 +2688,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["validate_radio_2"];
+        post: operations["validate_radio"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5635,7 +2705,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** @description Returns a list of RadioSessions */
-        post: operations["create_radio_session_2"];
+        post: operations["create_radio_session"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5650,7 +2720,7 @@ export interface paths {
             cookie?: never;
         };
         /** @description Returns a list of RadioSessions */
-        get: operations["get_radio_session_2"];
+        get: operations["get_radio_session"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5685,7 +2755,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["get_next_radio_track_2"];
+        post: operations["get_next_radio_track"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5699,7 +2769,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_rate_limit_2"];
+        get: operations["get_rate_limit"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5715,7 +2785,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_search_results_2"];
+        get: operations["get_search_results"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5731,7 +2801,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_track_stream_2"];
+        get: operations["get_track_stream"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5747,7 +2817,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_subscriptions_2"];
+        get: operations["get_subscriptions"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5763,7 +2833,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_subscription_2"];
+        get: operations["get_subscription"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5779,10 +2849,12 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description Return all the subscriptions of the current user, with only limited data
+        /**
+         * @description Return all the subscriptions of the current user, with only limited data
          *     to have a performant endpoint and avoid lots of queries just to display
-         *     subscription status in the UI */
-        get: operations["get_all_subscriptions_2"];
+         *     subscription status in the UI
+         */
+        get: operations["get_all_subscriptions"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5798,7 +2870,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_tags_2"];
+        get: operations["get_tags"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5814,7 +2886,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_tag_2"];
+        get: operations["get_tag"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5832,7 +2904,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["preview_text_2"];
+        post: operations["preview_text"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5847,7 +2919,7 @@ export interface paths {
             cookie?: never;
         };
         /** @description A simple ViewSet for viewing and editing accounts. */
-        get: operations["get_tracks_2"];
+        get: operations["get_tracks"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5864,11 +2936,11 @@ export interface paths {
             cookie?: never;
         };
         /** @description A simple ViewSet for viewing and editing accounts. */
-        get: operations["get_track_2"];
+        get: operations["get_track"];
         put?: never;
         post?: never;
         /** @description A simple ViewSet for viewing and editing accounts. */
-        delete: operations["delete_track_2"];
+        delete: operations["delete_track"];
         options?: never;
         head?: never;
         patch?: never;
@@ -5882,10 +2954,10 @@ export interface paths {
             cookie?: never;
         };
         /** @description A simple ViewSet for viewing and editing accounts. */
-        get: operations["get_track_fetches_2"];
+        get: operations["get_track_fetches"];
         put?: never;
         /** @description A simple ViewSet for viewing and editing accounts. */
-        post: operations["create_track_fetch_2"];
+        post: operations["create_track_fetch"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5900,7 +2972,7 @@ export interface paths {
             cookie?: never;
         };
         /** @description A simple ViewSet for viewing and editing accounts. */
-        get: operations["get_track_libraries_2"];
+        get: operations["get_track_libraries"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5917,10 +2989,10 @@ export interface paths {
             cookie?: never;
         };
         /** @description A simple ViewSet for viewing and editing accounts. */
-        get: operations["get_track_mutations_2"];
+        get: operations["get_track_mutations"];
         put?: never;
         /** @description A simple ViewSet for viewing and editing accounts. */
-        post: operations["create_track_mutation_2"];
+        post: operations["create_track_mutation"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5934,9 +3006,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_uploads_2"];
+        get: operations["get_uploads"];
         put?: never;
-        post: operations["create_upload_2"];
+        post: operations["create_upload"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5950,13 +3022,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_upload_2"];
-        put: operations["update_upload_2"];
+        get: operations["get_upload"];
+        put: operations["update_upload"];
         post?: never;
-        delete: operations["delete_upload_2"];
+        delete: operations["delete_upload"];
         options?: never;
         head?: never;
-        patch: operations["partial_update_upload_2"];
+        patch: operations["partial_update_upload"];
         trace?: never;
     };
     "/api/v2/uploads/{uuid}/audio-file-metadata/": {
@@ -5966,7 +3038,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_upload_metadata_2"];
+        get: operations["get_upload_metadata"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5984,7 +3056,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description str(object='') -> str
+        /**
+         * @description str(object='') -> str
          *     str(bytes_or_buffer[, encoding[, errors]]) -> str
          *
          *     Create a new string object from the given object. If encoding or
@@ -5993,8 +3066,9 @@ export interface paths {
          *     Otherwise, returns the result of object.__str__() (if defined)
          *     or repr(object).
          *     encoding defaults to 'utf-8'.
-         *     errors defaults to 'strict'. */
-        post: operations["create_upload_action_2"];
+         *     errors defaults to 'strict'.
+         */
+        post: operations["create_upload_action"];
         delete?: never;
         options?: never;
         head?: never;
@@ -6015,7 +3089,7 @@ export interface paths {
         options?: never;
         head?: never;
         /** @description Used to move an upload from one library to another. Receive a upload uuid and a privacy_level */
-        patch: operations["partial_update_upload_bulk_update_2"];
+        patch: operations["partial_update_upload_bulk_update"];
         trace?: never;
     };
     "/api/v2/users/{username}/": {
@@ -6026,12 +3100,12 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: operations["update_user_3"];
+        put: operations["update_user"];
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        patch: operations["partial_update_user_3"];
+        patch: operations["partial_update_user"];
         trace?: never;
     };
     "/api/v2/users/{username}/subsonic-token/": {
@@ -6041,10 +3115,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_user_subsonic_token_3"];
+        get: operations["get_user_subsonic_token"];
         put?: never;
-        post: operations["create_user_subsonic_token_3"];
-        delete: operations["delete_user_subsonic_token_3"];
+        post: operations["create_user_subsonic_token"];
+        delete: operations["delete_user_subsonic_token"];
         options?: never;
         head?: never;
         patch?: never;
@@ -6059,7 +3133,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["change_email_2"];
+        post: operations["change_email"];
         delete?: never;
         options?: never;
         head?: never;
@@ -6074,11 +3148,11 @@ export interface paths {
             cookie?: never;
         };
         /** @description Return information about the current user or delete it */
-        get: operations["get_authenticated_user_2"];
+        get: operations["get_authenticated_user"];
         put?: never;
         post?: never;
         /** @description Return information about the current user or delete it */
-        delete: operations["delete_authenticated_user_2"];
+        delete: operations["delete_authenticated_user"];
         options?: never;
         head?: never;
         patch?: never;
@@ -6093,89 +3167,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["update_settings_2"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/users/users/{username}/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put: operations["update_user_2"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["partial_update_user_2"];
-        trace?: never;
-    };
-    "/api/v2/users/users/{username}/subsonic-token/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_user_subsonic_token_2"];
-        put?: never;
-        post: operations["create_user_subsonic_token_2"];
-        delete: operations["delete_user_subsonic_token_2"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/users/users/change-email/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["change_email_3"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/users/users/me/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Return information about the current user or delete it */
-        get: operations["get_authenticated_user_3"];
-        put?: never;
-        post?: never;
-        /** @description Return information about the current user or delete it */
-        delete: operations["delete_authenticated_user_3"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v2/users/users/settings/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["update_settings_3"];
+        post: operations["update_settings"];
         delete?: never;
         options?: never;
         head?: never;
@@ -7313,7 +4305,7 @@ export interface components {
             /** Format: email */
             readonly submitter_email: string | null;
             /** @default [] */
-            notes: components["schemas"]["ManageBaseNote"][];
+            notes: components["schemas"]["ManageBaseNote"][] | null;
         };
         ManageReportRequest: {
             type: components["schemas"]["ReportTypeEnum"];
@@ -7323,7 +4315,7 @@ export interface components {
             target_owner?: components["schemas"]["ManageBaseActorRequest"];
             submitter?: components["schemas"]["ManageBaseActorRequest"];
             /** @default [] */
-            notes: components["schemas"]["ManageBaseNoteRequest"][];
+            notes: components["schemas"]["ManageBaseNoteRequest"][] | null;
         };
         ManageTag: {
             readonly id: number;
@@ -7731,10 +4723,12 @@ export interface components {
             readonly version: string;
             software: components["schemas"]["Software"];
             readonly protocols: unknown[];
-            /** @default {
+            /**
+             * @default {
              *       "inbound": [],
              *       "outbound": []
-             *     } */
+             *     }
+             */
             services: components["schemas"]["Services"];
             readonly openRegistrations: boolean;
             readonly usage: components["schemas"]["Usage"];
@@ -7744,10 +4738,12 @@ export interface components {
             readonly version: string;
             software: components["schemas"]["SoftwareSerializer_v2"];
             readonly protocols: unknown[];
-            /** @default {
+            /**
+             * @default {
              *       "inbound": [],
              *       "outbound": []
-             *     } */
+             *     }
+             */
             services: components["schemas"]["Services"];
             readonly openRegistrations: boolean;
             readonly usage: components["schemas"]["Usage"];
@@ -7756,21 +4752,29 @@ export interface components {
         NodeInfoLibrary: {
             federationEnabled: boolean;
             anonymousCanListen: boolean;
-            /** @default {
+            /**
+             * @default {
              *       "total": 0
-             *     } */
+             *     }
+             */
             tracks: components["schemas"]["TotalCount"];
-            /** @default {
+            /**
+             * @default {
              *       "total": 0
-             *     } */
+             *     }
+             */
             artists: components["schemas"]["TotalCount"];
-            /** @default {
+            /**
+             * @default {
              *       "total": 0
-             *     } */
+             *     }
+             */
             albums: components["schemas"]["TotalCount"];
-            /** @default {
+            /**
+             * @default {
              *       "hours": 0
-             *     } */
+             *     }
+             */
             music: components["schemas"]["TotalHours"];
         };
         Oembed: {
@@ -8436,7 +5440,7 @@ export interface components {
             target_owner?: components["schemas"]["ManageBaseActorRequest"];
             submitter?: components["schemas"]["ManageBaseActorRequest"];
             /** @default [] */
-            notes: components["schemas"]["ManageBaseNoteRequest"][];
+            notes: components["schemas"]["ManageBaseNoteRequest"][] | null;
         };
         PatchedManageUserRequest: {
             /** Name of User */
@@ -9040,6 +6044,191 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    get_instance_admin_settings: {
+        parameters: {
+            query?: {
+                /** @description Which field to use when ordering the results. */
+                ordering?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GlobalPreference"][];
+                };
+            };
+        };
+    };
+    get_instance_admin_setting: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this Global preference. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GlobalPreference"];
+                };
+            };
+        };
+    };
+    update_instance_admin_setting: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this Global preference. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GlobalPreferenceRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["GlobalPreferenceRequest"];
+                "multipart/form-data": components["schemas"]["GlobalPreferenceRequest"];
+                "application/activity+json": components["schemas"]["GlobalPreferenceRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GlobalPreference"];
+                };
+            };
+        };
+    };
+    partial_update_instance_admin_setting: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this Global preference. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchedGlobalPreferenceRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["PatchedGlobalPreferenceRequest"];
+                "multipart/form-data": components["schemas"]["PatchedGlobalPreferenceRequest"];
+                "application/activity+json": components["schemas"]["PatchedGlobalPreferenceRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GlobalPreference"];
+                };
+            };
+        };
+    };
+    create_instance_admin_setting_bulk: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GlobalPreferenceRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["GlobalPreferenceRequest"];
+                "multipart/form-data": components["schemas"]["GlobalPreferenceRequest"];
+                "application/activity+json": components["schemas"]["GlobalPreferenceRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GlobalPreference"];
+                };
+            };
+        };
+    };
+    getNodeInfo20: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NodeInfo20"];
+                };
+            };
+        };
+    };
+    get_instance_settings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GlobalPreference"];
+                };
+            };
+        };
+    };
+    get_spa_manifest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/activity+json": components["schemas"]["SpaManifest"];
+                };
+            };
+        };
+    };
     get_activity: {
         parameters: {
             query?: {
@@ -9080,7 +6269,8 @@ export interface operations {
                 include_channels?: boolean;
                 library?: string;
                 mbid?: string;
-                /** @description Ordering
+                /**
+                 * @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -9093,7 +6283,8 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending) */
+                 *     * `-related` - Related (descending)
+                 */
                 ordering?: ("-artist_credit__artist__modification_date" | "-creation_date" | "-random" | "-related" | "-release_date" | "-title" | "artist_credit__artist__modification_date" | "creation_date" | "random" | "related" | "release_date" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -9205,7 +6396,8 @@ export interface operations {
                 include_channels?: boolean;
                 library?: string;
                 mbid?: string;
-                /** @description Ordering
+                /**
+                 * @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -9218,7 +6410,8 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending) */
+                 *     * `-related` - Related (descending)
+                 */
                 ordering?: ("-artist_credit__artist__modification_date" | "-creation_date" | "-random" | "-related" | "-release_date" | "-title" | "artist_credit__artist__modification_date" | "creation_date" | "random" | "related" | "release_date" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -9293,7 +6486,8 @@ export interface operations {
                 include_channels?: boolean;
                 library?: string;
                 mbid?: string;
-                /** @description Ordering
+                /**
+                 * @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -9306,7 +6500,8 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending) */
+                 *     * `-related` - Related (descending)
+                 */
                 ordering?: ("-artist_credit__artist__modification_date" | "-creation_date" | "-random" | "-related" | "-release_date" | "-title" | "artist_credit__artist__modification_date" | "creation_date" | "random" | "related" | "release_date" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -9352,7 +6547,8 @@ export interface operations {
                 include_channels?: boolean;
                 library?: string;
                 mbid?: string;
-                /** @description Ordering
+                /**
+                 * @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -9365,7 +6561,8 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending) */
+                 *     * `-related` - Related (descending)
+                 */
                 ordering?: ("-artist_credit__artist__modification_date" | "-creation_date" | "-random" | "-related" | "-release_date" | "-title" | "artist_credit__artist__modification_date" | "creation_date" | "random" | "related" | "release_date" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -9439,7 +6636,8 @@ export interface operations {
                 name__icontains?: string;
                 name__iexact?: string;
                 name__startswith?: string;
-                /** @description Ordering
+                /**
+                 * @description Ordering
                  *
                  *     * `id` - Id
                  *     * `-id` - Id (descending)
@@ -9452,7 +6650,8 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending) */
+                 *     * `-related` - Related (descending)
+                 */
                 ordering?: ("-creation_date" | "-id" | "-modification_date" | "-name" | "-random" | "-related" | "creation_date" | "id" | "modification_date" | "name" | "random" | "related")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -9516,7 +6715,8 @@ export interface operations {
                 name__icontains?: string;
                 name__iexact?: string;
                 name__startswith?: string;
-                /** @description Ordering
+                /**
+                 * @description Ordering
                  *
                  *     * `id` - Id
                  *     * `-id` - Id (descending)
@@ -9529,7 +6729,8 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending) */
+                 *     * `-related` - Related (descending)
+                 */
                 ordering?: ("-creation_date" | "-id" | "-modification_date" | "-name" | "-random" | "-related" | "creation_date" | "id" | "modification_date" | "name" | "random" | "related")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -9603,7 +6804,8 @@ export interface operations {
                 name__icontains?: string;
                 name__iexact?: string;
                 name__startswith?: string;
-                /** @description Ordering
+                /**
+                 * @description Ordering
                  *
                  *     * `id` - Id
                  *     * `-id` - Id (descending)
@@ -9616,7 +6818,8 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending) */
+                 *     * `-related` - Related (descending)
+                 */
                 ordering?: ("-creation_date" | "-id" | "-modification_date" | "-name" | "-random" | "-related" | "creation_date" | "id" | "modification_date" | "name" | "random" | "related")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -9661,7 +6864,8 @@ export interface operations {
                 name__icontains?: string;
                 name__iexact?: string;
                 name__startswith?: string;
-                /** @description Ordering
+                /**
+                 * @description Ordering
                  *
                  *     * `id` - Id
                  *     * `-id` - Id (descending)
@@ -9674,7 +6878,8 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending) */
+                 *     * `-related` - Related (descending)
+                 */
                 ordering?: ("-creation_date" | "-id" | "-modification_date" | "-name" | "-random" | "-related" | "creation_date" | "id" | "modification_date" | "name" | "random" | "related")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -10053,14 +7258,16 @@ export interface operations {
             query?: {
                 external?: boolean;
                 hidden?: boolean;
-                /** @description Ordering
+                /**
+                 * @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
                  *     * `modification_date` - Modification date
                  *     * `-modification_date` - Modification date (descending)
                  *     * `random` - Random
-                 *     * `-random` - Random (descending) */
+                 *     * `-random` - Random (descending)
+                 */
                 ordering?: ("-creation_date" | "-modification_date" | "-random" | "creation_date" | "modification_date" | "random")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -11266,7 +8473,7 @@ export interface operations {
             };
         };
     };
-    get_instance_admin_settings: {
+    get_instance_admin_settings_2: {
         parameters: {
             query?: {
                 /** @description Which field to use when ordering the results. */
@@ -11288,7 +8495,7 @@ export interface operations {
             };
         };
     };
-    get_instance_admin_setting: {
+    get_instance_admin_setting_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -11310,7 +8517,7 @@ export interface operations {
             };
         };
     };
-    update_instance_admin_setting: {
+    update_instance_admin_setting_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -11339,7 +8546,7 @@ export interface operations {
             };
         };
     };
-    partial_update_instance_admin_setting: {
+    partial_update_instance_admin_setting_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -11368,7 +8575,7 @@ export interface operations {
             };
         };
     };
-    create_instance_admin_setting_bulk: {
+    create_instance_admin_setting_bulk_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -11394,7 +8601,7 @@ export interface operations {
             };
         };
     };
-    getNodeInfo20: {
+    getNodeInfo21: {
         parameters: {
             query?: never;
             header?: never;
@@ -11408,12 +8615,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["NodeInfo20"];
+                    "application/json": components["schemas"]["NodeInfo21"];
                 };
             };
         };
     };
-    get_instance_settings: {
+    get_instance_settings_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -11432,7 +8639,7 @@ export interface operations {
             };
         };
     };
-    get_spa_manifest: {
+    get_spa_manifest_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -11461,10 +8668,12 @@ export interface operations {
                 page?: number;
                 /** @description Number of results to return per page. */
                 page_size?: number;
-                /** @description * `me` - Only me
+                /**
+                 * @description * `me` - Only me
                  *     * `followers` - Me and my followers
                  *     * `instance` - Everyone on my instance, and my followers
-                 *     * `everyone` - Everyone, including people on other instances */
+                 *     * `everyone` - Everyone, including people on other instances
+                 */
                 privacy_level?: "everyone" | "followers" | "instance" | "me";
                 q?: string;
                 scope?: string;
@@ -11649,12 +8858,14 @@ export interface operations {
                 /** @description Number of results to return per page. */
                 page_size?: number;
                 q?: string;
-                /** @description * `Person` - Person
+                /**
+                 * @description * `Person` - Person
                  *     * `Tombstone` - Tombstone
                  *     * `Application` - Application
                  *     * `Group` - Group
                  *     * `Organization` - Organization
-                 *     * `Service` - Service */
+                 *     * `Service` - Service
+                 */
                 type?: "Application" | "Group" | "Organization" | "Person" | "Service" | "Tombstone";
             };
             header?: never;
@@ -12160,9 +9371,11 @@ export interface operations {
     admin_get_artists: {
         parameters: {
             query?: {
-                /** @description * `music` - music
+                /**
+                 * @description * `music` - music
                  *     * `podcast` - podcast
-                 *     * `other` - other */
+                 *     * `other` - other
+                 */
                 content_category?: "music" | "other" | "podcast";
                 fid?: string;
                 mbid?: string;
@@ -12288,23 +9501,27 @@ export interface operations {
                 domain?: string;
                 fid?: string;
                 name?: string;
-                /** @description Ordering
+                /**
+                 * @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
                  *     * `uploads_count` - Uploads count
                  *     * `-uploads_count` - Uploads count (descending)
                  *     * `followers_count` - Followers count
-                 *     * `-followers_count` - Followers count (descending) */
+                 *     * `-followers_count` - Followers count (descending)
+                 */
                 ordering?: ("-creation_date" | "-followers_count" | "-uploads_count" | "creation_date" | "followers_count" | "uploads_count")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
                 /** @description Number of results to return per page. */
                 page_size?: number;
-                /** @description * `me` - Only me
+                /**
+                 * @description * `me` - Only me
                  *     * `followers` - Me and my followers
                  *     * `instance` - Everyone on my instance, and my followers
-                 *     * `everyone` - Everyone, including people on other instances */
+                 *     * `everyone` - Everyone, including people on other instances
+                 */
                 privacy_level?: "everyone" | "followers" | "instance" | "me";
                 q?: string;
             };
@@ -12598,14 +9815,17 @@ export interface operations {
                 domain?: string;
                 fid?: string;
                 import_reference?: string;
-                /** @description * `draft` - Draft
+                /**
+                 * @description * `draft` - Draft
                  *     * `pending` - Pending
                  *     * `finished` - Finished
                  *     * `errored` - Errored
-                 *     * `skipped` - Skipped */
+                 *     * `skipped` - Skipped
+                 */
                 import_status?: "draft" | "errored" | "finished" | "pending" | "skipped";
                 mimetype?: string;
-                /** @description Ordering
+                /**
+                 * @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -12618,7 +9838,8 @@ export interface operations {
                  *     * `bitrate` - Bitrate
                  *     * `-bitrate` - Bitrate (descending)
                  *     * `duration` - Duration
-                 *     * `-duration` - Duration (descending) */
+                 *     * `-duration` - Duration (descending)
+                 */
                 ordering?: ("-accessed_date" | "-bitrate" | "-creation_date" | "-duration" | "-modification_date" | "-size" | "accessed_date" | "bitrate" | "creation_date" | "duration" | "modification_date" | "size")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -12977,11 +10198,13 @@ export interface operations {
                 page_size?: number;
                 q?: string;
                 submitter_email?: string;
-                /** @description * `takedown_request` - Takedown request
+                /**
+                 * @description * `takedown_request` - Takedown request
                  *     * `invalid_metadata` - Invalid metadata
                  *     * `illegal_content` - Illegal content
                  *     * `offensive_content` - Offensive content
-                 *     * `other` - Other */
+                 *     * `other` - Other
+                 */
                 type?: "illegal_content" | "invalid_metadata" | "offensive_content" | "other" | "takedown_request";
             };
             header?: never;
@@ -13087,9 +10310,11 @@ export interface operations {
                 /** @description Number of results to return per page. */
                 page_size?: number;
                 q?: string;
-                /** @description * `pending` - Pending
+                /**
+                 * @description * `pending` - Pending
                  *     * `refused` - Refused
-                 *     * `approved` - Approved */
+                 *     * `approved` - Approved
+                 */
                 status?: "approved" | "pending" | "refused";
                 /** @description * `signup` - Sign-up */
                 type?: "signup";
@@ -13482,10 +10707,12 @@ export interface operations {
                 permission_library?: boolean;
                 permission_moderation?: boolean;
                 permission_settings?: boolean;
-                /** @description * `me` - Only me
+                /**
+                 * @description * `me` - Only me
                  *     * `followers` - Me and my followers
                  *     * `instance` - Everyone on my instance, and my followers
-                 *     * `everyone` - Everyone, including people on other instances */
+                 *     * `everyone` - Everyone, including people on other instances
+                 */
                 privacy_level?: "everyone" | "followers" | "instance" | "me";
                 q?: string;
             };
@@ -14889,6 +12116,28 @@ export interface operations {
             };
         };
     };
+    get_radio_session_track: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this radio session. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RadioSessionTrackSerializerCreate"];
+                };
+            };
+        };
+    };
     get_next_radio_track: {
         parameters: {
             query?: never;
@@ -15044,14 +12293,16 @@ export interface operations {
         parameters: {
             query?: {
                 name?: string;
-                /** @description Ordering
+                /**
+                 * @description Ordering
                  *
                  *     * `name` - Name
                  *     * `-name` - Name (descending)
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
                  *     * `length` - Length
-                 *     * `-length` - Length (descending) */
+                 *     * `-length` - Length (descending)
+                 */
                 ordering?: ("-creation_date" | "-length" | "-name" | "creation_date" | "length" | "name")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -15144,7 +12395,8 @@ export interface operations {
                 library?: string;
                 license?: string;
                 mbid?: string;
-                /** @description Ordering
+                /**
+                 * @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -15167,7 +12419,8 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending) */
+                 *     * `-related` - Related (descending)
+                 */
                 ordering?: ("-album__release_date" | "-album__title" | "-artist_credit__artist__modification_date" | "-artist_credit__artist__name" | "-creation_date" | "-disc_number" | "-position" | "-random" | "-related" | "-size" | "-title" | "album__release_date" | "album__title" | "artist_credit__artist__modification_date" | "artist_credit__artist__name" | "creation_date" | "disc_number" | "position" | "random" | "related" | "size" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -15175,10 +12428,12 @@ export interface operations {
                 page_size?: number;
                 playable?: boolean;
                 q?: string;
-                /** @description * `0` - low
+                /**
+                 * @description * `0` - low
                  *     * `1` - medium
                  *     * `2` - high
-                 *     * `3` - very_high */
+                 *     * `3` - very_high
+                 */
                 quality?: 0 | 1 | 2 | 3;
                 related?: string;
                 scope?: string;
@@ -15260,7 +12515,8 @@ export interface operations {
                 library?: string;
                 license?: string;
                 mbid?: string;
-                /** @description Ordering
+                /**
+                 * @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -15283,7 +12539,8 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending) */
+                 *     * `-related` - Related (descending)
+                 */
                 ordering?: ("-album__release_date" | "-album__title" | "-artist_credit__artist__modification_date" | "-artist_credit__artist__name" | "-creation_date" | "-disc_number" | "-position" | "-random" | "-related" | "-size" | "-title" | "album__release_date" | "album__title" | "artist_credit__artist__modification_date" | "artist_credit__artist__name" | "creation_date" | "disc_number" | "position" | "random" | "related" | "size" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -15291,10 +12548,12 @@ export interface operations {
                 page_size?: number;
                 playable?: boolean;
                 q?: string;
-                /** @description * `0` - low
+                /**
+                 * @description * `0` - low
                  *     * `1` - medium
                  *     * `2` - high
-                 *     * `3` - very_high */
+                 *     * `3` - very_high
+                 */
                 quality?: 0 | 1 | 2 | 3;
                 related?: string;
                 scope?: string;
@@ -15365,7 +12624,8 @@ export interface operations {
                 library?: string;
                 license?: string;
                 mbid?: string;
-                /** @description Ordering
+                /**
+                 * @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -15388,7 +12648,8 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending) */
+                 *     * `-related` - Related (descending)
+                 */
                 ordering?: ("-album__release_date" | "-album__title" | "-artist_credit__artist__modification_date" | "-artist_credit__artist__name" | "-creation_date" | "-disc_number" | "-position" | "-random" | "-related" | "-size" | "-title" | "album__release_date" | "album__title" | "artist_credit__artist__modification_date" | "artist_credit__artist__name" | "creation_date" | "disc_number" | "position" | "random" | "related" | "size" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -15396,10 +12657,12 @@ export interface operations {
                 page_size?: number;
                 playable?: boolean;
                 q?: string;
-                /** @description * `0` - low
+                /**
+                 * @description * `0` - low
                  *     * `1` - medium
                  *     * `2` - high
-                 *     * `3` - very_high */
+                 *     * `3` - very_high
+                 */
                 quality?: 0 | 1 | 2 | 3;
                 related?: string;
                 scope?: string;
@@ -15441,7 +12704,8 @@ export interface operations {
                 library?: string;
                 license?: string;
                 mbid?: string;
-                /** @description Ordering
+                /**
+                 * @description Ordering
                  *
                  *     * `creation_date` - Creation date
                  *     * `-creation_date` - Creation date (descending)
@@ -15464,7 +12728,8 @@ export interface operations {
                  *     * `random` - Random
                  *     * `-random` - Random (descending)
                  *     * `related` - Related
-                 *     * `-related` - Related (descending) */
+                 *     * `-related` - Related (descending)
+                 */
                 ordering?: ("-album__release_date" | "-album__title" | "-artist_credit__artist__modification_date" | "-artist_credit__artist__name" | "-creation_date" | "-disc_number" | "-position" | "-random" | "-related" | "-size" | "-title" | "album__release_date" | "album__title" | "artist_credit__artist__modification_date" | "artist_credit__artist__name" | "creation_date" | "disc_number" | "position" | "random" | "related" | "size" | "title")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
@@ -15472,10 +12737,12 @@ export interface operations {
                 page_size?: number;
                 playable?: boolean;
                 q?: string;
-                /** @description * `0` - low
+                /**
+                 * @description * `0` - low
                  *     * `1` - medium
                  *     * `2` - high
-                 *     * `3` - very_high */
+                 *     * `3` - very_high
+                 */
                 quality?: 0 | 1 | 2 | 3;
                 related?: string;
                 scope?: string;
@@ -15539,11 +12806,13 @@ export interface operations {
                 album_artist?: string;
                 channel?: string;
                 import_reference?: string;
-                /** @description * `draft` - Draft
+                /**
+                 * @description * `draft` - Draft
                  *     * `pending` - Pending
                  *     * `finished` - Finished
                  *     * `errored` - Errored
-                 *     * `skipped` - Skipped */
+                 *     * `skipped` - Skipped
+                 */
                 import_status?: ("draft" | "errored" | "finished" | "pending" | "skipped")[];
                 include_channels?: boolean;
                 library?: string;
@@ -15967,7388 +13236,6 @@ export interface operations {
         };
     };
     update_settings: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserWriteRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["UserWriteRequest"];
-                "multipart/form-data": components["schemas"]["UserWriteRequest"];
-                "application/activity+json": components["schemas"]["UserWriteRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserWrite"];
-                };
-            };
-        };
-    };
-    get_activity_2: {
-        parameters: {
-            query?: {
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_albums_2: {
-        parameters: {
-            query?: {
-                artist?: string;
-                artist_credit?: number[];
-                channel?: string;
-                content_category?: string;
-                has_cover?: boolean;
-                has_mbid?: boolean;
-                has_release_date?: boolean;
-                has_tags?: boolean;
-                hidden?: boolean;
-                include_channels?: boolean;
-                library?: string;
-                mbid?: string;
-                /** @description Ordering
-                 *
-                 *     * `creation_date` - Creation date
-                 *     * `-creation_date` - Creation date (descending)
-                 *     * `release_date` - Release date
-                 *     * `-release_date` - Release date (descending)
-                 *     * `title` - Title
-                 *     * `-title` - Title (descending)
-                 *     * `artist_credit__artist__modification_date` - Artist credit  artist  modification date
-                 *     * `-artist_credit__artist__modification_date` - Artist credit  artist  modification date (descending)
-                 *     * `random` - Random
-                 *     * `-random` - Random (descending)
-                 *     * `related` - Related
-                 *     * `-related` - Related (descending) */
-                ordering?: ("-artist_credit__artist__modification_date" | "-creation_date" | "-random" | "-related" | "-release_date" | "-title" | "artist_credit__artist__modification_date" | "creation_date" | "random" | "related" | "release_date" | "title")[];
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                playable?: boolean;
-                q?: string;
-                related?: string;
-                scope?: string;
-                tag?: string[];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedAlbumList"];
-                };
-            };
-        };
-    };
-    create_album_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AlbumCreateRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["AlbumCreateRequest"];
-                "multipart/form-data": components["schemas"]["AlbumCreateRequest"];
-                "application/activity+json": components["schemas"]["AlbumCreateRequest"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AlbumCreate"];
-                };
-            };
-        };
-    };
-    get_album_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this album. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Album"];
-                };
-            };
-        };
-    };
-    delete_album_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this album. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_album_fetches_2: {
-        parameters: {
-            query?: {
-                artist?: string;
-                artist_credit?: number[];
-                channel?: string;
-                content_category?: string;
-                has_cover?: boolean;
-                has_mbid?: boolean;
-                has_release_date?: boolean;
-                has_tags?: boolean;
-                hidden?: boolean;
-                include_channels?: boolean;
-                library?: string;
-                mbid?: string;
-                /** @description Ordering
-                 *
-                 *     * `creation_date` - Creation date
-                 *     * `-creation_date` - Creation date (descending)
-                 *     * `release_date` - Release date
-                 *     * `-release_date` - Release date (descending)
-                 *     * `title` - Title
-                 *     * `-title` - Title (descending)
-                 *     * `artist_credit__artist__modification_date` - Artist credit  artist  modification date
-                 *     * `-artist_credit__artist__modification_date` - Artist credit  artist  modification date (descending)
-                 *     * `random` - Random
-                 *     * `-random` - Random (descending)
-                 *     * `related` - Related
-                 *     * `-related` - Related (descending) */
-                ordering?: ("-artist_credit__artist__modification_date" | "-creation_date" | "-random" | "-related" | "-release_date" | "-title" | "artist_credit__artist__modification_date" | "creation_date" | "random" | "related" | "release_date" | "title")[];
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                playable?: boolean;
-                q?: string;
-                related?: string;
-                scope?: string;
-                tag?: string[];
-            };
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this album. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedFetchList"];
-                };
-            };
-        };
-    };
-    create_album_fetch_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this album. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AlbumRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["AlbumRequest"];
-                "multipart/form-data": components["schemas"]["AlbumRequest"];
-                "application/activity+json": components["schemas"]["AlbumRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Fetch"];
-                };
-            };
-        };
-    };
-    get_album_libraries_2: {
-        parameters: {
-            query?: {
-                artist?: string;
-                artist_credit?: number[];
-                channel?: string;
-                content_category?: string;
-                has_cover?: boolean;
-                has_mbid?: boolean;
-                has_release_date?: boolean;
-                has_tags?: boolean;
-                hidden?: boolean;
-                include_channels?: boolean;
-                library?: string;
-                mbid?: string;
-                /** @description Ordering
-                 *
-                 *     * `creation_date` - Creation date
-                 *     * `-creation_date` - Creation date (descending)
-                 *     * `release_date` - Release date
-                 *     * `-release_date` - Release date (descending)
-                 *     * `title` - Title
-                 *     * `-title` - Title (descending)
-                 *     * `artist_credit__artist__modification_date` - Artist credit  artist  modification date
-                 *     * `-artist_credit__artist__modification_date` - Artist credit  artist  modification date (descending)
-                 *     * `random` - Random
-                 *     * `-random` - Random (descending)
-                 *     * `related` - Related
-                 *     * `-related` - Related (descending) */
-                ordering?: ("-artist_credit__artist__modification_date" | "-creation_date" | "-random" | "-related" | "-release_date" | "-title" | "artist_credit__artist__modification_date" | "creation_date" | "random" | "related" | "release_date" | "title")[];
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                playable?: boolean;
-                q?: string;
-                related?: string;
-                scope?: string;
-                tag?: string[];
-            };
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this album. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedLibraryList"];
-                };
-            };
-        };
-    };
-    get_album_mutations_2: {
-        parameters: {
-            query?: {
-                artist?: string;
-                artist_credit?: number[];
-                channel?: string;
-                content_category?: string;
-                has_cover?: boolean;
-                has_mbid?: boolean;
-                has_release_date?: boolean;
-                has_tags?: boolean;
-                hidden?: boolean;
-                include_channels?: boolean;
-                library?: string;
-                mbid?: string;
-                /** @description Ordering
-                 *
-                 *     * `creation_date` - Creation date
-                 *     * `-creation_date` - Creation date (descending)
-                 *     * `release_date` - Release date
-                 *     * `-release_date` - Release date (descending)
-                 *     * `title` - Title
-                 *     * `-title` - Title (descending)
-                 *     * `artist_credit__artist__modification_date` - Artist credit  artist  modification date
-                 *     * `-artist_credit__artist__modification_date` - Artist credit  artist  modification date (descending)
-                 *     * `random` - Random
-                 *     * `-random` - Random (descending)
-                 *     * `related` - Related
-                 *     * `-related` - Related (descending) */
-                ordering?: ("-artist_credit__artist__modification_date" | "-creation_date" | "-random" | "-related" | "-release_date" | "-title" | "artist_credit__artist__modification_date" | "creation_date" | "random" | "related" | "release_date" | "title")[];
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                playable?: boolean;
-                q?: string;
-                related?: string;
-                scope?: string;
-                tag?: string[];
-            };
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this album. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedAPIMutationList"];
-                };
-            };
-        };
-    };
-    create_album_mutation_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this album. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AlbumRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["AlbumRequest"];
-                "multipart/form-data": components["schemas"]["AlbumRequest"];
-                "application/activity+json": components["schemas"]["AlbumRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["APIMutation"];
-                };
-            };
-        };
-    };
-    get_artists_2: {
-        parameters: {
-            query?: {
-                content_category?: string;
-                has_albums?: boolean;
-                has_mbid?: boolean;
-                hidden?: boolean;
-                include_channels?: boolean;
-                library?: string;
-                mbid?: string;
-                name?: string;
-                name__icontains?: string;
-                name__iexact?: string;
-                name__startswith?: string;
-                /** @description Ordering
-                 *
-                 *     * `id` - Id
-                 *     * `-id` - Id (descending)
-                 *     * `name` - Name
-                 *     * `-name` - Name (descending)
-                 *     * `creation_date` - Creation date
-                 *     * `-creation_date` - Creation date (descending)
-                 *     * `modification_date` - Modification date
-                 *     * `-modification_date` - Modification date (descending)
-                 *     * `random` - Random
-                 *     * `-random` - Random (descending)
-                 *     * `related` - Related
-                 *     * `-related` - Related (descending) */
-                ordering?: ("-creation_date" | "-id" | "-modification_date" | "-name" | "-random" | "-related" | "creation_date" | "id" | "modification_date" | "name" | "random" | "related")[];
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                playable?: boolean;
-                q?: string;
-                related?: string;
-                scope?: string;
-                tag?: string[];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedArtistWithAlbumsList"];
-                };
-            };
-        };
-    };
-    get_artist_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this artist. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ArtistWithAlbums"];
-                };
-            };
-        };
-    };
-    get_artist_fetches_2: {
-        parameters: {
-            query?: {
-                content_category?: string;
-                has_albums?: boolean;
-                has_mbid?: boolean;
-                hidden?: boolean;
-                include_channels?: boolean;
-                library?: string;
-                mbid?: string;
-                name?: string;
-                name__icontains?: string;
-                name__iexact?: string;
-                name__startswith?: string;
-                /** @description Ordering
-                 *
-                 *     * `id` - Id
-                 *     * `-id` - Id (descending)
-                 *     * `name` - Name
-                 *     * `-name` - Name (descending)
-                 *     * `creation_date` - Creation date
-                 *     * `-creation_date` - Creation date (descending)
-                 *     * `modification_date` - Modification date
-                 *     * `-modification_date` - Modification date (descending)
-                 *     * `random` - Random
-                 *     * `-random` - Random (descending)
-                 *     * `related` - Related
-                 *     * `-related` - Related (descending) */
-                ordering?: ("-creation_date" | "-id" | "-modification_date" | "-name" | "-random" | "-related" | "creation_date" | "id" | "modification_date" | "name" | "random" | "related")[];
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                playable?: boolean;
-                q?: string;
-                related?: string;
-                scope?: string;
-                tag?: string[];
-            };
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this artist. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedFetchList"];
-                };
-            };
-        };
-    };
-    create_artist_fetch_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this artist. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ArtistWithAlbumsRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ArtistWithAlbumsRequest"];
-                "multipart/form-data": components["schemas"]["ArtistWithAlbumsRequest"];
-                "application/activity+json": components["schemas"]["ArtistWithAlbumsRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Fetch"];
-                };
-            };
-        };
-    };
-    get_artist_libraries_2: {
-        parameters: {
-            query?: {
-                content_category?: string;
-                has_albums?: boolean;
-                has_mbid?: boolean;
-                hidden?: boolean;
-                include_channels?: boolean;
-                library?: string;
-                mbid?: string;
-                name?: string;
-                name__icontains?: string;
-                name__iexact?: string;
-                name__startswith?: string;
-                /** @description Ordering
-                 *
-                 *     * `id` - Id
-                 *     * `-id` - Id (descending)
-                 *     * `name` - Name
-                 *     * `-name` - Name (descending)
-                 *     * `creation_date` - Creation date
-                 *     * `-creation_date` - Creation date (descending)
-                 *     * `modification_date` - Modification date
-                 *     * `-modification_date` - Modification date (descending)
-                 *     * `random` - Random
-                 *     * `-random` - Random (descending)
-                 *     * `related` - Related
-                 *     * `-related` - Related (descending) */
-                ordering?: ("-creation_date" | "-id" | "-modification_date" | "-name" | "-random" | "-related" | "creation_date" | "id" | "modification_date" | "name" | "random" | "related")[];
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                playable?: boolean;
-                q?: string;
-                related?: string;
-                scope?: string;
-                tag?: string[];
-            };
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this artist. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedLibraryList"];
-                };
-            };
-        };
-    };
-    get_artist_mutations_2: {
-        parameters: {
-            query?: {
-                content_category?: string;
-                has_albums?: boolean;
-                has_mbid?: boolean;
-                hidden?: boolean;
-                include_channels?: boolean;
-                library?: string;
-                mbid?: string;
-                name?: string;
-                name__icontains?: string;
-                name__iexact?: string;
-                name__startswith?: string;
-                /** @description Ordering
-                 *
-                 *     * `id` - Id
-                 *     * `-id` - Id (descending)
-                 *     * `name` - Name
-                 *     * `-name` - Name (descending)
-                 *     * `creation_date` - Creation date
-                 *     * `-creation_date` - Creation date (descending)
-                 *     * `modification_date` - Modification date
-                 *     * `-modification_date` - Modification date (descending)
-                 *     * `random` - Random
-                 *     * `-random` - Random (descending)
-                 *     * `related` - Related
-                 *     * `-related` - Related (descending) */
-                ordering?: ("-creation_date" | "-id" | "-modification_date" | "-name" | "-random" | "-related" | "creation_date" | "id" | "modification_date" | "name" | "random" | "related")[];
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                playable?: boolean;
-                q?: string;
-                related?: string;
-                scope?: string;
-                tag?: string[];
-            };
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this artist. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedAPIMutationList"];
-                };
-            };
-        };
-    };
-    create_artist_mutation_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this artist. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ArtistWithAlbumsRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ArtistWithAlbumsRequest"];
-                "multipart/form-data": components["schemas"]["ArtistWithAlbumsRequest"];
-                "application/activity+json": components["schemas"]["ArtistWithAlbumsRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["APIMutation"];
-                };
-            };
-        };
-    };
-    create_attachment_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AttachmentRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["AttachmentRequest"];
-                "multipart/form-data": components["schemas"]["AttachmentRequest"];
-                "application/activity+json": components["schemas"]["AttachmentRequest"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Attachment"];
-                };
-            };
-        };
-    };
-    get_attachment_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Attachment"];
-                };
-            };
-        };
-    };
-    delete_attachment_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_attachment_proxy_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Attachment"];
-                };
-            };
-        };
-    };
-    change_password_3: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PasswordChangeRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PasswordChangeRequest"];
-                "multipart/form-data": components["schemas"]["PasswordChangeRequest"];
-                "application/activity+json": components["schemas"]["PasswordChangeRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PasswordChange"];
-                };
-            };
-        };
-    };
-    reset_password_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PasswordResetRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PasswordResetRequest"];
-                "multipart/form-data": components["schemas"]["PasswordResetRequest"];
-                "application/activity+json": components["schemas"]["PasswordResetRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PasswordReset"];
-                };
-            };
-        };
-    };
-    confirm_password_reset_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PasswordResetConfirmRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PasswordResetConfirmRequest"];
-                "multipart/form-data": components["schemas"]["PasswordResetConfirmRequest"];
-                "application/activity+json": components["schemas"]["PasswordResetConfirmRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PasswordResetConfirm"];
-                };
-            };
-        };
-    };
-    register_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RegisterRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["RegisterRequest"];
-                "multipart/form-data": components["schemas"]["RegisterRequest"];
-                "application/activity+json": components["schemas"]["RegisterRequest"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Register"];
-                };
-            };
-        };
-    };
-    change_password_4: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PasswordChangeRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PasswordChangeRequest"];
-                "multipart/form-data": components["schemas"]["PasswordChangeRequest"];
-                "application/activity+json": components["schemas"]["PasswordChangeRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PasswordChange"];
-                };
-            };
-        };
-    };
-    verify_email_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["VerifyEmailRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["VerifyEmailRequest"];
-                "multipart/form-data": components["schemas"]["VerifyEmailRequest"];
-                "application/activity+json": components["schemas"]["VerifyEmailRequest"];
-            };
-        };
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_auth_user_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserDetails"];
-                };
-            };
-        };
-    };
-    update_auth_user_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserDetailsRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["UserDetailsRequest"];
-                "multipart/form-data": components["schemas"]["UserDetailsRequest"];
-                "application/activity+json": components["schemas"]["UserDetailsRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserDetails"];
-                };
-            };
-        };
-    };
-    partial_update_auth_user_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["PatchedUserDetailsRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedUserDetailsRequest"];
-                "multipart/form-data": components["schemas"]["PatchedUserDetailsRequest"];
-                "application/activity+json": components["schemas"]["PatchedUserDetailsRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserDetails"];
-                };
-            };
-        };
-    };
-    get_channels_2: {
-        parameters: {
-            query?: {
-                external?: boolean;
-                hidden?: boolean;
-                /** @description Ordering
-                 *
-                 *     * `creation_date` - Creation date
-                 *     * `-creation_date` - Creation date (descending)
-                 *     * `modification_date` - Modification date
-                 *     * `-modification_date` - Modification date (descending)
-                 *     * `random` - Random
-                 *     * `-random` - Random (descending) */
-                ordering?: ("-creation_date" | "-modification_date" | "-random" | "creation_date" | "modification_date" | "random")[];
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                q?: string;
-                scope?: string;
-                subscribed?: boolean;
-                tag?: string[];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedChannelList"];
-                };
-            };
-        };
-    };
-    create_channel_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ChannelCreateRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ChannelCreateRequest"];
-                "multipart/form-data": components["schemas"]["ChannelCreateRequest"];
-                "application/activity+json": components["schemas"]["ChannelCreateRequest"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ChannelCreate"];
-                };
-            };
-        };
-    };
-    get_channel_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                composite: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Channel"];
-                };
-            };
-        };
-    };
-    update_channel_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                composite: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ChannelUpdateRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ChannelUpdateRequest"];
-                "multipart/form-data": components["schemas"]["ChannelUpdateRequest"];
-                "application/activity+json": components["schemas"]["ChannelUpdateRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ChannelUpdate"];
-                };
-            };
-        };
-    };
-    delete_channel_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                composite: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    partial_update_channel_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                composite: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["PatchedChannelUpdateRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedChannelUpdateRequest"];
-                "multipart/form-data": components["schemas"]["PatchedChannelUpdateRequest"];
-                "application/activity+json": components["schemas"]["PatchedChannelUpdateRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ChannelUpdate"];
-                };
-            };
-        };
-    };
-    get_channel_rss_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                composite: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Channel"];
-                };
-            };
-        };
-    };
-    subscribe_channel_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                composite: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ChannelRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ChannelRequest"];
-                "multipart/form-data": components["schemas"]["ChannelRequest"];
-                "application/activity+json": components["schemas"]["ChannelRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Channel"];
-                };
-            };
-        };
-    };
-    unsubscribe_channel_4: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                composite: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ChannelRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ChannelRequest"];
-                "multipart/form-data": components["schemas"]["ChannelRequest"];
-                "application/activity+json": components["schemas"]["ChannelRequest"];
-            };
-        };
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    unsubscribe_channel_3: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                composite: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_channel_metadata_choices_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MetedataChoices"];
-                };
-            };
-        };
-    };
-    subscribe_channel_rss_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ChannelRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ChannelRequest"];
-                "multipart/form-data": components["schemas"]["ChannelRequest"];
-                "application/activity+json": components["schemas"]["ChannelRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Channel"];
-                };
-            };
-        };
-    };
-    get_favorite_tracks_2: {
-        parameters: {
-            query?: {
-                hidden?: boolean;
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                q?: string;
-                scope?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedUserTrackFavoriteList"];
-                };
-            };
-        };
-    };
-    favorite_track_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserTrackFavoriteWriteRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["UserTrackFavoriteWriteRequest"];
-                "multipart/form-data": components["schemas"]["UserTrackFavoriteWriteRequest"];
-                "application/activity+json": components["schemas"]["UserTrackFavoriteWriteRequest"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserTrackFavoriteWrite"];
-                };
-            };
-        };
-    };
-    delete_favorite_track_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this track favorite. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_all_favorite_tracks_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AllFavorite"];
-                };
-            };
-        };
-    };
-    unfavorite_track_4: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserTrackFavoriteWriteRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["UserTrackFavoriteWriteRequest"];
-                "multipart/form-data": components["schemas"]["UserTrackFavoriteWriteRequest"];
-                "application/activity+json": components["schemas"]["UserTrackFavoriteWriteRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserTrackFavoriteWrite"];
-                };
-            };
-        };
-    };
-    unfavorite_track_3: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_federation_actor_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                full_username: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["FullActor"];
-                };
-            };
-        };
-    };
-    get_federation_actor_library_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                full_username: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["LibraryForOwner"];
-                };
-            };
-        };
-    };
-    get_federation_domains_2: {
-        parameters: {
-            query?: {
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedDomainList"];
-                };
-            };
-        };
-    };
-    get_federation_domain_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique value identifying this domain. */
-                name: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Domain"];
-                };
-            };
-        };
-    };
-    create_federation_fetch_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["FetchRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["FetchRequest"];
-                "multipart/form-data": components["schemas"]["FetchRequest"];
-                "application/activity+json": components["schemas"]["FetchRequest"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Fetch"];
-                };
-            };
-        };
-    };
-    get_federation_fetch_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this fetch. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Fetch"];
-                };
-            };
-        };
-    };
-    get_federation_library_follows_2: {
-        parameters: {
-            query?: {
-                approved?: boolean;
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedLibraryFollowList"];
-                };
-            };
-        };
-    };
-    create_federation_library_follow_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["LibraryFollowRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["LibraryFollowRequest"];
-                "multipart/form-data": components["schemas"]["LibraryFollowRequest"];
-                "application/activity+json": components["schemas"]["LibraryFollowRequest"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["LibraryFollow"];
-                };
-            };
-        };
-    };
-    get_federation_library_follow_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["LibraryFollow"];
-                };
-            };
-        };
-    };
-    delete_federation_library_follow_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    accept_federation_library_follow_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["LibraryFollowRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["LibraryFollowRequest"];
-                "multipart/form-data": components["schemas"]["LibraryFollowRequest"];
-                "application/activity+json": components["schemas"]["LibraryFollowRequest"];
-            };
-        };
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description No response body */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    reject_federation_library_follow_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["LibraryFollowRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["LibraryFollowRequest"];
-                "multipart/form-data": components["schemas"]["LibraryFollowRequest"];
-                "application/activity+json": components["schemas"]["LibraryFollowRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["LibraryFollow"];
-                };
-            };
-        };
-    };
-    get_all_federation_library_follows_3: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["LibraryFollow"];
-                };
-            };
-        };
-    };
-    get_federation_received_follows_2: {
-        parameters: {
-            query?: {
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedFollowList"];
-                };
-            };
-        };
-    };
-    create_federation_user_follow_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["FollowRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["FollowRequest"];
-                "multipart/form-data": components["schemas"]["FollowRequest"];
-                "application/activity+json": components["schemas"]["FollowRequest"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Follow"];
-                };
-            };
-        };
-    };
-    get_federation_user_follow_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Follow"];
-                };
-            };
-        };
-    };
-    delete_federation_user_follow_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    accept_federation_user_follow_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["FollowRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["FollowRequest"];
-                "multipart/form-data": components["schemas"]["FollowRequest"];
-                "application/activity+json": components["schemas"]["FollowRequest"];
-            };
-        };
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description No response body */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    reject_federation_user_follow_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["FollowRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["FollowRequest"];
-                "multipart/form-data": components["schemas"]["FollowRequest"];
-                "application/activity+json": components["schemas"]["FollowRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Follow"];
-                };
-            };
-        };
-    };
-    get_all_federation_library_follows_4: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Follow"];
-                };
-            };
-        };
-    };
-    get_federation_inboxes_2: {
-        parameters: {
-            query?: {
-                activity__actor?: number;
-                activity__type?: string;
-                before?: number;
-                is_read?: boolean;
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedInboxItemList"];
-                };
-            };
-        };
-    };
-    get_federation_inbox_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this inbox item. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InboxItem"];
-                };
-            };
-        };
-    };
-    update_federation_inbox_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this inbox item. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["InboxItemRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["InboxItemRequest"];
-                "multipart/form-data": components["schemas"]["InboxItemRequest"];
-                "application/activity+json": components["schemas"]["InboxItemRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InboxItem"];
-                };
-            };
-        };
-    };
-    partial_update_federation_inbox_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this inbox item. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["PatchedInboxItemRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedInboxItemRequest"];
-                "multipart/form-data": components["schemas"]["PatchedInboxItemRequest"];
-                "application/activity+json": components["schemas"]["PatchedInboxItemRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InboxItem"];
-                };
-            };
-        };
-    };
-    create_federation_inbox_action_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["InboxItemRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["InboxItemRequest"];
-                "multipart/form-data": components["schemas"]["InboxItemRequest"];
-                "application/activity+json": components["schemas"]["InboxItemRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InboxItem"];
-                };
-            };
-        };
-    };
-    get_federation_library_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Library"];
-                };
-            };
-        };
-    };
-    create_federation_library_scan_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["LibraryRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["LibraryRequest"];
-                "multipart/form-data": components["schemas"]["LibraryRequest"];
-                "application/activity+json": components["schemas"]["LibraryRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Library"];
-                };
-            };
-        };
-    };
-    create_federation_library_fetch_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["LibraryRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["LibraryRequest"];
-                "multipart/form-data": components["schemas"]["LibraryRequest"];
-                "application/activity+json": components["schemas"]["LibraryRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Library"];
-                };
-            };
-        };
-    };
-    get_history_listenings_2: {
-        parameters: {
-            query?: {
-                domain?: string;
-                hidden?: boolean;
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                scope?: string;
-                username?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedListeningList"];
-                };
-            };
-        };
-    };
-    create_history_listening_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ListeningWriteRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ListeningWriteRequest"];
-                "multipart/form-data": components["schemas"]["ListeningWriteRequest"];
-                "application/activity+json": components["schemas"]["ListeningWriteRequest"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ListeningWrite"];
-                };
-            };
-        };
-    };
-    get_history_listening_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this listening. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Listening"];
-                };
-            };
-        };
-    };
-    get_instance_admin_settings_2: {
-        parameters: {
-            query?: {
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GlobalPreference"][];
-                };
-            };
-        };
-    };
-    get_instance_admin_setting_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this Global preference. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GlobalPreference"];
-                };
-            };
-        };
-    };
-    update_instance_admin_setting_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this Global preference. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GlobalPreferenceRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["GlobalPreferenceRequest"];
-                "multipart/form-data": components["schemas"]["GlobalPreferenceRequest"];
-                "application/activity+json": components["schemas"]["GlobalPreferenceRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GlobalPreference"];
-                };
-            };
-        };
-    };
-    partial_update_instance_admin_setting_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this Global preference. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["PatchedGlobalPreferenceRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedGlobalPreferenceRequest"];
-                "multipart/form-data": components["schemas"]["PatchedGlobalPreferenceRequest"];
-                "application/activity+json": components["schemas"]["PatchedGlobalPreferenceRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GlobalPreference"];
-                };
-            };
-        };
-    };
-    create_instance_admin_setting_bulk_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GlobalPreferenceRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["GlobalPreferenceRequest"];
-                "multipart/form-data": components["schemas"]["GlobalPreferenceRequest"];
-                "application/activity+json": components["schemas"]["GlobalPreferenceRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GlobalPreference"];
-                };
-            };
-        };
-    };
-    getNodeInfo21: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["NodeInfo21"];
-                };
-            };
-        };
-    };
-    get_instance_settings_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GlobalPreference"];
-                };
-            };
-        };
-    };
-    get_spa_manifest_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/activity+json": components["schemas"]["SpaManifest"];
-                };
-            };
-        };
-    };
-    get_libraries_2: {
-        parameters: {
-            query?: {
-                actor?: string;
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                /** @description * `me` - Only me
-                 *     * `followers` - Me and my followers
-                 *     * `instance` - Everyone on my instance, and my followers
-                 *     * `everyone` - Everyone, including people on other instances */
-                privacy_level?: "everyone" | "followers" | "instance" | "me";
-                q?: string;
-                scope?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedLibraryForOwnerList"];
-                };
-            };
-        };
-    };
-    get_library_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["LibraryForOwner"];
-                };
-            };
-        };
-    };
-    get_library_fs_import_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    create_library_fs_import_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["LibraryForOwnerRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["LibraryForOwnerRequest"];
-                "multipart/form-data": components["schemas"]["LibraryForOwnerRequest"];
-                "application/activity+json": components["schemas"]["LibraryForOwnerRequest"];
-            };
-        };
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    delete_library_fs_import_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_licenses_2: {
-        parameters: {
-            query?: {
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedLicenseList"];
-                };
-            };
-        };
-    };
-    get_license_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique value identifying this license. */
-                code: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["License"];
-                };
-            };
-        };
-    };
-    get_listen_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "audio/*": string;
-                };
-            };
-        };
-    };
-    admin_get_accounts_2: {
-        parameters: {
-            query?: {
-                domain?: string;
-                local?: boolean;
-                manually_approves_followers?: boolean;
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                q?: string;
-                /** @description * `Person` - Person
-                 *     * `Tombstone` - Tombstone
-                 *     * `Application` - Application
-                 *     * `Group` - Group
-                 *     * `Organization` - Organization
-                 *     * `Service` - Service */
-                type?: "Application" | "Group" | "Organization" | "Person" | "Service" | "Tombstone";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedManageActorList"];
-                };
-            };
-        };
-    };
-    admin_get_account_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageActor"];
-                };
-            };
-        };
-    };
-    admin_get_account_stats_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageActor"];
-                };
-            };
-        };
-    };
-    admin_create_account_action_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ManageActorRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ManageActorRequest"];
-                "multipart/form-data": components["schemas"]["ManageActorRequest"];
-                "application/activity+json": components["schemas"]["ManageActorRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageActor"];
-                };
-            };
-        };
-    };
-    admin_get_channels_2: {
-        parameters: {
-            query?: {
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                q?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedManageChannelList"];
-                };
-            };
-        };
-    };
-    admin_get_channel_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                composite: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageChannel"];
-                };
-            };
-        };
-    };
-    admin_delete_channel_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                composite: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    admin_get_channel_stats_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                composite: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageChannel"];
-                };
-            };
-        };
-    };
-    admin_get_federation_domains_2: {
-        parameters: {
-            query?: {
-                allowed?: boolean;
-                name?: string;
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                q?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedManageDomainList"];
-                };
-            };
-        };
-    };
-    admin_create_federation_domain_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ManageDomainRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ManageDomainRequest"];
-                "multipart/form-data": components["schemas"]["ManageDomainRequest"];
-                "application/activity+json": components["schemas"]["ManageDomainRequest"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageDomain"];
-                };
-            };
-        };
-    };
-    admin_get_federation_domain_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique value identifying this domain. */
-                name: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageDomain"];
-                };
-            };
-        };
-    };
-    admin_update_federation_domain_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique value identifying this domain. */
-                name: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["ManageDomainUpdateRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ManageDomainUpdateRequest"];
-                "multipart/form-data": components["schemas"]["ManageDomainUpdateRequest"];
-                "application/activity+json": components["schemas"]["ManageDomainUpdateRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageDomainUpdate"];
-                };
-            };
-        };
-    };
-    admin_partial_update_federation_domain_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique value identifying this domain. */
-                name: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["PatchedManageDomainUpdateRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedManageDomainUpdateRequest"];
-                "multipart/form-data": components["schemas"]["PatchedManageDomainUpdateRequest"];
-                "application/activity+json": components["schemas"]["PatchedManageDomainUpdateRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageDomainUpdate"];
-                };
-            };
-        };
-    };
-    admin_get_federation_domain_nodeinfo_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique value identifying this domain. */
-                name: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageDomain"];
-                };
-            };
-        };
-    };
-    admin_get_federation_domain_stats_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique value identifying this domain. */
-                name: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageDomain"];
-                };
-            };
-        };
-    };
-    admin_create_federation_domain_action_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ManageDomainRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ManageDomainRequest"];
-                "multipart/form-data": components["schemas"]["ManageDomainRequest"];
-                "application/activity+json": components["schemas"]["ManageDomainRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageDomain"];
-                };
-            };
-        };
-    };
-    admin_get_albums_2: {
-        parameters: {
-            query?: {
-                artist_credit?: number[];
-                fid?: string;
-                mbid?: string;
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                q?: string;
-                title?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedManageAlbumList"];
-                };
-            };
-        };
-    };
-    admin_get_album_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this album. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageAlbum"];
-                };
-            };
-        };
-    };
-    admin_delete_album_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this album. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    admin_get_library_album_stats_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this album. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageAlbum"];
-                };
-            };
-        };
-    };
-    admin_create_album_action_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ManageAlbumRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ManageAlbumRequest"];
-                "multipart/form-data": components["schemas"]["ManageAlbumRequest"];
-                "application/activity+json": components["schemas"]["ManageAlbumRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageAlbum"];
-                };
-            };
-        };
-    };
-    admin_get_artists_2: {
-        parameters: {
-            query?: {
-                /** @description * `music` - music
-                 *     * `podcast` - podcast
-                 *     * `other` - other */
-                content_category?: "music" | "other" | "podcast";
-                fid?: string;
-                mbid?: string;
-                name?: string;
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                q?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedManageArtistList"];
-                };
-            };
-        };
-    };
-    admin_get_artist_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this artist. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageArtist"];
-                };
-            };
-        };
-    };
-    admin_delete_artist_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this artist. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    admin_get_library_artist_stats_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this artist. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageArtist"];
-                };
-            };
-        };
-    };
-    admin_create_artist_action_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ManageArtistRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ManageArtistRequest"];
-                "multipart/form-data": components["schemas"]["ManageArtistRequest"];
-                "application/activity+json": components["schemas"]["ManageArtistRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageArtist"];
-                };
-            };
-        };
-    };
-    admin_get_libraries_2: {
-        parameters: {
-            query?: {
-                domain?: string;
-                fid?: string;
-                name?: string;
-                /** @description Ordering
-                 *
-                 *     * `creation_date` - Creation date
-                 *     * `-creation_date` - Creation date (descending)
-                 *     * `uploads_count` - Uploads count
-                 *     * `-uploads_count` - Uploads count (descending)
-                 *     * `followers_count` - Followers count
-                 *     * `-followers_count` - Followers count (descending) */
-                ordering?: ("-creation_date" | "-followers_count" | "-uploads_count" | "creation_date" | "followers_count" | "uploads_count")[];
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                /** @description * `me` - Only me
-                 *     * `followers` - Me and my followers
-                 *     * `instance` - Everyone on my instance, and my followers
-                 *     * `everyone` - Everyone, including people on other instances */
-                privacy_level?: "everyone" | "followers" | "instance" | "me";
-                q?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedManageLibraryList"];
-                };
-            };
-        };
-    };
-    admin_get_library_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageLibrary"];
-                };
-            };
-        };
-    };
-    admin_update_library_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ManageLibraryRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ManageLibraryRequest"];
-                "multipart/form-data": components["schemas"]["ManageLibraryRequest"];
-                "application/activity+json": components["schemas"]["ManageLibraryRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageLibrary"];
-                };
-            };
-        };
-    };
-    admin_delete_library_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    admin_partial_update_library_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["PatchedManageLibraryRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedManageLibraryRequest"];
-                "multipart/form-data": components["schemas"]["PatchedManageLibraryRequest"];
-                "application/activity+json": components["schemas"]["PatchedManageLibraryRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageLibrary"];
-                };
-            };
-        };
-    };
-    admin_get_library_stats_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageLibrary"];
-                };
-            };
-        };
-    };
-    admin_create_library_action_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ManageLibraryRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ManageLibraryRequest"];
-                "multipart/form-data": components["schemas"]["ManageLibraryRequest"];
-                "application/activity+json": components["schemas"]["ManageLibraryRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageLibrary"];
-                };
-            };
-        };
-    };
-    admin_get_tracks_2: {
-        parameters: {
-            query?: {
-                album?: number;
-                artist_credit?: number[];
-                fid?: string;
-                license?: string;
-                mbid?: string;
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                q?: string;
-                title?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedManageTrackList"];
-                };
-            };
-        };
-    };
-    admin_get_track_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this track. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageTrack"];
-                };
-            };
-        };
-    };
-    admin_delete_track_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this track. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    admin_get_track_stats_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this track. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageTrack"];
-                };
-            };
-        };
-    };
-    admin_create_track_action_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ManageTrackRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ManageTrackRequest"];
-                "multipart/form-data": components["schemas"]["ManageTrackRequest"];
-                "application/activity+json": components["schemas"]["ManageTrackRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageTrack"];
-                };
-            };
-        };
-    };
-    admin_get_uploads_2: {
-        parameters: {
-            query?: {
-                domain?: string;
-                fid?: string;
-                import_reference?: string;
-                /** @description * `draft` - Draft
-                 *     * `pending` - Pending
-                 *     * `finished` - Finished
-                 *     * `errored` - Errored
-                 *     * `skipped` - Skipped */
-                import_status?: "draft" | "errored" | "finished" | "pending" | "skipped";
-                mimetype?: string;
-                /** @description Ordering
-                 *
-                 *     * `creation_date` - Creation date
-                 *     * `-creation_date` - Creation date (descending)
-                 *     * `modification_date` - Modification date
-                 *     * `-modification_date` - Modification date (descending)
-                 *     * `accessed_date` - Accessed date
-                 *     * `-accessed_date` - Accessed date (descending)
-                 *     * `size` - Size
-                 *     * `-size` - Size (descending)
-                 *     * `bitrate` - Bitrate
-                 *     * `-bitrate` - Bitrate (descending)
-                 *     * `duration` - Duration
-                 *     * `-duration` - Duration (descending) */
-                ordering?: ("-accessed_date" | "-bitrate" | "-creation_date" | "-duration" | "-modification_date" | "-size" | "accessed_date" | "bitrate" | "creation_date" | "duration" | "modification_date" | "size")[];
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                privacy_level?: string;
-                q?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedManageUploadList"];
-                };
-            };
-        };
-    };
-    admin_get_upload_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageUpload"];
-                };
-            };
-        };
-    };
-    admin_delete_upload_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    admin_create_upload_action_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ManageUploadRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ManageUploadRequest"];
-                "multipart/form-data": components["schemas"]["ManageUploadRequest"];
-                "application/activity+json": components["schemas"]["ManageUploadRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageUpload"];
-                };
-            };
-        };
-    };
-    moderation_get_instance_policies_2: {
-        parameters: {
-            query?: {
-                block_all?: boolean;
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                q?: string;
-                reject_media?: boolean;
-                silence_activity?: boolean;
-                silence_notifications?: boolean;
-                target_account_domain?: string;
-                target_account_username?: string;
-                target_domain?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedManageInstancePolicyList"];
-                };
-            };
-        };
-    };
-    moderation_create_instance_policy_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ManageInstancePolicyRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ManageInstancePolicyRequest"];
-                "multipart/form-data": components["schemas"]["ManageInstancePolicyRequest"];
-                "application/activity+json": components["schemas"]["ManageInstancePolicyRequest"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageInstancePolicy"];
-                };
-            };
-        };
-    };
-    moderation_get_instance_policy_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this instance policy. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageInstancePolicy"];
-                };
-            };
-        };
-    };
-    moderation_update_instance_policy_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this instance policy. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ManageInstancePolicyRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ManageInstancePolicyRequest"];
-                "multipart/form-data": components["schemas"]["ManageInstancePolicyRequest"];
-                "application/activity+json": components["schemas"]["ManageInstancePolicyRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageInstancePolicy"];
-                };
-            };
-        };
-    };
-    moderation_delete_instance_policy_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this instance policy. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    moderation_partial_update_instance_policy_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this instance policy. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["PatchedManageInstancePolicyRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedManageInstancePolicyRequest"];
-                "multipart/form-data": components["schemas"]["PatchedManageInstancePolicyRequest"];
-                "application/activity+json": components["schemas"]["PatchedManageInstancePolicyRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageInstancePolicy"];
-                };
-            };
-        };
-    };
-    moderation_get_notes_2: {
-        parameters: {
-            query?: {
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                q?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedManageNoteList"];
-                };
-            };
-        };
-    };
-    moderation_create_note_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ManageNoteRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ManageNoteRequest"];
-                "multipart/form-data": components["schemas"]["ManageNoteRequest"];
-                "application/activity+json": components["schemas"]["ManageNoteRequest"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageNote"];
-                };
-            };
-        };
-    };
-    moderation_get_note_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageNote"];
-                };
-            };
-        };
-    };
-    moderation_delete_note_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    moderation_get_reports_2: {
-        parameters: {
-            query?: {
-                is_handled?: boolean;
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                q?: string;
-                submitter_email?: string;
-                /** @description * `takedown_request` - Takedown request
-                 *     * `invalid_metadata` - Invalid metadata
-                 *     * `illegal_content` - Illegal content
-                 *     * `offensive_content` - Offensive content
-                 *     * `other` - Other */
-                type?: "illegal_content" | "invalid_metadata" | "offensive_content" | "other" | "takedown_request";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedManageReportList"];
-                };
-            };
-        };
-    };
-    moderation_get_report_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageReport"];
-                };
-            };
-        };
-    };
-    moderation_update_report_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ManageReportRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ManageReportRequest"];
-                "multipart/form-data": components["schemas"]["ManageReportRequest"];
-                "application/activity+json": components["schemas"]["ManageReportRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageReport"];
-                };
-            };
-        };
-    };
-    moderation_partial_update_report_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["PatchedManageReportRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedManageReportRequest"];
-                "multipart/form-data": components["schemas"]["PatchedManageReportRequest"];
-                "application/activity+json": components["schemas"]["PatchedManageReportRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageReport"];
-                };
-            };
-        };
-    };
-    moderation_get_requests_2: {
-        parameters: {
-            query?: {
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                q?: string;
-                /** @description * `pending` - Pending
-                 *     * `refused` - Refused
-                 *     * `approved` - Approved */
-                status?: "approved" | "pending" | "refused";
-                /** @description * `signup` - Sign-up */
-                type?: "signup";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedManageUserRequestList"];
-                };
-            };
-        };
-    };
-    moderation_get_request_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageUserRequest"];
-                };
-            };
-        };
-    };
-    moderation_update_request_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ManageUserRequestRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ManageUserRequestRequest"];
-                "multipart/form-data": components["schemas"]["ManageUserRequestRequest"];
-                "application/activity+json": components["schemas"]["ManageUserRequestRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageUserRequest"];
-                };
-            };
-        };
-    };
-    moderation_partial_update_request_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["PatchedManageUserRequestRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedManageUserRequestRequest"];
-                "multipart/form-data": components["schemas"]["PatchedManageUserRequestRequest"];
-                "application/activity+json": components["schemas"]["PatchedManageUserRequestRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageUserRequest"];
-                };
-            };
-        };
-    };
-    admin_get_tags_2: {
-        parameters: {
-            query?: {
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                q?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedManageTagList"];
-                };
-            };
-        };
-    };
-    admin_create_tag_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ManageTagRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ManageTagRequest"];
-                "multipart/form-data": components["schemas"]["ManageTagRequest"];
-                "application/activity+json": components["schemas"]["ManageTagRequest"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageTag"];
-                };
-            };
-        };
-    };
-    admin_get_tag_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                name: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageTag"];
-                };
-            };
-        };
-    };
-    admin_delete_tag_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                name: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    admin_create_tag_action_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ManageTagRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ManageTagRequest"];
-                "multipart/form-data": components["schemas"]["ManageTagRequest"];
-                "application/activity+json": components["schemas"]["ManageTagRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageTag"];
-                };
-            };
-        };
-    };
-    admin_get_invitations_2: {
-        parameters: {
-            query?: {
-                is_open?: boolean;
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                q?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedManageInvitationList"];
-                };
-            };
-        };
-    };
-    admin_create_invitation_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["ManageInvitationRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ManageInvitationRequest"];
-                "multipart/form-data": components["schemas"]["ManageInvitationRequest"];
-                "application/activity+json": components["schemas"]["ManageInvitationRequest"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageInvitation"];
-                };
-            };
-        };
-    };
-    admin_get_invitation_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this invitation. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageInvitation"];
-                };
-            };
-        };
-    };
-    admin_update_invitation_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this invitation. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["ManageInvitationRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ManageInvitationRequest"];
-                "multipart/form-data": components["schemas"]["ManageInvitationRequest"];
-                "application/activity+json": components["schemas"]["ManageInvitationRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageInvitation"];
-                };
-            };
-        };
-    };
-    admin_partial_update_invitation_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this invitation. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["PatchedManageInvitationRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedManageInvitationRequest"];
-                "multipart/form-data": components["schemas"]["PatchedManageInvitationRequest"];
-                "application/activity+json": components["schemas"]["PatchedManageInvitationRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageInvitation"];
-                };
-            };
-        };
-    };
-    admin_create_invitation_action_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["ManageInvitationRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ManageInvitationRequest"];
-                "multipart/form-data": components["schemas"]["ManageInvitationRequest"];
-                "application/activity+json": components["schemas"]["ManageInvitationRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageInvitation"];
-                };
-            };
-        };
-    };
-    admin_get_users_2: {
-        parameters: {
-            query?: {
-                is_active?: boolean;
-                is_staff?: boolean;
-                is_superuser?: boolean;
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                permission_library?: boolean;
-                permission_moderation?: boolean;
-                permission_settings?: boolean;
-                /** @description * `me` - Only me
-                 *     * `followers` - Me and my followers
-                 *     * `instance` - Everyone on my instance, and my followers
-                 *     * `everyone` - Everyone, including people on other instances */
-                privacy_level?: "everyone" | "followers" | "instance" | "me";
-                q?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedManageUserList"];
-                };
-            };
-        };
-    };
-    admin_get_user_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this user. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageUser"];
-                };
-            };
-        };
-    };
-    admin_update_user_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this user. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["ManageUserRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ManageUserRequest"];
-                "multipart/form-data": components["schemas"]["ManageUserRequest"];
-                "application/activity+json": components["schemas"]["ManageUserRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageUser"];
-                };
-            };
-        };
-    };
-    admin_partial_update_user_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this user. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["PatchedManageUserRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedManageUserRequest"];
-                "multipart/form-data": components["schemas"]["PatchedManageUserRequest"];
-                "application/activity+json": components["schemas"]["PatchedManageUserRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ManageUser"];
-                };
-            };
-        };
-    };
-    get_moderation_content_filters_2: {
-        parameters: {
-            query?: {
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedUserFilterList"];
-                };
-            };
-        };
-    };
-    create_moderation_content_filter_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserFilterRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["UserFilterRequest"];
-                "multipart/form-data": components["schemas"]["UserFilterRequest"];
-                "application/activity+json": components["schemas"]["UserFilterRequest"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserFilter"];
-                };
-            };
-        };
-    };
-    get_moderation_content_filter_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserFilter"];
-                };
-            };
-        };
-    };
-    delete_moderation_content_filter_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    create_moderation_report_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ReportRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ReportRequest"];
-                "multipart/form-data": components["schemas"]["ReportRequest"];
-                "application/activity+json": components["schemas"]["ReportRequest"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Report"];
-                };
-            };
-        };
-    };
-    get_mutations_2: {
-        parameters: {
-            query?: {
-                is_applied?: boolean;
-                is_approved?: boolean;
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                q?: string;
-                type?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedAPIMutationList"];
-                };
-            };
-        };
-    };
-    get_mutation_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["APIMutation"];
-                };
-            };
-        };
-    };
-    delete_mutation_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    approve_mutation_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["APIMutationRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["APIMutationRequest"];
-                "multipart/form-data": components["schemas"]["APIMutationRequest"];
-                "application/activity+json": components["schemas"]["APIMutationRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["APIMutation"];
-                };
-            };
-        };
-    };
-    reject_mutation_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["APIMutationRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["APIMutationRequest"];
-                "multipart/form-data": components["schemas"]["APIMutationRequest"];
-                "application/activity+json": components["schemas"]["APIMutationRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["APIMutation"];
-                };
-            };
-        };
-    };
-    get_oauth_apps_2: {
-        parameters: {
-            query?: {
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedApplicationList"];
-                };
-            };
-        };
-    };
-    create_oauth_app_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateApplicationRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["CreateApplicationRequest"];
-                "multipart/form-data": components["schemas"]["CreateApplicationRequest"];
-                "application/activity+json": components["schemas"]["CreateApplicationRequest"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CreateApplication"];
-                };
-            };
-        };
-    };
-    get_oauth_app_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                client_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Application"];
-                };
-            };
-        };
-    };
-    update_oauth_app_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                client_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ApplicationRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["ApplicationRequest"];
-                "multipart/form-data": components["schemas"]["ApplicationRequest"];
-                "application/activity+json": components["schemas"]["ApplicationRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Application"];
-                };
-            };
-        };
-    };
-    delete_oauth_app_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                client_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    partial_update_oauth_app_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                client_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["PatchedApplicationRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedApplicationRequest"];
-                "multipart/form-data": components["schemas"]["PatchedApplicationRequest"];
-                "application/activity+json": components["schemas"]["PatchedApplicationRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Application"];
-                };
-            };
-        };
-    };
-    refresh_oauth_token_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                client_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateApplicationRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["CreateApplicationRequest"];
-                "multipart/form-data": components["schemas"]["CreateApplicationRequest"];
-                "application/activity+json": components["schemas"]["CreateApplicationRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CreateApplication"];
-                };
-            };
-        };
-    };
-    get_oauth_authorize: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    update_oauth_authorize: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    create_oauth_authorize: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_oauth_grants_2: {
-        parameters: {
-            query?: {
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Application"][];
-                };
-            };
-        };
-    };
-    get_oauth_grant_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                client_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Application"];
-                };
-            };
-        };
-    };
-    delete_oauth_grant_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                client_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_oembed_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Oembed"];
-                };
-            };
-        };
-    };
-    get_playlists_2: {
-        parameters: {
-            query?: {
-                album?: number;
-                artist?: number;
-                format?: "json" | "xspf";
-                name?: string;
-                name__icontains?: string;
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                playable?: boolean;
-                q?: string;
-                scope?: string;
-                track?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedPlaylistList"];
-                    "application/octet-stream": components["schemas"]["PaginatedPlaylistList"];
-                };
-            };
-        };
-    };
-    create_playlist_2: {
-        parameters: {
-            query?: {
-                format?: "json" | "xspf";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/octet-stream": components["schemas"]["PlaylistRequest"];
-                "application/json": components["schemas"]["PlaylistRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PlaylistRequest"];
-                "multipart/form-data": components["schemas"]["PlaylistRequest"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Playlist"];
-                    "application/octet-stream": components["schemas"]["Playlist"];
-                };
-            };
-        };
-    };
-    get_playlist_2: {
-        parameters: {
-            query?: {
-                format?: "json" | "xspf";
-            };
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Playlist"];
-                    "application/octet-stream": components["schemas"]["Playlist"];
-                };
-            };
-        };
-    };
-    update_playlist_2: {
-        parameters: {
-            query?: {
-                format?: "json" | "xspf";
-            };
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/octet-stream": components["schemas"]["PlaylistRequest"];
-                "application/json": components["schemas"]["PlaylistRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PlaylistRequest"];
-                "multipart/form-data": components["schemas"]["PlaylistRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Playlist"];
-                    "application/octet-stream": components["schemas"]["Playlist"];
-                };
-            };
-        };
-    };
-    delete_playlist_2: {
-        parameters: {
-            query?: {
-                format?: "json" | "xspf";
-            };
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    partial_update_playlist_2: {
-        parameters: {
-            query?: {
-                format?: "json" | "xspf";
-            };
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/octet-stream": components["schemas"]["PatchedPlaylistRequest"];
-                "application/json": components["schemas"]["PatchedPlaylistRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedPlaylistRequest"];
-                "multipart/form-data": components["schemas"]["PatchedPlaylistRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Playlist"];
-                    "application/octet-stream": components["schemas"]["Playlist"];
-                };
-            };
-        };
-    };
-    add_to_playlist_2: {
-        parameters: {
-            query?: {
-                format?: "json" | "xspf";
-            };
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/octet-stream": components["schemas"]["PlaylistAddManyRequest"];
-                "application/json": components["schemas"]["PlaylistAddManyRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PlaylistAddManyRequest"];
-                "multipart/form-data": components["schemas"]["PlaylistAddManyRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Playlist"];
-                    "application/octet-stream": components["schemas"]["Playlist"];
-                };
-            };
-        };
-    };
-    get_playlist_albums_2: {
-        parameters: {
-            query?: {
-                format?: "json" | "xspf";
-            };
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Playlist"];
-                    "application/octet-stream": components["schemas"]["Playlist"];
-                };
-            };
-        };
-    };
-    get_playlist_artists_2: {
-        parameters: {
-            query?: {
-                format?: "json" | "xspf";
-            };
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Playlist"];
-                    "application/octet-stream": components["schemas"]["Playlist"];
-                };
-            };
-        };
-    };
-    clear_playlist_2: {
-        parameters: {
-            query?: {
-                format?: "json" | "xspf";
-            };
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    reorder_track_in_playlist_2: {
-        parameters: {
-            query?: {
-                format?: "json" | "xspf";
-            };
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/octet-stream": components["schemas"]["PlaylistRequest"];
-                "application/json": components["schemas"]["PlaylistRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PlaylistRequest"];
-                "multipart/form-data": components["schemas"]["PlaylistRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Playlist"];
-                    "application/octet-stream": components["schemas"]["Playlist"];
-                };
-            };
-        };
-    };
-    remove_from_playlist_4: {
-        parameters: {
-            query?: {
-                format?: "json" | "xspf";
-                index?: number;
-            };
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/octet-stream": components["schemas"]["PlaylistRequest"];
-                "application/json": components["schemas"]["PlaylistRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PlaylistRequest"];
-                "multipart/form-data": components["schemas"]["PlaylistRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Playlist"];
-                    "application/octet-stream": components["schemas"]["Playlist"];
-                };
-            };
-        };
-    };
-    remove_from_playlist_3: {
-        parameters: {
-            query?: {
-                format?: "json" | "xspf";
-                index?: number;
-            };
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_playlist_tracks_2: {
-        parameters: {
-            query?: {
-                album?: number;
-                artist?: number;
-                format?: "json" | "xspf";
-                name?: string;
-                name__icontains?: string;
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                playable?: boolean;
-                q?: string;
-                scope?: string;
-                track?: number;
-            };
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedPlaylistTrackList"];
-                    "application/octet-stream": components["schemas"]["PaginatedPlaylistTrackList"];
-                };
-            };
-        };
-    };
-    get_plugins_2: {
-        parameters: {
-            query?: {
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    create_plugin_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_plugin_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this plugin configuration. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    disable_plugin_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this plugin configuration. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    enable_plugin_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this plugin configuration. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    create_plugin_scan_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this plugin configuration. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_provider_musicbrainz_artist: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_provider_musicbrainz_release_group_browse: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                artist_uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_provider_musicbrainz_release: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_provider_musicbrainz_release_browse: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                release_group_uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_provider_musicbrainz_search_artist: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_provider_musicbrainz_search_recording: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_provider_musicbrainz_search_release: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_radios_2: {
-        parameters: {
-            query?: {
-                name?: string;
-                name__icontains?: string;
-                name__iexact?: string;
-                name__startswith?: string;
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                q?: string;
-                scope?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedRadioList"];
-                };
-            };
-        };
-    };
-    create_radio_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RadioRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["RadioRequest"];
-                "multipart/form-data": components["schemas"]["RadioRequest"];
-                "application/activity+json": components["schemas"]["RadioRequest"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Radio"];
-                };
-            };
-        };
-    };
-    get_radio_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this radio. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Radio"];
-                };
-            };
-        };
-    };
-    update_radio_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this radio. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RadioRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["RadioRequest"];
-                "multipart/form-data": components["schemas"]["RadioRequest"];
-                "application/activity+json": components["schemas"]["RadioRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Radio"];
-                };
-            };
-        };
-    };
-    delete_radio_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this radio. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    partial_update_radio_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this radio. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["PatchedRadioRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedRadioRequest"];
-                "multipart/form-data": components["schemas"]["PatchedRadioRequest"];
-                "application/activity+json": components["schemas"]["PatchedRadioRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Radio"];
-                };
-            };
-        };
-    };
-    get_radio_track_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this radio. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Track"];
-                };
-            };
-        };
-    };
-    get_radio_filter_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Filter"];
-                };
-            };
-        };
-    };
-    validate_radio_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RadioRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["RadioRequest"];
-                "multipart/form-data": components["schemas"]["RadioRequest"];
-                "application/activity+json": components["schemas"]["RadioRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Radio"];
-                };
-            };
-        };
-    };
-    create_radio_session_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RadioSessionRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["RadioSessionRequest"];
-                "multipart/form-data": components["schemas"]["RadioSessionRequest"];
-                "application/activity+json": components["schemas"]["RadioSessionRequest"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RadioSession"];
-                };
-            };
-        };
-    };
-    get_radio_session_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this radio session. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RadioSession"];
-                };
-            };
-        };
-    };
-    get_radio_session_track: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this radio session. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RadioSessionTrackSerializerCreate"];
-                };
-            };
-        };
-    };
-    get_next_radio_track_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RadioSessionTrackSerializerCreateRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["RadioSessionTrackSerializerCreateRequest"];
-                "multipart/form-data": components["schemas"]["RadioSessionTrackSerializerCreateRequest"];
-                "application/activity+json": components["schemas"]["RadioSessionTrackSerializerCreateRequest"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RadioSessionTrackSerializerCreate"];
-                };
-            };
-        };
-    };
-    get_rate_limit_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RateLimit"];
-                };
-            };
-        };
-    };
-    get_search_results_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SearchResult"];
-                };
-            };
-        };
-    };
-    get_track_stream_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "audio/mpeg": string;
-                };
-            };
-        };
-    };
-    get_subscriptions_2: {
-        parameters: {
-            query?: {
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedSubscriptionList"];
-                };
-            };
-        };
-    };
-    get_subscription_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Subscription"];
-                };
-            };
-        };
-    };
-    get_all_subscriptions_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AllSubscriptions"];
-                };
-            };
-        };
-    };
-    get_tags_2: {
-        parameters: {
-            query?: {
-                name?: string;
-                /** @description Ordering
-                 *
-                 *     * `name` - Name
-                 *     * `-name` - Name (descending)
-                 *     * `creation_date` - Creation date
-                 *     * `-creation_date` - Creation date (descending)
-                 *     * `length` - Length
-                 *     * `-length` - Length (descending) */
-                ordering?: ("-creation_date" | "-length" | "-name" | "creation_date" | "length" | "name")[];
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                q?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedTagList"];
-                };
-            };
-        };
-    };
-    get_tag_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                name: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Tag"];
-                };
-            };
-        };
-    };
-    preview_text_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["TextPreviewRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["TextPreviewRequest"];
-                "multipart/form-data": components["schemas"]["TextPreviewRequest"];
-                "application/activity+json": components["schemas"]["TextPreviewRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TextPreview"];
-                };
-            };
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorDetail"];
-                };
-            };
-        };
-    };
-    get_tracks_2: {
-        parameters: {
-            query?: {
-                album?: number;
-                artist?: string;
-                channel?: string;
-                format?: string;
-                has_mbid?: boolean;
-                hidden?: boolean;
-                id?: number[];
-                include_channels?: boolean;
-                library?: string;
-                license?: string;
-                mbid?: string;
-                /** @description Ordering
-                 *
-                 *     * `creation_date` - Creation date
-                 *     * `-creation_date` - Creation date (descending)
-                 *     * `title` - Title
-                 *     * `-title` - Title (descending)
-                 *     * `album__title` - Album  title
-                 *     * `-album__title` - Album  title (descending)
-                 *     * `album__release_date` - Album  release date
-                 *     * `-album__release_date` - Album  release date (descending)
-                 *     * `size` - Size
-                 *     * `-size` - Size (descending)
-                 *     * `position` - Position
-                 *     * `-position` - Position (descending)
-                 *     * `disc_number` - Disc number
-                 *     * `-disc_number` - Disc number (descending)
-                 *     * `artist_credit__artist__name` - Artist credit  artist  name
-                 *     * `-artist_credit__artist__name` - Artist credit  artist  name (descending)
-                 *     * `artist_credit__artist__modification_date` - Artist credit  artist  modification date
-                 *     * `-artist_credit__artist__modification_date` - Artist credit  artist  modification date (descending)
-                 *     * `random` - Random
-                 *     * `-random` - Random (descending)
-                 *     * `related` - Related
-                 *     * `-related` - Related (descending) */
-                ordering?: ("-album__release_date" | "-album__title" | "-artist_credit__artist__modification_date" | "-artist_credit__artist__name" | "-creation_date" | "-disc_number" | "-position" | "-random" | "-related" | "-size" | "-title" | "album__release_date" | "album__title" | "artist_credit__artist__modification_date" | "artist_credit__artist__name" | "creation_date" | "disc_number" | "position" | "random" | "related" | "size" | "title")[];
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                playable?: boolean;
-                q?: string;
-                /** @description * `0` - low
-                 *     * `1` - medium
-                 *     * `2` - high
-                 *     * `3` - very_high */
-                quality?: 0 | 1 | 2 | 3;
-                related?: string;
-                scope?: string;
-                tag?: string[];
-                title?: string;
-                title__icontains?: string;
-                title__iexact?: string;
-                title__startswith?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedTrackList"];
-                };
-            };
-        };
-    };
-    get_track_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this track. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Track"];
-                };
-            };
-        };
-    };
-    delete_track_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this track. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_track_fetches_2: {
-        parameters: {
-            query?: {
-                album?: number;
-                artist?: string;
-                channel?: string;
-                format?: string;
-                has_mbid?: boolean;
-                hidden?: boolean;
-                include_channels?: boolean;
-                library?: string;
-                license?: string;
-                mbid?: string;
-                /** @description Ordering
-                 *
-                 *     * `creation_date` - Creation date
-                 *     * `-creation_date` - Creation date (descending)
-                 *     * `title` - Title
-                 *     * `-title` - Title (descending)
-                 *     * `album__title` - Album  title
-                 *     * `-album__title` - Album  title (descending)
-                 *     * `album__release_date` - Album  release date
-                 *     * `-album__release_date` - Album  release date (descending)
-                 *     * `size` - Size
-                 *     * `-size` - Size (descending)
-                 *     * `position` - Position
-                 *     * `-position` - Position (descending)
-                 *     * `disc_number` - Disc number
-                 *     * `-disc_number` - Disc number (descending)
-                 *     * `artist_credit__artist__name` - Artist credit  artist  name
-                 *     * `-artist_credit__artist__name` - Artist credit  artist  name (descending)
-                 *     * `artist_credit__artist__modification_date` - Artist credit  artist  modification date
-                 *     * `-artist_credit__artist__modification_date` - Artist credit  artist  modification date (descending)
-                 *     * `random` - Random
-                 *     * `-random` - Random (descending)
-                 *     * `related` - Related
-                 *     * `-related` - Related (descending) */
-                ordering?: ("-album__release_date" | "-album__title" | "-artist_credit__artist__modification_date" | "-artist_credit__artist__name" | "-creation_date" | "-disc_number" | "-position" | "-random" | "-related" | "-size" | "-title" | "album__release_date" | "album__title" | "artist_credit__artist__modification_date" | "artist_credit__artist__name" | "creation_date" | "disc_number" | "position" | "random" | "related" | "size" | "title")[];
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                playable?: boolean;
-                q?: string;
-                /** @description * `0` - low
-                 *     * `1` - medium
-                 *     * `2` - high
-                 *     * `3` - very_high */
-                quality?: 0 | 1 | 2 | 3;
-                related?: string;
-                scope?: string;
-                tag?: string[];
-                title?: string;
-                title__icontains?: string;
-                title__iexact?: string;
-                title__startswith?: string;
-            };
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this track. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedFetchList"];
-                };
-            };
-        };
-    };
-    create_track_fetch_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this track. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["TrackRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["TrackRequest"];
-                "multipart/form-data": components["schemas"]["TrackRequest"];
-                "application/activity+json": components["schemas"]["TrackRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Fetch"];
-                };
-            };
-        };
-    };
-    get_track_libraries_2: {
-        parameters: {
-            query?: {
-                album?: number;
-                artist?: string;
-                channel?: string;
-                format?: string;
-                has_mbid?: boolean;
-                hidden?: boolean;
-                include_channels?: boolean;
-                library?: string;
-                license?: string;
-                mbid?: string;
-                /** @description Ordering
-                 *
-                 *     * `creation_date` - Creation date
-                 *     * `-creation_date` - Creation date (descending)
-                 *     * `title` - Title
-                 *     * `-title` - Title (descending)
-                 *     * `album__title` - Album  title
-                 *     * `-album__title` - Album  title (descending)
-                 *     * `album__release_date` - Album  release date
-                 *     * `-album__release_date` - Album  release date (descending)
-                 *     * `size` - Size
-                 *     * `-size` - Size (descending)
-                 *     * `position` - Position
-                 *     * `-position` - Position (descending)
-                 *     * `disc_number` - Disc number
-                 *     * `-disc_number` - Disc number (descending)
-                 *     * `artist_credit__artist__name` - Artist credit  artist  name
-                 *     * `-artist_credit__artist__name` - Artist credit  artist  name (descending)
-                 *     * `artist_credit__artist__modification_date` - Artist credit  artist  modification date
-                 *     * `-artist_credit__artist__modification_date` - Artist credit  artist  modification date (descending)
-                 *     * `random` - Random
-                 *     * `-random` - Random (descending)
-                 *     * `related` - Related
-                 *     * `-related` - Related (descending) */
-                ordering?: ("-album__release_date" | "-album__title" | "-artist_credit__artist__modification_date" | "-artist_credit__artist__name" | "-creation_date" | "-disc_number" | "-position" | "-random" | "-related" | "-size" | "-title" | "album__release_date" | "album__title" | "artist_credit__artist__modification_date" | "artist_credit__artist__name" | "creation_date" | "disc_number" | "position" | "random" | "related" | "size" | "title")[];
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                playable?: boolean;
-                q?: string;
-                /** @description * `0` - low
-                 *     * `1` - medium
-                 *     * `2` - high
-                 *     * `3` - very_high */
-                quality?: 0 | 1 | 2 | 3;
-                related?: string;
-                scope?: string;
-                tag?: string[];
-                title?: string;
-                title__icontains?: string;
-                title__iexact?: string;
-                title__startswith?: string;
-            };
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this track. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedLibraryList"];
-                };
-            };
-        };
-    };
-    get_track_mutations_2: {
-        parameters: {
-            query?: {
-                album?: number;
-                artist?: string;
-                channel?: string;
-                format?: string;
-                has_mbid?: boolean;
-                hidden?: boolean;
-                include_channels?: boolean;
-                library?: string;
-                license?: string;
-                mbid?: string;
-                /** @description Ordering
-                 *
-                 *     * `creation_date` - Creation date
-                 *     * `-creation_date` - Creation date (descending)
-                 *     * `title` - Title
-                 *     * `-title` - Title (descending)
-                 *     * `album__title` - Album  title
-                 *     * `-album__title` - Album  title (descending)
-                 *     * `album__release_date` - Album  release date
-                 *     * `-album__release_date` - Album  release date (descending)
-                 *     * `size` - Size
-                 *     * `-size` - Size (descending)
-                 *     * `position` - Position
-                 *     * `-position` - Position (descending)
-                 *     * `disc_number` - Disc number
-                 *     * `-disc_number` - Disc number (descending)
-                 *     * `artist_credit__artist__name` - Artist credit  artist  name
-                 *     * `-artist_credit__artist__name` - Artist credit  artist  name (descending)
-                 *     * `artist_credit__artist__modification_date` - Artist credit  artist  modification date
-                 *     * `-artist_credit__artist__modification_date` - Artist credit  artist  modification date (descending)
-                 *     * `random` - Random
-                 *     * `-random` - Random (descending)
-                 *     * `related` - Related
-                 *     * `-related` - Related (descending) */
-                ordering?: ("-album__release_date" | "-album__title" | "-artist_credit__artist__modification_date" | "-artist_credit__artist__name" | "-creation_date" | "-disc_number" | "-position" | "-random" | "-related" | "-size" | "-title" | "album__release_date" | "album__title" | "artist_credit__artist__modification_date" | "artist_credit__artist__name" | "creation_date" | "disc_number" | "position" | "random" | "related" | "size" | "title")[];
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                playable?: boolean;
-                q?: string;
-                /** @description * `0` - low
-                 *     * `1` - medium
-                 *     * `2` - high
-                 *     * `3` - very_high */
-                quality?: 0 | 1 | 2 | 3;
-                related?: string;
-                scope?: string;
-                tag?: string[];
-                title?: string;
-                title__icontains?: string;
-                title__iexact?: string;
-                title__startswith?: string;
-            };
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this track. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedAPIMutationList"];
-                };
-            };
-        };
-    };
-    create_track_mutation_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description A unique integer value identifying this track. */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["TrackRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["TrackRequest"];
-                "multipart/form-data": components["schemas"]["TrackRequest"];
-                "application/activity+json": components["schemas"]["TrackRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["APIMutation"];
-                };
-            };
-        };
-    };
-    get_uploads_2: {
-        parameters: {
-            query?: {
-                album_artist?: string;
-                channel?: string;
-                import_reference?: string;
-                /** @description * `draft` - Draft
-                 *     * `pending` - Pending
-                 *     * `finished` - Finished
-                 *     * `errored` - Errored
-                 *     * `skipped` - Skipped */
-                import_status?: ("draft" | "errored" | "finished" | "pending" | "skipped")[];
-                include_channels?: boolean;
-                library?: string;
-                mimetype?: string;
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
-                playable?: boolean;
-                q?: string;
-                scope?: string;
-                track?: string;
-                track_artist?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedUploadForOwnerList"];
-                };
-            };
-        };
-    };
-    create_upload_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UploadForOwnerRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["UploadForOwnerRequest"];
-                "multipart/form-data": components["schemas"]["UploadForOwnerRequest"];
-                "application/activity+json": components["schemas"]["UploadForOwnerRequest"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UploadForOwner"];
-                };
-            };
-        };
-    };
-    get_upload_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UploadForOwner"];
-                };
-            };
-        };
-    };
-    update_upload_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UploadForOwnerRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["UploadForOwnerRequest"];
-                "multipart/form-data": components["schemas"]["UploadForOwnerRequest"];
-                "application/activity+json": components["schemas"]["UploadForOwnerRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UploadForOwner"];
-                };
-            };
-        };
-    };
-    delete_upload_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    partial_update_upload_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["PatchedUploadForOwnerRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedUploadForOwnerRequest"];
-                "multipart/form-data": components["schemas"]["PatchedUploadForOwnerRequest"];
-                "application/activity+json": components["schemas"]["PatchedUploadForOwnerRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UploadForOwner"];
-                };
-            };
-        };
-    };
-    get_upload_metadata_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uuid: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TrackMetadata"];
-                };
-            };
-        };
-    };
-    create_upload_action_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UploadForOwnerRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["UploadForOwnerRequest"];
-                "multipart/form-data": components["schemas"]["UploadForOwnerRequest"];
-                "application/activity+json": components["schemas"]["UploadForOwnerRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UploadForOwner"];
-                };
-            };
-        };
-    };
-    partial_update_upload_bulk_update_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UploadBulkUpdateRequest"][];
-                "application/x-www-form-urlencoded": components["schemas"]["UploadBulkUpdateRequest"][];
-                "multipart/form-data": components["schemas"]["UploadBulkUpdateRequest"][];
-                "application/activity+json": components["schemas"]["UploadBulkUpdateRequest"][];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UploadForOwner"];
-                };
-            };
-        };
-    };
-    update_user_3: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                username: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserWriteRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["UserWriteRequest"];
-                "multipart/form-data": components["schemas"]["UserWriteRequest"];
-                "application/activity+json": components["schemas"]["UserWriteRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserWrite"];
-                };
-            };
-        };
-    };
-    partial_update_user_3: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                username: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["PatchedUserWriteRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedUserWriteRequest"];
-                "multipart/form-data": components["schemas"]["PatchedUserWriteRequest"];
-                "application/activity+json": components["schemas"]["PatchedUserWriteRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserWrite"];
-                };
-            };
-        };
-    };
-    get_user_subsonic_token_3: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                username: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserWrite"];
-                };
-            };
-        };
-    };
-    create_user_subsonic_token_3: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                username: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserWriteRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["UserWriteRequest"];
-                "multipart/form-data": components["schemas"]["UserWriteRequest"];
-                "application/activity+json": components["schemas"]["UserWriteRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserWrite"];
-                };
-            };
-        };
-    };
-    delete_user_subsonic_token_3: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                username: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    change_email_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserWriteRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["UserWriteRequest"];
-                "multipart/form-data": components["schemas"]["UserWriteRequest"];
-                "application/activity+json": components["schemas"]["UserWriteRequest"];
-            };
-        };
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description No response body */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_authenticated_user_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserWrite"];
-                };
-            };
-        };
-    };
-    delete_authenticated_user_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    update_settings_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserWriteRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["UserWriteRequest"];
-                "multipart/form-data": components["schemas"]["UserWriteRequest"];
-                "application/activity+json": components["schemas"]["UserWriteRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserWrite"];
-                };
-            };
-        };
-    };
-    update_user_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                username: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserWriteRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["UserWriteRequest"];
-                "multipart/form-data": components["schemas"]["UserWriteRequest"];
-                "application/activity+json": components["schemas"]["UserWriteRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserWrite"];
-                };
-            };
-        };
-    };
-    partial_update_user_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                username: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["PatchedUserWriteRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["PatchedUserWriteRequest"];
-                "multipart/form-data": components["schemas"]["PatchedUserWriteRequest"];
-                "application/activity+json": components["schemas"]["PatchedUserWriteRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserWrite"];
-                };
-            };
-        };
-    };
-    get_user_subsonic_token_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                username: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserWrite"];
-                };
-            };
-        };
-    };
-    create_user_subsonic_token_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                username: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserWriteRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["UserWriteRequest"];
-                "multipart/form-data": components["schemas"]["UserWriteRequest"];
-                "application/activity+json": components["schemas"]["UserWriteRequest"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserWrite"];
-                };
-            };
-        };
-    };
-    delete_user_subsonic_token_2: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                username: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    change_email_3: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserWriteRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["UserWriteRequest"];
-                "multipart/form-data": components["schemas"]["UserWriteRequest"];
-                "application/activity+json": components["schemas"]["UserWriteRequest"];
-            };
-        };
-        responses: {
-            /** @description No response body */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description No response body */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_authenticated_user_3: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserWrite"];
-                };
-            };
-        };
-    };
-    delete_authenticated_user_3: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No response body */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    update_settings_3: {
         parameters: {
             query?: never;
             header?: never;

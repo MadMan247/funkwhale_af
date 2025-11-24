@@ -51,9 +51,9 @@ def test_wellknown_nodeinfo(db, preferences, api_client, settings):
     expected = {
         "links": [
             {
-                "rel": "http://nodeinfo.diaspora.software/ns/schema/2.0",
+                "rel": "https://docs.funkwhale.audio/swagger/schema.yml",
                 "href": "{}{}".format(
-                    settings.FUNKWHALE_URL, reverse("api:v1:instance:nodeinfo-2.0")
+                    settings.FUNKWHALE_URL, reverse("api:v2:instance:nodeinfo-2.1")
                 ),
             }
         ]

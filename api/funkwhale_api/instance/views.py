@@ -107,7 +107,7 @@ class NodeInfo20(views.APIView):
         if not pref.get("common__api_authentication_required"):
             if pref.get("instance__nodeinfo_stats_enabled"):
                 data["endpoints"]["knownNodes"] = reverse(
-                    "api:v1:federation:domains-list"
+                    "api:v2:federation:domains-list"
                 )
             if pref.get("federation__public_index"):
                 data["endpoints"]["libraries"] = reverse(

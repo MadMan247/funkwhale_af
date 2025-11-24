@@ -1,9 +1,11 @@
 import datetime
 import json
 import logging
+import pickle
 import random
 from typing import List, Optional, Tuple
 
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import connection
 from django.db.models import Q
@@ -62,26 +64,19 @@ class SessionRadio(SimpleRadio):
         return self.session
 
     def get_queryset(self, **kwargs):
-        if not self.session or not self.session.user:
-            return (
-                Track.objects.all()
-                .with_playable_uploads(actor=None)
-                .prefetch_related(
-                    "artist_credit__artist",
-                    "album__artist_credit__artist",
-                    "attributed_to",
-                )
+        actor = None
+        try:
+            actor = self.session.user.actor
+        except KeyError:
+            pass  # Maybe logging would be helpful
+
+        qs = (
+            Track.objects.all()
+            .with_playable_uploads(actor=actor)
+            .prefetch_related(
+                "artist_credit__artist", "album__artist_credit__artist", "attributed_to"
             )
-        else:
-            qs = (
-                Track.objects.all()
-                .with_playable_uploads(self.session.user.actor)
-                .prefetch_related(
-                    "artist_credit__artist",
-                    "album__artist_credit__artist",
-                    "attributed_to",
-                )
-            )
+        )
 
         query = moderation_filters.get_filtered_content_query(
             config=moderation_filters.USER_FILTER_CONFIG["TRACK"],
@@ -102,27 +97,76 @@ class SessionRadio(SimpleRadio):
         queryset = queryset.exclude(pk__in=already_played)
         return queryset
 
-    def get_choices(self, **kwargs):
+    def cache_batch_radio_track(self, **kwargs):
+        BATCH_SIZE = 100
+        # get cached RadioTracks if any
+        try:
+            cached_evaluated_radio_tracks = pickle.loads(
+                cache.get(f"radiotracks{self.session.id}")
+            )
+        except TypeError:
+            cached_evaluated_radio_tracks = None
+
+        # get the queryset and apply filters
         kwargs.update(self.get_queryset_kwargs())
         queryset = self.get_queryset(**kwargs)
-        if self.session:
-            queryset = self.filter_from_session(queryset)
-            if kwargs.pop("filter_playable", True):
-                queryset = queryset.playable_by(
-                    self.session.user.actor if self.session.user else None
-                )
-        queryset = self.filter_queryset(queryset)
-        return queryset
+        queryset = self.filter_from_session(queryset)
 
-    def pick(self, **kwargs):
-        return self.pick_many(quantity=1, **kwargs)[0]
+        if kwargs.get("filter_playable", False) is True:
+            queryset = queryset.playable_by(
+                self.session.user.actor if self.session.user else None
+            )
+        queryset = self.filter_queryset(queryset)
+
+        # select a random batch of the qs
+        sliced_queryset = queryset.random(BATCH_SIZE)
+        if len(sliced_queryset) <= 0 and not cached_evaluated_radio_tracks:
+            raise ValueError("No more radio candidates")
+
+        # create the radio session tracks into db in bulk
+        self.session.add(sliced_queryset)
+
+        # evaluate the queryset to save it in cache
+        radio_tracks = list(sliced_queryset)
+
+        if cached_evaluated_radio_tracks is not None:
+            radio_tracks.extend(cached_evaluated_radio_tracks)
+        logger.info(
+            f"Setting redis cache for radio generation with radio id {self.session.id}"
+        )
+        cache.set(f"radiotracks{self.session.id}", pickle.dumps(radio_tracks), 3600)
+        cache.set(f"radioqueryset{self.session.id}", sliced_queryset, 3600)
+
+        return sliced_queryset
+
+    def get_choices(self, quantity, **kwargs):
+        if cache.get(f"radiotracks{self.session.id}"):
+            cached_radio_tracks = pickle.loads(
+                cache.get(f"radiotracks{self.session.id}")
+            )
+            logger.info("Using redis cache for radio generation")
+            radio_tracks = cached_radio_tracks
+            if len(radio_tracks) < quantity:
+                logger.info(
+                    "Not enough radio tracks in cache. Trying to generate new cache"
+                )
+                sliced_queryset = self.cache_batch_radio_track(**kwargs)
+            sliced_queryset = cache.get(f"radioqueryset{self.session.id}")
+        else:
+            sliced_queryset = self.cache_batch_radio_track(**kwargs)
+
+        return sliced_queryset[:quantity]
 
     def pick_many(self, quantity, **kwargs):
-        choices = self.get_choices(**kwargs)
-        picked_choices = super().pick_many(choices=choices, quantity=quantity)
         if self.session:
-            self.session.add(picked_choices)
-        return picked_choices
+            sliced_queryset = self.get_choices(quantity=quantity, **kwargs)
+        else:
+            logger.info(
+                "No radio session. Can't track user playback. Won't cache queryset results"
+            )
+            sliced_queryset = self.get_choices(quantity=quantity, **kwargs)
+
+        return sliced_queryset
 
     def validate_session(self, data, **context):
         return data
@@ -132,7 +176,7 @@ class SessionRadio(SimpleRadio):
 class RandomRadio(SessionRadio):
     def get_queryset(self, **kwargs):
         qs = super().get_queryset(**kwargs)
-        return qs.filter(artist_credit__artist__content_category="music").order_by("?")
+        return qs.filter(artist_credit__artist__content_category="music").random(100)
 
 
 @registry.register(name="random_library")
@@ -145,7 +189,7 @@ class RandomLibraryRadio(SessionRadio):
         query = Q(artist_credit__artist__content_category="music") & Q(
             pk__in=tracks_ids
         )
-        return qs.filter(query).order_by("?")
+        return qs.filter(query).random(100)
 
 
 @registry.register(name="favorites")
@@ -311,8 +355,8 @@ class SimilarRadio(RelatedObjectRadio):
                 FROM history_listening
                 INNER JOIN federation_actor ON federation_actor.id = history_listening.actor_id
                 INNER JOIN users_user ON users_user.actor_id = federation_actor.id
-                WHERE users_user.privacy_level = 'instance' OR users_user.privacy_level = 'everyone' OR \
-                    history_listening.actor_id = %s
+                WHERE users_user.privacy_level = 'instance' OR users_user.privacy_level = 'everyone' \
+                    OR history_listening.actor_id = %s
                 ORDER BY history_listening.creation_date ASC
             ) t WHERE track_id = %s AND next != %s GROUP BY next ORDER BY c DESC;
             """
@@ -356,7 +400,7 @@ class LessListenedRadio(SessionRadio):
         return (
             qs.filter(artist_credit__artist__content_category="music")
             .exclude(pk__in=listened)
-            .order_by("?")
+            .random(100)
         )
 
 
@@ -377,7 +421,7 @@ class LessListenedLibraryRadio(SessionRadio):
         query = Q(artist_credit__artist__content_category="music") & Q(
             pk__in=tracks_ids
         )
-        return qs.filter(query).exclude(pk__in=listened).order_by("?")
+        return qs.filter(query).exclude(pk__in=listened).random(100)
 
 
 @registry.register(name="actor-content")

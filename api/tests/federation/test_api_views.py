@@ -13,7 +13,7 @@ def test_user_can_list_their_library_follows(factories, logged_in_api_client):
     follow = factories["federation.LibraryFollow"](
         actor__user=logged_in_api_client.user
     )
-    url = reverse("api:v1:federation:library-follows-list")
+    url = reverse("api:v2:federation:library-follows-list")
     response = logged_in_api_client.get(url)
 
     assert response.data["count"] == 1
@@ -25,7 +25,7 @@ def test_user_can_fetch_library_using_url(mocker, factories, logged_in_api_clien
     mocked_retrieve = mocker.patch(
         "funkwhale_api.federation.utils.retrieve_ap_object", return_value=library
     )
-    url = reverse("api:v1:federation:libraries-fetch")
+    url = reverse("api:v2:federation:libraries-fetch")
     response = logged_in_api_client.post(url, {"fid": library.fid})
     assert mocked_retrieve.call_count == 1
     args = mocked_retrieve.call_args
@@ -46,7 +46,7 @@ def test_user_can_fetch_playlist_library_using_url(
     mocked_retrieve = mocker.patch(
         "funkwhale_api.federation.utils.retrieve_ap_object", return_value=pl_library
     )
-    url = reverse("api:v1:federation:libraries-fetch")
+    url = reverse("api:v2:federation:libraries-fetch")
     response = logged_in_api_client.post(url, {"fid": pl_library.fid})
     assert mocked_retrieve.call_count == 1
     args = mocked_retrieve.call_args
@@ -67,7 +67,7 @@ def test_user_can_schedule_library_scan(mocker, factories, logged_in_api_client)
     schedule_scan = mocker.patch(
         "funkwhale_api.music.models.Library.schedule_scan", return_value=True
     )
-    url = reverse("api:v1:federation:libraries-scan", kwargs={"uuid": library.uuid})
+    url = reverse("api:v2:federation:libraries-scan", kwargs={"uuid": library.uuid})
 
     response = logged_in_api_client.post(url)
 
@@ -80,7 +80,7 @@ def test_can_follow_library(factories, logged_in_api_client, mocker):
     dispatch = mocker.patch("funkwhale_api.federation.routes.outbox.dispatch")
     actor = logged_in_api_client.user.create_actor()
     library = factories["music.Library"]()
-    url = reverse("api:v1:federation:library-follows-list")
+    url = reverse("api:v2:federation:library-follows-list")
     response = logged_in_api_client.post(url, {"target": library.uuid})
 
     assert response.status_code == 201
@@ -99,7 +99,7 @@ def test_can_undo_library_follow(factories, logged_in_api_client, mocker):
     follow = factories["federation.LibraryFollow"](actor=actor)
     delete = mocker.patch.object(follow.__class__, "delete")
     url = reverse(
-        "api:v1:federation:library-follows-detail", kwargs={"uuid": follow.uuid}
+        "api:v2:federation:library-follows-detail", kwargs={"uuid": follow.uuid}
     )
     response = logged_in_api_client.delete(url)
 
@@ -118,7 +118,7 @@ def test_user_cannot_edit_someone_else_library_follow(
     logged_in_api_client.user.create_actor()
     follow = factories["federation.LibraryFollow"]()
     url = reverse(
-        f"api:v1:federation:library-follows-{action}",
+        f"api:v2:federation:library-follows-{action}",
         kwargs={"uuid": follow.uuid},
     )
     response = logged_in_api_client.post(url)
@@ -136,7 +136,7 @@ def test_user_can_accept_or_reject_own_follows(
     actor = logged_in_api_client.user.create_actor()
     follow = factories["federation.LibraryFollow"](target__actor=actor)
     url = reverse(
-        f"api:v1:federation:library-follows-{action}",
+        f"api:v2:federation:library-follows-{action}",
         kwargs={"uuid": follow.uuid},
     )
     response = logged_in_api_client.post(url)
@@ -161,7 +161,7 @@ def test_user_can_list_inbox_items(factories, logged_in_api_client):
     factories["federation.InboxItem"](activity__type="Follow", actor=actor, type="cc")
     factories["federation.InboxItem"](activity__type="Follow", type="to")
 
-    url = reverse("api:v1:federation:inbox-list")
+    url = reverse("api:v2:federation:inbox-list")
 
     response = logged_in_api_client.get(url)
 
@@ -180,7 +180,7 @@ def test_user_can_update_read_status_of_inbox_item(factories, logged_in_api_clie
         activity__type="Follow", actor=actor, type="to"
     )
 
-    url = reverse("api:v1:federation:inbox-detail", kwargs={"pk": ii.pk})
+    url = reverse("api:v2:federation:inbox-detail", kwargs={"pk": ii.pk})
 
     response = logged_in_api_client.patch(url, {"is_read": True})
     assert response.status_code == 200
@@ -193,7 +193,7 @@ def test_user_can_update_read_status_of_inbox_item(factories, logged_in_api_clie
 def test_can_detail_fetch(logged_in_api_client, factories):
     actor = logged_in_api_client.user.create_actor()
     fetch = factories["federation.Fetch"](url="http://test.object", actor=actor)
-    url = reverse("api:v1:federation:fetches-detail", kwargs={"pk": fetch.pk})
+    url = reverse("api:v2:federation:fetches-detail", kwargs={"pk": fetch.pk})
 
     response = logged_in_api_client.get(url)
 
@@ -209,7 +209,7 @@ def test_user_can_list_domains(factories, api_client, preferences):
     factories["moderation.InstancePolicy"](
         actor=None, for_domain=True, block_all=True
     ).target_domain
-    url = reverse("api:v1:federation:domains-list")
+    url = reverse("api:v2:federation:domains-list")
     response = api_client.get(url)
 
     expected = {
@@ -225,7 +225,7 @@ def test_can_retrieve_actor(factories, api_client, preferences):
     preferences["common__api_authentication_required"] = False
     actor = factories["federation.Actor"]()
     url = reverse(
-        "api:v1:federation:actors-detail", kwargs={"full_username": actor.full_username}
+        "api:v2:federation:actors-detail", kwargs={"full_username": actor.full_username}
     )
     response = api_client.get(url)
 
@@ -240,7 +240,7 @@ def test_can_retrieve_local_actor_with_allow_list_enabled(
     preferences["moderation__allow_list_enabled"] = True
     actor = factories["federation.Actor"](local=True)
     url = reverse(
-        "api:v1:federation:actors-detail", kwargs={"full_username": actor.full_username}
+        "api:v2:federation:actors-detail", kwargs={"full_username": actor.full_username}
     )
     response = api_client.get(url)
 
@@ -267,7 +267,7 @@ def test_can_fetch_using_url_synchronous(
 
     fetch_task = mocker.patch.object(tasks, "fetch", side_effect=fake_task)
 
-    url = reverse("api:v1:federation:fetches-list")
+    url = reverse("api:v2:federation:fetches-list")
     data = {"object_uri": object_id}
     response = logged_in_api_client.post(url, data)
     assert response.status_code == 201
@@ -290,7 +290,7 @@ def test_fetch_duplicate(factories, logged_in_api_client, settings, now):
         url=object_id,
         creation_date=now - datetime.timedelta(seconds=59),
     )
-    url = reverse("api:v1:federation:fetches-list")
+    url = reverse("api:v2:federation:fetches-list")
     data = {"object_uri": object_id}
     response = logged_in_api_client.post(url, data)
     assert response.status_code == 201
@@ -310,7 +310,7 @@ def test_fetch_duplicate_bypass_with_force(
         url=object_id,
         creation_date=now - datetime.timedelta(seconds=59),
     )
-    url = reverse("api:v1:federation:fetches-list")
+    url = reverse("api:v2:federation:fetches-list")
     data = {"object_uri": object_id, "force": True}
     response = logged_in_api_client.post(url, data)
 
@@ -327,7 +327,7 @@ def test_library_follow_get_all(factories, logged_in_api_client):
     follow = factories["federation.LibraryFollow"](target=library, actor=actor)
     factories["federation.LibraryFollow"]()
     factories["music.Library"]()
-    url = reverse("api:v1:federation:library-follows-all")
+    url = reverse("api:v2:federation:library-follows-all")
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 200
@@ -348,7 +348,7 @@ def test_user_follow_get_all(factories, logged_in_api_client):
     target_actor = factories["federation.Actor"]()
     follow = factories["federation.Follow"](target=target_actor, actor=actor)
     factories["federation.Follow"]()
-    url = reverse("api:v1:federation:user-follows-all")
+    url = reverse("api:v2:federation:user-follows-all")
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 200
@@ -369,7 +369,7 @@ def test_user_follow_retrieve(factories, logged_in_api_client):
     target_actor = factories["federation.Actor"]()
     follow = factories["federation.Follow"](target=target_actor, actor=actor)
     factories["federation.Follow"]()
-    url = reverse("api:v1:federation:user-follows-detail", kwargs={"uuid": follow.uuid})
+    url = reverse("api:v2:federation:user-follows-detail", kwargs={"uuid": follow.uuid})
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 200
@@ -379,7 +379,7 @@ def test_user_can_list_their_received_follows(factories, logged_in_api_client):
     # followed by someont else
     factories["federation.Follow"]()
     follow = factories["federation.Follow"](actor__user=logged_in_api_client.user)
-    url = reverse("api:v1:federation:user-follows-list")
+    url = reverse("api:v2:federation:user-follows-list")
     response = logged_in_api_client.get(url)
 
     assert response.data["count"] == 1
@@ -405,7 +405,7 @@ def test_can_follow_user_actor(factories, logged_in_api_client, mocker):
     )
     actor = logged_in_api_client.user.create_actor()
     target_actor = factories["federation.Actor"]()
-    url = reverse("api:v1:federation:user-follows-list")
+    url = reverse("api:v2:federation:user-follows-list")
     lib.delete()
     lib2.delete()
     response = logged_in_api_client.post(url, {"target": target_actor.fid})
@@ -425,7 +425,7 @@ def test_can_undo_user_follow(factories, logged_in_api_client, mocker):
     actor = logged_in_api_client.user.create_actor()
     follow = factories["federation.Follow"](actor=actor)
     delete = mocker.patch.object(follow.__class__, "delete")
-    url = reverse("api:v1:federation:user-follows-detail", kwargs={"uuid": follow.uuid})
+    url = reverse("api:v2:federation:user-follows-detail", kwargs={"uuid": follow.uuid})
     response = logged_in_api_client.delete(url)
 
     assert response.status_code == 204
@@ -443,7 +443,7 @@ def test_user_cannot_edit_someone_else_user_follow(
     logged_in_api_client.user.create_actor()
     follow = factories["federation.Follow"]()
     url = reverse(
-        f"api:v1:federation:user-follows-{action}",
+        f"api:v2:federation:user-follows-{action}",
         kwargs={"uuid": follow.uuid},
     )
     response = logged_in_api_client.post(url)
@@ -461,7 +461,7 @@ def test_user_can_accept_or_reject_own_received_follows(
     actor = logged_in_api_client.user.create_actor()
     follow = factories["federation.Follow"](target=actor)
     url = reverse(
-        f"api:v1:federation:user-follows-{action}",
+        f"api:v2:federation:user-follows-{action}",
         kwargs={"uuid": follow.uuid},
     )
     response = logged_in_api_client.post(url)

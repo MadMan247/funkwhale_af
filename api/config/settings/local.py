@@ -121,7 +121,7 @@ SPECTACULAR_SETTINGS = {
     ],
     "OAUTH2_FLOWS": ["authorizationCode"],
     "OAUTH2_AUTHORIZATION_URL": "/authorize",
-    "OAUTH2_TOKEN_URL": "/api/v1/oauth/token/",
+    "OAUTH2_TOKEN_URL": "/api/v2/oauth/token/",
     "PREPROCESSING_HOOKS": ["config.schema.custom_preprocessing_hook"],
     "ENUM_NAME_OVERRIDES": {
         "FederationChoiceEnum": "funkwhale_api.federation.models.TYPE_CHOICES",

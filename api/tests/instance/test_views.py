@@ -12,7 +12,7 @@ def test_nodeinfo_endpoint(db, api_client):
 
 
 def test_settings_only_list_public_settings(db, api_client, preferences):
-    url = reverse("api:v1:instance:settings")
+    url = reverse("api:v2:instance:settings")
     response = api_client.get(url)
 
     for conf in response.data:
@@ -21,7 +21,7 @@ def test_settings_only_list_public_settings(db, api_client, preferences):
 
 
 def test_admin_settings_restrict_access(db, logged_in_api_client, preferences):
-    url = reverse("api:v1:instance:admin-settings-list")
+    url = reverse("api:v2:instance:admin-settings-list")
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 403
@@ -31,7 +31,7 @@ def test_admin_settings_correct_permission(db, logged_in_api_client, preferences
     user = logged_in_api_client.user
     user.permission_settings = True
     user.save()
-    url = reverse("api:v1:instance:admin-settings-list")
+    url = reverse("api:v2:instance:admin-settings-list")
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 200
@@ -52,7 +52,7 @@ def test_manifest_endpoint(api_client, preferences):
             "description": "Test description",
         }
 
-        url = reverse("api:v1:instance:spa-manifest")
+        url = reverse("api:v2:instance:spa-manifest")
         response = api_client.get(url)
         assert response.status_code == 200
         assert response.data == expected

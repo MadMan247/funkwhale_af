@@ -40,7 +40,7 @@ def test_artist_list_serializer(api_request, factories, logged_in_api_client):
     for artist in serializer.data:
         artist["tags"] = tags
 
-    url = reverse("api:v1:artists-list")
+    url = reverse("api:v2:artists-list")
     response = logged_in_api_client.get(url)
 
     assert serializer.data[0]["tracks_count"] == 1
@@ -69,7 +69,7 @@ def test_album_list_serializer(api_request, factories, logged_in_api_client):
     expected = {"count": 1, "next": None, "previous": None, "results": serializer.data}
     for album in serializer.data:
         album["tags"] = tags
-    url = reverse("api:v1:albums-list")
+    url = reverse("api:v2:albums-list")
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 200
@@ -91,7 +91,7 @@ def test_track_list_serializer(api_request, factories, logged_in_api_client):
     expected = {"count": 1, "next": None, "previous": None, "results": serializer.data}
     for track in serializer.data:
         track["tags"] = tags
-    url = reverse("api:v1:tracks-list")
+    url = reverse("api:v2:tracks-list")
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 200
@@ -102,7 +102,7 @@ def test_track_list_filter_id(api_request, factories, logged_in_api_client):
     track1 = factories["music.Track"]()
     track2 = factories["music.Track"]()
     factories["music.Track"]()
-    url = reverse("api:v1:tracks-list")
+    url = reverse("api:v2:tracks-list")
     response = logged_in_api_client.get(url, {"id[]": [track1.id, track2.id]})
 
     assert response.status_code == 200
@@ -365,7 +365,7 @@ def test_listen_no_track(factories, logged_in_api_client, mocker):
         "funkwhale_api.music.utils.increment_downloads_count"
     )
 
-    url = reverse("api:v1:listen-detail", kwargs={"uuid": "noop"})
+    url = reverse("api:v2:listen-detail", kwargs={"uuid": "noop"})
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 404
@@ -374,7 +374,7 @@ def test_listen_no_track(factories, logged_in_api_client, mocker):
 
 def test_listen_no_file(factories, logged_in_api_client):
     track = factories["music.Track"]()
-    url = reverse("api:v1:listen-detail", kwargs={"uuid": track.uuid})
+    url = reverse("api:v2:listen-detail", kwargs={"uuid": track.uuid})
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 404
@@ -382,7 +382,7 @@ def test_listen_no_file(factories, logged_in_api_client):
 
 def test_listen_no_available_file(factories, logged_in_api_client):
     upload = factories["music.Upload"]()
-    url = reverse("api:v1:listen-detail", kwargs={"uuid": upload.track.uuid})
+    url = reverse("api:v2:listen-detail", kwargs={"uuid": upload.track.uuid})
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 404
@@ -399,7 +399,7 @@ def test_listen_correct_access(factories, logged_in_api_client, mocker):
         import_status="finished",
     )
     expected_filename = upload.track.full_name + ".ogg"
-    url = reverse("api:v1:listen-detail", kwargs={"uuid": upload.track.uuid})
+    url = reverse("api:v2:listen-detail", kwargs={"uuid": upload.track.uuid})
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 200
@@ -421,7 +421,7 @@ def test_listen_correct_access_download_false(factories, logged_in_api_client):
         library__privacy_level="me",
         import_status="finished",
     )
-    url = reverse("api:v1:listen-detail", kwargs={"uuid": upload.track.uuid})
+    url = reverse("api:v2:listen-detail", kwargs={"uuid": upload.track.uuid})
     response = logged_in_api_client.get(url, {"download": "false"})
 
     assert response.status_code == 200
@@ -436,7 +436,7 @@ def test_listen_explicit_file(factories, logged_in_api_client, mocker, settings)
     upload2 = factories["music.Upload"](
         library__privacy_level="everyone", track=upload1.track, import_status="finished"
     )
-    url = reverse("api:v1:listen-detail", kwargs={"uuid": upload2.track.uuid})
+    url = reverse("api:v2:listen-detail", kwargs={"uuid": upload2.track.uuid})
     response = logged_in_api_client.get(url, {"upload": upload2.uuid})
 
     assert response.status_code == 200
@@ -457,7 +457,7 @@ def test_stream(factories, logged_in_api_client, mocker, settings):
         library__privacy_level="everyone", import_status="finished"
     )
     url = (
-        reverse("api:v1:stream-detail", kwargs={"uuid": str(upload.track.uuid)})
+        reverse("api:v2:stream-detail", kwargs={"uuid": str(upload.track.uuid)})
         + ".mp3"
     )
     assert url.endswith(f"/{upload.track.uuid}.mp3")
@@ -480,7 +480,7 @@ def test_listen_no_proxy(factories, logged_in_api_client, settings):
     upload = factories["music.Upload"](
         library__privacy_level="everyone", import_status="finished"
     )
-    url = reverse("api:v1:listen-detail", kwargs={"uuid": upload.track.uuid})
+    url = reverse("api:v2:listen-detail", kwargs={"uuid": upload.track.uuid})
     response = logged_in_api_client.get(url, {"upload": upload.uuid})
 
     assert response.status_code == 302
@@ -557,7 +557,7 @@ def test_listen_transcode(factories, now, logged_in_api_client, mocker, settings
     upload = factories["music.Upload"](
         import_status="finished", library__actor__user=logged_in_api_client.user
     )
-    url = reverse("api:v1:listen-detail", kwargs={"uuid": upload.track.uuid})
+    url = reverse("api:v2:listen-detail", kwargs={"uuid": upload.track.uuid})
     handle_serve = mocker.spy(views, "handle_serve")
     response = logged_in_api_client.get(url, {"to": "mp3"})
 
@@ -591,7 +591,7 @@ def test_listen_transcode_bitrate(
     upload = factories["music.Upload"](
         import_status="finished", library__actor__user=logged_in_api_client.user
     )
-    url = reverse("api:v1:listen-detail", kwargs={"uuid": upload.track.uuid})
+    url = reverse("api:v2:listen-detail", kwargs={"uuid": upload.track.uuid})
     handle_serve = mocker.spy(views, "handle_serve")
     response = logged_in_api_client.get(url, {"max_bitrate": max_bitrate})
 
@@ -621,7 +621,7 @@ def test_listen_transcode_in_place(
         source="file://" + os.path.join(DATA_DIR, "test.ogg"),
     )
 
-    url = reverse("api:v1:listen-detail", kwargs={"uuid": upload.track.uuid})
+    url = reverse("api:v2:listen-detail", kwargs={"uuid": upload.track.uuid})
     handle_serve = mocker.spy(views, "handle_serve")
     response = logged_in_api_client.get(url, {"to": "mp3"})
 
@@ -643,7 +643,7 @@ def test_user_can_list_their_library(factories, logged_in_api_client):
     library = factories["music.Library"](actor=actor)
     factories["music.Library"](privacy_level="everyone")
 
-    url = reverse("api:v1:libraries-list")
+    url = reverse("api:v2:libraries-list")
     response = logged_in_api_client.get(url, {"scope": "me"})
 
     assert response.status_code == 200
@@ -654,7 +654,7 @@ def test_user_can_list_their_library(factories, logged_in_api_client):
 def test_user_can_retrieve_another_user_library(factories, logged_in_api_client):
     library = factories["music.Library"]()
 
-    url = reverse("api:v1:libraries-detail", kwargs={"uuid": library.uuid})
+    url = reverse("api:v2:libraries-detail", kwargs={"uuid": library.uuid})
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 200
@@ -666,7 +666,7 @@ def test_user_can_list_public_libraries(factories, api_client, preferences):
     library = factories["music.Library"](privacy_level="everyone")
     factories["music.Library"](privacy_level="me")
 
-    url = reverse("api:v1:libraries-list")
+    url = reverse("api:v2:libraries-list")
     response = api_client.get(url)
 
     assert response.status_code == 200
@@ -677,7 +677,7 @@ def test_user_can_list_public_libraries(factories, api_client, preferences):
 def test_library_list_excludes_channel_library(factories, logged_in_api_client):
     actor = logged_in_api_client.user.create_actor()
     factories["audio.Channel"](attributed_to=actor)
-    url = reverse("api:v1:libraries-list")
+    url = reverse("api:v2:libraries-list")
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 200
@@ -688,7 +688,7 @@ def test_user_cannot_delete_other_actors_library(factories, logged_in_api_client
     logged_in_api_client.user.create_actor()
     library = factories["music.Library"](privacy_level="everyone")
 
-    url = reverse("api:v1:libraries-detail", kwargs={"uuid": library.uuid})
+    url = reverse("api:v2:libraries-detail", kwargs={"uuid": library.uuid})
     response = logged_in_api_client.delete(url)
 
     assert response.status_code == 405
@@ -700,7 +700,7 @@ def test_user_cannot_get_other_not_playable_uploads(factories, logged_in_api_cli
         import_status="finished", library__privacy_level="private"
     )
 
-    url = reverse("api:v1:uploads-detail", kwargs={"uuid": upload.uuid})
+    url = reverse("api:v2:uploads-detail", kwargs={"uuid": upload.uuid})
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 404
@@ -712,7 +712,7 @@ def test_user_can_get_retrieve_playable_uploads(factories, logged_in_api_client)
         import_status="finished", library__privacy_level="everyone"
     )
 
-    url = reverse("api:v1:uploads-detail", kwargs={"uuid": upload.uuid})
+    url = reverse("api:v2:uploads-detail", kwargs={"uuid": upload.uuid})
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 200
@@ -723,7 +723,7 @@ def test_user_cannot_delete_other_actors_uploads(factories, logged_in_api_client
     logged_in_api_client.user.create_actor()
     upload = factories["music.Upload"]()
 
-    url = reverse("api:v1:uploads-detail", kwargs={"uuid": upload.uuid})
+    url = reverse("api:v2:uploads-detail", kwargs={"uuid": upload.uuid})
     response = logged_in_api_client.delete(url)
 
     assert response.status_code == 404
@@ -743,7 +743,7 @@ def test_user_cannot_list_other_actors_uploads(factories, logged_in_api_client):
     logged_in_api_client.user.create_actor()
     factories["music.Upload"]()
 
-    url = reverse("api:v1:uploads-list")
+    url = reverse("api:v2:uploads-list")
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 200
@@ -752,7 +752,7 @@ def test_user_cannot_list_other_actors_uploads(factories, logged_in_api_client):
 
 def test_user_can_create_upload(logged_in_api_client, factories, mocker, audio_file):
     library = factories["music.Library"](actor__user=logged_in_api_client.user)
-    url = reverse("api:v1:uploads-list")
+    url = reverse("api:v2:uploads-list")
     m = mocker.patch("funkwhale_api.common.utils.on_commit")
 
     response = logged_in_api_client.post(
@@ -785,7 +785,7 @@ def test_user_can_create_upload_in_channel(
 ):
     actor = logged_in_api_client.user.create_actor()
     channel = factories["audio.Channel"](attributed_to=actor)
-    url = reverse("api:v1:uploads-list")
+    url = reverse("api:v2:uploads-list")
     m = mocker.patch("funkwhale_api.common.utils.on_commit")
     album = factories["music.Album"](artist_credit__artist=channel.artist)
     response = logged_in_api_client.post(
@@ -815,7 +815,7 @@ def test_user_can_create_draft_upload(
     logged_in_api_client, factories, mocker, audio_file
 ):
     library = factories["music.Library"](actor__user=logged_in_api_client.user)
-    url = reverse("api:v1:uploads-list")
+    url = reverse("api:v2:uploads-list")
     m = mocker.patch("funkwhale_api.common.utils.on_commit")
 
     response = logged_in_api_client.post(
@@ -849,7 +849,7 @@ def test_user_can_patch_draft_upload(
     actor = logged_in_api_client.user.create_actor()
     library = factories["music.Library"](actor=actor)
     upload = factories["music.Upload"](library__actor=actor, import_status="draft")
-    url = reverse("api:v1:uploads-detail", kwargs={"uuid": upload.uuid})
+    url = reverse("api:v2:uploads-detail", kwargs={"uuid": upload.uuid})
     m = mocker.patch("funkwhale_api.common.utils.on_commit")
 
     response = logged_in_api_client.patch(
@@ -883,7 +883,7 @@ def test_user_cannot_patch_non_draft_upload(
     upload = factories["music.Upload"](
         library__actor=actor, import_status=import_status
     )
-    url = reverse("api:v1:uploads-detail", kwargs={"uuid": upload.uuid})
+    url = reverse("api:v2:uploads-detail", kwargs={"uuid": upload.uuid})
     response = logged_in_api_client.patch(url, {"import_reference": "test"})
 
     assert response.status_code == 404
@@ -894,7 +894,7 @@ def test_user_can_patch_draft_upload_status_triggers_processing(
 ):
     actor = logged_in_api_client.user.create_actor()
     upload = factories["music.Upload"](library__actor=actor, import_status="draft")
-    url = reverse("api:v1:uploads-detail", kwargs={"uuid": upload.uuid})
+    url = reverse("api:v2:uploads-detail", kwargs={"uuid": upload.uuid})
     m = mocker.patch("funkwhale_api.common.utils.on_commit")
 
     response = logged_in_api_client.patch(url, {"import_status": "pending"})
@@ -931,7 +931,7 @@ def test_can_get_libraries_for_music_entities(
         library=channel.library, playable=True, track=upload.track
     )
 
-    url = reverse(f"api:v1:{entity}s-libraries", kwargs={"pk": data[entity].pk})
+    url = reverse(f"api:v2:{entity}s-libraries", kwargs={"pk": data[entity].pk})
 
     response = api_client.get(url)
     expected = federation_api_serializers.LibrarySerializer(library).data
@@ -954,7 +954,7 @@ def test_list_licenses(api_client, preferences, mocker):
         serializers.LicenseSerializer(l.conf).data
         for l in models.License.objects.order_by("code")
     ]
-    url = reverse("api:v1:licenses-list")
+    url = reverse("api:v2:licenses-list")
 
     response = api_client.get(url)
 
@@ -967,7 +967,7 @@ def test_detail_license(api_client, preferences):
     id = "cc-by-sa-4.0"
     expected = serializers.LicenseSerializer(licenses.LICENSES_BY_ID[id]).data
 
-    url = reverse("api:v1:licenses-detail", kwargs={"pk": id})
+    url = reverse("api:v2:licenses-detail", kwargs={"pk": id})
 
     response = api_client.get(url)
 
@@ -978,7 +978,7 @@ def test_oembed_track(factories, no_api_auth, api_client, settings):
     settings.FUNKWHALE_URL = "http://test"
     settings.FUNKWHALE_EMBED_URL = "http://embed"
     track = factories["music.Track"](album__with_cover=True)
-    url = reverse("api:v1:oembed")
+    url = reverse("api:v2:oembed")
     track_url = f"https://test.com/library/tracks/{track.pk}"
     iframe_src = f"http://embed?type=track&id={track.pk}"
     expected = {
@@ -1016,7 +1016,7 @@ def test_oembed_album(factories, no_api_auth, api_client, settings):
     settings.FUNKWHALE_EMBED_URL = "http://embed"
     track = factories["music.Track"](album__with_cover=True)
     album = track.album
-    url = reverse("api:v1:oembed")
+    url = reverse("api:v2:oembed")
     album_url = f"https://test.com/library/albums/{album.pk}"
     iframe_src = f"http://embed?type=album&id={album.pk}"
     expected = {
@@ -1055,7 +1055,7 @@ def test_oembed_artist(factories, no_api_auth, api_client, settings):
     track = factories["music.Track"](album__with_cover=True)
     album = track.album
     artist = track.artist_credit.all()[0].artist
-    url = reverse("api:v1:oembed")
+    url = reverse("api:v2:oembed")
     artist_url = f"https://test.com/library/artists/{artist.pk}"
     iframe_src = f"http://embed?type=artist&id={artist.pk}"
     expected = {
@@ -1094,7 +1094,7 @@ def test_oembed_playlist(factories, no_api_auth, api_client, settings):
         playable=True, track__album__with_cover=True
     ).track
     playlist.insert_many([track])
-    url = reverse("api:v1:oembed")
+    url = reverse("api:v2:oembed")
     playlist_url = f"https://test.com/library/playlists/{playlist.pk}"
     iframe_src = f"http://embed?type=playlist&id={playlist.pk}"
     expected = {
@@ -1128,9 +1128,9 @@ def test_oembed_playlist(factories, no_api_auth, api_client, settings):
 @pytest.mark.parametrize(
     "factory_name, url_name",
     [
-        ("music.Artist", "api:v1:artists-detail"),
-        ("music.Album", "api:v1:albums-detail"),
-        ("music.Track", "api:v1:tracks-detail"),
+        ("music.Artist", "api:v2:artists-detail"),
+        ("music.Album", "api:v2:albums-detail"),
+        ("music.Track", "api:v2:tracks-detail"),
     ],
 )
 def test_refresh_remote_entity_when_param_is_true(
@@ -1170,7 +1170,7 @@ def test_refresh_remote_entity_no_param(
     assert obj.is_local is False
 
     fetch_task = mocker.patch.object(federation_tasks, "fetch")
-    url = reverse("api:v1:artists-detail", kwargs={"pk": obj.pk})
+    url = reverse("api:v2:artists-detail", kwargs={"pk": obj.pk})
     response = logged_in_api_client.get(url, {"refresh": param})
 
     assert response.status_code == 200
@@ -1225,7 +1225,7 @@ def test_artist_list_exclude_channels(
 ):
     factories["audio.Channel"]()
 
-    url = reverse("api:v1:artists-list")
+    url = reverse("api:v2:artists-list")
     response = logged_in_api_client.get(url, params)
 
     assert response.status_code == 200
@@ -1240,7 +1240,7 @@ def test_album_list_exclude_channels(params, expected, factories, logged_in_api_
     channel_artist = factories["audio.Channel"]().artist
     factories["music.Album"](artist_credit__artist=channel_artist)
 
-    url = reverse("api:v1:albums-list")
+    url = reverse("api:v2:albums-list")
     response = logged_in_api_client.get(url, params)
 
     assert response.status_code == 200
@@ -1255,7 +1255,7 @@ def test_track_list_exclude_channels(params, expected, factories, logged_in_api_
     channel_artist = factories["audio.Channel"]().artist
     factories["music.Track"](artist_credit__artist=channel_artist)
 
-    url = reverse("api:v1:tracks-list")
+    url = reverse("api:v2:tracks-list")
     response = logged_in_api_client.get(url, params)
 
     assert response.status_code == 200
@@ -1284,7 +1284,7 @@ def test_get_upload_audio_metadata(logged_in_api_client, factories):
     upload = factories["music.Upload"](library__actor=actor)
     metadata = tasks.metadata.Metadata(upload.get_audio_file())
     serializer = tasks.metadata.TrackMetadataSerializer(data=metadata)
-    url = reverse("api:v1:uploads-audio-file-metadata", kwargs={"uuid": upload.uuid})
+    url = reverse("api:v2:uploads-audio-file-metadata", kwargs={"uuid": upload.uuid})
 
     response = logged_in_api_client.get(url)
 
@@ -1302,7 +1302,7 @@ def test_search_get(logged_in_api_client, factories):
     factories["music.Track"]()
     factories["tags.Tag"]()
 
-    url = reverse("api:v1:search")
+    url = reverse("api:v2:search")
     expected = serializers.SearchResultSerializer(
         {
             "artists": [artist],
@@ -1323,7 +1323,7 @@ def test_search_get_fts_advanced(logged_in_api_client, factories):
     artist2 = factories["music.Artist"](name="Bar Fighter")
     factories["music.Artist"]()
 
-    url = reverse("api:v1:search")
+    url = reverse("api:v2:search")
     expected = {
         "artists": serializers.ArtistWithAlbumsSerializer(
             [artist2, artist1], many=True
@@ -1341,9 +1341,9 @@ def test_search_get_fts_advanced(logged_in_api_client, factories):
 @pytest.mark.parametrize(
     "route, factory_name",
     [
-        ("api:v1:artists-detail", "music.Artist"),
-        ("api:v1:albums-detail", "music.Album"),
-        ("api:v1:tracks-detail", "music.Track"),
+        ("api:v2:artists-detail", "music.Artist"),
+        ("api:v2:albums-detail", "music.Album"),
+        ("api:v2:tracks-detail", "music.Track"),
     ],
 )
 def test_detail_includes_description_key(
@@ -1363,7 +1363,7 @@ def test_channel_owner_can_create_album(factories, logged_in_api_client):
     attachment = factories["common.Attachment"](actor=actor)
     ac = factories["music.ArtistCredit"](artist=channel.artist)
 
-    url = reverse("api:v1:albums-list")
+    url = reverse("api:v2:albums-list")
 
     data = {
         "artist_credit": ac.pk,
@@ -1396,7 +1396,7 @@ def test_channel_owner_can_delete_album(factories, logged_in_api_client, mocker)
     actor = logged_in_api_client.user.create_actor()
     channel = factories["audio.Channel"](attributed_to=actor)
     album = factories["music.Album"](artist_credit__artist=channel.artist)
-    url = reverse("api:v1:albums-detail", kwargs={"pk": album.pk})
+    url = reverse("api:v2:albums-detail", kwargs={"pk": album.pk})
 
     response = logged_in_api_client.delete(url)
 
@@ -1413,7 +1413,7 @@ def test_other_user_cannot_create_album(factories, logged_in_api_client):
     actor = logged_in_api_client.user.create_actor()
     channel = factories["audio.Channel"]()
     attachment = factories["common.Attachment"](actor=actor)
-    url = reverse("api:v1:albums-list")
+    url = reverse("api:v2:albums-list")
 
     data = {
         "artist": channel.artist.pk,
@@ -1433,7 +1433,7 @@ def test_other_user_cannot_delete_album(factories, logged_in_api_client):
     logged_in_api_client.user.create_actor()
     channel = factories["audio.Channel"]()
     album = factories["music.Album"](artist_credit__artist=channel.artist)
-    url = reverse("api:v1:albums-detail", kwargs={"pk": album.pk})
+    url = reverse("api:v2:albums-detail", kwargs={"pk": album.pk})
 
     response = logged_in_api_client.delete(url)
 
@@ -1448,7 +1448,7 @@ def test_channel_owner_can_delete_track(factories, logged_in_api_client, mocker)
     track = factories["music.Track"](artist_credit__artist=channel.artist)
     upload1 = factories["music.Upload"](track=track)
     upload2 = factories["music.Upload"](track=track)
-    url = reverse("api:v1:tracks-detail", kwargs={"pk": track.pk})
+    url = reverse("api:v2:tracks-detail", kwargs={"pk": track.pk})
 
     response = logged_in_api_client.delete(url)
 
@@ -1465,7 +1465,7 @@ def test_other_user_cannot_delete_track(factories, logged_in_api_client):
     logged_in_api_client.user.create_actor()
     channel = factories["audio.Channel"]()
     track = factories["music.Track"](artist_credit__artist=channel.artist)
-    url = reverse("api:v1:tracks-detail", kwargs={"pk": track.pk})
+    url = reverse("api:v2:tracks-detail", kwargs={"pk": track.pk})
 
     response = logged_in_api_client.delete(url)
 
@@ -1479,7 +1479,7 @@ def test_listen_to_track_with_scoped_token(factories, api_client):
         user_id=user.pk, user_secret=user.secret_key, scopes=["read:libraries"]
     )
     upload = factories["music.Upload"](playable=True)
-    url = reverse("api:v1:listen-detail", kwargs={"uuid": upload.track.uuid})
+    url = reverse("api:v2:listen-detail", kwargs={"uuid": upload.track.uuid})
     response = api_client.get(url, {"token": token})
 
     assert response.status_code == 200
@@ -1489,7 +1489,7 @@ def test_fs_import_get(factories, superuser_api_client, mocker, settings):
     browse_dir = mocker.patch.object(
         views.utils, "browse_dir", return_value={"hello": "world"}
     )
-    url = reverse("api:v1:libraries-fs-import")
+    url = reverse("api:v2:libraries-fs-import")
 
     expected = {
         "root": settings.MUSIC_DIRECTORY_PATH,
@@ -1514,7 +1514,7 @@ def test_fs_import_post(
     fs_import = mocker.patch(
         "funkwhale_api.music.tasks.fs_import.delay", return_value={"hello": "world"}
     )
-    url = reverse("api:v1:libraries-fs-import")
+    url = reverse("api:v2:libraries-fs-import")
 
     response = superuser_api_client.post(
         url, {"path": "test", "library": library.uuid, "import_reference": "test"}
@@ -1538,7 +1538,7 @@ def test_fs_import_post(
 def test_fs_import_post_already_running(
     factories, superuser_api_client, cache, mocker, settings, tmpdir
 ):
-    url = reverse("api:v1:libraries-fs-import")
+    url = reverse("api:v2:libraries-fs-import")
     cache.set("fs-import:status", "pending")
 
     response = superuser_api_client.post(url, {"path": "test"})
@@ -1549,7 +1549,7 @@ def test_fs_import_post_already_running(
 def test_fs_import_cancel_already_running(
     factories, superuser_api_client, cache, mocker, settings, tmpdir
 ):
-    url = reverse("api:v1:libraries-fs-import")
+    url = reverse("api:v2:libraries-fs-import")
     cache.set("fs-import:status", "pending")
 
     response = superuser_api_client.delete(url)
@@ -1561,7 +1561,7 @@ def test_fs_import_cancel_already_running(
 def test_album_create_artist_credit(factories, logged_in_api_client):
     artist = factories["music.Artist"]()
     factories["audio.Channel"](artist=artist)
-    url = reverse("api:v1:albums-list")
+    url = reverse("api:v2:albums-list")
     response = logged_in_api_client.post(
         url, {"artist": artist.pk, "title": "super album"}, format="json"
     )
@@ -1569,7 +1569,7 @@ def test_album_create_artist_credit(factories, logged_in_api_client):
 
 
 def test_can_patch_upload_list(factories, logged_in_api_client):
-    url = reverse("api:v1:uploads-bulk-update")
+    url = reverse("api:v2:uploads-bulk-update")
     actor = logged_in_api_client.user.create_actor()
     factories["music.Library"](actor=actor, privacy_level="me", name="me")
     factories["music.Library"](actor=actor, privacy_level="instance", name="instance")
@@ -1597,7 +1597,7 @@ def test_can_patch_upload_list(factories, logged_in_api_client):
 
 
 def test_upload_list_wont_use_playlist_lib(factories, logged_in_api_client):
-    url = reverse("api:v1:uploads-bulk-update")
+    url = reverse("api:v2:uploads-bulk-update")
     actor = logged_in_api_client.user.create_actor()
     upload = factories["music.Upload"](library__actor=actor)
     upload2 = factories["music.Upload"](library__actor=actor)

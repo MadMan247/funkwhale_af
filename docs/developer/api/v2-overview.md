@@ -241,7 +241,7 @@ Since the `Listening` serializer inherits the full serializer for each of these 
     "uploads": [
       {
         "uuid": "d19b0cfe-427d-4f70-8a77-3906e8f7a7a3",
-        "listen_url": "/api/v1/listen/fd003ce3-83bd-4231-ab6b-13c59f2e85ab/?upload=d19b0cfe-427d-4f70-8a77-3906e8f7a7a3",
+        "listen_url": "/api/v2/listen/fd003ce3-83bd-4231-ab6b-13c59f2e85ab/?upload=d19b0cfe-427d-4f70-8a77-3906e8f7a7a3",
         "size": 3502417,
         "duration": 197,
         "bitrate": 192000,
@@ -250,7 +250,7 @@ Since the `Listening` serializer inherits the full serializer for each of these 
         "is_local": true
       }
     ],
-    "listen_url": "/api/v1/listen/fd003ce3-83bd-4231-ab6b-13c59f2e85ab/",
+    "listen_url": "/api/v2/listen/fd003ce3-83bd-4231-ab6b-13c59f2e85ab/",
     "tags": [],
     "attributed_to": null,
     "id": 781,

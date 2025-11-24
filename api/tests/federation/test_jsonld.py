@@ -74,7 +74,7 @@ def test_expand_no_external_request_pleroma():
         ],
         "endpoints": {
             "oauthAuthorizationEndpoint": "https://pleroma.example/oauth/authorize",
-            "oauthRegistrationEndpoint": "https://pleroma.example/api/v1/apps",
+            "oauthRegistrationEndpoint": "https://pleroma.example/api/v2/apps",
             "oauthTokenEndpoint": "https://pleroma.example/oauth/token",
             "sharedInbox": "https://pleroma.example/inbox",
             "uploadMedia": "https://pleroma.example/api/ap/upload_media",
@@ -105,7 +105,7 @@ def test_expand_no_external_request_pleroma():
                     {"@id": "https://pleroma.example/oauth/authorize"}
                 ],
                 contexts.LITEPUB.oauthRegistrationEndpoint: [
-                    {"@id": "https://pleroma.example/api/v1/apps"}
+                    {"@id": "https://pleroma.example/api/v2/apps"}
                 ],
                 contexts.AS.oauthTokenEndpoint: [
                     {"@id": "https://pleroma.example/oauth/token"}

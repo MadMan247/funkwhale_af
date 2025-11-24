@@ -51,7 +51,7 @@ def test_channel_detail(attribute, spa_html, no_api_auth, client, factories, set
             "rel": "alternate",
             "type": "application/json+oembed",
             "href": (
-                utils.join_url(settings.FUNKWHALE_URL, reverse("api:v1:oembed"))
+                utils.join_url(settings.FUNKWHALE_URL, reverse("api:v2:oembed"))
                 + "?format=json&url={}".format(
                     urllib.parse.quote_plus(
                         utils.join_url(settings.FUNKWHALE_URL, detail_url)
@@ -80,7 +80,7 @@ def test_oembed_channel(factories, no_api_auth, api_client, settings):
     settings.FUNKWHALE_EMBED_URL = "http://embed"
     channel = factories["audio.Channel"](artist__with_cover=True)
     artist = channel.artist
-    url = reverse("api:v1:oembed")
+    url = reverse("api:v2:oembed")
     obj_url = f"https://test.com/channels/{channel.uuid}"
     iframe_src = f"http://embed?type=channel&id={channel.uuid}"
     expected = {

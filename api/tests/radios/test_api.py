@@ -8,7 +8,7 @@ from funkwhale_api.radios import filters, serializers
 
 
 def test_can_list_config_options(logged_in_api_client):
-    url = reverse("api:v1:radios:radios-filters")
+    url = reverse("api:v2:radios:radios-filters")
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 200
@@ -28,7 +28,7 @@ def test_can_validate_config(logged_in_api_client, factories):
         chain(*[ac.tracks.order_by("pk") for ac in artist1.artist_credit.all()])
     )
     f = {"filters": [{"type": "artist", "ids": [artist1.pk]}]}
-    url = reverse("api:v1:radios:radios-validate")
+    url = reverse("api:v2:radios:radios-validate")
     response = logged_in_api_client.post(url, f, format="json")
 
     assert response.status_code == 200
@@ -46,7 +46,7 @@ def test_can_validate_config(logged_in_api_client, factories):
 
 def test_can_validate_config_with_wrong_config(logged_in_api_client, factories):
     f = {"filters": [{"type": "artist", "ids": [999]}]}
-    url = reverse("api:v1:radios:radios-validate")
+    url = reverse("api:v2:radios:radios-validate")
     response = logged_in_api_client.post(url, f, format="json")
 
     assert response.status_code == 200
@@ -61,7 +61,7 @@ def test_can_validate_config_with_wrong_config(logged_in_api_client, factories):
 def test_saving_radio_sets_user(logged_in_api_client, factories):
     artist = factories["music.Artist"]()
     f = {"name": "Test", "config": [{"type": "artist", "ids": [artist.pk]}]}
-    url = reverse("api:v1:radios:radios-list")
+    url = reverse("api:v2:radios:radios-list")
     response = logged_in_api_client.post(url, f, format="json")
 
     assert response.status_code == 201
@@ -73,7 +73,7 @@ def test_saving_radio_sets_user(logged_in_api_client, factories):
 
 def test_user_can_detail_his_radio(logged_in_api_client, factories):
     radio = factories["radios.Radio"](user=logged_in_api_client.user)
-    url = reverse("api:v1:radios:radios-detail", kwargs={"pk": radio.pk})
+    url = reverse("api:v2:radios:radios-detail", kwargs={"pk": radio.pk})
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 200
@@ -81,7 +81,7 @@ def test_user_can_detail_his_radio(logged_in_api_client, factories):
 
 def test_user_can_detail_public_radio(logged_in_api_client, factories):
     radio = factories["radios.Radio"](is_public=True)
-    url = reverse("api:v1:radios:radios-detail", kwargs={"pk": radio.pk})
+    url = reverse("api:v2:radios:radios-detail", kwargs={"pk": radio.pk})
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 200
@@ -89,7 +89,7 @@ def test_user_can_detail_public_radio(logged_in_api_client, factories):
 
 def test_user_cannot_detail_someone_else_radio(logged_in_api_client, factories):
     radio = factories["radios.Radio"](is_public=False)
-    url = reverse("api:v1:radios:radios-detail", kwargs={"pk": radio.pk})
+    url = reverse("api:v2:radios:radios-detail", kwargs={"pk": radio.pk})
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 404
@@ -97,7 +97,7 @@ def test_user_cannot_detail_someone_else_radio(logged_in_api_client, factories):
 
 def test_user_can_edit_his_radio(logged_in_api_client, factories):
     radio = factories["radios.Radio"](user=logged_in_api_client.user)
-    url = reverse("api:v1:radios:radios-detail", kwargs={"pk": radio.pk})
+    url = reverse("api:v2:radios:radios-detail", kwargs={"pk": radio.pk})
     response = logged_in_api_client.put(
         url, {"name": "new", "config": []}, format="json"
     )
@@ -109,7 +109,7 @@ def test_user_can_edit_his_radio(logged_in_api_client, factories):
 
 def test_user_cannot_edit_someone_else_radio(logged_in_api_client, factories):
     radio = factories["radios.Radio"](is_public=True)
-    url = reverse("api:v1:radios:radios-detail", kwargs={"pk": radio.pk})
+    url = reverse("api:v2:radios:radios-detail", kwargs={"pk": radio.pk})
     response = logged_in_api_client.put(
         url, {"name": "new", "config": []}, format="json"
     )
@@ -119,7 +119,7 @@ def test_user_cannot_edit_someone_else_radio(logged_in_api_client, factories):
 
 def test_user_cannot_delete_someone_else_radio(logged_in_api_client, factories):
     radio = factories["radios.Radio"](is_public=True)
-    url = reverse("api:v1:radios:radios-detail", kwargs={"pk": radio.pk})
+    url = reverse("api:v2:radios:radios-detail", kwargs={"pk": radio.pk})
     response = logged_in_api_client.delete(url)
 
     assert response.status_code == 404
@@ -139,7 +139,7 @@ def test_clean_config_is_called_on_serializer_save(mocker, factories):
 
 @pytest.mark.parametrize("radio_type", ["random", "less-listened", "favorites"])
 def test_create_radio_session(radio_type, logged_in_api_client):
-    url = reverse("api:v1:radios:sessions-list")
+    url = reverse("api:v2:radios:sessions-list")
     response = logged_in_api_client.post(url, {"radio_type": radio_type})
 
     assert response.status_code == 201

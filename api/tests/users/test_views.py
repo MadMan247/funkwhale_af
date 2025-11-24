@@ -124,7 +124,7 @@ def test_can_signup_with_invitation_invalid(preferences, factories, api_client):
 
 
 def test_can_fetch_data_from_api(api_client, factories):
-    url = reverse("api:v1:users:users-me")
+    url = reverse("api:v2:users:users-me")
     response = api_client.get(url)
     # login required
     assert response.status_code == 401
@@ -193,7 +193,7 @@ def test_user_can_patch_his_own_settings(logged_in_api_client):
     logged_in_api_client.user.create_actor()
     user = logged_in_api_client.user
     payload = {"privacy_level": "me"}
-    url = reverse("api:v1:users:users-detail", kwargs={"username": user.username})
+    url = reverse("api:v2:users:users-detail", kwargs={"username": user.username})
     response = logged_in_api_client.patch(url, payload)
 
     assert response.status_code == 200
@@ -205,7 +205,7 @@ def test_user_can_patch_his_own_settings(logged_in_api_client):
 def test_user_can_patch_description(logged_in_api_client):
     user = logged_in_api_client.user
     payload = {"summary": {"content_type": "text/markdown", "text": "hello"}}
-    url = reverse("api:v1:users:users-detail", kwargs={"username": user.username})
+    url = reverse("api:v2:users:users-detail", kwargs={"username": user.username})
 
     response = logged_in_api_client.patch(url, payload, format="json")
 
@@ -222,7 +222,7 @@ def test_user_can_request_new_subsonic_token(logged_in_api_client):
     user.save()
 
     url = reverse(
-        "api:v1:users:users-subsonic-token", kwargs={"username": user.username}
+        "api:v2:users:users-subsonic-token", kwargs={"username": user.username}
     )
 
     response = logged_in_api_client.post(url)
@@ -240,7 +240,7 @@ def test_user_can_get_subsonic_token(logged_in_api_client):
     user.save()
 
     url = reverse(
-        "api:v1:users:users-subsonic-token", kwargs={"username": user.username}
+        "api:v2:users:users-subsonic-token", kwargs={"username": user.username}
     )
 
     response = logged_in_api_client.get(url)
@@ -256,7 +256,7 @@ def test_user_can_request_new_subsonic_token_uncommon_username(logged_in_api_cli
     user.save()
 
     url = reverse(
-        "api:v1:users:users-subsonic-token", kwargs={"username": user.username}
+        "api:v2:users:users-subsonic-token", kwargs={"username": user.username}
     )
 
     response = logged_in_api_client.post(url)
@@ -270,7 +270,7 @@ def test_user_can_delete_subsonic_token(logged_in_api_client):
     user.save()
 
     url = reverse(
-        "api:v1:users:users-subsonic-token", kwargs={"username": user.username}
+        "api:v2:users:users-subsonic-token", kwargs={"username": user.username}
     )
 
     response = logged_in_api_client.delete(url)
@@ -284,7 +284,7 @@ def test_user_can_delete_subsonic_token(logged_in_api_client):
 def test_user_cannot_patch_another_user(method, logged_in_api_client, factories):
     user = factories["users.User"]()
     payload = {"privacy_level": "me"}
-    url = reverse("api:v1:users:users-detail", kwargs={"username": user.username})
+    url = reverse("api:v2:users:users-detail", kwargs={"username": user.username})
 
     handler = getattr(logged_in_api_client, method)
     response = handler(url, payload)
@@ -296,7 +296,7 @@ def test_user_can_patch_their_own_avatar(logged_in_api_client, factories):
     user = logged_in_api_client.user
     actor = user.create_actor()
     attachment = factories["common.Attachment"](actor=actor)
-    url = reverse("api:v1:users:users-detail", kwargs={"username": user.username})
+    url = reverse("api:v2:users:users-detail", kwargs={"username": user.username})
     payload = {"avatar": attachment.uuid}
     response = logged_in_api_client.patch(url, payload)
 
@@ -354,7 +354,7 @@ def test_creating_user_sends_confirmation_email(
 def test_user_account_deletion_requires_valid_password(logged_in_api_client):
     user = logged_in_api_client.user
     user.set_password("mypassword")
-    url = reverse("api:v1:users:users-me")
+    url = reverse("api:v2:users:users-me")
     payload = {"password": "invalid", "confirm": True}
     response = logged_in_api_client.delete(url, payload)
 
@@ -364,7 +364,7 @@ def test_user_account_deletion_requires_valid_password(logged_in_api_client):
 def test_user_account_deletion_requires_confirmation(logged_in_api_client):
     user = logged_in_api_client.user
     user.set_password("mypassword")
-    url = reverse("api:v1:users:users-me")
+    url = reverse("api:v2:users:users-me")
     payload = {"password": "mypassword", "confirm": False}
     response = logged_in_api_client.delete(url, payload)
 
@@ -374,7 +374,7 @@ def test_user_account_deletion_requires_confirmation(logged_in_api_client):
 def test_user_account_deletion_triggers_delete_account(logged_in_api_client, mocker):
     user = logged_in_api_client.user
     user.set_password("mypassword")
-    url = reverse("api:v1:users:users-me")
+    url = reverse("api:v2:users:users-me")
     payload = {"password": "mypassword", "confirm": True}
     delete_account = mocker.patch("funkwhale_api.users.tasks.delete_account.delay")
     response = logged_in_api_client.delete(url, payload)
@@ -474,7 +474,7 @@ def test_signup_with_approval_enabled_validation_error(
 
 def test_login_via_api(api_client, factories):
     user = factories["users.User"]()
-    url = reverse("api:v1:users:login")
+    url = reverse("api:v2:users:login")
     payload = {"username": user.username, "password": "test"}
 
     response = api_client.post(url, payload)
@@ -484,7 +484,7 @@ def test_login_via_api(api_client, factories):
 
 def test_login_via_api_inactive(api_client, factories):
     user = factories["users.User"](is_active=False)
-    url = reverse("api:v1:users:login")
+    url = reverse("api:v2:users:login")
     payload = {"username": user.username, "password": "test"}
 
     response = api_client.post(url, payload)
@@ -493,7 +493,7 @@ def test_login_via_api_inactive(api_client, factories):
 
 def test_login_via_api_no_csrf(factories):
     user = factories["users.User"]()
-    url = reverse("api:v1:users:login")
+    url = reverse("api:v2:users:login")
     payload = {"username": user.username, "password": "test"}
     api_client = Client(enforce_csrf_checks=True)
     response = api_client.post(url, payload)
@@ -502,7 +502,7 @@ def test_login_via_api_no_csrf(factories):
 
 def test_logout(api_client, factories, mocker):
     auth_logout = mocker.patch("django.contrib.auth.logout")
-    url = reverse("api:v1:users:logout")
+    url = reverse("api:v2:users:logout")
     response = api_client.post(url)
     assert response.status_code == 200
     assert auth_logout.call_count == 1
@@ -510,7 +510,7 @@ def test_logout(api_client, factories, mocker):
 
 def test_update_settings(logged_in_api_client, factories):
     logged_in_api_client.user.set_settings(foo="bar")
-    url = reverse("api:v1:users:users-settings")
+    url = reverse("api:v2:users:users-settings")
     payload = {"theme": "dark"}
 
     response = logged_in_api_client.post(url, payload, format="json")
@@ -521,7 +521,7 @@ def test_update_settings(logged_in_api_client, factories):
 
 
 def test_user_change_email_requires_valid_password(logged_in_api_client):
-    url = reverse("api:v1:users:users-change-email")
+    url = reverse("api:v2:users:users-change-email")
     payload = {"password": "invalid", "email": "test@new.email"}
     response = logged_in_api_client.post(url, payload)
 
@@ -531,7 +531,7 @@ def test_user_change_email_requires_valid_password(logged_in_api_client):
 def test_user_change_email(logged_in_api_client, mocker, mailoutbox):
     user = logged_in_api_client.user
     user.set_password("mypassword")
-    url = reverse("api:v1:users:users-change-email")
+    url = reverse("api:v2:users:users-change-email")
     payload = {"password": "mypassword", "email": "test@new.email"}
     response = logged_in_api_client.post(url, payload)
 

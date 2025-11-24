@@ -133,7 +133,7 @@ class ArtistFilter(RadioFilter):
             "name": "ids",
             "type": "list",
             "subtype": "number",
-            "autocomplete": reverse_lazy("api:v1:search"),
+            "autocomplete": reverse_lazy("api:v2:search"),
             "autocomplete_qs": "q={query}",
             "autocomplete_fields": {
                 "remoteValues": "artists",
@@ -182,7 +182,7 @@ class TagFilter(RadioFilter):
             "name": "names",
             "type": "list",
             "subtype": "string",
-            "autocomplete": reverse_lazy("api:v1:search"),
+            "autocomplete": reverse_lazy("api:v2:search"),
             "autocomplete_fields": {
                 "remoteValues": "tags",
                 "name": "name",

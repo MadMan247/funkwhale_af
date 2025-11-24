@@ -12,7 +12,7 @@ def test_pleroma_actor_from_ap_with_tags(factories):
         ],
         "endpoints": {
             "oauthAuthorizationEndpoint": "https://test.federation/oauth/authorize",
-            "oauthRegistrationEndpoint": "https://test.federation/api/v1/apps",
+            "oauthRegistrationEndpoint": "https://test.federation/api/v2/apps",
             "oauthTokenEndpoint": "https://test.federation/oauth/token",
             "sharedInbox": "https://test.federation/inbox",
             "uploadMedia": "https://test.federation/api/ap/upload_media",
@@ -80,7 +80,7 @@ def test_pleroma_actor_from_ap(factories):
         ],
         "endpoints": {
             "oauthAuthorizationEndpoint": "https://test.federation/oauth/authorize",
-            "oauthRegistrationEndpoint": "https://test.federation/api/v1/apps",
+            "oauthRegistrationEndpoint": "https://test.federation/api/v2/apps",
             "oauthTokenEndpoint": "https://test.federation/oauth/token",
             "sharedInbox": "https://test.federation/inbox",
             "uploadMedia": "https://test.federation/api/ap/upload_media",

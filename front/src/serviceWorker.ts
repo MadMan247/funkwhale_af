@@ -29,8 +29,8 @@ self.addEventListener('message', (event) => {
 // NOTE: Network-First cache for API calls
 //       We're using cache only when the user goes offline
 registerRoute(({ url }) => {
-  if (url.pathname.startsWith('/api/v1/listen')) return false
-  return url.pathname.startsWith('/api/v1')
+  if (url.pathname.startsWith('/api/v2/listen')) return false
+  return url.pathname.startsWith('/api/v2')
 }, new NetworkFirst({
   cacheName: 'API Routes',
   plugins: [

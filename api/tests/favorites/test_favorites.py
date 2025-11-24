@@ -25,7 +25,7 @@ def test_user_can_get_his_favorites(
         actor=logged_in_api_client.user.actor
     )
     factories["favorites.TrackFavorite"]()
-    url = reverse("api:v1:favorites:tracks-list")
+    url = reverse("api:v2:favorites:tracks-list")
     response = logged_in_api_client.get(url, {"scope": "me"})
     expected = [
         serializers.UserTrackFavoriteSerializer(
@@ -45,7 +45,7 @@ def test_user_can_retrieve_all_favorites_at_once(
         actor=logged_in_api_client.user.actor
     )
     factories["favorites.TrackFavorite"]()
-    url = reverse("api:v1:favorites:tracks-all")
+    url = reverse("api:v2:favorites:tracks-all")
     response = logged_in_api_client.get(url, {"user": logged_in_api_client.user.pk})
     expected = [{"track": favorite.track.id, "id": favorite.id}]
     assert response.status_code == 200
@@ -56,7 +56,7 @@ def test_user_can_add_favorite_via_api(factories, logged_in_api_client, activity
     track = factories["music.Track"]()
     logged_in_api_client.user.create_actor()
 
-    url = reverse("api:v1:favorites:tracks-list")
+    url = reverse("api:v2:favorites:tracks-list")
     response = logged_in_api_client.post(url, {"track": track.pk})
 
     favorite = TrackFavorite.objects.latest("id")
@@ -77,7 +77,7 @@ def test_adding_favorites_calls_activity_record(
 ):
     logged_in_api_client.user.create_actor()
     track = factories["music.Track"]()
-    url = reverse("api:v1:favorites:tracks-list")
+    url = reverse("api:v2:favorites:tracks-list")
     response = logged_in_api_client.post(url, {"track": track.pk})
 
     favorite = TrackFavorite.objects.latest("id")
@@ -100,7 +100,7 @@ def test_user_can_remove_favorite_via_api(logged_in_api_client, factories):
     favorite = factories["favorites.TrackFavorite"](
         actor=logged_in_api_client.user.actor
     )
-    url = reverse("api:v1:favorites:tracks-detail", kwargs={"pk": favorite.pk})
+    url = reverse("api:v2:favorites:tracks-detail", kwargs={"pk": favorite.pk})
     response = logged_in_api_client.delete(url, {"track": favorite.track.pk})
     assert response.status_code == 204
     assert TrackFavorite.objects.count() == 0
@@ -115,7 +115,7 @@ def test_user_can_remove_favorite_via_api_using_track_id(
         actor=logged_in_api_client.user.actor
     )
 
-    url = reverse("api:v1:favorites:tracks-remove")
+    url = reverse("api:v2:favorites:tracks-remove")
     response = getattr(logged_in_api_client, method)(
         url, json.dumps({"track": favorite.track.pk}), content_type="application/json"
     )
@@ -124,7 +124,7 @@ def test_user_can_remove_favorite_via_api_using_track_id(
     assert TrackFavorite.objects.count() == 0
 
 
-@pytest.mark.parametrize("url,method", [("api:v1:favorites:tracks-list", "get")])
+@pytest.mark.parametrize("url,method", [("api:v2:favorites:tracks-list", "get")])
 def test_url_require_auth(url, method, db, preferences, client):
     preferences["common__api_authentication_required"] = True
     url = reverse(url)
@@ -138,7 +138,7 @@ def test_can_filter_tracks_by_favorites(factories, logged_in_api_client):
         actor=logged_in_api_client.user.actor
     )
 
-    url = reverse("api:v1:tracks-list")
+    url = reverse("api:v2:tracks-list")
     response = logged_in_api_client.get(url, data={"favorites": True})
 
     parsed_json = json.loads(response.content.decode("utf-8"))

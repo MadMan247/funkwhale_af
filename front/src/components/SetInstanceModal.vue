@@ -47,7 +47,7 @@ const checkAndSwitch = async (url: string) => {
 
   try {
     const instanceUrl = new URL(url.startsWith('https://') || url.startsWith('http://') ? url : `https://${url}`).origin
-    await axios.get(instanceUrl + '/api/v1/instance/nodeinfo/2.0/')
+    await axios.get(instanceUrl + '/api/v2/instance/nodeinfo/2.1/')
 
     show.value = false
     store.commit('ui/addMessage', {

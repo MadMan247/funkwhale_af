@@ -69,7 +69,7 @@ const { onOrderingUpdate, orderingString, paginateBy, ordering, orderingDirectio
 const isLoading = ref(false)
 const fetchData = async () => {
   isLoading.value = true
-  const params : operations['get_album_fetches_2']['parameters']['query'] = {
+  const params : operations['get_album_fetches']['parameters']['query'] = {
     scope: props.scope,
     page: page.value,
     page_size: paginateBy.value,

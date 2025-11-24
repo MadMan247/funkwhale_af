@@ -149,7 +149,7 @@ msgid "The Funkwhale webapp on `http://localhost:8000`"
 msgstr ""
 
 #: ../../developer_documentation/setup/docker.md:117
-msgid "The Funkwhale API on `http://localhost:8000/api/v1`"
+msgid "The Funkwhale API on `http://localhost:8000/api/v2`"
 msgstr ""
 
 #: ../../developer_documentation/setup/docker.md:118

@@ -81,7 +81,7 @@ Funkwhale supports the `urn:ietf:wg:oauth:2.0:oob` redirect URI for non-web appl
 Once you've decided on your scopes and your redirect URI, you can create your app using one of the following methods:
 
 1. Visit `/settings/applications/new` on your Funkwhale pod while logged in
-2. Send a `POST` request to `/api/v1/oauth/apps`. See our [API documentation](https://docs.funkwhale.audio/swagger/) for more information
+2. Send a `POST` request to `/api/v2/oauth/apps`. See our [API documentation](https://docs.funkwhale.audio/swagger/) for more information
 
 Both methods return a [**client ID**](https://www.rfc-editor.org/rfc/rfc6749#section-2.2) and a [**secret**](https://www.rfc-editor.org/rfc/rfc6749#section-2.3.1).
 
@@ -109,7 +109,7 @@ When the user authorizes your app, the server responds with an authorization cod
 
 ## 3. Get an access token
 
-Once you receive your authorization code, you need to [request an access token](https://www.rfc-editor.org/rfc/rfc6749#section-4.1.3). To request an access token, call the `/api/v1/oauth/token` endpoint with the following information:
+Once you receive your authorization code, you need to [request an access token](https://www.rfc-editor.org/rfc/rfc6749#section-4.1.3). To request an access token, call the `/api/v2/oauth/token` endpoint with the following information:
 
 - `grant_type`\* - Must be set to `authorization_code`
 - `code`\* - Your application's authorization code
@@ -128,7 +128,7 @@ When you refresh your token the endpoint returns a new `refresh_token`. You must
 
 By default, Funkwhale access tokens are valid for **10 hours**. Pod admins can configure this by setting the `ACCESS_TOKEN_EXPIRE_SECONDS` variable in their `.env` file.
 
-After the access token expires, you must request a new access token by calling the `/api/v1/oauth/token` endpoint with the following information:
+After the access token expires, you must request a new access token by calling the `/api/v2/oauth/token` endpoint with the following information:
 
 - `grant_type`\* - Must be set to `refresh_token`
 - `refresh_token`\* - Your current refresh token

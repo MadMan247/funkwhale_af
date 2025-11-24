@@ -8,7 +8,7 @@ from funkwhale_api.users.oauth import serializers
 
 
 def test_apps_post(api_client, db):
-    url = reverse("api:v1:oauth:apps-list")
+    url = reverse("api:v2:oauth:apps-list")
     data = {
         "name": "Test app",
         "redirect_uris": "http://test.app",
@@ -30,7 +30,7 @@ def test_apps_post(api_client, db):
 
 
 def test_apps_post_logged_in_user(logged_in_api_client, db):
-    url = reverse("api:v1:oauth:apps-list")
+    url = reverse("api:v2:oauth:apps-list")
     data = {
         "name": "Test app",
         "redirect_uris": "http://test.app",
@@ -54,7 +54,7 @@ def test_apps_post_logged_in_user(logged_in_api_client, db):
 
 
 def test_apps_list_anonymous(api_client, db):
-    url = reverse("api:v1:oauth:apps-list")
+    url = reverse("api:v2:oauth:apps-list")
     response = api_client.get(url)
 
     assert response.status_code == 401
@@ -63,7 +63,7 @@ def test_apps_list_anonymous(api_client, db):
 def test_apps_list_logged_in(factories, logged_in_api_client, db):
     app = factories["users.Application"](user=logged_in_api_client.user)
     factories["users.Application"]()
-    url = reverse("api:v1:oauth:apps-list")
+    url = reverse("api:v2:oauth:apps-list")
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 200
@@ -72,7 +72,7 @@ def test_apps_list_logged_in(factories, logged_in_api_client, db):
 
 def test_apps_delete_not_owner(factories, logged_in_api_client, db):
     app = factories["users.Application"]()
-    url = reverse("api:v1:oauth:apps-detail", kwargs={"client_id": app.client_id})
+    url = reverse("api:v2:oauth:apps-detail", kwargs={"client_id": app.client_id})
     response = logged_in_api_client.delete(url)
 
     assert response.status_code == 404
@@ -80,7 +80,7 @@ def test_apps_delete_not_owner(factories, logged_in_api_client, db):
 
 def test_apps_delete_owner(factories, logged_in_api_client, db):
     app = factories["users.Application"](user=logged_in_api_client.user)
-    url = reverse("api:v1:oauth:apps-detail", kwargs={"client_id": app.client_id})
+    url = reverse("api:v2:oauth:apps-detail", kwargs={"client_id": app.client_id})
     response = logged_in_api_client.delete(url)
 
     assert response.status_code == 204
@@ -91,7 +91,7 @@ def test_apps_delete_owner(factories, logged_in_api_client, db):
 
 def test_apps_update_not_owner(factories, logged_in_api_client, db):
     app = factories["users.Application"]()
-    url = reverse("api:v1:oauth:apps-detail", kwargs={"client_id": app.client_id})
+    url = reverse("api:v2:oauth:apps-detail", kwargs={"client_id": app.client_id})
     response = logged_in_api_client.patch(url, {"name": "Hello"})
 
     assert response.status_code == 404
@@ -99,7 +99,7 @@ def test_apps_update_not_owner(factories, logged_in_api_client, db):
 
 def test_apps_update_owner(factories, logged_in_api_client, db):
     app = factories["users.Application"](user=logged_in_api_client.user)
-    url = reverse("api:v1:oauth:apps-detail", kwargs={"client_id": app.client_id})
+    url = reverse("api:v2:oauth:apps-detail", kwargs={"client_id": app.client_id})
     response = logged_in_api_client.patch(url, {"name": "Hello"})
 
     assert response.status_code == 200
@@ -110,7 +110,7 @@ def test_apps_update_owner(factories, logged_in_api_client, db):
 
 def test_apps_get(preferences, logged_in_api_client, factories):
     app = factories["users.Application"]()
-    url = reverse("api:v1:oauth:apps-detail", kwargs={"client_id": app.client_id})
+    url = reverse("api:v2:oauth:apps-detail", kwargs={"client_id": app.client_id})
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 200
@@ -119,7 +119,7 @@ def test_apps_get(preferences, logged_in_api_client, factories):
 
 def test_apps_get_owner(preferences, logged_in_api_client, factories):
     app = factories["users.Application"](user=logged_in_api_client.user)
-    url = reverse("api:v1:oauth:apps-detail", kwargs={"client_id": app.client_id})
+    url = reverse("api:v2:oauth:apps-detail", kwargs={"client_id": app.client_id})
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 200
@@ -131,7 +131,7 @@ def test_apps_refresh_token(preferences, logged_in_api_client, factories):
     app = factories["users.Application"](user=logged_in_api_client.user)
     old_token = app.token
     url = reverse(
-        "api:v1:oauth:apps-refresh_token", kwargs={"client_id": app.client_id}
+        "api:v2:oauth:apps-refresh_token", kwargs={"client_id": app.client_id}
     )
     response = logged_in_api_client.post(url)
 
@@ -144,7 +144,7 @@ def test_apps_refresh_token(preferences, logged_in_api_client, factories):
 def test_apps_refresh_token_not_owner(preferences, logged_in_api_client, factories):
     app = factories["users.Application"]()
     url = reverse(
-        "api:v1:oauth:apps-refresh_token", kwargs={"client_id": app.client_id}
+        "api:v2:oauth:apps-refresh_token", kwargs={"client_id": app.client_id}
     )
     response = logged_in_api_client.post(url)
 
@@ -153,7 +153,7 @@ def test_apps_refresh_token_not_owner(preferences, logged_in_api_client, factori
 
 def test_authorize_view_post(logged_in_client, factories):
     app = factories["users.Application"]()
-    url = reverse("api:v1:oauth:authorize")
+    url = reverse("api:v2:oauth:authorize")
     response = logged_in_client.post(
         url,
         {
@@ -174,7 +174,7 @@ def test_authorize_view_post(logged_in_client, factories):
 
 def test_authorize_view_post_ajax_no_redirect(logged_in_client, factories):
     app = factories["users.Application"]()
-    url = reverse("api:v1:oauth:authorize")
+    url = reverse("api:v2:oauth:authorize")
     response = logged_in_client.post(
         url,
         {
@@ -199,7 +199,7 @@ def test_authorize_view_post_ajax_no_redirect(logged_in_client, factories):
 
 def test_authorize_view_post_ajax_oob(logged_in_client, factories):
     app = factories["users.Application"](redirect_uris="urn:ietf:wg:oauth:2.0:oob")
-    url = reverse("api:v1:oauth:authorize")
+    url = reverse("api:v2:oauth:authorize")
     response = logged_in_client.post(
         url,
         {
@@ -223,7 +223,7 @@ def test_authorize_view_post_ajax_oob(logged_in_client, factories):
 
 
 def test_authorize_view_invalid_form(logged_in_client, factories):
-    url = reverse("api:v1:oauth:authorize")
+    url = reverse("api:v2:oauth:authorize")
     response = logged_in_client.post(
         url,
         {
@@ -244,7 +244,7 @@ def test_authorize_view_invalid_form(logged_in_client, factories):
 
 def test_authorize_view_invalid_redirect_url(logged_in_client, factories):
     app = factories["users.Application"]()
-    url = reverse("api:v1:oauth:authorize")
+    url = reverse("api:v2:oauth:authorize")
     response = logged_in_client.post(
         url,
         {
@@ -265,7 +265,7 @@ def test_authorize_view_invalid_redirect_url(logged_in_client, factories):
 
 def test_authorize_view_invalid_oauth(logged_in_client, factories):
     app = factories["users.Application"]()
-    url = reverse("api:v1:oauth:authorize")
+    url = reverse("api:v2:oauth:authorize")
     response = logged_in_client.post(
         url,
         {
@@ -285,7 +285,7 @@ def test_authorize_view_invalid_oauth(logged_in_client, factories):
 
 
 def test_authorize_view_anonymous(client, factories):
-    url = reverse("api:v1:oauth:authorize")
+    url = reverse("api:v2:oauth:authorize")
     response = client.post(url, {})
 
     assert response.status_code == 302
@@ -294,7 +294,7 @@ def test_authorize_view_anonymous(client, factories):
 def test_token_view_post(api_client, factories):
     grant = factories["users.Grant"]()
     app = grant.application
-    url = reverse("api:v1:oauth:token")
+    url = reverse("api:v2:oauth:token")
 
     # The Client Secret is hashed on save, so we need to set it manually to something
     _client_secret = "random_langer_code_bla_bla"
@@ -327,14 +327,14 @@ def test_token_view_post(api_client, factories):
 
     # Now check we can use the token for auth
     response = api_client.get(
-        reverse("api:v1:users:users-me"), HTTP_AUTHORIZATION=f"Bearer {token}"
+        reverse("api:v2:users:users-me"), HTTP_AUTHORIZATION=f"Bearer {token}"
     )
     assert response.status_code == 200
 
 
 def test_revoke_view_post(logged_in_client, factories):
     token = factories["users.AccessToken"]()
-    url = reverse("api:v1:oauth:revoke")
+    url = reverse("api:v2:oauth:revoke")
 
     # The Client Secret is hashed on save, so we need to set it manually to something
     _client_secret = "random_langer_code_bla_bla"
@@ -359,7 +359,7 @@ def test_grants_list(factories, logged_in_api_client):
     token = factories["users.AccessToken"](user=logged_in_api_client.user)
     refresh_token = factories["users.RefreshToken"](user=logged_in_api_client.user)
     factories["users.AccessToken"]()
-    url = reverse("api:v1:oauth:grants-list")
+    url = reverse("api:v2:oauth:grants-list")
     expected = [
         serializers.ApplicationSerializer(refresh_token.application).data,
         serializers.ApplicationSerializer(token.application).data,
@@ -387,7 +387,7 @@ def test_grant_delete(factories, logged_in_api_client, mocker, now):
         factories["users.Grant"](application=token.application),
     ]
     url = reverse(
-        "api:v1:oauth:grants-detail", kwargs={"client_id": token.application.client_id}
+        "api:v2:oauth:grants-detail", kwargs={"client_id": token.application.client_id}
     )
 
     response = logged_in_api_client.delete(url)
@@ -433,7 +433,7 @@ def test_token_auth(
     token = factories["users.AccessToken"](user=user)
     settings.ACCOUNT_EMAIL_VERIFICATION = setting_value
     response = api_client.get(
-        reverse("api:v1:users:users-me"),
+        reverse("api:v2:users:users-me"),
         HTTP_AUTHORIZATION=f"Bearer {token.token}",
     )
     assert response.status_code == expected_status_code

@@ -72,7 +72,7 @@ def channel_detail(query, redirect_to_ap):
                 "rel": "alternate",
                 "type": "application/json+oembed",
                 "href": (
-                    utils.join_url(settings.FUNKWHALE_URL, reverse("api:v1:oembed"))
+                    utils.join_url(settings.FUNKWHALE_URL, reverse("api:v2:oembed"))
                     + f"?format=json&url={urllib.parse.quote_plus(obj_url)}"
                 ),
             }

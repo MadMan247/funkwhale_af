@@ -925,7 +925,7 @@ def rss_serialize_item(upload):
                 # we enforce MP3, since it's the only format supported everywhere
                 "url": federation_utils.full_url(
                     reverse(
-                        "api:v1:stream-detail", kwargs={"uuid": str(upload.track.uuid)}
+                        "api:v2:stream-detail", kwargs={"uuid": str(upload.track.uuid)}
                     )
                     + ".mp3"
                 ),

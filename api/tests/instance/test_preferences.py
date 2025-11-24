@@ -3,7 +3,7 @@ from django.urls import reverse
 
 
 def test_can_list_settings_via_api(preferences, api_client):
-    url = reverse("api:v1:instance:settings")
+    url = reverse("api:v2:instance:settings")
     all_preferences = preferences.model.objects.all()
     expected_preferences = {
         p.preference.identifier(): p

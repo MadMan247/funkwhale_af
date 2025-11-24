@@ -6,7 +6,7 @@ Cypress.Commands.add('login', () => {
     cy.getCookie('csrftoken').then(($cookie) => {
       cy.request({
         method: 'POST',
-        url: '/api/v1/users/login',
+        url: '/api/v2/users/login',
         form: true,
         headers: {
           'X-CSRFTOKEN': $cookie?.value,

@@ -35,7 +35,7 @@ def test_listenbrainz_submit_listen(logged_in_client, mocker, factories):
     plugins.enable_conf("listenbrainz", True, logged_in_client.user)
 
     track = factories["music.Track"]()
-    url = reverse("api:v1:history:listenings-list")
+    url = reverse("api:v2:history:listenings-list")
     logged_in_client.post(url, {"track": track.pk})
     logged_in_client.get(url)
     listening = history_models.Listening.objects.get(actor=logged_in_client.user.actor)

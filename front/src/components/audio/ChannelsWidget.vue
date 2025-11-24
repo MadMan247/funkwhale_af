@@ -39,7 +39,7 @@ const isLoading = ref(false)
 const fetchData = async (url = 'channels/') => {
   isLoading.value = true
 
-  const params: operations['get_channels_2']['parameters']['query'] = {
+  const params: operations['get_channels']['parameters']['query'] = {
     ...clone(props.filters),
     page: page.value,
     page_size: props.limit

@@ -194,7 +194,7 @@ def test_fetch_nodeinfo(factories, r_mock, now):
         json={
             "links": [
                 {
-                    "rel": "http://nodeinfo.diaspora.software/ns/schema/2.0",
+                    "rel": "https://docs.funkwhale.audio/swagger/schema.yml",
                     "href": "https://test.test/nodeinfo",
                 }
             ]
@@ -700,15 +700,15 @@ def test_fetch_collection(mocker, r_mock):
 def test_check_all_remote_instance_reachable(factories, r_mock):
     domain = factories["federation.Domain"]()
     r_mock.get(
-        f"https://{domain.name}/api/v1/instance/nodeinfo/2.0", json={"version": "2"}
+        f"https://{domain.name}/api/v2/instance/nodeinfo/2.1", json={"version": "2"}
     )
     r_mock.get(
         f"https://{domain.name}/.well-known/nodeinfo",
         json={
             "links": [
                 {
-                    "rel": "http://nodeinfo.diaspora.software/ns/schema/2.0",
-                    "href": f"https://{domain.name}/api/v1/instance/nodeinfo/2.0",
+                    "rel": "https://docs.funkwhale.audio/swagger/schema.yml",
+                    "href": f"https://{domain.name}/api/v2/instance/nodeinfo/2.1",
                 }
             ]
         },
@@ -721,7 +721,7 @@ def test_check_all_remote_instance_reachable(factories, r_mock):
 def test_check_remote_instance_unreachable(factories, r_mock):
     domain = factories["federation.Domain"]()
 
-    r_mock.get(f"https://{domain.name}/api/v1/instance/nodeinfo/2.0/", json={})
+    r_mock.get(f"https://{domain.name}/api/v2/instance/nodeinfo/2.1/", json={})
     tasks.check_all_remote_instance_availability()
     domain = models.Domain.objects.get(name=domain.name)
     assert domain.reachable is False

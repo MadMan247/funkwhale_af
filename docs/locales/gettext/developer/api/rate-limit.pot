@@ -37,7 +37,7 @@ msgid "`PUT`, `DELETE`, `PUT`, `POST`, and `PATCH` requests are subject to lower
 msgstr ""
 
 #: ../../developer/api/rate-limit.md:10
-msgid "You can return a full list of scope with their corresponding rate-limits by making a `GET` request to `/api/v1/rate-limit`."
+msgid "You can return a full list of scope with their corresponding rate-limits by making a `GET` request to `/api/v2/rate-limit`."
 msgstr ""
 
 #: ../../developer/api/rate-limit.md:12

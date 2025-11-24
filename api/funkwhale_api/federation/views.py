@@ -315,8 +315,8 @@ class WellKnownViewSet(viewsets.GenericViewSet):
         data = {
             "links": [
                 {
-                    "rel": "http://nodeinfo.diaspora.software/ns/schema/2.0",
-                    "href": utils.full_url(reverse("api:v1:instance:nodeinfo-2.0")),
+                    "rel": "https://docs.funkwhale.audio/swagger/schema.yml",
+                    "href": utils.full_url(reverse("api:v2:instance:nodeinfo-2.1")),
                 }
             ]
         }

@@ -7,7 +7,7 @@ By default, rate limits follow these rules:
 1. Anonymous (unauthenticated) requests are subject to lower limits than authenticated requests
 2. `PUT`, `DELETE`, `PUT`, `POST`, and `PATCH` requests are subject to lower limits than `GET` requests
 
-You can return a full list of scope with their corresponding rate-limits by making a `GET` request to `/api/v1/rate-limit`.
+You can return a full list of scope with their corresponding rate-limits by making a `GET` request to `/api/v2/rate-limit`.
 
 ## HTTP headers
 

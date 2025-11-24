@@ -1595,7 +1595,7 @@ def test_channel_actor_serializer_from_ap_create(mocker, factories):
             },
             {
                 "mediaType": "application/rss+xml",
-                "href": "https://test.pod/api/v1/channels/mychannel/rss",
+                "href": "https://test.pod/api/v2/channels/mychannel/rss",
                 "type": "Link",
             },
         ],
@@ -1678,7 +1678,7 @@ def test_channel_actor_serializer_from_ap_update(mocker, factories):
             },
             {
                 "mediaType": "application/rss+xml",
-                "href": "https://test.pod/api/v1/channels/mychannel/rss",
+                "href": "https://test.pod/api/v2/channels/mychannel/rss",
                 "type": "Link",
             },
         ],

@@ -840,7 +840,7 @@ An `Audio` object is a custom object used to store upload information. It extend
   "published": "2018-10-02T19:49:35.646359+00:00",
   "track": {},
   "url": {
-    "href": "https://awesome.music/api/v1/listen/82ece296-6397-4e26-be90-bac5f9990240/?upload=88f0bc20-d7fd-461d-a641-dd9ac485e096",
+    "href": "https://awesome.music/api/v2/listen/82ece296-6397-4e26-be90-bac5f9990240/?upload=88f0bc20-d7fd-461d-a641-dd9ac485e096",
     "type": "Link",
     "mediaType": "audio/mpeg"
   }

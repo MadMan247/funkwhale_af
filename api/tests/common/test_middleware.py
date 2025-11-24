@@ -338,7 +338,7 @@ def test_rewrite_manifest_json_url_rewrite_default_url(mocker, settings):
     settings.FUNKWHALE_SPA_REWRITE_MANIFEST = True
     settings.FUNKWHALE_SPA_REWRITE_MANIFEST_URL = None
     spa_html = "<html><head><link href=/manifest.json rel=manifest></head></html>"
-    expected_url = federation_utils.full_url(reverse("api:v1:instance:spa-manifest"))
+    expected_url = federation_utils.full_url(reverse("api:v2:instance:spa-manifest"))
     request = mocker.Mock(path="/", META={})
     mocker.patch.object(middleware, "get_spa_html", return_value=spa_html)
     mocker.patch.object(

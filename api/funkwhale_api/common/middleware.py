@@ -36,7 +36,7 @@ def serve_spa(request):
     if settings.FUNKWHALE_SPA_REWRITE_MANIFEST:
         new_url = (
             settings.FUNKWHALE_SPA_REWRITE_MANIFEST_URL
-            or federation_utils.full_url(urls.reverse("api:v1:instance:spa-manifest"))
+            or federation_utils.full_url(urls.reverse("api:v2:instance:spa-manifest"))
         )
         title = preferences.get("instance__name")
         if title:

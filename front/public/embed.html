@@ -46,7 +46,7 @@
       const cover = reactive({ value: DEFAULT_COVER })
 
       const fetchArtistCover = async (id) => {
-        const response = await fetch(`${baseUrl}/api/v1/artists/${id}/`)
+        const response = await fetch(`${baseUrl}/api/v2/artists/${id}/`)
         const data = await response.json()
         cover.value = data.cover?.urls.medium_square_crop ?? DEFAULT_COVER
       }
@@ -59,10 +59,10 @@
       const tracks = reactive([])
 
       const getTracksUrl = () => type === 'track'
-        ? `${baseUrl}/api/v1/tracks/${id}`
+        ? `${baseUrl}/api/v2/tracks/${id}`
         :  type === 'playlist'
-          ? `${baseUrl}/api/v1/playlists/${id}/tracks/`
-          : `${baseUrl}/api/v1/tracks/`
+          ? `${baseUrl}/api/v2/playlists/${id}/tracks/`
+          : `${baseUrl}/api/v2/tracks/`
 
       const getAudioSources = (uploads) => {
         const sources = uploads

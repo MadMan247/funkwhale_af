@@ -101,7 +101,7 @@ watch(value, (to, from) => {
 
 const store = useStore()
 const getAttachmentUrl = (uuid: string) => {
-  return store.getters['instance/absoluteUrl'](`api/v1/attachments/${uuid}/proxy?next=medium_square_crop`)
+  return store.getters['instance/absoluteUrl'](`api/v2/attachments/${uuid}/proxy?next=medium_square_crop`)
 }
 </script>
 

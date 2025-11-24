@@ -18,7 +18,7 @@ def test_channel_create(logged_in_api_client):
         "metadata": {"language": "en", "itunes_category": "Sports"},
     }
 
-    url = reverse("api:v1:channels-list")
+    url = reverse("api:v2:channels-list")
     response = logged_in_api_client.post(url, data, format="json")
 
     assert response.status_code == 201
@@ -55,7 +55,7 @@ def test_channel_detail(field, factories, logged_in_api_client):
     )
 
     url = reverse(
-        "api:v1:channels-detail",
+        "api:v2:channels-detail",
         kwargs={"composite": utils.recursive_getattr(channel, field)},
     )
     setattr(channel.artist, "_tracks_count", 0)
@@ -76,7 +76,7 @@ def test_channel_list(factories, logged_in_api_client):
     )
     setattr(channel.artist, "_tracks_count", 0)
     setattr(channel.artist, "_prefetched_tagged_items", [])
-    url = reverse("api:v1:channels-list")
+    url = reverse("api:v2:channels-list")
     expected = serializers.ChannelSerializer(channel).data
     response = logged_in_api_client.get(url)
 
@@ -98,7 +98,7 @@ def test_channel_list_opml(factories, logged_in_api_client, now):
     expected_content = renderers.render_xml(
         renderers.dict_to_xml_tree("opml", expected_xml)
     )
-    url = reverse("api:v1:channels-list")
+    url = reverse("api:v2:channels-list")
     response = logged_in_api_client.get(url, {"output": "opml"})
 
     assert response.status_code == 200
@@ -115,7 +115,7 @@ def test_channel_update(logged_in_api_client, factories):
         "name": "new name"
     }
 
-    url = reverse("api:v1:channels-detail", kwargs={"composite": channel.uuid})
+    url = reverse("api:v2:channels-detail", kwargs={"composite": channel.uuid})
     response = logged_in_api_client.patch(url, data)
 
     assert response.status_code == 200
@@ -131,7 +131,7 @@ def test_channel_update_permission(logged_in_api_client, factories):
 
     data = {"name": "new name"}
 
-    url = reverse("api:v1:channels-detail", kwargs={"composite": channel.uuid})
+    url = reverse("api:v2:channels-detail", kwargs={"composite": channel.uuid})
     response = logged_in_api_client.patch(url, data)
 
     assert response.status_code == 403
@@ -141,7 +141,7 @@ def test_channel_delete(logged_in_api_client, factories, mocker):
     actor = logged_in_api_client.user.create_actor()
     channel = factories["audio.Channel"](attributed_to=actor)
 
-    url = reverse("api:v1:channels-detail", kwargs={"composite": channel.uuid})
+    url = reverse("api:v2:channels-detail", kwargs={"composite": channel.uuid})
     on_commit = mocker.patch("funkwhale_api.common.utils.on_commit")
     response = logged_in_api_client.delete(url)
 
@@ -158,14 +158,14 @@ def test_channel_delete_permission(logged_in_api_client, factories):
     logged_in_api_client.user.create_actor()
     channel = factories["audio.Channel"]()
 
-    url = reverse("api:v1:channels-detail", kwargs={"composite": channel.uuid})
+    url = reverse("api:v2:channels-detail", kwargs={"composite": channel.uuid})
     response = logged_in_api_client.patch(url)
 
     assert response.status_code == 403
     channel.refresh_from_db()
 
 
-@pytest.mark.parametrize("url_name", ["api:v1:channels-list"])
+@pytest.mark.parametrize("url_name", ["api:v2:channels-list"])
 def test_channel_views_disabled_via_feature_flag(
     url_name, logged_in_api_client, preferences
 ):
@@ -178,7 +178,7 @@ def test_channel_views_disabled_via_feature_flag(
 def test_channel_subscribe(factories, logged_in_api_client):
     actor = logged_in_api_client.user.create_actor()
     channel = factories["audio.Channel"](artist__description=None)
-    url = reverse("api:v1:channels-subscribe", kwargs={"composite": channel.uuid})
+    url = reverse("api:v2:channels-subscribe", kwargs={"composite": channel.uuid})
 
     response = logged_in_api_client.post(url)
 
@@ -200,7 +200,7 @@ def test_channel_unsubscribe(factories, logged_in_api_client):
     actor = logged_in_api_client.user.create_actor()
     channel = factories["audio.Channel"]()
     subscription = factories["audio.Subscription"](target=channel.actor, actor=actor)
-    url = reverse("api:v1:channels-unsubscribe", kwargs={"composite": channel.uuid})
+    url = reverse("api:v2:channels-unsubscribe", kwargs={"composite": channel.uuid})
 
     response = logged_in_api_client.post(url)
 
@@ -215,7 +215,7 @@ def test_channel_subscribe_remote(factories, logged_in_api_client, mocker):
     actor = logged_in_api_client.user.create_actor()
     channel_actor = factories["federation.Actor"]()
     channel = factories["audio.Channel"](artist__description=None, actor=channel_actor)
-    url = reverse("api:v1:channels-subscribe", kwargs={"composite": channel.uuid})
+    url = reverse("api:v2:channels-subscribe", kwargs={"composite": channel.uuid})
 
     response = logged_in_api_client.post(url)
 
@@ -232,7 +232,7 @@ def test_channel_unsubscribe_remote(factories, logged_in_api_client, mocker):
     channel_actor = factories["federation.Actor"]()
     channel = factories["audio.Channel"](actor=channel_actor)
     subscription = factories["audio.Subscription"](target=channel.actor, actor=actor)
-    url = reverse("api:v1:channels-unsubscribe", kwargs={"composite": channel.uuid})
+    url = reverse("api:v2:channels-unsubscribe", kwargs={"composite": channel.uuid})
 
     response = logged_in_api_client.post(url)
 
@@ -251,7 +251,7 @@ def test_subscriptions_list(factories, logged_in_api_client):
     setattr(subscription.target.channel.artist, "_tracks_count", 0)
     setattr(subscription.target.channel.artist, "_prefetched_tagged_items", [])
     factories["audio.Subscription"](target=channel.actor)
-    url = reverse("api:v1:subscriptions-list")
+    url = reverse("api:v2:subscriptions-list")
     expected = serializers.SubscriptionSerializer(subscription).data
     response = logged_in_api_client.get(url)
 
@@ -270,7 +270,7 @@ def test_subscriptions_all(factories, logged_in_api_client):
     channel = factories["audio.Channel"](artist__description=None)
     subscription = factories["audio.Subscription"](target=channel.actor, actor=actor)
     factories["audio.Subscription"](target=channel.actor)
-    url = reverse("api:v1:subscriptions-all")
+    url = reverse("api:v2:subscriptions-all")
     response = logged_in_api_client.get(url)
 
     assert response.status_code == 200
@@ -290,7 +290,7 @@ def test_channel_rss_feed(factories, api_client, preferences):
         channel=channel, uploads=[upload2, upload1]
     )
 
-    url = reverse("api:v1:channels-rss", kwargs={"composite": channel.uuid})
+    url = reverse("api:v2:channels-rss", kwargs={"composite": channel.uuid})
 
     response = api_client.get(url)
 
@@ -304,7 +304,7 @@ def test_channel_rss_feed_redirects_for_external(factories, api_client, preferen
     channel = factories["audio.Channel"](external=True)
     factories["music.Upload"](library=channel.library, playable=True)
 
-    url = reverse("api:v1:channels-rss", kwargs={"composite": channel.uuid})
+    url = reverse("api:v2:channels-rss", kwargs={"composite": channel.uuid})
 
     response = api_client.get(url)
 
@@ -316,7 +316,7 @@ def test_channel_rss_feed_remote(factories, api_client, preferences):
     preferences["common__api_authentication_required"] = False
     channel = factories["audio.Channel"]()
 
-    url = reverse("api:v1:channels-rss", kwargs={"composite": channel.uuid})
+    url = reverse("api:v2:channels-rss", kwargs={"composite": channel.uuid})
 
     response = api_client.get(url)
 
@@ -327,7 +327,7 @@ def test_channel_rss_feed_authentication_required(factories, api_client, prefere
     preferences["common__api_authentication_required"] = True
     channel = factories["audio.Channel"](local=True)
 
-    url = reverse("api:v1:channels-rss", kwargs={"composite": channel.uuid})
+    url = reverse("api:v2:channels-rss", kwargs={"composite": channel.uuid})
 
     response = api_client.get(url)
 
@@ -345,7 +345,7 @@ def test_channel_metadata_choices(factories, api_client):
         ],
     }
 
-    url = reverse("api:v1:channels-metadata_choices")
+    url = reverse("api:v2:channels-metadata_choices")
 
     response = api_client.get(url)
 
@@ -359,7 +359,7 @@ def test_subscribe_to_rss_feed_existing_channel(
     actor = logged_in_api_client.user.create_actor()
     rss_url = "http://example.test/rss.url"
     channel = factories["audio.Channel"](rss_url=rss_url, external=True)
-    url = reverse("api:v1:channels-rss_subscribe")
+    url = reverse("api:v2:channels-rss_subscribe")
 
     response = logged_in_api_client.post(url, {"url": rss_url})
 
@@ -389,7 +389,7 @@ def test_subscribe_to_rss_feed_existing_subscription(
     rss_url = "http://example.test/rss.url"
     channel = factories["audio.Channel"](rss_url=rss_url, external=True)
     factories["federation.Follow"](target=channel.actor, approved=True, actor=actor)
-    url = reverse("api:v1:channels-rss_subscribe")
+    url = reverse("api:v2:channels-rss_subscribe")
 
     response = logged_in_api_client.post(url, {"url": rss_url})
 
@@ -405,7 +405,7 @@ def test_subscribe_to_rss_creates_channel(factories, logged_in_api_client, mocke
     get_channel_from_rss_url = mocker.patch.object(
         serializers, "get_channel_from_rss_url", return_value=(channel, [])
     )
-    url = reverse("api:v1:channels-rss_subscribe")
+    url = reverse("api:v2:channels-rss_subscribe")
 
     response = logged_in_api_client.post(url, {"url": rss_url})
 
@@ -425,7 +425,7 @@ def test_refresh_channel_when_param_is_true(
     refetch_obj = mocker.patch(
         "funkwhale_api.music.views.refetch_obj", return_value=obj
     )
-    url = reverse("api:v1:channels-detail", kwargs={"composite": obj.uuid})
+    url = reverse("api:v2:channels-detail", kwargs={"composite": obj.uuid})
     response = logged_in_api_client.get(url, {"refresh": "true"})
 
     assert response.status_code == 200
@@ -438,7 +438,7 @@ def test_can_filter_channels_through_api_scope(factories, logged_in_api_client):
         attributed_to__preferred_username="PauseLecturePod"
     )
     factories["audio.Channel"]()
-    url = reverse("api:v1:channels-list")
+    url = reverse("api:v2:channels-list")
     response = logged_in_api_client.get(
         url, {"scope": f"actor:{channel.attributed_to.full_username}"}
     )

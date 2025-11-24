@@ -101,7 +101,7 @@ class Channel(models.Model):
 
         return federation_utils.full_url(
             reverse(
-                "api:v1:channels-rss",
+                "api:v2:channels-rss",
                 kwargs={"composite": self.actor.preferred_username},
             )
         )

@@ -26,10 +26,6 @@ urlpatterns = [
         ),
     ),
     re_path(
-        r"^api/v1/auth/",
-        include("funkwhale_api.users.rest_auth_urls"),
-    ),
-    re_path(
         r"^api/v2/auth/",
         include("funkwhale_api.users.rest_auth_urls"),
     ),

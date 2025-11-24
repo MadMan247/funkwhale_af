@@ -10,7 +10,7 @@ export const install: InitModule = ({ store }) => {
   const logger = useLogger()
 
   watch(() => store.state.instance.instanceUrl, () => {
-    const url = store.getters['instance/absoluteUrl']('/api/v1/activity')
+    const url = store.getters['instance/absoluteUrl']('/api/v2/activity')
       .replace(/^http/, 'ws')
 
     const { data, status, open, close } = useWebSocket(url, {

@@ -1,7 +1,6 @@
 // import type { BackendError, Track } from '~/types'
 import type { RootState } from '~/store/index'
 import type { Module } from 'vuex'
-import type {Track} from '~/types'
 import type {BackendError} from '~/types'
 
 import { useQueue } from '~/composables/audio/queue'
@@ -137,32 +136,33 @@ const store: Module<State, RootState> = {
 
       const { enqueue, playTrack, tracks } = useQueue()
       const { isPlaying, pauseReason, PauseReason } = usePlayer()
-
-      const params = { session: state.current?.session }
+      const batch_size = 20
+      const params = { session: state.current?.session, count: batch_size }
 
       try {
         logger.info('Adding track to queue from radio')
 
-        const track = state.current?.clientOnly
+        const tracks_response = state.current?.clientOnly
           ? await CLIENT_RADIOS[state.current.type].fetchNextTrack(state.current)
-          : await axios.post('radios/tracks/', params).then(response => response.data.track as Track)
+          : await axios.get('radios/sessions/' + state.current?.session + '/tracks/', {params}).then(response => response.data)
 
         state.retries = 0
 
-        if (track === undefined) {
+        if (tracks_response === undefined) {
           isPlaying.value = false
           pauseReason.value = PauseReason.EndOfRadio
           return
         }
-
-        await enqueue(track)
+        for (const track of tracks_response) {
+          await enqueue(track);
+        }
 
         if (isPlaying.value === false && pauseReason.value === PauseReason.EndOfQueue) {
           playNow = true
         }
 
         if (playNow) {
-          await playTrack(tracks.value.length - 1)
+          await playTrack(tracks.value.length - 1 - batch_size)
           isPlaying.value = true
         }
       } catch (error) {

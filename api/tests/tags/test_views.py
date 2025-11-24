@@ -4,7 +4,7 @@ from funkwhale_api.tags import serializers
 
 
 def test_tags_list(factories, logged_in_api_client):
-    url = reverse("api:v1:tags-list")
+    url = reverse("api:v2:tags-list")
     tag = factories["tags.Tag"]()
 
     expected = {
@@ -20,7 +20,7 @@ def test_tags_list(factories, logged_in_api_client):
 
 
 def test_tags_list_filter(factories, logged_in_api_client):
-    url = reverse("api:v1:tags-list") + "?name_icontains=fz"
+    url = reverse("api:v2:tags-list") + "?name_icontains=fz"
     tag = factories["tags.Tag"](name="fzl")
 
     expected = {
@@ -36,7 +36,7 @@ def test_tags_list_filter(factories, logged_in_api_client):
 
 
 def test_tags_list_ordering_length(factories, logged_in_api_client):
-    url = reverse("api:v1:tags-list")
+    url = reverse("api:v2:tags-list")
     tags = [
         factories["tags.Tag"](name="iamareallylongtag"),
         factories["tags.Tag"](name="short"),
@@ -60,7 +60,7 @@ def test_tags_list_ordering_length(factories, logged_in_api_client):
 
 def test_tags_detail(factories, logged_in_api_client):
     tag = factories["tags.Tag"]()
-    url = reverse("api:v1:tags-detail", kwargs={"name": tag.name})
+    url = reverse("api:v2:tags-detail", kwargs={"name": tag.name})
 
     expected = serializers.TagSerializer(tag).data
 

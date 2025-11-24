@@ -16,19 +16,19 @@ class WebsiteTasks(TaskSet):
     @task
     def albums(self):
         self.client.get(
-            "/api/v1/albums?" + urllib.parse.urlencode(DATA), headers=HEADERS
+            "/api/v2/albums?" + urllib.parse.urlencode(DATA), headers=HEADERS
         )
 
     @task
     def artists(self):
         self.client.get(
-            "/api/v1/artists?" + urllib.parse.urlencode(DATA), headers=HEADERS
+            "/api/v2/artists?" + urllib.parse.urlencode(DATA), headers=HEADERS
         )
 
     @task
     def tracks(self):
         self.client.get(
-            "/api/v1/tracks?" + urllib.parse.urlencode(DATA), headers=HEADERS
+            "/api/v2/tracks?" + urllib.parse.urlencode(DATA), headers=HEADERS
         )
 
 

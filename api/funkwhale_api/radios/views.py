@@ -87,44 +87,6 @@ class RadioViewSet(
         return Response(data)
 
 
-class RadioSessionViewSet(
-    mixins.CreateModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
-):
-    serializer_class = serializers.RadioSessionSerializer
-    queryset = models.RadioSession.objects.all()
-    permission_classes = []
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        if self.request.user.is_authenticated:
-            return queryset.filter(
-                Q(user=self.request.user)
-                | Q(session_key=self.request.session.session_key)
-            )
-
-        return queryset.filter(session_key=self.request.session.session_key).exclude(
-            session_key=None
-        )
-
-    def perform_create(self, serializer):
-        if (
-            not self.request.user.is_authenticated
-            and not self.request.session.session_key
-        ):
-            self.request.session.create()
-        return serializer.save(
-            user=self.request.user if self.request.user.is_authenticated else None,
-            session_key=self.request.session.session_key,
-        )
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context["user"] = (
-            self.request.user if self.request.user.is_authenticated else None
-        )
-        return context
-
-
 class V1_RadioSessionTrackViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     serializer_class = serializers.RadioSessionTrackSerializer
     queryset = models.RadioSessionTrack.objects.all()
@@ -147,7 +109,7 @@ class V1_RadioSessionTrackViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
             return Response(status=status.HTTP_403_FORBIDDEN)
 
         try:
-            session.radio(api_version=1).pick()
+            session.radio().pick_many(quantity=20)
         except ValueError:
             return Response(
                 "Radio doesn't have more candidates", status=status.HTTP_404_NOT_FOUND
@@ -168,7 +130,7 @@ class V1_RadioSessionTrackViewSet(mixins.CreateModelMixin, viewsets.GenericViewS
         return super().get_serializer_class(*args, **kwargs)
 
 
-class V2_RadioSessionViewSet(
+class RadioSessionViewSet(
     mixins.CreateModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
 ):
     """Returns a list of RadioSessions"""
@@ -205,11 +167,9 @@ class V2_RadioSessionViewSet(
         ):
             return Response(status=status.HTTP_403_FORBIDDEN)
         try:
-            from . import radios_v2  # noqa
+            from . import radios  # noqa
 
-            session.radio(api_version=2).pick_many(
-                count, filter_playable=filter_playable
-            )
+            session.radio().pick_many(count, filter_playable=filter_playable)
         except ValueError:
             return Response(
                 "Radio doesn't have more candidates", status=status.HTTP_404_NOT_FOUND

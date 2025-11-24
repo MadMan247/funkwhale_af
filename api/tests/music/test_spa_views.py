@@ -76,7 +76,7 @@ def test_library_track(spa_html, no_api_auth, client, factories, settings):
             "rel": "alternate",
             "type": "application/json+oembed",
             "href": (
-                utils.join_url(settings.FUNKWHALE_URL, reverse("api:v1:oembed"))
+                utils.join_url(settings.FUNKWHALE_URL, reverse("api:v2:oembed"))
                 + "?format=json&url={}".format(
                     urllib.parse.quote_plus(utils.join_url(settings.FUNKWHALE_URL, url))
                 )
@@ -147,7 +147,7 @@ def test_library_album(spa_html, no_api_auth, client, factories, settings):
             "rel": "alternate",
             "type": "application/json+oembed",
             "href": (
-                utils.join_url(settings.FUNKWHALE_URL, reverse("api:v1:oembed"))
+                utils.join_url(settings.FUNKWHALE_URL, reverse("api:v2:oembed"))
                 + "?format=json&url={}".format(
                     urllib.parse.quote_plus(utils.join_url(settings.FUNKWHALE_URL, url))
                 )
@@ -201,7 +201,7 @@ def test_library_artist(spa_html, no_api_auth, client, factories, settings):
             "rel": "alternate",
             "type": "application/json+oembed",
             "href": (
-                utils.join_url(settings.FUNKWHALE_URL, reverse("api:v1:oembed"))
+                utils.join_url(settings.FUNKWHALE_URL, reverse("api:v2:oembed"))
                 + "?format=json&url={}".format(
                     urllib.parse.quote_plus(utils.join_url(settings.FUNKWHALE_URL, url))
                 )
@@ -252,7 +252,7 @@ def test_library_playlist(spa_html, no_api_auth, client, factories, settings):
             "rel": "alternate",
             "type": "application/json+oembed",
             "href": (
-                utils.join_url(settings.FUNKWHALE_URL, reverse("api:v1:oembed"))
+                utils.join_url(settings.FUNKWHALE_URL, reverse("api:v2:oembed"))
                 + "?format=json&url={}".format(
                     urllib.parse.quote_plus(utils.join_url(settings.FUNKWHALE_URL, url))
                 )

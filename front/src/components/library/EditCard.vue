@@ -238,7 +238,7 @@ const alertProps = computed(() => {
                 <img
                   class="image"
                   alt=""
-                  :src="store.getters['instance/absoluteUrl'](`api/v1/attachments/${field.oldRepr}/proxy?next=medium_square_crop`)"
+                  :src="store.getters['instance/absoluteUrl'](`api/v2/attachments/${field.oldRepr}/proxy?next=medium_square_crop`)"
                 >
               </template>
               <template v-else>
@@ -263,7 +263,7 @@ const alertProps = computed(() => {
                 <img
                   class="ui image"
                   alt=""
-                  :src="store.getters['instance/absoluteUrl'](`api/v1/attachments/${field.newRepr}/proxy?next=medium_square_crop`)"
+                  :src="store.getters['instance/absoluteUrl'](`api/v2/attachments/${field.newRepr}/proxy?next=medium_square_crop`)"
                 >
               </template>
               <template v-else>
@@ -284,7 +284,7 @@ const alertProps = computed(() => {
                 <img
                   class="ui image"
                   alt=""
-                  :src="store.getters['instance/absoluteUrl'](`api/v1/attachments/${field.newRepr}/proxy?next=medium_square_crop`)"
+                  :src="store.getters['instance/absoluteUrl'](`api/v2/attachments/${field.newRepr}/proxy?next=medium_square_crop`)"
                 >
               </template>
               <template v-else>

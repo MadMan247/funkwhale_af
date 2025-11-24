@@ -137,7 +137,7 @@ const createEmptyChannel = async () => {
   try {
     await axios.post(
       'channels/',
-      (emptyChannelCreateRequest satisfies operations['create_channel_2']['requestBody']['content']['application/json'])
+      (emptyChannelCreateRequest satisfies operations['create_channel']['requestBody']['content']['application/json'])
     )
   } catch (error) {
     errors.value = (error as BackendError).backendErrors

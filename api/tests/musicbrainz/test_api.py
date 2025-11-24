@@ -9,7 +9,7 @@ def test_can_search_recording_in_musicbrainz_api(
         return_value=recordings["search"]["brontide matador"],
     )
     query = "brontide matador"
-    url = reverse("api:v1:providers:musicbrainz:search-recordings")
+    url = reverse("api:v2:providers:musicbrainz:search-recordings")
     expected = recordings["search"]["brontide matador"]
     response = logged_in_api_client.get(url, data={"query": query})
 
@@ -24,7 +24,7 @@ def test_can_search_release_in_musicbrainz_api(
         return_value=releases["search"]["brontide matador"],
     )
     query = "brontide matador"
-    url = reverse("api:v1:providers:musicbrainz:search-releases")
+    url = reverse("api:v2:providers:musicbrainz:search-releases")
     expected = releases["search"]["brontide matador"]
     response = logged_in_api_client.get(url, data={"query": query})
 
@@ -39,7 +39,7 @@ def test_can_search_artists_in_musicbrainz_api(
         return_value=artists["search"]["lost fingers"],
     )
     query = "lost fingers"
-    url = reverse("api:v1:providers:musicbrainz:search-artists")
+    url = reverse("api:v2:providers:musicbrainz:search-artists")
     expected = artists["search"]["lost fingers"]
     response = logged_in_api_client.get(url, data={"query": query})
 
@@ -52,7 +52,7 @@ def test_can_get_artist_in_musicbrainz_api(artists, db, mocker, logged_in_api_cl
         return_value=artists["get"]["lost fingers"],
     )
     uuid = "ac16bbc0-aded-4477-a3c3-1d81693d58c9"
-    url = reverse("api:v1:providers:musicbrainz:artist-detail", kwargs={"uuid": uuid})
+    url = reverse("api:v2:providers:musicbrainz:artist-detail", kwargs={"uuid": uuid})
     response = logged_in_api_client.get(url)
     expected = artists["get"]["lost fingers"]
 
@@ -68,7 +68,7 @@ def test_can_broswe_release_group_using_musicbrainz_api(
     )
     uuid = "ac16bbc0-aded-4477-a3c3-1d81693d58c9"
     url = reverse(
-        "api:v1:providers:musicbrainz:release-group-browse",
+        "api:v2:providers:musicbrainz:release-group-browse",
         kwargs={"artist_uuid": uuid},
     )
     response = logged_in_api_client.get(url)
@@ -86,7 +86,7 @@ def test_can_broswe_releases_using_musicbrainz_api(
     )
     uuid = "f04ed607-11b7-3843-957e-503ecdd485d1"
     url = reverse(
-        "api:v1:providers:musicbrainz:release-browse",
+        "api:v2:providers:musicbrainz:release-browse",
         kwargs={"release_group_uuid": uuid},
     )
     response = logged_in_api_client.get(url)
