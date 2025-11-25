@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useVModel, useTextareaAutosize, syncRef } from '@vueuse/core'
+import { useVModel } from '@vueuse/core'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -28,32 +28,22 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const { t } = useI18n()
-const { textarea, input } = useTextareaAutosize()
 const value = useVModel(props, 'modelValue', emit)
-syncRef(value, input)
 
 const labels = computed(() => ({
   placeholder: props.placeholder ?? t('components.common.ContentForm.placeholder.input')
 }))
 
-const remainingChars = computed(() => props.charLimit - props.modelValue.length)
-
 </script>
 
 <template>
   <Textarea
-    ref="textarea"
     v-model="value"
     :required="required || undefined"
     :placeholder="labels.placeholder"
     :autofocus="autofocus || undefined"
+    :char-limit="charLimit"
   />
-  <span
-    v-if="charLimit"
-    :class="['right', 'floated', {'ui danger text': remainingChars < 0}]"
-  >
-    {{ remainingChars }}
-  </span>
   <p>
     {{ t('components.common.ContentForm.help.markdown') }}
   </p>

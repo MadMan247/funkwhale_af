@@ -3,16 +3,16 @@ import type { SettingsGroup as SettingsGroupType } from '~/types'
 
 import axios from 'axios'
 
-import { ref, nextTick, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
 import SettingsGroup from '~/components/admin/SettingsGroup.vue'
 
 import Layout from '~/components/ui/Layout.vue'
-import Loader from '~/components/ui/Loader.vue'
 import Header from '~/components/ui/Header.vue'
 import Toc from '~/components/ui/Toc.vue'
+import Loader from '~/components/ui/Loader.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'
 
@@ -169,21 +169,23 @@ const fetchSettings = async () => {
   isLoading.value = false
 }
 
-await fetchSettings()
-await nextTick()
+onMounted(() => {
+  fetchSettings()
+})
 </script>
 
 <template>
   <Layout
+    id="settings-root"
     main
     stack
     :class="['ui', {'loading': isLoading}]"
   >
-    <Loader v-if="isLoading" />
     <Header
       page-heading
       :h1="labels.settings"
     />
+    <Loader v-if="isLoading" />
     <div
       v-if="settingsData"
       id="settings-grid"
