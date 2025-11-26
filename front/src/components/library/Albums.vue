@@ -79,6 +79,7 @@ const fetchData = async () => {
     playable: true,
     tag: tags.value,
     include_channels: true,
+    include_tracks: false,
     content_category: 'music'
   }
 

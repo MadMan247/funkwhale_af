@@ -2,7 +2,7 @@
 import type { Track, Library } from '~/types'
 
 import { momentFormat } from '~/utils/filters'
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter, useRoute } from 'vue-router'
 import { sum } from 'lodash-es'
@@ -43,7 +43,6 @@ const props = defineProps<Props>()
 
 const object = computed(() => dataStore.get("album", props.id).value)
 const artistCredit = computed(() => object.value?.artist_credit ?? [])
-
 
 const libraries = ref([] as Library[])
 const paginateBy = ref(50)
@@ -87,7 +86,7 @@ const fetchData = async () => {
   isLoading.value = false
 }
 
-const tracks = reactive([] as Track[])
+const tracks = ref([] as Track[])
 watch(tracks, (tracks) => {
   if (object.value) {
     object.value.tracks = tracks
@@ -98,7 +97,7 @@ const isLoadingTracks = ref(false)
 const fetchTracks = async () => {
   if (isLoadingTracks.value) return
   isLoadingTracks.value = true
-  tracks.length = 0
+  tracks.value = []
   let url = 'tracks/'
   try {
     while (url) {
@@ -112,7 +111,7 @@ const fetchTracks = async () => {
       })
 
       url = response.data.next
-      tracks.push(...response.data.results)
+      tracks.value = tracks.value.concat(response.data.results)
     }
   } catch (error) {
     logger.error(error)
@@ -209,9 +208,9 @@ const remove = async () => {
       />
       <Layout flex>
         <PlayButton
-          v-if="object.tracks"
+          v-if="tracks"
           split
-          :tracks="object.tracks"
+          :tracks="tracks"
           low-height
           :is-playable="object.is_playable"
         />

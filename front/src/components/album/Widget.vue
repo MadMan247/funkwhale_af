@@ -46,7 +46,8 @@ const fetchData = async (url = 'albums/') => {
       q: query.value,
       ...props.filters,
       page: page.value,
-      page_size: props.limit
+      page_size: props.limit,
+      include_tracks: false
     }
 
     const response = await axios.get(url, { params })

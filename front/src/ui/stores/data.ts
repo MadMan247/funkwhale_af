@@ -84,13 +84,23 @@ const setError = <T>(remoteData: Data<T> & { status: 'loading' }, error: Error):
 
 type Key = string
 
+/**
+ * searchCategory returns the content_category of the given filter if there is one, or undefined otherwise. A search
+ * shouldn't preempt another search for a different content category (e.g. podcasts or albums).
+ */
+const searchCategory = <N extends Name>(params: NonNullable<Params<Name>>) =>
+  (params as { content_category?: string }).content_category
+
 /**Global rate limiting for any Api call */
 const rateLimiter = useRateLimiter<[Name, Params<Name>]>({
   cooldown: 50, // max. 20 requests per second
 
   // While the user is typing in a search field, only send the last call generated during a cooldown period
   supersedeWhen: ([newName, newFilter], [oldName, oldFilter]) =>
-    newName === oldName && newFilter !== undefined && oldFilter !== undefined,
+    newName === oldName
+    && newFilter != null
+    && oldFilter != null
+    && searchCategory(newFilter) == searchCategory(oldFilter),
 
   // Use `hash` can normalize and compare objects deeply.
   equalWhen: (newTask, oldTask) => hash(newTask) === hash(oldTask)

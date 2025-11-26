@@ -172,6 +172,18 @@ class ArtistViewSet(
     )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="include_tracks",
+                description="Include each albums's tracks in the output.",
+                type=bool,
+                default=True,
+            )
+        ]
+    )
+)
 class AlbumViewSet(
     HandleInvalidSearch,
     common_views.SkipFilterForGetObject,
@@ -220,13 +232,18 @@ class AlbumViewSet(
                 artist_credit__artist__attributed_to=self.request.user.actor
             )
 
-        tracks = models.Track.objects.all().prefetch_related("album")
-        tracks = tracks.annotate_playable_by_actor(
-            utils.get_actor_from_request(self.request)
-        )
-        return queryset.prefetch_related(
-            Prefetch("tracks", queryset=tracks), TAG_PREFETCH
-        )
+        serializer = self.get_serializer()
+
+        if "tracks" in serializer.fields:
+            tracks = models.Track.objects.all().prefetch_related("album")
+            tracks = tracks.annotate_playable_by_actor(
+                utils.get_actor_from_request(self.request)
+            )
+            queryset = queryset.prefetch_related(
+                Prefetch("tracks", queryset=tracks), TAG_PREFETCH
+            )
+
+        return queryset
 
     libraries = get_libraries(lambda o, uploads: uploads.filter(track__album=o))
 
@@ -883,7 +900,12 @@ class Search(views.APIView):
             else:
                 raise
 
-        return Response(serializers.SearchResultSerializer(results).data, status=200)
+        return Response(
+            serializers.SearchResultSerializer(
+                results, context={"request": self.request}
+            ).data,
+            status=200,
+        )
 
     def get_tracks(self, query):
         query_obj = utils.get_fts_query(
