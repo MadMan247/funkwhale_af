@@ -45,7 +45,7 @@ const slots = useSlots()
 // TODO: Test upload button progress indicator (in Sidebar.vue)
 // TODO: Find a simpler implementation. This has too much cognitive load!
 const isIconOnly = computed(() =>
-  (('round' in props && props.round) || !slots.default) // button is round or has no content
+  !slots.default // button has no content
     && ( !!props.icon
         || ('square' in props && props.square)
         || ('squareSmall' in props && props.squareSmall)

@@ -290,13 +290,7 @@ const playlistLibraryFollowInfo = computed(() => {
     :ghost="discrete"
     :low-height="lowHeight || undefined"
     @click.stop.prevent="replacePlay()"
-  >
-    <template v-if="!discrete && !iconOnly">
-      <span>
-        {{ t('components.audio.PlayButton.button.discretePlay') }}
-      </span>
-    </template>
-  </Button>
+  />
 </template>
 
 <style lang="scss" scoped>
