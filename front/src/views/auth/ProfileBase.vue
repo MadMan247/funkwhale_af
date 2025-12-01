@@ -82,22 +82,26 @@ watch(props, fetchData, { immediate: true })
 
 const { copy, copied, isSupported } = useClipboard()
 
-const tabs = ref([{
+const tabs = computed(() => [
+{
   title: t('views.auth.ProfileBase.link.overview'),
-  to: { name: 'profile.overview', params: routerParams }
+  to: { name: props.domain ? 'profile.full.overview' : 'profile.overview', params: routerParams.value }
 }, {
   title: t('views.auth.ProfileBase.link.activity'),
-  to: { name: 'profile.activity', params: routerParams }
+  to: { name: props.domain ? 'profile.full.activity' : 'profile.activity', params: routerParams.value }
 }, ...(
   store.state.auth.authenticated && fullUsername.value === store.state.auth.fullUsername
     ? [{
       title: t('views.auth.ProfileBase.link.manageUploads'),
-      to: { name: 'profile.manageUploads', params: routerParams }
+      to: { name: 'profile.manageUploads', params: routerParams.value }
     }]
     : []
 )])
 
 const isOpen = useModal('artist-description').isOpen
+
+const follow = computed(() => store.getters['users/follow'](object.value?.fid))
+const isFollowing = computed(() => follow.value && follow.value.approved === true)
 </script>
 
 <template>
@@ -111,8 +115,9 @@ const isOpen = useModal('artist-description').isOpen
     <!-- TODO: `yarn lint:tsc` doesn't understand the `Prop` type for `Header` while the language server does. It may be a question of typescript version... Investigate and fix! https://dev.funkwhale.audio/funkwhale/funkwhale/-/issues/2437 -->
     <!-- @vue-ignore -->
     <Header
+      :key="fullUsername"
       :h1="props.username"
-      :action="{
+      :action="store.state.auth.authenticated && store.state.auth.username === props.username ? {
         text: t('views.auth.ProfileBase.link.edit'),
         // @ts-ignore
         to: '/settings',
@@ -124,7 +129,7 @@ const isOpen = useModal('artist-description').isOpen
         icon: 'bi-pencil-fill',
         // @ts-ignore
         lowHeight: true
-      }"
+      } : null"
       no-gap
       page-heading
     >
@@ -219,7 +224,10 @@ const isOpen = useModal('artist-description').isOpen
         :actor="object"
       />
     </Header>
-    <Nav v-model="tabs" />
+    <Nav
+      v-if="isFollowing"
+      v-model="tabs"
+    />
 
     <router-view
       :object="object"

@@ -17,7 +17,7 @@ interface Props {
   object?: Actor
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 
 const recentActivity = ref(0)
 
@@ -25,6 +25,13 @@ const store = useStore()
 const qualityFilters = computed(() => store.getters['instance/qualityFilters'])
 
 const { t } = useI18n()
+
+const scope = computed(() =>
+  store.state.auth.authenticated && props.object?.full_username === store.state.auth.fullUsername
+    ? 'me'
+    : `actor:${props.object?.full_username ?? ''}`
+)
+
 </script>
 
 <template>
@@ -48,7 +55,7 @@ const { t } = useI18n()
 
     <track-widget
       :url="'history/listenings/'"
-      :filters="{ username: object?.preferred_username, domain: object?.domain, ordering: '-creation_date', playable: true, ...qualityFilters}"
+      :filters="{ scope: scope, ordering: '-creation_date', playable: true, ...qualityFilters}"
       :websocket-handlers="['Listen']"
       :title="t('components.library.Home.header.recentlyListened')"
       @count="recentActivity = $event"
@@ -56,18 +63,18 @@ const { t } = useI18n()
     <Spacer :size="64" />
     <track-widget
       :url="'favorites/tracks/'"
-      :filters="{ username: object?.preferred_username ?? '', domain: object?.domain ?? '', playable: true, ordering: '-creation_date'}"
+      :filters="{ scope:scope, playable: true, ordering: '-creation_date'}"
       :title="t('components.library.Home.header.recentlyFavorited')"
     />
     <Spacer />
     <playlist-widget
       :url="'playlists/'"
-      :filters="{ username: object?.preferred_username, domain: object?.domain, playable: true, ordering: '-modification_date'}"
+      :filters="{ scope:scope, playable: true, ordering: '-modification_date'}"
       :title="t('views.auth.ProfileActivity.header.playlists')"
     />
     <Spacer />
     <album-widget
-      :filters="{ username: object?.preferred_username, domain: object?.domain, playable: true, ordering: '-creation_date', ...qualityFilters}"
+      :filters="{ scope:scope, playable: true, ordering: '-creation_date', ...qualityFilters}"
       :title="t('components.library.Home.header.recentlyAdded')"
     />
   </Layout>
