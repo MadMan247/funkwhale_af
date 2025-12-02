@@ -65,7 +65,7 @@ export default defineConfig(({ mode }) => ({
     watch: {
       usePolling: true
     },
-    allowedHosts: [".funkwhale.test"],
+    allowedHosts: [".funkwhale.test, nginx"],
     hmr: {
       overlay: false
     }
