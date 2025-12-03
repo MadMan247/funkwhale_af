@@ -7258,6 +7258,7 @@ export interface operations {
     get_channels: {
         parameters: {
             query?: {
+                content_category?: string;
                 external?: boolean;
                 hidden?: boolean;
                 /**

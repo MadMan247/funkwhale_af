@@ -71,29 +71,27 @@ watch(page, fetchData, { immediate: true })
     v-if="isPodcast"
     v-model:page="page"
     :paginate-by="limit"
-    :default-cover="defaultCover"
     :is-podcast="isPodcast"
     :show-art="true"
     :show-position="false"
     :tracks="channels"
     :show-artist="false"
-    :show-album="false"
+    :show-album="true"
     :paginate-results="true"
     :total="count"
   />
   <track-table
     v-else
     v-model:page="page"
-    :default-cover="defaultCover"
+    :paginate-by="limit"
     :is-podcast="isPodcast"
     :show-art="true"
     :show-position="false"
     :tracks="channels"
     :show-artist="false"
-    :show-album="false"
+    :show-album="true"
     :paginate-results="true"
     :total="count"
-    :paginate-by="limit"
     :filters="filters"
   />
   <template v-if="!isLoading && channels.length === 0">

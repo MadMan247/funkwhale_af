@@ -12,6 +12,7 @@ import { syncRef } from '@vueuse/core'
 import { sortedUniq } from 'lodash-es'
 import { useRouter } from 'vue-router'
 import { useStore } from '~/store'
+import { useDataStore } from '~/ui/stores/data'
 
 import axios from 'axios'
 
@@ -108,6 +109,7 @@ const fetchData = async () => {
 }
 
 const store = useStore()
+const dataStore = useDataStore()
 watch(() => store.state.moderation.lastUpdate, fetchData)
 
 const reloadWidget = () => (widgetKey.value = new Date().toLocaleString())
@@ -227,7 +229,7 @@ const showCreateModal = ref(false)
         :key="widgetKey"
         :limit="4"
         :show-modification-date="true"
-        :filters="{q: subscribedQuery, subscribed: 'true'}"
+        :filters="{q: subscribedQuery, subscribed: 'true', content_category:'music'}"
       />
     </Section>
     <!-- TODO: `yarn lint:tsc` doesn't understand the `Prop` type for `Header` while the language server does. It may be a question of typescript version... Investigate and fix! https://dev.funkwhale.audio/funkwhale/funkwhale/-/issues/2437 -->
@@ -265,9 +267,10 @@ const showCreateModal = ref(false)
           v-if="typeof tags === 'object'"
           :get="model => { tags = model.currents.map(({ label }) => label) }"
           :set="model => ({
-            ...model,
-            others: [],
             currents: tags.map(tag => ({ type: 'custom' as const, label: tag })),
+            others: dataStore.tags().value
+              .filter(({ name }) => result?.results?.some((object) => object.artist.tags?.includes(name)) && !tags.includes(name))
+              .map(({ name }) => ({ type: 'preset' as const, label: name })),
           })"
           :label="t('components.library.Podcasts.label.tags')"
           style="max-width: 350px;"
@@ -285,7 +288,7 @@ const showCreateModal = ref(false)
         :key="widgetKey"
         :limit="paginateBy"
         :show-modification-date="true"
-        :filters="{q: subscribedQuery, subscribed: 'false'}"
+        :filters="{q: query, subscribed: 'false', content_category:'music'}"
       />
 
       <Modal

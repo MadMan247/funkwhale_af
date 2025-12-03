@@ -16,7 +16,6 @@ import Input from '~/components/ui/Input.vue'
 import Textarea from '~/components/ui/Textarea.vue'
 import Pills from '~/components/ui/Pills.vue'
 
-
 interface Props {
   object?: Channel | null
   step?: number
@@ -45,7 +44,7 @@ const newValues = reactive({
   description: props.object?.artist?.description?.text ?? '',
   cover: props.object?.artist?.cover?.uuid ?? null,
   content_category: props.object?.artist?.content_category ?? 'podcast',
-  metadata: { ...(props.object?.metadata ?? {}) } as Channel['metadata']
+  metadata: { ...(props.object?.metadata ?? {}) } as Channel['metadata'] as unknown as { language: string, itunes_category: string, itunes_subcategory: string | null }
 })
 
 // If props has an object, then this form edits, else it creates
@@ -82,7 +81,6 @@ const metadataChoices = ref({ itunes_category: null } as MetadataChoices)
 const itunesSubcategories = computed(() => {
   for (const element of metadataChoices.value.itunes_category ?? []) {
     // TODO: Backend: Define schema for `metadata` field
-    // @ts-expect-error No types defined by backend schema for `metadata` field
     if (element.value === newValues.metadata.itunes_category) {
       return element.children ?? []
     }
@@ -98,7 +96,6 @@ const labels = computed(() => ({
 
 const submittable = computed(() => !!(
   newValues.content_category === 'podcast'
-    // @ts-expect-error No types defined by backend schema for `metadata` field
     ? newValues.name && newValues.username && newValues.metadata.itunes_category && newValues.metadata.language
     : newValues.name && newValues.username
 ))
@@ -109,9 +106,7 @@ watch(() => newValues.name, (name) => {
   }
 })
 
-// @ts-expect-error No types defined by backend schema for `metadata` field
 watch(() => newValues.metadata.itunes_category, () => {
-  // @ts-expect-error No types defined by backend schema for `metadata` field
   newValues.metadata.itunes_subcategory = null
 })
 
@@ -272,7 +267,6 @@ defineExpose({
             {{ t('components.audio.ChannelForm.label.language') }}
           </label>
 
-          <!-- @vue-ignore -->
           <select
             id="channel-language"
             v-model="newValues.metadata.language"
@@ -302,7 +296,6 @@ defineExpose({
               {{ t('components.audio.ChannelForm.label.category') }}
             </label>
 
-            <!-- @vue-ignore -->
             <select
               id="itunes-category"
               v-model="newValues.metadata.itunes_category"
@@ -324,7 +317,6 @@ defineExpose({
               {{ t('components.audio.ChannelForm.label.subcategory') }}
             </label>
 
-            <!-- @vue-ignore -->
             <select
               id="itunes-category"
               v-model="newValues.metadata.itunes_subcategory"

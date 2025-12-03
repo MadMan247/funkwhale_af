@@ -496,7 +496,10 @@ const renderedDescription = computed(() => {
       :limit="5"
       :show-more="true"
     />
-    <Nav v-model="tabs" />
+    <Nav
+      v-if="object?.artist.content_category === 'podcast'"
+      v-model="tabs"
+    />
 
     <router-view
       v-if="object"

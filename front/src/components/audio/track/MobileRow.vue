@@ -2,9 +2,6 @@
 import type { Track, Artist, Album, Playlist, Library, Channel, Actor } from '~/types'
 import type { PlayOptionsProps } from '~/composables/audio/usePlayOptions'
 
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-
 import { usePlayer } from '~/composables/audio/player'
 import { useQueue } from '~/composables/audio/queue'
 import { useStore } from '~/store'
@@ -14,7 +11,7 @@ import usePlayOptions from '~/composables/audio/usePlayOptions'
 import TrackFavoriteIcon from '~/components/favorites/TrackFavoriteIcon.vue'
 import { generateTrackCreditString } from '~/utils/utils'
 
-import Button from '~/components/ui/Button.vue'
+import PlayButton from '~/components/audio/PlayButton.vue'
 
 interface Props extends PlayOptionsProps {
   track: Track
@@ -47,18 +44,11 @@ const props = withDefaults(defineProps<Props>(), {
   account: null
 })
 
-const emit = defineEmits<{
-  (e: 'open-modal', track: Track, index: number): void
-}>()
-
 const { currentTrack } = useQueue()
 const { isPlaying } = usePlayer()
 const { activateTrack } = usePlayOptions(props)
 
-const { t } = useI18n()
 const store = useStore()
-
-const actionsButtonLabel = computed(() => t('components.audio.track.MobileRow.button.actions'))
 </script>
 
 <template>
@@ -76,20 +66,20 @@ const actionsButtonLabel = computed(() => t('components.audio.track.MobileRow.bu
       <img
         v-if="track.cover"
         v-lazy="store.getters['instance/absoluteUrl'](track.cover.urls.small_square_crop)"
-        alt=""
+        :alt="track.title"
         class="ui artist-track mini image"
         @error="(e) => { e.target && track.cover ? (e.target as HTMLImageElement).src = store.getters['instance/absoluteUrl'](track.cover.urls.medium_square_crop) : null }"
       >
       <img
         v-else-if="track.album?.cover?.urls.original"
         v-lazy="store.getters['instance/absoluteUrl'](track.album.cover.urls.small_square_crop)"
-        alt=""
+        :alt="track.title"
         class="ui artist-track mini image"
         @error="(e) => { e.target && track.album.cover ? (e.target as HTMLImageElement).src = store.getters['instance/absoluteUrl'](track.album.cover.urls.medium_square_crop) : null }"
       >
       <img
         v-else
-        alt=""
+        :alt="track.title"
         class="ui artist-track mini image"
         src="../../../assets/audio/default-cover.png"
       >
@@ -120,7 +110,6 @@ const actionsButtonLabel = computed(() => t('components.audio.track.MobileRow.bu
     </div>
     <track-favorite-icon
       v-if="store.state.auth.authenticated"
-      ghost
       tiny
       :class="[
         'meta',
@@ -133,20 +122,10 @@ const actionsButtonLabel = computed(() => t('components.audio.track.MobileRow.bu
       :track="track"
     />
     <!-- TODO: Replace with <PlayButton :dropdown-only="true"> after its display is fixed for mobile -->
-    <Button
-      :aria-label="actionsButtonLabel"
-      icon="bi-three-dots-vertical"
-      ghost
-      tiny
-      :class="[
-        'modal-button',
-        'right',
-        'floated',
-        'column',
-        'mobile',
-        { 'with-art': showArt },
-      ]"
-      @click.prevent.exact="emit('open-modal', track, index)"
+    <play-button
+      :dropdown-only="true"
+      :is-playable="track.is_playable"
+      :track="track"
     />
   </div>
 </template>

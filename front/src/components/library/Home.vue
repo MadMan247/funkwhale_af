@@ -10,7 +10,6 @@ import ChannelsWidget from '~/components/audio/ChannelsWidget.vue'
 import PlaylistWidget from '~/components/playlists/Widget.vue'
 import TrackWidget from '~/components/audio/track/Widget.vue'
 import AlbumWidget from '~/components/album/Widget.vue'
-import ArtistWidget from '~/components/artist/Widget.vue'
 import Header from '~/components/ui/Header.vue'
 import Layout from '~/components/ui/Layout.vue'
 
@@ -74,36 +73,36 @@ fetchData()
       page-heading
       :h1="t('components.Sidebar.header.explore')"
     />
-    <album-widget
-      :filters="{scope: scope, playable: true, ordering: '-creation_date', ...qualityFilters}"
-      :limit="4"
-      :title="t('components.library.Home.header.recentlyAdded')"
-    />
     <track-widget
       :title="t('components.library.Home.header.recentlyListened')"
       :url="'history/listenings/'"
-      :filters="{ scope, ordering: '-creation_date', ...qualityFilters }"
+      :filters="{ scope: scope, ordering: '-creation_date', ...qualityFilters }"
       :websocket-handlers="['Listen']"
-    />
-    <playlist-widget
-      :url="'playlists/'"
-      :filters="{scope: scope, playable: true, ordering: '-modification_date', limit: 4}"
-      :title="t('components.library.Home.header.playlists')"
     />
     <track-widget
       :title="t('components.library.Home.header.recentlyFavorited')"
       :url="'favorites/tracks/'"
-      :filters="{scope: scope, ordering: '-creation_date'}"
+      :filters="{ scope: scope, ordering: '-creation_date' }"
+    />
+    <album-widget
+      :filters="{ scope: scope, include_channels: true, playable: true, ordering: '-creation_date', ...qualityFilters }"
+      :limit="4"
+      :title="t('components.library.Home.header.recentlyAdded')"
+    />
+    <playlist-widget
+      :url="'playlists/'"
+      :filters="{ scope: scope, playable: true, ordering: '-modification_date', limit: 4 }"
+      :title="t('components.library.Home.header.playlists')"
     />
     <channels-widget
       :limit="4"
-      :filters="{ordering: '-creation_date', external: 'false'}"
+      :filters="{ ordering: '-creation_date', external: 'false', content_category: 'music' }"
       :title="t('components.library.Home.header.newChannels')"
       :show-modification-date="true"
     />
-    <artist-widget
+    <channels-widget
       :limit="4"
-      :filters="{playable: true, ordering: '-creation_date', include_channels: true, content_category: 'podcast'}"
+      :filters="{ playable: true, ordering: '-creation_date', content_category: 'podcast' }"
       title="Podcasts hosted on Funkwhale"
     />
   </Layout>

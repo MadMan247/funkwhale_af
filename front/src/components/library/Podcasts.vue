@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { OrderingProps } from '~/composables/navigation/useOrdering'
-import type { Artist, BackendResponse } from '~/types'
+import type { PaginatedChannelList } from '~/types'
+import { type operations } from '~/generated/types.ts'
 import type { RouteRecordName } from 'vue-router'
 import type { OrderingField } from '~/store/ui'
 
@@ -15,9 +16,9 @@ import { useModal } from '~/ui/composables/useModal.ts'
 
 import axios from 'axios'
 
+import ChannelsWidget from '~/components/audio/ChannelsWidget.vue'
 import RemoteSearchForm from '~/components/RemoteSearchForm.vue'
 import ChannelForm from '~/components/audio/ChannelForm.vue'
-import ArtistCard from '~/components/artist/Card.vue'
 
 import useSharedLabels from '~/composables/locale/useSharedLabels'
 import useOrdering from '~/composables/navigation/useOrdering'
@@ -28,8 +29,8 @@ import { useRouter } from 'vue-router'
 
 
 import Layout from '~/components/ui/Layout.vue'
+import Section from '~/components/ui/Section.vue'
 import Spacer from '~/components/ui/Spacer.vue'
-import Loader from '~/components/ui/Loader.vue'
 import Header from '~/components/ui/Header.vue'
 import Card from '~/components/ui/Card.vue'
 import Button from '~/components/ui/Button.vue'
@@ -43,12 +44,14 @@ interface Props extends OrderingProps {
   scope?: 'me' | 'all'
 
   // TODO(wvffle): Remove after https://github.com/vuejs/core/pull/4512 is merged
-  orderingConfigName?: RouteRecordName
+  orderingConfigName?: RouteRecordName,
+  defaultQuery?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   scope: 'all',
-  orderingConfigName: undefined
+  orderingConfigName: undefined,
+  defaultQuery: ''
 })
 
 const page = usePage()
@@ -61,11 +64,14 @@ const submittable = ref(false)
 
 const tags = useRouteQuery<string[]>('tag', [])
 
+const subscribedQuery = ref(props.defaultQuery)
 const q = useRouteQuery('query', '')
 const query = ref(q.value)
 syncRef(q, query, { direction: 'ltr' })
 
-const result = ref<BackendResponse<Artist>>()
+const result = ref<PaginatedChannelList>()
+
+const widgetKey = ref(new Date().toLocaleString())
 
 const orderingOptions: [OrderingField, keyof typeof sharedLabels.filters][] = [
   ['creation_date', 'creation_date'],
@@ -81,20 +87,18 @@ const { onOrderingUpdate, orderingString, paginateBy, ordering, orderingDirectio
 const isLoading = ref(false)
 const fetchData = async () => {
   isLoading.value = true
-  const params = {
+  const params : operations['get_channels']['parameters']['query'] = {
     scope: props.scope,
     page: page.value,
     page_size: paginateBy.value,
     q: query.value,
-    ordering: orderingString.value,
-    tag: tags.value,
-    include_channels: 'true',
-    content_category: 'podcast'
+    ordering: [orderingString.value] as ("creation_date" | "modification_date" | "-creation_date" | "-modification_date" | "-random" | "random")[],
+    tag: tags.value
   }
 
   const measureLoading = logger.time('Fetching podcasts')
   try {
-    const response = await axios.get('artists/', {
+    const response = await axios.get<PaginatedChannelList>('channels/', {
       params,
       paramsSerializer: {
         indexes: null
@@ -139,6 +143,9 @@ const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value]
 const { isOpen: subscribeIsOpen, to: subscribe } = useModal('subscribe')
 const { isOpen: channelIsOpen } = useModal('channel')
 const { to: upload } = useModal('upload')
+
+const reloadWidget = () => (widgetKey.value = new Date().toLocaleString())
+const showSubscribeModal = ref(false)
 </script>
 
 <template>
@@ -146,6 +153,66 @@ const { to: upload } = useModal('upload')
     stack
     main
   >
+    <Spacer no-size />
+    <Section
+      v-if="store.state.auth.authenticated"
+      :h1="t('components.library.Podcasts.header.title')"
+      :action="{
+        text: t('views.channels.SubscriptionsList.link.addNew'),
+        onClick: () => { showSubscribeModal = true },
+        primary: true,
+        icon: 'bi-plus'
+      }"
+      large-section-heading
+    >
+      <Modal
+        v-model="showSubscribeModal"
+        :title="t('views.channels.SubscriptionsList.modal.subscription.header')"
+      >
+        <div
+          ref="modalContent"
+          class="scrolling content"
+        >
+          <remote-search-form
+            initial-type="both"
+            :show-submit="false"
+            :standalone="false"
+            :redirect="true"
+            @subscribed="showSubscribeModal = false; reloadWidget()"
+          />
+        </div>
+        <template #actions>
+          <Button
+            secondary
+            @click="showSubscribeModal = false"
+          >
+            {{ t('views.channels.SubscriptionsList.button.cancel') }}
+          </Button>
+          <Button
+            form="remote-search"
+            type="submit"
+            icon="bi-bookmark-check-fill"
+            primary
+          >
+            {{ t('views.channels.SubscriptionsList.button.subscribe') }}
+          </Button>
+        </template>
+      </Modal>
+      <Spacer no-size />
+      <inline-search-bar
+        v-if="store.state.auth.authenticated"
+        v-model="subscribedQuery"
+        :placeholder="labels.searchPlaceholder"
+        @search="reloadWidget"
+      />
+      <channels-widget
+        v-if="store.state.auth.authenticated"
+        :key="widgetKey"
+        :limit="4"
+        :show-modification-date="true"
+        :filters="{q: subscribedQuery, subscribed: 'true', content_category:'podcast'}"
+      />
+    </Section>
     <Header
       page-heading
       :h1="t('components.library.Podcasts.header.browse')"
@@ -177,7 +244,7 @@ const { to: upload } = useModal('upload')
         :set="model => ({
           currents: tags.map(tag => ({ type: 'custom' as const, label: tag })),
           others: dataStore.tags().value
-            .filter(({ name }) => result?.results?.some((object) => object.tags?.includes(name)) && !tags.includes(name))
+            .filter(({ name }) => result?.results?.some((object) => object.artist.tags?.includes(name)) && !tags.includes(name))
             .map(({ name }) => ({ type: 'preset' as const, label: name })),
         })"
         :label="t('components.library.Podcasts.label.tags')"
@@ -257,11 +324,11 @@ const { to: upload } = useModal('upload')
       grid
       style="display:flex; flex-wrap:wrap; gap: 32px; margin-top:32px;"
     >
-      <Loader v-if="isLoading" />
-      <artist-card
-        v-for="artist in result.results"
-        :key="artist.id"
-        :artist="artist"
+      <channels-widget
+        :key="widgetKey"
+        :limit="paginateBy"
+        :show-modification-date="true"
+        :filters="{q: query, subscribed: 'false', content_category:'podcast'}"
       />
     </Layout>
     <Layout

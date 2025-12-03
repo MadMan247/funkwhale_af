@@ -285,7 +285,7 @@ whenever(() => store.state.auth.authenticated, () => {
       <channels-widget
         :show-modification-date="true"
         :limit="10"
-        :filters="{ordering: '-creation_date', external: 'false'}"
+        :filters="{ordering: '-creation_date', external: 'false', content_category:'music'}"
       />
     </Section>
     <Spacer />

@@ -22,7 +22,7 @@ TAG_FILTER = common_filters.MultipleQueryFilter(method=filter_tags)
 class ChannelFilter(moderation_filters.HiddenContentFilterSet):
     q = fields.SearchFilter(
         search_fields=[
-            "artist_credit__artist__name",
+            "artist__name",
             "actor__summary",
             "actor__preferred_username",
         ]
@@ -40,6 +40,9 @@ class ChannelFilter(moderation_filters.HiddenContentFilterSet):
             ("artist__modification_date", "modification_date"),
             ("?", "random"),
         )
+    )
+    content_category = django_filters.CharFilter(
+        field_name="_", method="filter_content_category"
     )
 
     class Meta:
@@ -73,6 +76,12 @@ class ChannelFilter(moderation_filters.HiddenContentFilterSet):
             queryset = queryset.exclude(query)
 
         return queryset
+
+    def filter_content_category(self, queryset, name, value):
+        if value not in ["music", "podcast"]:
+            return queryset
+
+        return queryset.filter(artist__content_category=value)
 
 
 class IncludeChannelsFilterSet(django_filters.FilterSet):

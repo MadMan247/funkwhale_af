@@ -127,10 +127,10 @@ const selectedChannel = computed(() => {
 
 const emptyChannelCreateRequest:components['schemas']['ChannelCreateRequest'] = {
   name: store.state.auth.fullUsername,
-  username: store.state.auth.username,
+  username: store.state.auth.username +  "_" + props.filter + "_channel",
   description: null,
   tags: [],
-  content_category: 'music'
+  content_category: props.filter ?? 'music'
 }
 
 const createEmptyChannel = async () => {

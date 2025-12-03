@@ -104,7 +104,7 @@
         "links": "Useful links",
         "login": "Log in",
         "newAlbums": "Recently added albums",
-        "newChannels": "New channels",
+        "newChannels": "New music channels",
         "signup": "Sign up",
         "statistics": "Statistics",
         "welcome": "Welcome to {podName}!"
@@ -1726,7 +1726,7 @@
       },
       "Home": {
         "header": {
-          "newChannels": "New channels",
+          "newChannels": "New music channels",
           "playlists": "Playlists",
           "recentlyAdded": "Recently added",
           "recentlyFavorited": "Recently favourited",

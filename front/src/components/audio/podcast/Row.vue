@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { Track, Album, Playlist, Library, Channel, Actor, Cover, ArtistCredit } from '~/types'
 import type { PlayOptionsProps } from '~/composables/audio/usePlayOptions'
-import { getArtistCoverUrl } from '~/utils/utils'
 
 import { ref } from 'vue'
 
@@ -81,39 +80,26 @@ await fetchData()
   >
     <div
       v-if="showArt"
-      class="image left floated column"
       role="button"
       @click.prevent.exact="activateTrack(track, index)"
     >
       <img
         v-if="track.cover?.urls.original"
         v-lazy="store.getters['instance/absoluteUrl'](track.cover.urls.small_square_crop)"
-        alt=""
+        :alt="track.title"
         class="ui artist-track mini image"
         @error="(e) => { e.target && track.cover ? (e.target as HTMLImageElement).src = store.getters['instance/absoluteUrl'](track.cover.urls.medium_square_crop) : null }"
       >
       <img
-        v-if="track.album?.cover?.urls.original"
+        v-else-if="track.album?.cover?.urls.original"
         v-lazy="store.getters['instance/absoluteUrl'](track.album.cover.urls.small_square_crop)"
-        alt=""
+        :alt="track.title"
         class="ui artist-track mini image"
         @error="(e) => { e.target && track.album.cover ? (e.target as HTMLImageElement).src = store.getters['instance/absoluteUrl'](track.album.cover.urls.medium_square_crop) : null }"
       >
       <img
-        v-else-if="track.artist_credit.length && track.artist_credit[0]?.artist.cover"
-        v-lazy="getArtistCoverUrl(track.artist_credit)"
-        alt=""
-        class="ui artist-track mini image"
-      >
-      <img
-        v-else-if="defaultCover"
-        v-lazy="store.getters['instance/absoluteUrl'](defaultCover.urls.small_square_crop)"
-        alt=""
-        class="ui artist-track mini image"
-      >
-      <img
         v-else
-        alt=""
+        :alt="track.title"
         class="ui artist-track mini image"
         src="../../../assets/audio/default-cover.png"
       >
@@ -138,15 +124,8 @@ await fetchData()
       class="meta right floated column"
     >
       <play-button
-        class="play-button basic icon"
         :dropdown-only="true"
         :is-playable="track.is_playable"
-        discrete
-        :dropdown-icon-classes="[
-          'ellipsis',
-          'vertical',
-          'large really discrete',
-        ]"
         :track="track"
       />
     </div>

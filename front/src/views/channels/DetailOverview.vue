@@ -143,7 +143,7 @@ const { to, isOpen } = useModal('album')
         </Link>
       </template>
       <template v-else>
-        <Loader />
+        <Loader :container="false" />
         <h3 class="ui header">
           {{ t('views.channels.DetailOverview.header.uploadsProcessing') }}
         </h3>
@@ -159,8 +159,7 @@ const { to, isOpen } = useModal('album')
       :key="String(episodesKey) + 'entries'"
       :is-podcast="isPodcast"
       :default-cover="object.artist?.cover || null"
-      :limit="25"
-      :filters="{channel: object.uuid, ordering: '-creation_date', page_size: '25'}"
+      :filters="{channel: object.uuid, ordering: '-creation_date'}"
     >
       <h2 class="ui header">
         <span

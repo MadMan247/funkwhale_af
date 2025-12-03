@@ -2030,6 +2030,10 @@ paths:
       operationId: get_channels
       parameters:
       - in: query
+        name: content_category
+        schema:
+          type: string
+      - in: query
         name: external
         schema:
           type: boolean
