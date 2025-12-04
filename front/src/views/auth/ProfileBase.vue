@@ -99,9 +99,6 @@ const tabs = computed(() => [
 )])
 
 const isOpen = useModal('artist-description').isOpen
-
-const follow = computed(() => store.getters['users/follow'](object.value?.fid))
-const isFollowing = computed(() => follow.value && follow.value.approved === true)
 </script>
 
 <template>
@@ -224,10 +221,8 @@ const isFollowing = computed(() => follow.value && follow.value.approved === tru
         :actor="object"
       />
     </Header>
-    <Nav
-      v-if="isFollowing"
-      v-model="tabs"
-    />
+
+    <Nav v-model="tabs" />
 
     <router-view
       :object="object"
