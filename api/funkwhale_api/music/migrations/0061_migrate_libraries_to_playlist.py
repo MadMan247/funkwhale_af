@@ -157,7 +157,7 @@ def check_succefull_migration(apps, schema_editor):
 
     for actor in Actor.objects.all():
         not_build_in_libs = (
-            actor.playlists.count()
+            actor.playlists.distinct().count()
             + actor.libraries.filter(channel__isnull=False).count()
         )
 
