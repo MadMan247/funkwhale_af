@@ -136,7 +136,9 @@ def migrate_libraries_to_playlist(apps, schema_editor):
                     ),
                 },
             )
-            for library in actor.libraries.filter(privacy_level=privacy_level):
+            for library in actor.libraries.filter(
+                privacy_level=privacy_level, channel__isnull=True
+            ):
                 library.uploads.all().update(library=build_in_lib)
                 library.delete
 
