@@ -10,23 +10,28 @@ import uuid
 
 def insert_tracks_to_playlist(apps, playlist, uploads):
     PlaylistTrack = apps.get_model("playlists", "PlaylistTrack")
-    uploads_to_update = []
+    playlist_tracks = []
+
     for i, upload in enumerate(uploads):
         if upload.track:
-            PlaylistTrack.objects.create(
-                creation_date=playlist.creation_date,
-                playlist=playlist,
-                track=upload.track,
-                index=0 + i,
-                uuid=(new_uuid := uuid.uuid4()),
-                fid=federation_utils.full_url(
-                    reverse(
-                        "federation:music:playlist-tracks-detail",
-                        kwargs={"uuid": new_uuid},
-                    )
-                ),
+            new_uuid = uuid.uuid4()
+            playlist_tracks.append(
+                PlaylistTrack(
+                    creation_date=playlist.creation_date,
+                    playlist=playlist,
+                    track=upload.track,
+                    index=i,
+                    uuid=new_uuid,
+                    fid=federation_utils.full_url(
+                        reverse(
+                            "federation:music:playlist-tracks-detail",
+                            kwargs={"uuid": new_uuid},
+                        )
+                    ),
+                )
             )
 
+    PlaylistTrack.objects.bulk_create(playlist_tracks, batch_size=2000)
     playlist.library.playlist_uploads.set(uploads)
 
 
@@ -37,10 +42,7 @@ def migrate_libraries_to_playlist(apps, schema_editor):
     Actor = apps.get_model("federation", "Actor")
     Channel = apps.get_model("audio", "Channel")
 
-    to_instance_libs = []
-    to_public_libs = []
-    to_me_libs = []
-    for library in Library.objects.all():
+    for library in Library.objects.select_related("actor").prefetch_related("uploads"):
         if (
             not federation_utils.is_local(library.actor.fid)
             or library.actor.name == "service"
@@ -100,7 +102,7 @@ def migrate_libraries_to_playlist(apps, schema_editor):
 
     # migrate uploads to new built-in libraries
     to_update = []
-    for actor in Actor.objects.all():
+    for actor in Actor.objects.prefetch_related("libraries", "playlists"):
         if (
             not federation_utils.is_local(actor.fid)
             or actor.name == "service"
@@ -135,7 +137,7 @@ def migrate_libraries_to_playlist(apps, schema_editor):
                     library.privacy_level = "me"
                     to_update.append(library)
 
-        Library.objects.bulk_update(to_update, ["privacy_level"], batch_size=1000)
+    Library.objects.bulk_update(to_update, ["privacy_level"], batch_size=1000)
 
 
 def check_succefull_migration(apps, schema_editor):
