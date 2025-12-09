@@ -201,6 +201,7 @@ def test_migrate_libraries_to_playlist(migrator):
     PlaylistTrack = new_apps.get_model("playlists", "PlaylistTrack")
     LibraryFollow = new_apps.get_model("federation", "LibraryFollow")
     Library = new_apps.get_model("music", "Library")
+    Upload = new_apps.get_model("music", "Upload")
 
     # Assertions
 
@@ -230,9 +231,17 @@ def test_migrate_libraries_to_playlist(migrator):
 
     # Verify uploads are migrated in lib.playlist_uploads
     for upload in uploads:
+        upload = Upload.objects.get(pk=upload.pk)
         assert upload.pk in [u.pk for u in playlist.library.playlist_uploads.all()]
         assert upload.pk not in [u.pk for u in playlist.library.uploads.all()]
         assert not playlist.library.uploads.all()
+
+    for upload in uploads:
+        upload = Upload.objects.get(pk=upload.pk)
+        assert upload.library.privacy_level == library.privacy_level
+        assert upload.library.name == library.privacy_level
+        assert upload.library.pk != library.pk
+    # Check upload also in built-in lib
 
     # Test fail but works on real db I don't get why
     # no library are found in the new app

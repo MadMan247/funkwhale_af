@@ -265,13 +265,13 @@ class UploadFilter(audio_filters.IncludeChannelsFilterSet):
     q = fields.SmartSearchFilter(
         config=search.SearchConfig(
             search_fields={
-                "track_artist": {"to": "track__artist__name"},
-                "album_artist": {"to": "track__album__artist__name"},
+                "track_artist": {"to": "track__artist_credit__artist__name"},
+                "album_artist": {"to": "track__album__artist_credit__artist__name"},
                 "album": {"to": "track__album__title"},
                 "title": {"to": "track__title"},
             },
             filter_fields={
-                "artist": {"to": "track__artist__name__iexact"},
+                "artist": {"to": "track__artist_credit__artist__name__iexact"},
                 "mimetype": {"to": "mimetype"},
                 "album": {"to": "track__album__title__iexact"},
                 "title": {"to": "track__title__iexact"},

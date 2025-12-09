@@ -26,12 +26,7 @@ def insert_tracks_to_playlist(apps, playlist, uploads):
                     )
                 ),
             )
-            upload.library = None
-            uploads_to_update.append(upload)
 
-    apps.get_model("music", "Upload").objects.bulk_update(
-        uploads_to_update, fields=["library"], batch_size=1000
-    )
     playlist.library.playlist_uploads.set(uploads)
 
 
@@ -95,14 +90,8 @@ def migrate_libraries_to_playlist(apps, schema_editor):
                 with transaction.atomic():
                     insert_tracks_to_playlist(apps, playlist, uploads)
 
-            if library.privacy_level == "me":
-                to_me_libs.append(library)
-            if library.privacy_level == "instance":
-                to_instance_libs.append(library)
-            if library.privacy_level == "everyone":
-                to_public_libs.append(library)
-
-            library.privacy_level = "me"
+            # this is done later on since we need to keep the privacy_level to migrate to built-in
+            # library.privacy_level = "me"
             library.playlist = playlist
             library.save()
         except Exception as e:
@@ -110,6 +99,7 @@ def migrate_libraries_to_playlist(apps, schema_editor):
             continue
 
     # migrate uploads to new built-in libraries
+    to_update = []
     for actor in Actor.objects.all():
         if (
             not federation_utils.is_local(actor.fid)
@@ -139,18 +129,13 @@ def migrate_libraries_to_playlist(apps, schema_editor):
             for library in actor.libraries.filter(
                 privacy_level=privacy_level, channel__isnull=True
             ):
-                library.uploads.all().update(library=build_in_lib)
-                library.delete
+                if library.pk != build_in_lib.pk:
+                    library.uploads.all().update(library=build_in_lib)
 
-            if privacy_level == "everyone":
-                for lib in to_public_libs:
-                    lib.uploads.all().update(library=build_in_lib)
-            if privacy_level == "instance":
-                for lib in to_instance_libs:
-                    lib.uploads.all().update(library=build_in_lib)
-            if privacy_level == "me":
-                for lib in to_me_libs:
-                    lib.uploads.all().update(library=build_in_lib)
+                    library.privacy_level = "me"
+                    to_update.append(library)
+
+        Library.objects.bulk_update(to_update, ["privacy_level"], batch_size=1000)
 
 
 def check_succefull_migration(apps, schema_editor):
