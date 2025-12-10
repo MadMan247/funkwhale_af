@@ -34,6 +34,7 @@ import Pagination from '~/components/ui/Pagination.vue'
 import Table from '~/components/ui/Table.vue'
 import Slider from '~/components/ui/Slider.vue'
 import Select from '~/components/ui/Select.vue'
+import DangerousButton from '~/components/common/DangerousButton.vue'
 
 interface Props extends SmartSearchProps, OrderingProps {
   object: Actor
@@ -74,7 +75,7 @@ watch(result, r => {
   items.value = r
     ? r.results.map((result, index) => ({
       ...result,
-      selected: items.value.at(index)?.selected || false
+      selected: items.value.find(i => i.uuid === result.uuid)?.selected || false
     }))
     : []
 })
@@ -140,6 +141,7 @@ const submit = async () => {
 
   isLoading.value = false
 }
+
 /// SEARCH
 
 // const { onSearch, query, addSearchToken, getTokenValue, token } = useSmartSearch(props)
@@ -170,6 +172,22 @@ const fetchData = async () => {
   } finally {
     isLoading.value = false
   }
+}
+
+const deleteSelectedUploads = async () => {
+  try {
+    isLoading.value = true
+   await axios.post(`/uploads/action/`, {
+      action: "delete",
+      objects: selectedItems.value.map((upload) => upload.uuid)
+    })
+    await fetchData()
+  } catch (error) {
+    useErrorHandler(error as Error)
+  } finally {
+    isLoading.value = false
+  }
+
 }
 
 const labels = computed(() => ({
@@ -408,6 +426,21 @@ fetchData()
       :label="`Privacy level (${selectedItems.length} items)`"
       style="flex: 1;"
     />
+  </div>
+  <div
+    :class="['default solid raised', $style.toolbox]"
+    style="display: flex; align-items: center; gap: 1rem;"
+  >
+    <DangerousButton
+      :disabled="selectedItems.length === 0 ? true : undefined"
+      :action="deleteSelectedUploads"
+    >
+      {{ t('components.manage.library.UploadsTable.action.delete.label') }} {{ selectedItems.length > 0 ? `(${selectedItems.length})` : '' }}
+      <template #content>
+        {{ t('components.manage.library.UploadsTable.action.delete.warning') }}
+      </template>
+    </DangerousButton>
+    <Spacer grow />
     <Button
       type="submit"
       primary

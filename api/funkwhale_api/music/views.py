@@ -761,6 +761,7 @@ class UploadViewSet(
             "track__album__artist_credit",
             "track__attachment_cover",
         )
+        .distinct()
     )
     serializer_class = serializers.UploadForOwnerSerializer
     permission_classes = [

@@ -95,7 +95,7 @@ class UploadAdmin(admin.ModelAdmin):
         "acoustid_track_id",
         "track__title",
         "track__album__title",
-        "track__artist__name",
+        "track__artist_credit__artist__name",
     ]
     list_filter = ["mimetype", "import_status", "library__privacy_level"]
 
