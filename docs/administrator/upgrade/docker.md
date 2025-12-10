@@ -92,7 +92,7 @@ To update your Postgres container, follow these steps:
 2. Create a backup of your Funkwhale database. We will import this into the new postgres container later.
 
    ```console
-   # docker compose run --rm postgres pg_dump -U postgres postgres > db_dump.sql
+   # docker compose exec postgres pg_dump -U postgres postgres > db_dump.sql
    ```
 
 3. Move the {file}`data/postgres` directory to another location to back it up
