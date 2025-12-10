@@ -9,11 +9,13 @@ import { usePlayer } from '~/composables/audio/player'
 import { useQueue } from '~/composables/audio/queue'
 import { useStore } from '~/store'
 
+import { generateTrackCreditString, getArtistCoverUrl } from '~/utils/utils'
+import { useFallbackImage } from '~/composables/useFallbackImage'
+
 import usePlayOptions from '~/composables/audio/usePlayOptions'
 
 import TrackFavoriteIcon from '~/components/favorites/TrackFavoriteIcon.vue'
 import TrackModal from '~/components/audio/track/Modal.vue'
-import { generateTrackCreditString, getArtistCoverUrl } from '~/utils/utils'
 
 interface Props extends PlayOptionsProps {
   track: Track
@@ -57,6 +59,8 @@ const { activateTrack } = usePlayOptions(props)
 const { t } = useI18n()
 const store = useStore()
 
+const { onCoverError } = useFallbackImage()
+
 const actionsButtonLabel = computed(() => t('components.audio.podcast.MobileRow.button.actions'))
 </script>
 
@@ -77,14 +81,14 @@ const actionsButtonLabel = computed(() => t('components.audio.podcast.MobileRow.
         v-lazy="store.getters['instance/absoluteUrl'](track.album.cover.urls.small_square_crop)"
         alt=""
         class="ui artist-track mini image"
-        @error="(e) => { e.target && track.album.cover ? (e.target as HTMLImageElement).src = store.getters['instance/absoluteUrl'](track.album.cover.urls.medium_square_crop) : null }"
+        @error="(e) => onCoverError(e, track.album)"
       >
       <img
         v-else-if="track.cover"
         v-lazy="store.getters['instance/absoluteUrl'](track.cover.urls.small_square_crop)"
         alt=""
         class="ui artist-track mini image"
-        @error="(e) => { e.target && track.cover ? (e.target as HTMLImageElement).src = store.getters['instance/absoluteUrl'](track.cover.urls.medium_square_crop) : null }"
+        @error="(e) => onCoverError(e, track)"
       >
       <img
         v-else-if="!!track.artist_credit.length && track.artist_credit[0]?.artist.cover"

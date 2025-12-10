@@ -49,6 +49,7 @@ export type ContentCategory = 'podcast' | 'music'
 export type Actor = components['schemas']['FullActor']
 export type Activity = components['schemas']['Activity']
 export type Album = components['schemas']['Album']
+export type TrackAlbum = components['schemas']['TrackAlbum']
 export type ArtistCredit = components['schemas']['ArtistCredit']
 export type Channel = components['schemas']['Channel']
 export type Library = components['schemas']['Library']
@@ -71,6 +72,7 @@ export type PaginatedChannelList = components['schemas']['PaginatedChannelList']
 export type UserTrackFavorite = components['schemas']['UserTrackFavorite']
 
 export type Artist = components['schemas']['Artist']
+export type ArtistWithAlbums = components['schemas']['ArtistWithAlbums']
 
 
 export type ImportStatus = components['schemas']['ImportStatusEnum']
