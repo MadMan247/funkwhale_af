@@ -14,7 +14,11 @@ application = ProtocolTypeRouter(
                     re_path(
                         "^api/v2/activity$",
                         consumers.InstanceActivityConsumer.as_asgi(),
-                    )
+                    ),
+                    re_path(
+                        "^api/v1/activity$",
+                        consumers.InstanceActivityConsumer.as_asgi(),
+                    ),
                 ]
             )
         ),
