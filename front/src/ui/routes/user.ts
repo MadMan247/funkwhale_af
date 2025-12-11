@@ -1,39 +1,34 @@
 import type { RouteRecordRaw } from 'vue-router'
-
-import store from '~/store'
+import { constraints, redirectOnConstraint } from '~/router/guards'
 
 export default [
   { suffix: '.full', path: '@:username@:domain' },
   { suffix: '', path: '@:username' }
-].map((route) => {
+].map(route => {
   return {
     path: route.path,
     name: `profile${route.suffix}`,
     component: () => import('~/views/auth/ProfileBase.vue'),
-    beforeEnter (to, from, next) {
-      if (!store.state.auth.authenticated && to.query.domain && store.getters['instance/domain'] !== to.query.domain) {
-        return next({ name: 'login', query: { next: to.fullPath } })
-      }
-
-      next()
-    },
     props: true,
-    children: [
-      {
+    beforeEnter: redirectOnConstraint,
+    children: [{
         path: '',
         name: `profile${route.suffix}.overview`,
-        component: () => import('~/views/auth/ProfileOverview.vue')
+        component: () => import('~/views/auth/ProfileOverview.vue'),
+        meta: constraints('onlyMatchingDomain')
       },
       {
         path: 'activity',
         name: `profile${route.suffix}.activity`,
-        component: () => import('~/views/auth/ProfileActivity.vue')
+        component: () => import('~/views/auth/ProfileActivity.vue'),
+        meta: constraints('onlyMatchingDomain')
       },
       {
         path: 'manageUploads',
         name: `profile${route.suffix}.manageUploads`,
-        component: () => import('~/views/auth/ManageUploads.vue')
+        component: () => import('~/views/auth/ManageUploads.vue'),
+        meta: constraints('onlyOwnProfile', 'onlyMatchingDomain')
       }
     ]
   }
-}) as RouteRecordRaw[]
+}) satisfies RouteRecordRaw[]

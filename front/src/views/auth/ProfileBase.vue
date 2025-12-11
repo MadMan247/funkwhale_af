@@ -24,6 +24,7 @@ import Link from '~/components/ui/Link.vue'
 import Nav from '~/components/ui/Nav.vue'
 import Alert from '~/components/ui/Alert.vue'
 import Modal from '~/components/ui/Modal.vue'
+import { matchedConstraint } from '~/router/guards'
 
 interface Props {
   username: string
@@ -82,21 +83,16 @@ watch(props, fetchData, { immediate: true })
 
 const { copy, copied, isSupported } = useClipboard()
 
-const tabs = computed(() => [
-{
+const tabs = computed(() => [{
   title: t('views.auth.ProfileBase.link.overview'),
   to: { name: props.domain ? 'profile.full.overview' : 'profile.overview', params: routerParams.value }
 }, {
   title: t('views.auth.ProfileBase.link.activity'),
   to: { name: props.domain ? 'profile.full.activity' : 'profile.activity', params: routerParams.value }
-}, ...(
-  store.state.auth.authenticated && fullUsername.value === store.state.auth.fullUsername
-    ? [{
-      title: t('views.auth.ProfileBase.link.manageUploads'),
-      to: { name: 'profile.manageUploads', params: routerParams.value }
-    }]
-    : []
-)])
+}, {
+  title: t('views.auth.ProfileBase.link.manageUploads'),
+  to: { name: 'profile.manageUploads', params: routerParams.value }
+}].filter(tab => matchedConstraint(tab.to)?.isShowingLink !== false))
 
 const isOpen = useModal('artist-description').isOpen
 </script>
