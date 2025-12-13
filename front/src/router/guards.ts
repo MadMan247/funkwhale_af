@@ -29,12 +29,7 @@ const constraintPresets = {
 export const constraints = (...args: (keyof typeof constraintPresets)[]) => ({ constraints: args })
 
 export const redirectOnConstraint = (to: RouteLocationNormalized, _: RouteLocationNormalized, next: NavigationGuardNext) => {
-  console.log('CONSTRAINT redirectOnConstraint with `to`:', to)
-  console.log('CONSTRAINT', 'auth', store.state.auth.authenticated, 'domain', to.query.domain, 'instance domain', store.getters['instance/domain'])
-
   const constraint = matchedConstraint(to)
-
-  console.log('CONSTRAINT redirectOnConstraint constraint:', constraint)
 
   return constraint
     ? next(constraint.redirectTo)
@@ -50,8 +45,6 @@ export const matchedConstraint = (to: RouteLocationRaw | RouteLocationNormalized
   const resolved = to instanceof Object && 'matched' in to
       ? to as RouteLocationResolvedGeneric
       : router.resolve(to)
-
-    console.log('CONSTRAINT resolved:', resolved  ) //  matched routes do not contain any meta fields!
 
   return resolved.matched.flatMap(r =>
     ('meta' in r && 'constraints' in r.meta ? r.meta.constraints : []) as (keyof typeof constraintPresets)[]
