@@ -220,6 +220,15 @@ const store: Module<State, RootState> = {
   mutations: {
     settings: (state, value) => {
       merge(state.settings, value)
+
+      // Reload nodeinfo in the background because the backend may update nodeinfo when settings change
+      axios.get('instance/nodeinfo/2.1/')
+        .then(resp => {
+          if (resp?.data) {
+            state.nodeinfo = resp.data
+          }
+        })
+        .catch(err => logger.error('Error while fetching nodeinfo after settings update', err.response?.data ?? err))
     },
     nodeinfo: (state, value) => {
       state.nodeinfo = value

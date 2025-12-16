@@ -84,6 +84,9 @@ const save = async () => {
 
         if (files && files.length > 0 && files[0] != null) {
           data[setting.identifier] = files[0]
+        } else if ((values[setting.identifier] as string) === '') {
+          // Clear the image
+          data[setting.identifier] = new File([], '')
         }
       } else {
         data[setting.identifier] = values[setting.identifier] as string
@@ -219,26 +222,41 @@ const save = async () => {
           </option>
         </select>
         <div v-else-if="setting.field.widget.class === 'ImageWidget'">
-          <!-- TODO: Implement image input https://dev.funkwhale.audio/funkwhale/funkwhale/-/issues/2512 -->
-
-          <!-- @vue-ignore -->
-          <Input
+          <!-- TODO: Implement modern image input https://dev.funkwhale.audio/funkwhale/funkwhale/-/issues/2512 -->
+          <input
             :id="setting.identifier"
             :ref="setFileRef(setting.identifier)"
             type="file"
-          />
+          >
 
-          <div v-if="values[setting.identifier]">
+          <label
+            v-if="values[setting.identifier]"
+            for="clear-banner-image"
+            style="position: relative; width: 100%; cursor: pointer;"
+          >
+            <!-- Image is uploaded -->
             <h3 class="ui header">
               {{ t('components.admin.SettingsGroup.header.image') }}
             </h3>
             <img
               v-if="values[setting.identifier]"
               class="ui image"
+              style="max-height: 100px; "
               alt=""
               :src="store.getters['instance/absoluteUrl'](values[setting.identifier])"
             >
-          </div>
+            <Button
+              id="clear-banner-image"
+              destructive
+              ghost
+              min-content
+              low-height
+              style="position: absolute; inset: 0 0 0 auto;"
+              @click="() => { values[setting.identifier] = ''; fileRefs![setting.identifier]!.value = '' }"
+            >
+              {{ t('components.library.EditForm.button.clear') }}
+            </Button>
+          </label>
         </div>
         <Spacer />
       </div>
