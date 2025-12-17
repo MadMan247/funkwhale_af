@@ -4162,7 +4162,8 @@
           "channelTracks": "Tracks",
           "domainView": "View on {domain}",
           "mirrored": "Mirrored from {domain}",
-          "moderation": "Open in moderation interface"
+          "moderation": "Open in moderation interface",
+          "owner": "Owned by "
         },
         "meta": {
           "episodes": "No episodes | {n} episode | {n} episodes",
@@ -4562,38 +4563,6 @@
               "rejected": "Rejected"
             }
           }
-        }
-      },
-      "LibraryBase": {
-        "button": {
-          "edit": "Edit",
-          "upload": "Upload"
-        },
-        "description": {
-          "sharingLink": "Share this link with other users so they can request access to this library by copy-pasting it in their pod search bar."
-        },
-        "label": {
-          "instance": "Restricted",
-          "private": "Private",
-          "public": "Public",
-          "sharingLink": "Sharing link"
-        },
-        "link": {
-          "albums": "Albums",
-          "artists": "Artists",
-          "domain": "View on {domain}",
-          "moderation": "Open in moderation interface",
-          "owner": "Owned by {username}",
-          "tracks": "Tracks"
-        },
-        "meta": {
-          "tracks": "No tracks | {n} track | {n} tracks"
-        },
-        "title": "Library",
-        "tooltip": {
-          "instance": "This library is restricted to users on this pod only",
-          "private": "This library is private and your approval from its owner is needed to access its content",
-          "public": "This library is public and you can access its content freely"
         }
       }
     },

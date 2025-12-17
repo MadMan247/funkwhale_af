@@ -207,39 +207,6 @@ export default [
         name: 'library.uploads.detail',
         props: true,
         component: () => import('~/components/library/UploadDetail.vue')
-      },
-      {
-        // browse a single library via it's uuid
-        path: ':id([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})',
-        props: true,
-        component: () => import('~/views/library/LibraryBase.vue'),
-        children: [
-          {
-            path: '',
-            name: 'library.detail',
-            component: () => import('~/views/library/DetailOverview.vue')
-          },
-          {
-            path: 'albums',
-            name: 'library.detail.albums',
-            component: () => import('~/views/library/DetailAlbums.vue')
-          },
-          {
-            path: 'tracks',
-            name: 'library.detail.tracks',
-            component: () => import('~/views/library/DetailTracks.vue')
-          },
-          {
-            path: 'edit',
-            name: 'library.detail.edit',
-            component: () => import('~/views/library/Edit.vue')
-          },
-          {
-            path: 'upload',
-            name: 'library.detail.upload',
-            redirect: () => '/upload'
-          }
-        ]
       }
     ]
   }

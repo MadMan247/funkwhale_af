@@ -41,6 +41,10 @@ const fetchData = async () => {
 
 fetchData()
 
+const emit = defineEmits<{
+  purged: [status: ImportStatus]
+}>()
+
 const purge = async (status: ImportStatus) => {
   try {
     await axios.post('uploads/action/', {
@@ -49,7 +53,8 @@ const purge = async (status: ImportStatus) => {
       filters: { import_status: status }
     })
 
-    fetchData()
+    await fetchData()
+    emit('purged', status)
   } catch (error) {
     useErrorHandler(error as Error)
   }
@@ -61,148 +66,148 @@ const purgeErroredFiles = () => purge('errored')
 </script>
 
 <template>
-  <Loader v-if="isLoading" />
-  <Alert
-    data-percent="progress"
-    :green="progress < 60"
-    :yellow="progress >= 60 && progress < 96"
-    :red="progress >= 95"
-    style="width: 100%;"
-  >
-    <h3>{{ t('views.content.libraries.Quota.header.currentUsage') }}</h3>
-    <div :class="['ui', {'success': progress < 60}, {'warning': progress >= 60 && progress < 96}, {'error': progress >= 95}, 'progress']">
-      <div
-        class="bar"
-        :style="{width: `${progress}%`}"
-      >
-        <div class="progress">
-          {{ t('views.content.libraries.Quota.label.percentUsed', {progress: humanSize(progress)}) }}
-        </div>
-      </div>
-      <div
-        v-if="quotaStatus"
-        class="label"
-      >
-        {{ t('views.content.libraries.Quota.label.currentUsage', {max: humanSize(quotaStatus.max * 1000 * 1000), currentAmount: humanSize(quotaStatus.current * 1000 * 1000)}) }}
-      </div>
-    </div>
-  </Alert>
-  <Layout
-    v-if="quotaStatus"
-    flex
-  >
+  <Layout flex>
+    <Loader v-if="isLoading" />
     <Alert
-      v-if="quotaStatus.pending > 0"
-      yellow
+      data-percent="progress"
+      :green="progress < 60"
+      :yellow="progress >= 60 && progress < 96"
+      :red="progress >= 95"
+      role="progressbar"
+      :style="quotaStatus?.errored > 0 || quotaStatus?.skipped > 0 || quotaStatus?.pending > 0 ? 'min-width: calc(100% - 402px);' : 'width: 100%;'"
     >
-      <div class="statistic">
-        <div class="value">
-          {{ humanSize(quotaStatus.pending * 1000 * 1000) }}
+      <h3>{{ t('views.content.libraries.Quota.header.currentUsage') }}</h3>
+      <div :class="['ui', {'success': progress < 60}, {'warning': progress >= 60 && progress < 96}, {'error': progress >= 95}, 'progress']">
+        <div
+          class="bar"
+          :style="{width: `${progress}%`}"
+        >
+          <div class="progress">
+            {{ t('views.content.libraries.Quota.label.percentUsed', {progress: humanSize(progress)}) }}
+          </div>
         </div>
-        <div class="label">
-          {{ t('views.content.libraries.Quota.label.pending') }}
+        <div
+          v-if="quotaStatus"
+          class="label"
+        >
+          {{ t('views.content.libraries.Quota.label.currentUsage', {max: humanSize(quotaStatus.max * 1000 * 1000), currentAmount: humanSize(quotaStatus.current * 1000 * 1000)}) }}
         </div>
       </div>
-      <Spacer />
-      <Layout flex>
-        <Link
-          primary
-          solid
-          low-height
-          :to="{name: 'content.libraries.files', query: {q: compileTokens([{field: 'status', value: 'pending'}])}}"
-        >
-          {{ t('views.content.libraries.Quota.link.viewFiles') }}
-        </Link>
+    </Alert>
+    <Layout
+      v-if="quotaStatus"
+      flex
+    >
+      <Alert
+        v-if="quotaStatus.pending > 0"
+        yellow
+      >
+        <div class="statistic">
+          <div class="value">
+            {{ humanSize(quotaStatus.pending * 1000 * 1000) }}
+          </div>
+          <div class="label">
+            {{ t('views.content.libraries.Quota.label.pending') }}
+          </div>
+        </div>
+        <Spacer />
+        <Layout flex>
+          <Link
+            solid
+            low-height
+            :to="{name: 'profile.manageUploads', query: {query: compileTokens([{field: 'import_status', value: 'pending'}])}}"
+          >
+            {{ t('views.content.libraries.Quota.link.viewFiles') }}
+          </Link>
 
-        <dangerous-button
-          low-height
-          :action="purgePendingFiles"
-          :title="t('views.content.libraries.Quota.modal.purgePending.header')"
-        >
-          {{ t('views.content.libraries.Quota.button.purge') }}
-          <template #content>
-            {{ t('views.content.libraries.Quota.modal.purgePending.content.description') }}
-          </template>
-          <template #confirm>
+          <dangerous-button
+            low-height
+            :action="purgePendingFiles"
+            :title="t('views.content.libraries.Quota.modal.purgePending.header')"
+          >
             {{ t('views.content.libraries.Quota.button.purge') }}
-          </template>
-        </dangerous-button>
-      </Layout>
-    </Alert>
-    <Alert
-      v-if="quotaStatus.skipped > 0"
-      yellow
-    >
-      <div class="ui tiny statistic">
-        <div class="value">
-          {{ humanSize(quotaStatus.skipped * 1000 * 1000) }}
+            <template #content>
+              {{ t('views.content.libraries.Quota.modal.purgePending.content.description') }}
+            </template>
+            <template #confirm>
+              {{ t('views.content.libraries.Quota.button.purge') }}
+            </template>
+          </dangerous-button>
+        </Layout>
+      </Alert>
+      <Alert
+        v-if="quotaStatus.skipped > 0"
+        yellow
+      >
+        <div class="ui tiny statistic">
+          <div class="value">
+            {{ humanSize(quotaStatus.skipped * 1000 * 1000) }}
+          </div>
+          <div class="label">
+            {{ t('views.content.libraries.Quota.label.skipped') }}
+          </div>
         </div>
-        <div class="label">
-          {{ t('views.content.libraries.Quota.label.skipped') }}
-        </div>
-      </div>
-      <Spacer />
-      <Layout flex>
-        <Link
-          primary
-          solid
-          low-height
-          :to="{name: 'content.libraries.files', query: {q: compileTokens([{field: 'status', value: 'skipped'}])}}"
-        >
-          {{ t('views.content.libraries.Quota.link.viewFiles') }}
-        </Link>
-        <dangerous-button
-          low-height
-          :action="purgeSkippedFiles"
-          :title="t('views.content.libraries.Quota.modal.purgeSkipped.header')"
-        >
-          {{ t('views.content.libraries.Quota.button.purge') }}
-          <template #content>
-            {{ t('views.content.libraries.Quota.modal.purgeSkipped.content.description') }}
-          </template>
-          <template #confirm>
+        <Spacer />
+        <Layout flex>
+          <Link
+            solid
+            low-height
+            :to="{name: 'profile.manageUploads', query: {query: compileTokens([{field: 'import_status', value: 'skipped'}])}}"
+          >
+            {{ t('views.content.libraries.Quota.link.viewFiles') }}
+          </Link>
+          <dangerous-button
+            low-height
+            :action="purgeSkippedFiles"
+            :title="t('views.content.libraries.Quota.modal.purgeSkipped.header')"
+          >
             {{ t('views.content.libraries.Quota.button.purge') }}
-          </template>
-        </dangerous-button>
-      </Layout>
-    </Alert>
-    <Alert
-      v-if="quotaStatus.errored > 0"
-      red
-    >
-      <div class="ui tiny danger statistic">
-        <div class="value">
-          {{ humanSize(quotaStatus.errored * 1000 * 1000) }}
+            <template #content>
+              {{ t('views.content.libraries.Quota.modal.purgeSkipped.content.description') }}
+            </template>
+            <template #confirm>
+              {{ t('views.content.libraries.Quota.button.purge') }}
+            </template>
+          </dangerous-button>
+        </Layout>
+      </Alert>
+      <Alert
+        v-if="quotaStatus.errored > 0"
+        red
+      >
+        <div class="ui tiny danger statistic">
+          <div class="value">
+            {{ humanSize(quotaStatus.errored * 1000 * 1000) }}
+          </div>
+          <div class="label">
+            {{ t('views.content.libraries.Quota.label.errored') }}
+          </div>
         </div>
-        <div class="label">
-          {{ t('views.content.libraries.Quota.label.errored') }}
-        </div>
-      </div>
-      <Spacer />
-      <Layout flex>
-        <Link
-          primary
-          solid
-          low-height
-          :to="{name: 'content.libraries.files', query: {q: compileTokens([{field: 'status', value: 'errored'}])}}"
-        >
-          {{ t('views.content.libraries.Quota.link.viewFiles') }}
-        </Link>
-        <dangerous-button
-          low-height
-          :action="purgeErroredFiles"
-          :title="t('views.content.libraries.Quota.modal.purgeErrored.header')"
-        >
-          {{ t('views.content.libraries.Quota.button.purge') }}
-          <template #content>
-            {{ t('views.content.libraries.Quota.modal.purgeErrored.content.description') }}
-          </template>
-          <template #confirm>
+        <Spacer />
+        <Layout flex>
+          <Link
+            solid
+            low-height
+            :to="{name: 'profile.manageUploads', query: {query: compileTokens([{field: 'import_status', value: 'errored'}])}}"
+          >
+            {{ t('views.content.libraries.Quota.link.viewFiles') }}
+          </Link>
+          <dangerous-button
+            low-height
+            :action="purgeErroredFiles"
+            :title="t('views.content.libraries.Quota.modal.purgeErrored.header')"
+          >
             {{ t('views.content.libraries.Quota.button.purge') }}
-          </template>
-        </dangerous-button>
-      </Layout>
-    </Alert>
+            <template #content>
+              {{ t('views.content.libraries.Quota.modal.purgeErrored.content.description') }}
+            </template>
+            <template #confirm>
+              {{ t('views.content.libraries.Quota.button.purge') }}
+            </template>
+          </dangerous-button>
+        </Layout>
+      </Alert>
+    </Layout>
   </Layout>
 </template>
 

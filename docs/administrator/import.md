@@ -36,10 +36,6 @@ docker compose run --rm api funkwhale-manage import_files --help
 
 ## Find your library ID
 
-You need to create a library before you can import music. Follow the instructions in [Create a library](../user/libraries/create.md) to get started.
-
-Once you've created your library, you can find its ID by following these steps:
-
 1. Visit `https://<yourdomain>/content/libraries/` in your browser. This page contains a list of your libraries.
 2. Find the library you want to upload content into. Select {guilabel}`Library details` to open the library details page.
 3. Your library's ID is the long string of letters and numbers shown in the URL bar. Copy the content before the first hyphen (`-`).

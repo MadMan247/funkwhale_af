@@ -16,7 +16,7 @@ Funkwhale is a federated platform. Funkwhale pods can share information between 
 maxdepth: 1
 ---
 
-objects
+privacy
 ```
 
 ## How to use federation in the user interface
@@ -422,7 +422,7 @@ We send the [Like](https://www.w3.org/TR/activitystreams-vocabulary/#dfn-like) o
 {
     "type": "Like",
     "id": "https://burn.patriachy//7b54d361-c513-4756-a085-13f97573237b",
-    ""object": {
+    "object": {
         "Type": "Track",
         "id": "https://Le_Rn.areRacists//aebd2be4-49a1-4ef5-aadf-27bff1001d4d",
     },
@@ -454,7 +454,7 @@ We send the [Dislike](https://www.w3.org/TR/activitystreams-vocabulary/#dfn-disl
 {
     "type": "Dislike",
     "id": "https://burn.patriachy//7b54d361-c513-4756-a085-13f97573237b",
-    ""object": {
+    "object": {
         "Type": "Track",
         "id": "https://Le_Rn.areRacists//aebd2be4-49a1-4ef5-aadf-27bff1001d4d",
     },
@@ -581,23 +581,24 @@ An `ArtistCredit` is a custom object used to store information about how artists
 
 ```{code-block} json
 {
-    "type": "ArtistCredit",
-    "id": "https://test.federation/federation/music/artistcredit/6dc0071c-0186-4f27-a234-fa5858774400",
-    "artist": {
-        "type": "Artist",
-        "id": "https://white.info//6dc0071c-0186-4f27-a234-fa5858774400",
-        "name": "Krav Boca",
-        "published": "2024-12-22T21:54:46.391743+00:00",
-        "musicbrainzId": "6dc0071c-0186-4f27-a234-fa5858774400",
-        "attributedTo": None,
-        "tag": [],
-        "image": None,
-    },
-    "joinphrase": "feat. ",
-    "credit": "Crav Boka",
-    "index": None,
-    "published": "2024-12-22T21:54:46.392309+00:00",
+  "type": "ArtistCredit",
+  "id": "https://test.federation/federation/music/artistcredit/6dc0071c-0186-4f27-a234-fa5858774400",
+  "artist": {
+    "type": "Artist",
+    "id": "https://white.info/6dc0071c-0186-4f27-a234-fa5858774400",
+    "name": "Krav Boca",
+    "published": "2024-12-22T21:54:46.391743+00:00",
+    "musicbrainzId": "6dc0071c-0186-4f27-a234-fa5858774400",
+    "attributedTo": null,
+    "tag": [],
+    "image": null
+  },
+  "joinphrase": "feat. ",
+  "credit": "Crav Boka",
+  "index": null,
+  "published": "2024-12-22T21:54:46.392309+00:00"
 }
+
 
 ```
 
@@ -773,6 +774,8 @@ A `Library` is a custom object used to store music collection information. It in
 }
 ```
 
+(audio)=
+
 ### Audio
 
 ```{note}
@@ -807,6 +810,7 @@ An `Audio` object is a custom object used to store upload information. It extend
     - Integer
     - The bitrate of the audio in bytes/s
   * - `duration`*
+    - String
     - The duration of the audio as defined in [as](https://www.w3.org/TR/activitystreams-vocabulary/#dfn-duration)
   * - `library`*
     - String (URI)
@@ -834,7 +838,7 @@ An `Audio` object is a custom object used to store upload information. It extend
   "name": "Krav Boca - Mortem",
   "size": 8656581,
   "bitrate": 320000,
-  "duration": "PT1312S,
+  "duration": "PT1312S",
   "library": "https://awesome.music/federation/music/libraries/dc702491-f6ce-441b-9da0-cecbed08bcc6",
   "updated": "2018-10-02T19:49:35.646372+00:00",
   "published": "2018-10-02T19:49:35.646359+00:00",
@@ -849,7 +853,7 @@ An `Audio` object is a custom object used to store upload information. It extend
 
 ### AudioCollection
 
-An `AudioCollection` object is a custom object used to send a collection of ['Audio'](###Audio) objects for bulk update. The object is never saved on db, it's only used for updating `Upload` in bulk.
+An `AudioCollection` object is a custom object used to send a collection of ['Audio'](#audio) objects for bulk update. The object is never saved on db, it's only used for updating `Upload` in bulk.
 
 #### Properties
 
@@ -870,7 +874,7 @@ An `AudioCollection` object is a custom object used to send a collection of ['Au
     - total audio objects in items
   * - `items`*
     - list
-    - a list of ['Audio'](###Audio) objects
+    - a list of ['Audio'](#audio) objects
 ```
 
 #### Example
@@ -906,18 +910,11 @@ An `AudioCollection` object is a custom object used to send a collection of ['Au
 }
 ```
 
-## Custom properties
-
-### attributedTo
-
-Funkwhale uses the `attributedTo` property to denote the actor responsible for an object. If an object has an `attributedTo` attributed, the associated actor can perform activities to it, including [`Update`](#update) and [`Delete`](#delete).
-
-Funkwhale also attributes all objects on a domain with the domain's [Service actor](#service-actor)
-
-## Scapping Collections
+### Playlist
 
 Playlists objects are a custom ordered collection[Ordered Collection](https://www.w3.org/TR/activitystreams-vocabulary/#dfn-orderedcollection) containing `PlaylistTracks` objects.
-The `id` of the playlist is the endpoint where playlist information can be gathered. If no page is specified it will only give the playlist metadata :
+
+#### Example
 
 ```{code-block} json
 {
@@ -942,9 +939,37 @@ The `id` of the playlist is the endpoint where playlist information can be gathe
 
 ```
 
-Note that a limited amount of information is send. Full [Playlist](###Playlist) objects are sent through Activities.
+### PlaylistTrack
 
-The [PlaylisTracks](###PlaylistTrack) will be sent in a [CollectionPage](https://www.w3.org/TR/activitystreams-vocabulary/#dfn-collectionpage) if a page is specified in the playlist url :
+An element of a playlist.
+
+#### Example
+
+```{code-block} json
+{
+            "type": "PlaylistTrack",
+            "id": "https://test.federation/federation/music/playlists/2861fc4a-f3b6-4740-8586-c4573140b994",
+            "track": "https://simon.biz//34d56bbd-5096-4ac7-ada9-2d11ea731317",
+            "index": 0,
+            "attributedTo": "https://wallace-salazar.com/users/ryanrachel953",
+            "published": "2024-12-04T11:50:16.625013+00:00",
+            "playlist": "https://test.federation/federation/music/playlists/1efba9b2-8218-4ac2-bdce-f9dd8bbd510c",
+        },
+```
+
+## Custom properties
+
+### attributedTo
+
+Funkwhale uses the `attributedTo` property to denote the actor responsible for an object. If an object has an `attributedTo` attributed, the associated actor can perform activities to it, including [`Update`](#update) and [`Delete`](#delete).
+
+Funkwhale also attributes all objects on a domain with the domain's [Service actor](#service-actor)
+
+## Scapping Collections
+
+The `id` of the playlist is the endpoint where playlist information can be gathered. If no page is specified it will only give the playlist metadata. Note that a limited amount of information is send. Full [Playlist](#playlist) objects are sent through Activities.
+
+The [PlaylisTracks](#playlisttrack) will be sent in a [CollectionPage](https://www.w3.org/TR/activitystreams-vocabulary/#dfn-collectionpage) if a page is specified in the playlist url :
 
 ```{code-block} json
 {

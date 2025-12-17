@@ -6,13 +6,12 @@ users/upload.html, ../user/libraries/content/upload.html
 users/editing.html, ../user/libraries/content/edit.html
 users/account.html, ../user/accounts/index.html
 users/queue.html, ../user/queue/index.html
-users/managing.html, ../user/libraries/index.html
+users/managing.html, ../user/uploads/index.html
 users/channels.html, ../user/channels/index.html
 users/playlists.html, ../user/radios/index.html
 users/favorites.html, ../user/favorites/index.html
 users/radios.html, ../user/radios/index.html
 users/followchannel.html, ../user/channels/follow.html
-users/follow.html, ../user/libraries/follow.html
 users/reports.html, ../user/reports/index.html
 users/builtinplugins.html, ../user/plugins/index.html
 moderator/reports.html, ../moderator/reports/index.html
@@ -53,6 +52,6 @@ translators.html, ../contributor/translation.html
 federation.html, ../developer/federation/index.html
 upgrading.html, ../administrator/upgrade/index.html
 administrator_documentation/upgrade_docs/docker.html, ../../administrator/upgrade/docker.html
-upgrading/0.17.html, ../user/libraries/index.html
+upgrading/0.17.html, ../user/uploads/index.html
 admin/external-storages.html, ../../administrator/configuration/object-storage.html
 admin/external-storage.html#no-resolver-found, ../../administrator/configuration/object-storage.html#troubleshooting

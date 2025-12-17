@@ -47,10 +47,6 @@ const notificationData = computed(() => {
       if (typeof activity.object?.name === 'string' && activity.object.name.startsWith('playlist_')) {
           labelPendingFollow = t('components.notifications.NotificationRow.message.playlistPendingFollow', { username: username.value, library: activity.object.name.slice("playlist_".length) })
         }
-        else {
-          labelPendingFollow = t('components.notifications.NotificationRow.message.libraryPendingFollow', { username: username.value, library: activity.object.name })
-
-        }
         return {
           detailUrl,
           message: labelPendingFollow,
@@ -72,10 +68,6 @@ const notificationData = computed(() => {
         if (typeof activity.object?.name === 'string' && activity.object.name.startsWith('playlist_')) {
           labelFollow = t('components.notifications.NotificationRow.message.playlistFollow', { username: username.value, library: activity.object.name.slice("playlist_".length) })
         }
-        else {
-          labelFollow = t('components.notifications.NotificationRow.message.libraryFollow', { username: username.value, library: activity.object.name })
-
-        }
         return {
           detailUrl,
           message: labelFollow
@@ -84,10 +76,6 @@ const notificationData = computed(() => {
       let labelReject = ""
         if (typeof activity.object?.name === 'string' && activity.object.name.startsWith('playlist_')) {
           labelReject = t('components.notifications.NotificationRow.message.playlistReject', { username: username.value, library: activity.object.name.slice("playlist_".length) })
-        }
-        else {
-          labelReject = t('components.notifications.NotificationRow.message.libraryReject', { username: username.value, library: activity.object.name })
-
         }
       return {
         detailUrl,

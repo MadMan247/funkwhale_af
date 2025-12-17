@@ -1,6 +1,6 @@
 # Create a library
 
-Use the `create_library` command to create new libraries for a given user.
+This should be useless since libraries are created by the backend automatically. Use the `create_library` command to create new libraries for a given user.
 
 ```{list-table}
 :header-rows: 1

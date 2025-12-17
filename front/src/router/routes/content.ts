@@ -28,14 +28,5 @@ export default [
       name: 'content.libraries.index',
       component: () => import('~/views/content/libraries/Home.vue')
     }]
-  },
-  {
-    path: '/content/remote',
-    component: () => import('~/views/content/Base.vue'),
-    children: [{
-      path: '',
-      name: 'content.remote.index',
-      component: () => import('~/views/content/remote/Home.vue')
-    }]
   }
 ] as RouteRecordRaw[]

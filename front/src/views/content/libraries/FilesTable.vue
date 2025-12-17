@@ -291,10 +291,18 @@ const getImportStatusChoice = (importStatus: ImportStatus) => {
         </td>
         <td>
           <a
+            v-if="scope.obj.track.artist_credit?.artist"
             href=""
             class="discrete link"
-            @click.prevent="addSearchToken('artist', scope.obj.track.artist.name)"
-          >{{ truncate(scope.obj.track.artist.name, 20) }}</a>
+            @click.prevent="
+              addSearchToken(
+                'artist',
+                scope.obj.track.artist_credit.artist.name
+              )
+            "
+          >
+            {{ truncate(scope.obj.track.artist_credit.artist.name, 20) }}
+          </a>
         </td>
         <td>
           <a

@@ -83,10 +83,6 @@ Sign-up form customization
 API Requires authentication
    Controls whether {term}`unauthenticated users <Anonymous>` can access content on your pod. If __enabled__, users need to have an account on your pod to access content. If __disabled__, users without an account can listen to content stored in public libraries.
 
-   ```{seealso}
-   {doc}`../../moderator/content/library`.
-   ```
-
 Default permissions
    A list of {term}`permissions` that are added to users by default. If your pod is publicly accessible, you should leave this empty.
 

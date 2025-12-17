@@ -1,7 +1,7 @@
 # Listen to a playlist
 
 ```{note}
-You can only listen to content in libraries you have access to. For more information, see [Follow a library](../libraries/follow).
+You can only listen to content you have access to. You can request access to the playlist content.
 ```
 
 You can listen to your playlists or playlists created by other users of your {term}`pod`.

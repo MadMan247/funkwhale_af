@@ -254,7 +254,7 @@ const renderedDescription = computed(() => {
           </template>
           <span v-if="object.actor">
             <i class="bi bi-dot" />
-            {{ t('views.library.LibraryBase.link.owner') }}
+            {{ t('views.channels.DetailBase.link.owner') }}
           </span>
           <Spacer
             h

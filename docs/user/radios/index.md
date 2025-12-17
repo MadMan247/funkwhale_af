@@ -4,7 +4,7 @@ Radios are a great way to discover new music or rediscover old favorites. A radi
 
 Funkwhale offers the following radios out of the box:
 
-- **Your content** – listen to content from [libraries](../libraries/index.md) you own.
+- **Your content** – listen to content you own.
 - **Favorites** – listen to tracks from your [favorites](../favorites/index.md) list.
 - **Random** – discover something new by letting Funkwhale choose tracks at random.
 - **Recently Added** – listen to the latest content added to your {term}`pod`.

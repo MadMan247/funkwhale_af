@@ -5,7 +5,6 @@ import { useStore } from '~/store'
 
 import axios from 'axios'
 
-import LibraryCard from '~/views/content/remote/Card.vue'
 import Quota from './Quota.vue'
 
 import useErrorHandler from '~/composables/useErrorHandler'

@@ -22,6 +22,7 @@ import useSharedLabels from '~/composables/locale/useSharedLabels'
 import useOrdering from '~/composables/navigation/useOrdering'
 import useErrorHandler from '~/composables/useErrorHandler'
 import usePage from '~/composables/navigation/usePage'
+import Quota from '~/views/content/libraries/Quota.vue'
 
 import Layout from '~/components/ui/Layout.vue'
 import Spacer from '~/components/ui/Spacer.vue'
@@ -362,7 +363,7 @@ const searchFilters = ref({
   }
 } as const)
 
-// Reload data when changing page
+// Reload data when changing page data
 watch(page, fetchData)
 
 // Reset page and reload data when privacy level or import status changes
@@ -372,7 +373,12 @@ watch([token('privacy_level'), token('import_status')], () => {
   } else {
     fetchData()
   }
-});
+})
+
+const handlePurged = () => {
+  page.value = 1
+  fetchData()
+}
 
 onOrderingUpdate(fetchData)
 fetchData()
@@ -380,6 +386,8 @@ fetchData()
 
 <template>
   <Spacer />
+  <quota @purged="handlePurged" />
+  <Spacer size="64" />
   <Layout
     form
     flex

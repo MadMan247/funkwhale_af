@@ -14,7 +14,7 @@ caption: User documentation
 user/index
 user/accounts/index
 user/channels/index
-user/libraries/index
+user/uploads/index
 user/queue/index
 user/playlists/index
 user/radios/index

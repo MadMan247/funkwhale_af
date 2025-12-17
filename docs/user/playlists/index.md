@@ -24,5 +24,6 @@ maxdepth: 1
 content/add
 content/reorder
 content/remove
+content/download_import
 
 ```

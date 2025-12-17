@@ -1,7 +1,7 @@
 # Listen to a radio
 
 ```{note}
-You can only listen to content in libraries you have access to. For more information, see [Follow a library](../libraries/follow).
+You can only listen to content you have access to.
 ```
 
 You can listen to your radios or public radios created by other users of your {term}`pod`.

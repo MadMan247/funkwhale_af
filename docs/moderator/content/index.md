@@ -9,7 +9,6 @@ maxdepth: 1
 ---
 
 edits
-library
 delete
 
 ```

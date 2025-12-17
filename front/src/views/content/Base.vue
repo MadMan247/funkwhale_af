@@ -9,10 +9,7 @@ import Spacer from '~/components/ui/Spacer.vue'
 const { t } = useI18n()
 const route = useRoute()
 
-const tabs = ref([{
-  title: t('views.content.Base.link.libraries'),
-  to: { name: 'content.libraries.index'}
-},
+const tabs = ref([
 {
   title: t('views.content.Base.link.tracks'),
   to: { name: 'content.libraries.files' }
