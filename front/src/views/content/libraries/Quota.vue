@@ -68,32 +68,23 @@ const purgeErroredFiles = () => purge('errored')
 <template>
   <Layout flex>
     <Loader v-if="isLoading" />
-    <Alert
-      data-percent="progress"
-      :green="progress < 60"
-      :yellow="progress >= 60 && progress < 96"
-      :red="progress >= 95"
-      role="progressbar"
-      :style="quotaStatus?.errored > 0 || quotaStatus?.skipped > 0 || quotaStatus?.pending > 0 ? 'min-width: calc(100% - 402px);' : 'width: 100%;'"
-    >
-      <h3>{{ t('views.content.libraries.Quota.header.currentUsage') }}</h3>
-      <div :class="['ui', {'success': progress < 60}, {'warning': progress >= 60 && progress < 96}, {'error': progress >= 95}, 'progress']">
-        <div
-          class="bar"
-          :style="{width: `${progress}%`}"
-        >
-          <div class="progress">
-            {{ t('views.content.libraries.Quota.label.percentUsed', {progress: humanSize(progress)}) }}
-          </div>
-        </div>
-        <div
-          v-if="quotaStatus"
-          class="label"
-        >
-          {{ t('views.content.libraries.Quota.label.currentUsage', {max: humanSize(quotaStatus.max * 1000 * 1000), currentAmount: humanSize(quotaStatus.current * 1000 * 1000)}) }}
+    <h3>{{ t('views.content.libraries.Quota.header.currentUsage') }}</h3>
+    <div :class="['ui', {'success': progress < 60}, {'warning': progress >= 60 && progress < 96}, {'error': progress >= 95}, 'progress']">
+      <div
+        class="bar"
+        :style="{width: `${progress}%`}"
+      >
+        <div class="progress">
+          {{ t('views.content.libraries.Quota.label.percentUsed', {progress: humanSize(progress)}) }}
         </div>
       </div>
-    </Alert>
+      <div
+        v-if="quotaStatus"
+        class="label"
+      >
+        {{ t('views.content.libraries.Quota.label.currentUsage', {max: humanSize(quotaStatus.max * 1000 * 1000), currentAmount: humanSize(quotaStatus.current * 1000 * 1000)}) }}
+      </div>
+    </div>
     <Layout
       v-if="quotaStatus"
       flex
