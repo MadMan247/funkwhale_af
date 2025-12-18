@@ -130,8 +130,6 @@ class Playlist(federation_models.FederationMixin):
                     ),
                 ),
             )
-        if not self.privacy_level:
-            self.privacy_level = self.actor.user.privacy_level
 
         return super().save(**kwargs)
 

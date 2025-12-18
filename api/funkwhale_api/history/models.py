@@ -28,7 +28,12 @@ class Listening(federation_models.FederationMixin):
         null=False,
         blank=False,
     )
-    privacy_level = fields.get_privacy_field()
+    privacy_level = models.CharField(
+        max_length=30,
+        choices=fields.PRIVACY_LEVEL_CHOICES,
+        null=True,
+        blank=True,
+    )
     session_key = models.CharField(max_length=100, null=True, blank=True)
     source = models.CharField(max_length=100, null=True, blank=True)
     federation_namespace = "listenings"
@@ -57,6 +62,4 @@ class Listening(federation_models.FederationMixin):
     def save(self, **kwargs):
         if not self.pk and not self.fid:
             self.fid = self.get_federation_id()
-        if not self.privacy_level:
-            self.privacy_level = self.actor.user.privacy_level
         return super().save(**kwargs)

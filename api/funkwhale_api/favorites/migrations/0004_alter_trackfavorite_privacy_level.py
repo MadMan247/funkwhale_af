@@ -20,7 +20,8 @@ class Migration(migrations.Migration):
                     ("everyone", "Everyone, including people on other instances"),
                 ],
                 max_length=30,
-                default="me",
+                blank=True,
+                null=True,
             ),
         ),
     ]

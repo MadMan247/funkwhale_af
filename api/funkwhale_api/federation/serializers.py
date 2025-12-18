@@ -2244,7 +2244,11 @@ class TrackFavoriteSerializer(jsonld.JsonLdSerializer):
             "id": favorite.fid,
             "actor": favorite.actor.fid,
             "object": favorite.track.fid,
-            "audience": favorite.privacy_level,
+            "audience": (
+                favorite.privacy_level
+                if favorite.privacy_level
+                else favorite.actor.user.privacy_level
+            ),
         }
         if self.context.get("include_ap_context", True):
             payload["@context"] = jsonld.get_default_context()
@@ -2286,7 +2290,11 @@ class ListeningSerializer(jsonld.JsonLdSerializer):
             "id": listening.fid,
             "actor": listening.actor.fid,
             "object": listening.track.fid,
-            "audience": listening.privacy_level,
+            "audience": (
+                listening.privacy_level
+                if listening.privacy_level
+                else listening.actor.user.privacy_level
+            ),
         }
         if self.context.get("include_ap_context", True):
             payload["@context"] = jsonld.get_default_context()
