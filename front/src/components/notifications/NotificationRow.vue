@@ -124,14 +124,12 @@ const notificationData = computed(() => {
   if (activity.type === 'Accept') {
     if (activity.object?.type === 'federation.LibraryFollow') {
       return {
-        detailUrl: { name: 'content.remote.index' },
         message: t('components.notifications.NotificationRow.message.libraryAcceptFollow', { username: username.value, library: activity.related_object.name })
       }
     }
-    if (activity.object?.type === 'federation.Actor') {
+    if (activity.object?.type === 'federation.Follow') {
       return {
-        detailUrl: { name: 'content.remote.index' },
-        message: t('components.notifications.NotificationRow.message.userAcceptFollow', { username: username.value, user: activity.actor.full_username })
+        message: t('components.notifications.NotificationRow.message.userAcceptFollow', { username: username.value })
       }
     }
   }
