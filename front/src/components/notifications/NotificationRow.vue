@@ -36,7 +36,6 @@ const notificationData = computed(() => {
   const activity = props.initialItem.activity
 
   if (activity.type === 'Follow') {
-    console.log("ctivity.type activity.object", activity.object?.type )
     if (activity.type === 'Follow' && activity.object?.type === 'music.Library') {
       const libraryFollow = activity.related_object as LibraryFollow
 
@@ -121,7 +120,6 @@ const notificationData = computed(() => {
   }
 
   if (activity.type === 'Accept') {
-    console.log("activity.object?.type", activity.object?.type, username.value)
     const library = activity.related_object as components["schemas"]["Library"]
     if (activity.object?.type === 'federation.LibraryFollow' && library.name.startsWith('playlist_')) {
       return {
@@ -133,10 +131,10 @@ const notificationData = computed(() => {
         message: t('components.notifications.NotificationRow.message.userAcceptFollow', { username: username.value })
       }
     }
-    // else if (activity.related_object?.type === 'federation.Actor') {
-    //   return {
-    //     message: t('components.notifications.NotificationRow.message.userFollow', { username: username.value })
-    //   }}
+    else if (activity.related_object?.type === 'federation.Actor') {
+      return {
+        message: t('components.notifications.NotificationRow.message.userFollow', { username: username.value })
+      }}
   }
 
   return {}
