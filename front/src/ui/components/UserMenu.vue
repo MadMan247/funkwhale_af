@@ -65,7 +65,6 @@ const labels = computed(() => ({
         alt=""
         :src="store.getters['instance/absoluteUrl'](store.state.auth.profile?.avatar.urls.small_square_crop)"
         class="avatar"
-        @error="(e) => { e.target && store.state.auth.profile?.avatar ? (e.target as HTMLImageElement).src = store.getters['instance/absoluteUrl'](store.state.auth.profile?.avatar.urls.medium_square_crop) : null }"
       >
       <span
         v-else-if="store.state.auth.authenticated"

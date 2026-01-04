@@ -39,7 +39,6 @@ const defaultAvatarStyle = computed(() => ({ backgroundColor: `#${userColor.valu
         v-lazy="store.getters['instance/absoluteUrl'](user.avatar.urls.small_square_crop)"
         class="ui avatar tiny circular image"
         alt=""
-        @error="(e) => { e.target && user.avatar ? (e.target as HTMLImageElement).src = store.getters['instance/absoluteUrl'](user.avatar.urls.medium_square_crop) : null }"
       >
       <span
         v-else
