@@ -36,6 +36,7 @@ const notificationData = computed(() => {
   const activity = props.initialItem.activity
 
   if (activity.type === 'Follow') {
+    console.log("ctivity.type activity.object", activity.object?.type )
     if (activity.type === 'Follow' && activity.object?.type === 'music.Library') {
       const libraryFollow = activity.related_object as LibraryFollow
 
@@ -44,7 +45,8 @@ const notificationData = computed(() => {
       let labelPendingFollow = ""
       if (typeof activity.object?.name === 'string' && activity.object.name.startsWith('playlist_')) {
           labelPendingFollow = t('components.notifications.NotificationRow.message.playlistPendingFollow', { username: username.value, library: activity.object.name.slice("playlist_".length) })
-        }
+        }else {          labelPendingFollow = t('components.notifications.NotificationRow.message.libraryPendingFollow', { username: username.value, library: activity.object.name })
+}
         return {
           message: labelPendingFollow,
           acceptFollow: {
@@ -64,7 +66,8 @@ const notificationData = computed(() => {
         let labelFollow = ""
         if (typeof activity.object?.name === 'string' && activity.object.name.startsWith('playlist_')) {
           labelFollow = t('components.notifications.NotificationRow.message.playlistFollow', { username: username.value, library: activity.object.name.slice("playlist_".length) })
-        }
+        } else {    labelFollow = t('components.notifications.NotificationRow.message.libraryFollow', { username: username.value, library: activity.object.name })
+      }
         return {
 
           message: labelFollow
@@ -118,17 +121,22 @@ const notificationData = computed(() => {
   }
 
   if (activity.type === 'Accept') {
+    console.log("activity.object?.type", activity.object?.type, username.value)
     const library = activity.related_object as components["schemas"]["Library"]
     if (activity.object?.type === 'federation.LibraryFollow' && library.name.startsWith('playlist_')) {
       return {
         message: t('components.notifications.NotificationRow.message.playlistAccept', { username: username.value, library: activity.related_object.name })
       }
     }
-    if (activity.object?.type === 'federation.Follow') {
+    else if (activity.object?.type === 'federation.Follow') {
       return {
         message: t('components.notifications.NotificationRow.message.userAcceptFollow', { username: username.value })
       }
     }
+    // else if (activity.related_object?.type === 'federation.Actor') {
+    //   return {
+    //     message: t('components.notifications.NotificationRow.message.userFollow', { username: username.value })
+    //   }}
   }
 
   return {}
