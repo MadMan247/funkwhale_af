@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Track, Album, Artist, Library } from '~/types'
+import type { Track, Album, Artist, Library, Cover } from '~/types'
 
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -66,17 +66,30 @@ const publicLibraries = computed(() => libraries.value?.filter(library => librar
 const cover = computed(() => {
   const artistCover = object.value?.cover
 
-  const albumCover = albums.value?.find(
-    (album: Album) => album.cover
-  )?.cover
+  // const albumCover: Cover | null = object.value?.albums
+  //   .find(album => album.cover?.urls.large_square_crop)?.cover
 
   const trackCover = tracks.value?.find(
     (track: Track) => track.cover
   )?.cover
 
+  const fallback : Cover = {
+    uuid: '',
+    mimetype: 'jpeg',
+    creation_date: '',
+    size: 0,
+    urls: {
+      original: `${import.meta.env.BASE_URL}embed-default-cover.jpeg`,
+      small_square_crop: `${import.meta.env.BASE_URL}embed-default-cover.jpeg`,
+      medium_square_crop: `${import.meta.env.BASE_URL}embed-default-cover.jpeg`,
+      large_square_crop: `${import.meta.env.BASE_URL}embed-default-cover.jpeg`
+    }
+  }
+
   return artistCover
-  || albumCover
+  // || albumCover
   || trackCover
+  || fallback
 })
 
 const { t } = useI18n()
@@ -134,16 +147,10 @@ const isOpen = useModal('artist-description').isOpen
     >
       <template #image>
         <img
-          v-if="cover"
-          v-lazy="cover?.urls.large_square_crop"
+          v-lazy="cover.urls.large_square_crop"
           :alt="object.name"
           class="channel-image"
         >
-        <i
-          v-else
-          class="bi bi-person-circle"
-          style="font-size: 167px; margin: 16px;"
-        />
       </template>
       <Layout
         flex

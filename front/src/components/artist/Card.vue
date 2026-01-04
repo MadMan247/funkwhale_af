@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { components } from '~/generated/types.ts'
 
@@ -24,18 +24,6 @@ const { artist } = props
 if ('albums' in artist && Array.isArray(artist.albums)) {
   albums.value = artist.albums
 }
-// TODO: This is cover logic. We use it a lot. Should all go into a single, smart, parametrised function.
-// Something like `useCover.ts`!
-const cover = computed(() => {
-  const artistCover = artist.cover
-
-  const albumCover = albums.value?.find(
-    (album: Album) => album.cover
-  )?.cover
-
-  return artistCover
-  || albumCover
-})
 </script>
 
 <template>
@@ -56,8 +44,8 @@ const cover = computed(() => {
 
     <template #image>
       <img
-        v-if="cover"
-        v-lazy="cover.urls.medium_square_crop"
+        v-if="artist.cover"
+        v-lazy="artist.cover.urls.medium_square_crop"
         :alt="artist.name"
         :class="[artist.content_category === 'podcast' ? 'podcast-image' : 'channel-image']"
       >

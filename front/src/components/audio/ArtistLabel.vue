@@ -3,7 +3,6 @@ import type { Artist } from '~/types'
 
 import { computed } from 'vue'
 import { useStore } from '~/store'
-import { useFallbackImage } from '~/composables/useFallbackImage'
 
 const store = useStore()
 
@@ -13,12 +12,10 @@ interface Props {
 
 const props = defineProps<Props>()
 
-  const route = computed(() => props.artist.channel
+const route = computed(() => props.artist.channel
   ? { name: 'channels.detail', params: { id: props.artist.channel } }
   : { name: 'library.artists.detail', params: { id: props.artist.id } }
 )
-
-const { onCoverError } = useFallbackImage()
 </script>
 
 <template>
@@ -31,7 +28,7 @@ const { onCoverError } = useFallbackImage()
       v-lazy="store.getters['instance/absoluteUrl'](artist.cover.urls.small_square_crop)"
       alt=""
       :class="[{circular: artist.content_category != 'podcast'}]"
-      @error="(e) => onCoverError(e, artist)"
+      @error="(e) => { e.target && artist.cover ? (e.target as HTMLImageElement).src = store.getters['instance/absoluteUrl'](artist.cover.urls.medium_square_crop) : null }"
     >
     <i
       v-else

@@ -6,7 +6,6 @@ import { ref } from 'vue'
 
 import { useQueue } from '~/composables/audio/queue'
 import { useStore } from '~/store'
-import { useFallbackImage } from '~/composables/useFallbackImage'
 
 import axios from 'axios'
 
@@ -52,8 +51,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const store = useStore()
 
-const { onCoverError } = useFallbackImage()
-
 const description = ref('')
 const renderedDescription = useMarkdown(description)
 
@@ -91,14 +88,14 @@ await fetchData()
         v-lazy="store.getters['instance/absoluteUrl'](track.cover.urls.small_square_crop)"
         :alt="track.title"
         class="ui artist-track mini image"
-        @error="(e) => onCoverError(e, track)"
+        @error="(e) => { e.target && track.cover ? (e.target as HTMLImageElement).src = store.getters['instance/absoluteUrl'](track.cover.urls.medium_square_crop) : null }"
       >
       <img
         v-else-if="track.album?.cover?.urls.original"
         v-lazy="store.getters['instance/absoluteUrl'](track.album.cover.urls.small_square_crop)"
         :alt="track.title"
         class="ui artist-track mini image"
-        @error="(e) => onCoverError(e, track.album)"
+        @error="(e) => { e.target && track.album.cover ? (e.target as HTMLImageElement).src = store.getters['instance/absoluteUrl'](track.album.cover.urls.medium_square_crop) : null }"
       >
       <img
         v-else

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { ArtistCredit } from '~/types'
 import { useStore } from '~/store'
-import { useFallbackImage } from '~/composables/useFallbackImage'
 
 import Layout from '~/components/ui/Layout.vue'
 import Pill from '~/components/ui/Pill.vue'
@@ -13,7 +12,6 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const { onCoverError } = useFallbackImage()
 </script>
 
 <template>
@@ -37,7 +35,7 @@ const { onCoverError } = useFallbackImage()
               v-if="ac.artist.cover && ac.artist.cover.urls.original"
               v-lazy="store.getters['instance/absoluteUrl'](ac.artist.cover.urls.small_square_crop)"
               :alt="ac.artist.name"
-              @error="(e) => onCoverError(e, ac.artist)"
+              @error="(e) => { e.target && ac.artist.cover ? (e.target as HTMLImageElement).src = store.getters['instance/absoluteUrl'](ac.artist.cover.urls.medium_square_crop) : null }"
             >
             <i
               v-else

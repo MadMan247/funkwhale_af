@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { OrderingProps } from '~/composables/navigation/useOrdering'
-import type { ArtistWithAlbums, BackendResponse } from '~/types'
+import type { Artist, BackendResponse } from '~/types'
 import type { RouteRecordName } from 'vue-router'
 import type { OrderingField } from '~/store/ui'
 
@@ -54,7 +54,7 @@ const q = useRouteQuery('query', '')
 const query = ref(q.value)
 syncRef(q, query, { direction: 'ltr' })
 
-const result = ref<BackendResponse<ArtistWithAlbums>>()
+const result = ref<BackendResponse<Artist>>()
 const excludeCompilation = ref(true)
 
 const orderingOptions: [OrderingField, keyof typeof sharedLabels.filters][] = [
