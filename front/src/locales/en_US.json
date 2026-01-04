@@ -1897,6 +1897,7 @@
         "header": {
           "browse": "Browsing radios",
           "instance": "Instance radios",
+          "yours": "Your content radios",
           "user": "User radios"
         },
         "label": {

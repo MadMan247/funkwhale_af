@@ -50,8 +50,8 @@ const store: Module<State, RootState> = {
     types: () => {
       return {
         'actor-content': {
-          name: 'Your content',
-          description: 'Picks from your own libraries'
+          name: 'Content from this actor',
+          description: 'Picks from this actor uploads'
         },
         random: {
           name: 'Random',
@@ -59,7 +59,7 @@ const store: Module<State, RootState> = {
         },
         random_library: {
           name: 'Random',
-          description: 'Play something random from your library. Maybe you\'ll surprise yourself!'
+          description: 'Play something random from your uploads. Maybe you\'ll surprise yourself!'
         },
         favorites: {
           name: 'Favorites',

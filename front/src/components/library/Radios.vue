@@ -130,29 +130,29 @@ const paginateOptions = computed(() => sortedUniq([12, 25, 50, paginateBy.value]
       :h2="t('components.library.Radios.header.instance')"
     >
       <radio-card
-        v-if="isAuthenticated"
-        :type="'actor-content'"
-        :object-id="store.state.auth.fullUsername"
-      />
-      <radio-card
-        v-if="isAuthenticated && hasFavorites"
-        :type="'favorites'"
-      />
-      <radio-card
         v-if="scope === 'all'"
         :type="'random'"
-      />
-      <radio-card
-        v-if="scope === 'me'"
-        :type="'random_library'"
       />
       <radio-card :type="'recently-added'" />
       <radio-card
         v-if="store.state.auth.authenticated && scope === 'all'"
         :type="'less-listened'"
       />
+    </Section>
+    <Section
+      v-if="isAuthenticated"
+      align-left
+      :columns-per-item="3"
+      :h2="t('components.library.Radios.header.yours')"
+    >
       <radio-card
-        v-if="store.state.auth.authenticated && scope === 'me'"
+        :type="'random_library'"
+      />
+      <radio-card
+        v-if="isAuthenticated && hasFavorites"
+        :type="'favorites'"
+      />
+      <radio-card
         :type="'less-listened_library'"
       />
     </Section>
