@@ -555,7 +555,7 @@ class SubsonicViewSet(viewsets.GenericViewSet):
         elif type == "random":
             queryset = queryset.order_by("?")
         elif type == "alphabeticalByName" or not type:
-            queryset = queryset.order_by("artist_credit__artist__title")
+            queryset = queryset.order_by("artist_credit__artist__name")
         elif type == "recent" or not type:
             queryset = queryset.exclude(release_date=None).order_by("-release_date")
         elif type == "newest" or not type:
