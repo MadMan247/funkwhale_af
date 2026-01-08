@@ -682,6 +682,22 @@ def test_get_followers(factories, logged_in_api_client):
     assert response.data["totalItems"] == 5
 
 
+def test_get_followers_channels(factories, api_client):
+    actor = factories["audio.Channel"]().actor
+    factories["federation.Follow"](target=actor, approved=True)
+    factories["federation.Follow"](target=actor, approved=True)
+    factories["federation.Follow"](target=actor, approved=True)
+    factories["federation.Follow"](target=actor, approved=True)
+    factories["federation.Follow"](target=actor, approved=True)
+
+    url = reverse(
+        "federation:actors-followers",
+        kwargs={"preferred_username": actor.preferred_username},
+    )
+    response = api_client.get(url)
+    assert response.data["totalItems"] == 5
+
+
 def test_get_following(factories, logged_in_api_client):
     actor = logged_in_api_client.user.create_actor()
     factories["federation.Follow"](actor=actor, approved=True)

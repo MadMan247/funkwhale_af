@@ -5,6 +5,7 @@ from django.http import Http404
 from rest_framework.permissions import BasePermission
 
 from funkwhale_api.common import preferences
+from funkwhale_api.federation import models
 
 
 class ConditionalAuthentication(BasePermission):
@@ -76,14 +77,21 @@ class PrivacyLevelPermission(BasePermission):
             # to avoid leaking data (#2326)
             return True
 
-        if hasattr(obj, "privacy_level"):
-            privacy_level = obj.privacy_level
+        # Channels
+        if isinstance(obj, models.Actor) and hasattr(obj, "channel"):
+            privacy_level = "everyone"
+            obj_actor = obj
+        # listening/playlist/favorite
         elif hasattr(obj, "actor") and obj.actor.user:
             privacy_level = obj.actor.user.privacy_level
+            obj_actor = obj.actor
+        elif hasattr(obj, "privacy_level"):
+            privacy_level = obj.privacy_level
+            obj_actor = obj.user.actor
+        # actor
         else:
             privacy_level = obj.user.privacy_level
-
-        obj_actor = obj.actor if hasattr(obj, "actor") else obj.user.actor
+            obj_actor = obj.user.actor
 
         if privacy_level == "everyone":
             return True
