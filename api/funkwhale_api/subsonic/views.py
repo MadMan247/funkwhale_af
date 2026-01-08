@@ -569,7 +569,7 @@ class SubsonicViewSet(viewsets.GenericViewSet):
         elif type == "byYear":
             try:
                 boundaries = [
-                    int(data.get("fromYear", 0)),
+                    int(data.get("fromYear", 1)),
                     int(data.get("toYear", 99999999)),
                 ]
 
@@ -585,7 +585,7 @@ class SubsonicViewSet(viewsets.GenericViewSet):
             # because, yeah, the specification explicitly state that fromYear can be greater
             # than toYear, to indicate reverse ordering…
             # http://www.subsonic.org/pages/api.jsp#getAlbumList2
-            from_year = min(boundaries)
+            from_year = min(boundaries) if min(boundaries) != 0 else 1
             to_year = max(boundaries)
             queryset = queryset.filter(
                 release_date__year__gte=from_year, release_date__year__lte=to_year

@@ -630,6 +630,7 @@ def test_get_album_list2_by_genre(f, db, logged_in_api_client, factories):
         # Because why not, it's supported in Subsonic API…
         # http://www.subsonic.org/pages/api.jsp#getAlbumList2
         ({"type": "byYear", "fromYear": 1903, "toYear": 1902}, [3, 2]),
+        ({"type": "byYear", "fromYear": 0, "toYear": 1902}, [0, 1, 2]),
     ],
 )
 def test_get_album_list2_by_year(params, expected, db, logged_in_api_client, factories):
