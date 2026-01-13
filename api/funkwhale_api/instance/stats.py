@@ -1,6 +1,6 @@
 import datetime
 
-from django.db.models import Count, F, Sum
+from django.db.models import Count, F, Subquery, Sum
 from django.utils import timezone
 
 from funkwhale_api.favorites.models import TrackFavorite
@@ -36,13 +36,17 @@ def get_content():
 
 
 def get_top_music_categories():
-    return (
-        models.Track.objects.filter(artist_credit__artist__content_category="music")
-        .exclude(tagged_items__tag_id=None)
+    music_tracks = models.Track.objects.filter(
+        artist_credit__artist__content_category="music"
+    ).values("id", flat=True)
+    query = (
+        models.Track.objects.filter(id__in=Subquery(music_tracks))
+        .filter(tagged_items__tag__isnull=False)
         .values(name=F("tagged_items__tag__name"))
-        .annotate(count=Count("name"))
+        .annotate(count=Count("name", distinct=True))
         .order_by("-count")[:3]
     )
+    return query
 
 
 def get_top_podcast_categories():

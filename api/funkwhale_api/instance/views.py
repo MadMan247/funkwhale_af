@@ -5,7 +5,6 @@ from pathlib import Path
 from cache_memoize import cache_memoize
 from django.urls import reverse
 from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import ensure_csrf_cookie
 from drf_spectacular.utils import extend_schema
 from dynamic_preferences.api import viewsets as preferences_viewsets
@@ -125,7 +124,6 @@ class NodeInfo20(views.APIView):
         )
 
 
-@cache_page(3600 * 24)
 class NodeInfo21(NodeInfo20):
     serializer_class = serializers.NodeInfo21Serializer
 
