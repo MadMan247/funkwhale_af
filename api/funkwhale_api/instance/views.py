@@ -5,6 +5,7 @@ from pathlib import Path
 from cache_memoize import cache_memoize
 from django.urls import reverse
 from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import ensure_csrf_cookie
 from drf_spectacular.utils import extend_schema
 from dynamic_preferences.api import viewsets as preferences_viewsets
@@ -86,9 +87,11 @@ class NodeInfo20(views.APIView):
             "software": {"version": funkwhale_version},
             "services": {"inbound": ["atom1.0"], "outbound": ["atom1.0"]},
             "preferences": pref,
-            "stats": cache_memoize(600, prefix="memoize:instance:stats")(stats.get)()
-            if pref["instance__nodeinfo_stats_enabled"]
-            else None,
+            "stats": (
+                cache_memoize(600, prefix="memoize:instance:stats")(stats.get)()
+                if pref["instance__nodeinfo_stats_enabled"]
+                else None
+            ),
             "actorId": get_service_actor().fid,
             "supportedUploadExtensions": SUPPORTED_EXTENSIONS,
             "allowed_domains": allowed_domains,
@@ -122,6 +125,7 @@ class NodeInfo20(views.APIView):
         )
 
 
+@cache_page(3600 * 24)
 class NodeInfo21(NodeInfo20):
     serializer_class = serializers.NodeInfo21Serializer
 
@@ -146,19 +150,23 @@ class NodeInfo21(NodeInfo20):
             "software": {"version": funkwhale_version},
             "services": {"inbound": ["atom1.0"], "outbound": ["atom1.0"]},
             "preferences": pref,
-            "stats": cache_memoize(600, prefix="memoize:instance:stats")(stats.get)()
-            if pref["instance__nodeinfo_stats_enabled"]
-            else None,
+            "stats": (
+                cache_memoize(600, prefix="memoize:instance:stats")(stats.get)()
+                if pref["instance__nodeinfo_stats_enabled"]
+                else None
+            ),
             "actorId": get_service_actor().fid,
             "supportedUploadExtensions": SUPPORTED_EXTENSIONS,
             "allowed_domains": allowed_domains,
             "languages": pref.get("moderation__languages"),
             "location": pref.get("instance__location"),
-            "content": cache_memoize(600, prefix="memoize:instance:content")(
-                stats.get_content
-            )()
-            if pref["instance__nodeinfo_stats_enabled"]
-            else None,
+            "content": (
+                cache_memoize(600, prefix="memoize:instance:content")(
+                    stats.get_content
+                )()
+                if pref["instance__nodeinfo_stats_enabled"]
+                else None
+            ),
             "features": [
                 "channels",
                 "podcasts",
