@@ -38,7 +38,7 @@ def get_content():
 def get_top_music_categories():
     music_tracks = models.Track.objects.filter(
         artist_credit__artist__content_category="music"
-    ).values("id", flat=True)
+    ).values("id")
     query = (
         models.Track.objects.filter(id__in=Subquery(music_tracks))
         .filter(tagged_items__tag__isnull=False)
