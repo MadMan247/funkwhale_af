@@ -1,0 +1,1 @@
+feat(backend):Drop unmaintained musicbrainzngs in favor of a local implementation (#2317)

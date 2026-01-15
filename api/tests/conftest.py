@@ -272,7 +272,7 @@ def media_root(settings):
 def disabled_musicbrainz(mocker):
     # we ensure no music brainz requests gets out
     yield mocker.patch(
-        "musicbrainzngs.musicbrainz._safe_read",
+        "funkwhale_api.musicbrainz.mb_api._mb_request",
         side_effect=Exception("Disabled network calls"),
     )
 

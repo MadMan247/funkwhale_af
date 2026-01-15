@@ -6,7 +6,7 @@ from funkwhale_api.music import models
 
 def test_can_create_artist_from_api(artists, mocker, db):
     mocker.patch(
-        "musicbrainzngs.search_artists",
+        "funkwhale_api.musicbrainz.mb_api.search_artists",
         return_value=artists["search"]["adhesive_wombat"],
     )
     artist = models.Artist.create_from_api(query="Adhesive wombat")

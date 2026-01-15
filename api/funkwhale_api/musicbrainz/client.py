@@ -1,13 +1,13 @@
-import musicbrainzngs
 from cache_memoize import cache_memoize
 from django.conf import settings
 
 from funkwhale_api import __version__
 
-_api = musicbrainzngs
+from . import mb_api
+
+_api = mb_api
 _api.set_useragent("funkwhale", str(__version__), settings.FUNKWHALE_URL)
 _api.set_hostname(settings.MUSICBRAINZ_HOSTNAME)
-_api.set_format(fmt="json")
 
 
 def clean_artist_search(query, **kwargs):
