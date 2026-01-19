@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ArtistCredit, Album, Library, Track } from '~/types'
+import type { ArtistCredit, Album, Actor, Track } from '~/types'
 
 import LibraryWidget from '~/components/federation/LibraryWidget.vue'
 import ChannelEntries from '~/components/audio/ChannelEntries.vue'
@@ -14,7 +14,7 @@ import Loader from '~/components/ui/Loader.vue'
 import Spacer from '~/components/ui/Spacer.vue'
 
 interface Events {
-  (e: 'libraries-loaded', libraries: Library[]): void
+  (e: 'actors-loaded', actors: Actor[]): void
 }
 
 interface Props {
@@ -140,9 +140,9 @@ const paginatedDiscs = computed(() => props.object?.tracks?.slice(props.paginate
     <template v-if="artistCredit && !artistCredit[0]?.artist.channel && !isSerie">
       <Spacer />
       <library-widget
-        :url="'albums/' + object.id + '/libraries/'"
+        :url="'albums/' + object.id + '/actors/'"
         :title="t('components.library.AlbumDetail.header.libraries')"
-        @loaded="emit('libraries-loaded', $event)"
+        @loaded="emit('actors-loaded', $event)"
       >
         {{ t('components.library.AlbumDetail.description.libraries') }}
       </library-widget>

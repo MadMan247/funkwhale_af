@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Library } from '~/types'
+import type { Actor } from '~/types'
 
 import { ref, reactive, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -17,7 +17,7 @@ import useErrorHandler from '~/composables/useErrorHandler'
 import Layout from '../ui/Layout.vue'
 
 interface Events {
-  (e: 'loaded', libraries: Library[]): void
+  (e: 'loaded', actors: Actor[]): void
 }
 
 interface Props {
@@ -31,7 +31,7 @@ const emit = defineEmits<Events>()
 const props = defineProps<Props>()
 
 const nextPage = ref()
-const libraries = reactive([] as Library[])
+const actors = reactive([] as Actor[])
 const isLoading = ref(false)
 const fetchData = async (url = props.url) => {
   isLoading.value = true
@@ -44,8 +44,8 @@ const fetchData = async (url = props.url) => {
     })
 
     nextPage.value = response.data.next
-    libraries.splice(0, libraries.length, ...response.data.results)
-    emit('loaded', libraries)
+    actors.splice(0, actors.length, ...response.data.results)
+    emit('loaded', actors)
   } catch (error) {
     useErrorHandler(error as Error)
   }
@@ -72,24 +72,24 @@ watch(() => props.url, () => {
       style="grid-column: 1 / -1;"
     />
     <Alert
-      v-if="!isLoading && libraries.length === 0"
+      v-if="!isLoading && actors.length === 0"
       blue
       style="grid-column: 1 / -1;"
     >
       {{ t('components.federation.LibraryWidget.empty.noMatch') }}
     </Alert>
     <Layout
-      v-if="!isLoading && libraries.length > 0"
+      v-if="!isLoading && actors.length > 0"
       flex
       no-gap
     >
       {{ t('components.federation.LibraryWidget.main') }}
       <template
-        v-for="library in libraries"
-        :key="library.uuid"
+        v-for="actor in actors"
+        :key="actor.fid"
       >
         <ActorLink
-          :actor="library.actor"
+          :actor="actor"
           discrete
           raised
         />

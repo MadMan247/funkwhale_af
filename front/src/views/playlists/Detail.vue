@@ -28,7 +28,7 @@ import useWebSocketHandler from '~/composables/useWebSocketHandler'
 
 // TODO: Is this event ever caught somewhere?
 // interface Events {
-//   (e: 'libraries-loaded', libraries: Library[]): void
+//   (e: 'actors-loaded', actors: Actor[]): void
 // }
 
 interface Props {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Track, Library } from '~/types'
+import type { Track, Actor } from '~/types'
 
 import { humanSize, momentFormat } from '~/utils/filters'
 import { computed, ref, watchEffect } from 'vue'
@@ -19,7 +19,7 @@ import Spacer from '~/components/ui/Spacer.vue'
 import useErrorHandler from '~/composables/useErrorHandler'
 
 interface Events {
-  (e: 'libraries-loaded', libraries: Library[]): void
+  (e: 'actors-loaded', actors: Actor[]): void
 }
 
 interface Props {
@@ -233,8 +233,8 @@ const trackDetails: {
 
     <h2>{{ t('components.library.TrackDetail.header.library') }}</h2>
     <library-widget
-      :url="`tracks/${track.id}/libraries/`"
-      @loaded="emit('libraries-loaded', $event)"
+      :url="`tracks/${track.id}/actors/`"
+      @loaded="emit('actors-loaded', $event)"
     >
       {{ t('components.library.TrackDetail.description.library') }}
     </library-widget>

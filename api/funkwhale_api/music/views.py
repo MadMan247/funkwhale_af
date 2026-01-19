@@ -28,6 +28,7 @@ from funkwhale_api.federation import api_serializers as federation_api_serialize
 from funkwhale_api.federation import decorators as federation_decorators
 from funkwhale_api.federation import models as federation_models
 from funkwhale_api.federation import routes
+from funkwhale_api.federation import serializers as federation_serializers
 from funkwhale_api.federation import tasks as federation_tasks
 from funkwhale_api.federation.authentication import SignatureAuthentication
 from funkwhale_api.tags.models import Tag, TaggedItem
@@ -69,6 +70,29 @@ def get_libraries(filter_uploads):
         responses=federation_api_serializers.LibrarySerializer(many=True),
         parameters=[OpenApiParameter("id", location="query", exclude=True)],
     )(action(methods=["get"], detail=True)(libraries))
+
+
+def get_actors(filter_uploads):
+    def actors(self, request, *args, **kwargs):
+        obj = self.get_object()
+        actor = utils.get_actor_from_request(request)
+        uploads = models.Upload.objects.all()
+        uploads = filter_uploads(obj, uploads)
+        uploads = uploads.playable_by(actor)
+        actor_ids = uploads.values_list("library__actor__id", flat=True).distinct()
+        qs = federation_models.Actor.objects.filter(id__in=actor_ids)
+        page = self.paginate_queryset(qs)
+        if page is not None:
+            serializer = federation_serializers.APIActorSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = federation_serializers.APIActorSerializer(qs, many=True)
+        return Response(serializer.data)
+
+    return extend_schema(
+        responses=federation_serializers.APIActorSerializer(many=True),
+        parameters=[OpenApiParameter("id", location="query", exclude=True)],
+    )(action(methods=["get"], detail=True)(actors))
 
 
 def refetch_obj(obj, queryset):
@@ -170,6 +194,11 @@ class ArtistViewSet(
             Q(track__artist_credit__artist=o) | Q(track__album__artist_credit__artist=o)
         )
     )
+    actors = get_actors(
+        lambda o, uploads: uploads.filter(
+            Q(track__artist_credit__artist=o) | Q(track__album__artist_credit__artist=o)
+        )
+    )
 
 
 @extend_schema_view(
@@ -246,6 +275,7 @@ class AlbumViewSet(
         return queryset
 
     libraries = get_libraries(lambda o, uploads: uploads.filter(track__album=o))
+    actors = get_actors(lambda o, uploads: uploads.filter(track__album=o))
 
     def get_serializer_class(self):
         if self.action in ["create"]:
@@ -464,6 +494,7 @@ class TrackViewSet(
         return queryset.prefetch_related(TAG_PREFETCH)
 
     libraries = get_libraries(lambda o, uploads: uploads.filter(track=o))
+    actors = get_actors(lambda o, uploads: uploads.filter(track=o))
 
     def get_serializer_context(self):
         context = super().get_serializer_context()

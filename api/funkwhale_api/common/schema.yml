@@ -496,6 +496,153 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/v2/albums/{id}/actors/:
+    get:
+      operationId: get_album_actors
+      parameters:
+      - in: query
+        name: artist
+        schema:
+          type: string
+      - in: query
+        name: artist_credit
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
+      - in: query
+        name: channel
+        schema:
+          type: string
+      - in: query
+        name: content_category
+        schema:
+          type: string
+      - in: query
+        name: has_cover
+        schema:
+          type: boolean
+      - in: query
+        name: has_mbid
+        schema:
+          type: boolean
+      - in: query
+        name: has_release_date
+        schema:
+          type: boolean
+      - in: query
+        name: has_tags
+        schema:
+          type: boolean
+      - in: query
+        name: hidden
+        schema:
+          type: boolean
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this album.
+        required: true
+      - in: query
+        name: include_channels
+        schema:
+          type: boolean
+      - in: query
+        name: library
+        schema:
+          type: string
+      - in: query
+        name: mbid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: ordering
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - -artist_credit__artist__modification_date
+            - -creation_date
+            - -random
+            - -related
+            - -release_date
+            - -title
+            - artist_credit__artist__modification_date
+            - creation_date
+            - random
+            - related
+            - release_date
+            - title
+        description: |-
+          Ordering
+
+          * `creation_date` - Creation date
+          * `-creation_date` - Creation date (descending)
+          * `release_date` - Release date
+          * `-release_date` - Release date (descending)
+          * `title` - Title
+          * `-title` - Title (descending)
+          * `artist_credit__artist__modification_date` - Artist credit  artist  modification date
+          * `-artist_credit__artist__modification_date` - Artist credit  artist  modification date (descending)
+          * `random` - Random
+          * `-random` - Random (descending)
+          * `related` - Related
+          * `-related` - Related (descending)
+        explode: false
+        style: form
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: playable
+        schema:
+          type: boolean
+      - in: query
+        name: q
+        schema:
+          type: string
+      - in: query
+        name: related
+        schema:
+          type: string
+      - in: query
+        name: scope
+        schema:
+          type: string
+      - in: query
+        name: tag
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      tags:
+      - albums
+      security:
+      - oauth2: []
+      - ApplicationToken: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAPIActorList'
+          description: ''
   /api/v2/albums/{id}/fetches/:
     get:
       operationId: get_album_fetches
@@ -1163,6 +1310,145 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ArtistWithAlbums'
+          description: ''
+  /api/v2/artists/{id}/actors/:
+    get:
+      operationId: get_artist_actors
+      parameters:
+      - in: query
+        name: content_category
+        schema:
+          type: string
+      - in: query
+        name: has_albums
+        schema:
+          type: boolean
+      - in: query
+        name: has_mbid
+        schema:
+          type: boolean
+      - in: query
+        name: hidden
+        schema:
+          type: boolean
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this artist.
+        required: true
+      - in: query
+        name: include_channels
+        schema:
+          type: boolean
+      - in: query
+        name: library
+        schema:
+          type: string
+      - in: query
+        name: mbid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: name
+        schema:
+          type: string
+      - in: query
+        name: name__icontains
+        schema:
+          type: string
+      - in: query
+        name: name__iexact
+        schema:
+          type: string
+      - in: query
+        name: name__startswith
+        schema:
+          type: string
+      - in: query
+        name: ordering
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - -creation_date
+            - -id
+            - -modification_date
+            - -name
+            - -random
+            - -related
+            - creation_date
+            - id
+            - modification_date
+            - name
+            - random
+            - related
+        description: |-
+          Ordering
+
+          * `id` - Id
+          * `-id` - Id (descending)
+          * `name` - Name
+          * `-name` - Name (descending)
+          * `creation_date` - Creation date
+          * `-creation_date` - Creation date (descending)
+          * `modification_date` - Modification date
+          * `-modification_date` - Modification date (descending)
+          * `random` - Random
+          * `-random` - Random (descending)
+          * `related` - Related
+          * `-related` - Related (descending)
+        explode: false
+        style: form
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: playable
+        schema:
+          type: boolean
+      - in: query
+        name: q
+        schema:
+          type: string
+      - in: query
+        name: related
+        schema:
+          type: string
+      - in: query
+        name: scope
+        schema:
+          type: string
+      - in: query
+        name: tag
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      tags:
+      - artists
+      security:
+      - oauth2: []
+      - ApplicationToken: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAPIActorList'
           description: ''
   /api/v2/artists/{id}/fetches/:
     get:
@@ -8603,6 +8889,192 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/v2/tracks/{id}/actors/:
+    get:
+      operationId: get_track_actors
+      description: A simple ViewSet for viewing and editing accounts.
+      parameters:
+      - in: query
+        name: album
+        schema:
+          type: integer
+      - in: query
+        name: artist
+        schema:
+          type: string
+      - in: query
+        name: channel
+        schema:
+          type: string
+      - in: query
+        name: format
+        schema:
+          type: string
+      - in: query
+        name: has_mbid
+        schema:
+          type: boolean
+      - in: query
+        name: hidden
+        schema:
+          type: boolean
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this track.
+        required: true
+      - in: query
+        name: include_channels
+        schema:
+          type: boolean
+      - in: query
+        name: library
+        schema:
+          type: string
+      - in: query
+        name: license
+        schema:
+          type: string
+      - in: query
+        name: mbid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: ordering
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - -album__release_date
+            - -album__title
+            - -artist_credit__artist__modification_date
+            - -artist_credit__artist__name
+            - -creation_date
+            - -disc_number
+            - -position
+            - -random
+            - -related
+            - -size
+            - -title
+            - album__release_date
+            - album__title
+            - artist_credit__artist__modification_date
+            - artist_credit__artist__name
+            - creation_date
+            - disc_number
+            - position
+            - random
+            - related
+            - size
+            - title
+        description: |-
+          Ordering
+
+          * `creation_date` - Creation date
+          * `-creation_date` - Creation date (descending)
+          * `title` - Title
+          * `-title` - Title (descending)
+          * `album__title` - Album  title
+          * `-album__title` - Album  title (descending)
+          * `album__release_date` - Album  release date
+          * `-album__release_date` - Album  release date (descending)
+          * `size` - Size
+          * `-size` - Size (descending)
+          * `position` - Position
+          * `-position` - Position (descending)
+          * `disc_number` - Disc number
+          * `-disc_number` - Disc number (descending)
+          * `artist_credit__artist__name` - Artist credit  artist  name
+          * `-artist_credit__artist__name` - Artist credit  artist  name (descending)
+          * `artist_credit__artist__modification_date` - Artist credit  artist  modification date
+          * `-artist_credit__artist__modification_date` - Artist credit  artist  modification date (descending)
+          * `random` - Random
+          * `-random` - Random (descending)
+          * `related` - Related
+          * `-related` - Related (descending)
+        explode: false
+        style: form
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: playable
+        schema:
+          type: boolean
+      - in: query
+        name: q
+        schema:
+          type: string
+      - in: query
+        name: quality
+        schema:
+          type: integer
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+        description: |-
+          * `0` - low
+          * `1` - medium
+          * `2` - high
+          * `3` - very_high
+      - in: query
+        name: related
+        schema:
+          type: string
+      - in: query
+        name: scope
+        schema:
+          type: string
+      - in: query
+        name: tag
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: title
+        schema:
+          type: string
+      - in: query
+        name: title__icontains
+        schema:
+          type: string
+      - in: query
+        name: title__iexact
+        schema:
+          type: string
+      - in: query
+        name: title__startswith
+        schema:
+          type: string
+      tags:
+      - tracks
+      security:
+      - oauth2: []
+      - ApplicationToken: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAPIActorList'
+          description: ''
   /api/v2/tracks/{id}/fetches/:
     get:
       operationId: get_track_fetches
@@ -15060,6 +15532,29 @@ components:
       required:
       - format
       - url
+    PaginatedAPIActorList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/APIActor'
     PaginatedAPIMutationList:
       type: object
       required:

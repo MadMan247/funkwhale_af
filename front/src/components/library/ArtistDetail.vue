@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Artist, Track, Album, Library } from '~/types'
+import type { Artist, Track, Album, Actor } from '~/types'
 import type { ContentFilter } from '~/store/moderation'
 
 import { ref, computed, reactive } from 'vue'
@@ -23,7 +23,7 @@ import Alert from '~/components/ui/Alert.vue'
 import useErrorHandler from '~/composables/useErrorHandler'
 
 interface Events {
-  (e: 'libraries-loaded', libraries: Library[]): void
+  (e: 'actors-loaded', actors: Actor[]): void
 }
 
 interface Props {
@@ -140,8 +140,8 @@ const loadMoreAlbums = async () => {
       section-heading
     />
     <LibraryWidget
-      :url="'artists/' + object.id + '/libraries/'"
-      @loaded="emit('libraries-loaded', $event)"
+      :url="'artists/' + object.id + '/actors/'"
+      @loaded="emit('actors-loaded', $event)"
     >
       {{ t('components.library.ArtistDetail.description.library') }}
     </LibraryWidget>

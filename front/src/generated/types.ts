@@ -178,6 +178,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/albums/{id}/actors/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_album_actors"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/albums/{id}/fetches/": {
         parameters: {
             query?: never;
@@ -250,6 +266,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["get_artist"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/artists/{id}/actors/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_artist_actors"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2946,6 +2978,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/tracks/{id}/actors/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description A simple ViewSet for viewing and editing accounts. */
+        get: operations["get_track_actors"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/tracks/{id}/fetches/": {
         parameters: {
             query?: never;
@@ -5321,6 +5370,21 @@ export interface components {
             maxheight?: number;
             maxwidth?: number;
         };
+        PaginatedAPIActorList: {
+            /** @example 123 */
+            count: number;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?page=4
+             */
+            next?: string | null;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?page=2
+             */
+            previous?: string | null;
+            results: components["schemas"]["APIActor"][];
+        };
         PaginatedAPIMutationList: {
             /** @example 123 */
             count: number;
@@ -6972,6 +7036,67 @@ export interface operations {
             };
         };
     };
+    get_album_actors: {
+        parameters: {
+            query?: {
+                artist?: string;
+                artist_credit?: number[];
+                channel?: string;
+                content_category?: string;
+                has_cover?: boolean;
+                has_mbid?: boolean;
+                has_release_date?: boolean;
+                has_tags?: boolean;
+                hidden?: boolean;
+                include_channels?: boolean;
+                library?: string;
+                mbid?: string;
+                /**
+                 * @description Ordering
+                 *
+                 *     * `creation_date` - Creation date
+                 *     * `-creation_date` - Creation date (descending)
+                 *     * `release_date` - Release date
+                 *     * `-release_date` - Release date (descending)
+                 *     * `title` - Title
+                 *     * `-title` - Title (descending)
+                 *     * `artist_credit__artist__modification_date` - Artist credit  artist  modification date
+                 *     * `-artist_credit__artist__modification_date` - Artist credit  artist  modification date (descending)
+                 *     * `random` - Random
+                 *     * `-random` - Random (descending)
+                 *     * `related` - Related
+                 *     * `-related` - Related (descending)
+                 */
+                ordering?: ("-artist_credit__artist__modification_date" | "-creation_date" | "-random" | "-related" | "-release_date" | "-title" | "artist_credit__artist__modification_date" | "creation_date" | "random" | "related" | "release_date" | "title")[];
+                /** @description A page number within the paginated result set. */
+                page?: number;
+                /** @description Number of results to return per page. */
+                page_size?: number;
+                playable?: boolean;
+                q?: string;
+                related?: string;
+                scope?: string;
+                tag?: string[];
+            };
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this album. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedAPIActorList"];
+                };
+            };
+        };
+    };
     get_album_fetches: {
         parameters: {
             query?: {
@@ -7288,6 +7413,66 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ArtistWithAlbums"];
+                };
+            };
+        };
+    };
+    get_artist_actors: {
+        parameters: {
+            query?: {
+                content_category?: string;
+                has_albums?: boolean;
+                has_mbid?: boolean;
+                hidden?: boolean;
+                include_channels?: boolean;
+                library?: string;
+                mbid?: string;
+                name?: string;
+                name__icontains?: string;
+                name__iexact?: string;
+                name__startswith?: string;
+                /**
+                 * @description Ordering
+                 *
+                 *     * `id` - Id
+                 *     * `-id` - Id (descending)
+                 *     * `name` - Name
+                 *     * `-name` - Name (descending)
+                 *     * `creation_date` - Creation date
+                 *     * `-creation_date` - Creation date (descending)
+                 *     * `modification_date` - Modification date
+                 *     * `-modification_date` - Modification date (descending)
+                 *     * `random` - Random
+                 *     * `-random` - Random (descending)
+                 *     * `related` - Related
+                 *     * `-related` - Related (descending)
+                 */
+                ordering?: ("-creation_date" | "-id" | "-modification_date" | "-name" | "-random" | "-related" | "creation_date" | "id" | "modification_date" | "name" | "random" | "related")[];
+                /** @description A page number within the paginated result set. */
+                page?: number;
+                /** @description Number of results to return per page. */
+                page_size?: number;
+                playable?: boolean;
+                q?: string;
+                related?: string;
+                scope?: string;
+                tag?: string[];
+            };
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this artist. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedAPIActorList"];
                 };
             };
         };
@@ -13091,6 +13276,86 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    get_track_actors: {
+        parameters: {
+            query?: {
+                album?: number;
+                artist?: string;
+                channel?: string;
+                format?: string;
+                has_mbid?: boolean;
+                hidden?: boolean;
+                include_channels?: boolean;
+                library?: string;
+                license?: string;
+                mbid?: string;
+                /**
+                 * @description Ordering
+                 *
+                 *     * `creation_date` - Creation date
+                 *     * `-creation_date` - Creation date (descending)
+                 *     * `title` - Title
+                 *     * `-title` - Title (descending)
+                 *     * `album__title` - Album  title
+                 *     * `-album__title` - Album  title (descending)
+                 *     * `album__release_date` - Album  release date
+                 *     * `-album__release_date` - Album  release date (descending)
+                 *     * `size` - Size
+                 *     * `-size` - Size (descending)
+                 *     * `position` - Position
+                 *     * `-position` - Position (descending)
+                 *     * `disc_number` - Disc number
+                 *     * `-disc_number` - Disc number (descending)
+                 *     * `artist_credit__artist__name` - Artist credit  artist  name
+                 *     * `-artist_credit__artist__name` - Artist credit  artist  name (descending)
+                 *     * `artist_credit__artist__modification_date` - Artist credit  artist  modification date
+                 *     * `-artist_credit__artist__modification_date` - Artist credit  artist  modification date (descending)
+                 *     * `random` - Random
+                 *     * `-random` - Random (descending)
+                 *     * `related` - Related
+                 *     * `-related` - Related (descending)
+                 */
+                ordering?: ("-album__release_date" | "-album__title" | "-artist_credit__artist__modification_date" | "-artist_credit__artist__name" | "-creation_date" | "-disc_number" | "-position" | "-random" | "-related" | "-size" | "-title" | "album__release_date" | "album__title" | "artist_credit__artist__modification_date" | "artist_credit__artist__name" | "creation_date" | "disc_number" | "position" | "random" | "related" | "size" | "title")[];
+                /** @description A page number within the paginated result set. */
+                page?: number;
+                /** @description Number of results to return per page. */
+                page_size?: number;
+                playable?: boolean;
+                q?: string;
+                /**
+                 * @description * `0` - low
+                 *     * `1` - medium
+                 *     * `2` - high
+                 *     * `3` - very_high
+                 */
+                quality?: 0 | 1 | 2 | 3;
+                related?: string;
+                scope?: string;
+                tag?: string[];
+                title?: string;
+                title__icontains?: string;
+                title__iexact?: string;
+                title__startswith?: string;
+            };
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this track. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedAPIActorList"];
+                };
             };
         };
     };
