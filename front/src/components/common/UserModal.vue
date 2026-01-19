@@ -134,7 +134,7 @@ const locale = computed(() => SUPPORTED_LOCALES[i18nLocale.value as SupportedLan
             <div
               class="column"
               role="button"
-              @click.prevent.exact="router.push({name: 'profile.overview', params: { username: store.state.auth.username }})"
+              @click.prevent.exact="router.push({name: 'profile.content', params: { username: store.state.auth.username }})"
             >
               <i class="user icon user-modal list-icon" />
               <span class="user-modal list-item">{{ labels.profile }}</span>

@@ -4048,7 +4048,7 @@
         },
         "title": "Profil de { username }"
       },
-      "ProfileOverview": {
+      "ProfileContent": {
         "button": {
           "cancel": "Annuler",
           "createChannel": "Créer une nouvelle chaîne",

@@ -4030,7 +4030,7 @@
         },
         "title": "Profil uživatele { username }"
       },
-      "ProfileOverview": {
+      "ProfileContent": {
         "button": {
           "cancel": "Zrušit",
           "createChannel": "Vytvořit kanál",

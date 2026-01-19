@@ -143,7 +143,7 @@ def test_fetch_serializer_no_obj(factories, to_api_date):
         ("music.Artist", "artist", serializers.ArtistSerializer),
         ("music.Track", "track", serializers.TrackSerializer),
         ("audio.Channel", "channel", ChannelSerializer),
-        ("federation.Actor", "account", serializers.APIActorSerializer),
+        ("federation.Actor", "account", serializers.ActorSerializer),
         ("playlists.Playlist", "playlist", serializers.PlaylistSerializer),
     ],
 )

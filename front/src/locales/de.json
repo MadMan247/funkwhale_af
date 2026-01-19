@@ -2976,6 +2976,7 @@
             "choices": {
               "instance": "Jede·r auf diesem Pod",
               "private": "Niemand außer mir",
+              "followers": "Meine Abonnent·innen",
               "public": "Jede·r, auf allen Pods"
             },
             "help": "Lege fest, wer deine Aktivität sehen kann",
@@ -4030,7 +4031,7 @@
         },
         "title": "Profil von { username }"
       },
-      "ProfileOverview": {
+      "ProfileContent": {
         "button": {
           "cancel": "Abbrechen",
           "createChannel": "Kanal erstellen",

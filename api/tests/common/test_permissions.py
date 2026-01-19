@@ -82,10 +82,10 @@ def test_privacylevel_permission_instance(
 
 @pytest.mark.parametrize(
     "privacy_level,expected",
-    [("me", True), ("followers", False), ("instance", True), ("everyone", True)],
+    [("me", True), ("followers", True), ("instance", True), ("everyone", True)],
 )
 def test_privacylevel_permission_me(
-    factories, api_request, anonymous_user, privacy_level, expected, mocker
+    factories, api_request, privacy_level, expected, mocker
 ):
     user = factories["users.User"](privacy_level=privacy_level)
     user.create_actor()

@@ -3008,7 +3008,7 @@
         },
         "title": "{ username } sin profil"
       },
-      "ProfileOverview": {
+      "ProfileContent": {
         "button": {
           "cancel": "Avbryt",
           "createChannel": "Opprett et nytt bibliotek",

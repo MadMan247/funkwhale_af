@@ -105,3 +105,62 @@ def test_actor_scope_filter(
     expected = [tracks[i] for i in expected_tracks]
 
     assert filterset.qs == expected
+
+
+@pytest.mark.parametrize(
+    "scope, user_index, expected_tracks, object_type",
+    [
+        ("from_subscribed", 0, [4], "listenings"),
+    ],
+)
+def test_actor_scope_filter_upgrade(
+    scope,
+    user_index,
+    expected_tracks,
+    object_type,
+    queryset_equal_list,
+    factories,
+    mocker,
+    anonymous_user,
+):
+    domain = factories["federation.Domain"](name="domain.test")
+    actor1 = factories["users.User"]().create_actor(
+        preferred_username="actor1", domain=domain
+    )
+    actor2 = factories["users.User"]().create_actor(
+        preferred_username="actor2", domain=domain
+    )
+    users = [actor1.user, actor2.user, anonymous_user]
+    followed_library = factories["music.Library"]()
+    tracks = [
+        factories["music.Upload"](library__actor=actor1, playable=True).track,
+        factories["music.Upload"](library__actor=actor2, playable=True).track,
+        factories["music.Upload"](playable=True).track,
+        factories["music.Upload"](playable=True, library=followed_library).track,
+        factories["music.Upload"](playable=True).track,
+    ]
+
+    factories["federation.LibraryFollow"](
+        actor=actor1, target=followed_library, approved=True
+    )
+    factories["federation.Follow"](actor=actor1, target=actor2, approved=True)
+    listenings = factories["history.Listening"](actor=actor2, track=tracks[4])
+
+    class FS(filters.filters.FilterSet):
+        scope = filters.ActorScopeFilter(
+            actor_field="actor",
+            object_type=object_type,
+            distinct=True,
+        )
+
+        class Meta:
+            model = listenings.__class__
+            fields = ["scope"]
+
+    queryset = listenings.__class__.objects.all()
+    request = mocker.Mock(user=users[user_index])
+    filterset = FS({"scope": scope}, queryset=queryset.order_by("id"), request=request)
+
+    expected = [tracks[i] for i in expected_tracks]
+
+    assert filterset.qs[0].track == expected[0]

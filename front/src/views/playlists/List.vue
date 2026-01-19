@@ -6,6 +6,7 @@ import type { OrderingField } from '~/store/ui'
 
 import { computed, ref, watch } from 'vue'
 import { useRouteQuery } from '@vueuse/router'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { syncRef } from '@vueuse/core'
 import { sortedUniq } from 'lodash-es'
@@ -23,7 +24,9 @@ import Spacer from '~/components/ui/Spacer.vue'
 import Header from '~/components/ui/Header.vue'
 import Section from '~/components/ui/Section.vue'
 import Loader from '~/components/ui/Loader.vue'
+import Nav from '~/components/ui/Nav.vue'
 
+import useUrlParamCache from '~/ui/composables/useUrlParamCache.ts'
 import useSharedLabels from '~/composables/locale/useSharedLabels'
 import useOrdering from '~/composables/navigation/useOrdering'
 import useErrorHandler from '~/composables/useErrorHandler'
@@ -31,7 +34,7 @@ import usePage from '~/composables/navigation/usePage'
 import useLogger from '~/composables/useLogger'
 
 interface Props extends OrderingProps {
-  scope?: 'me' | 'all'
+  scope?: 'me' | 'from_subscribed' | 'domain' | 'all'
 
   // TODO(wvffle): Remove after https://github.com/vuejs/core/pull/4512 is merged
   orderingConfigName?: RouteRecordName
@@ -40,7 +43,7 @@ interface Props extends OrderingProps {
 const store = useStore()
 
 const props = withDefaults(defineProps<Props>(), {
-  scope: 'all',
+  scope: 'me',
   orderingConfigName: undefined
 })
 
@@ -51,6 +54,8 @@ const query = ref(q.value)
 syncRef(q, query, { direction: 'ltr' })
 
 const result = ref<BackendResponse<Playlist>>()
+
+const { t } = useI18n()
 
 const orderingOptions: [OrderingField, keyof typeof sharedLabels.filters][] = [
   ['creation_date', 'creation_date'],
@@ -63,11 +68,19 @@ const sharedLabels = useSharedLabels()
 
 const { onOrderingUpdate, orderingString, paginateBy, ordering, orderingDirection } = useOrdering(props)
 
+const tabs = ref([
+  { title: t("views.playlists.List.tabs.me"), name: 'me' },
+  { title: t("views.playlists.List.tabs.subscribed"), name: 'from_subscribed' },
+  { title: t("views.playlists.List.tabs.domain"), name: 'domain:' + store.getters['instance/domain'] },
+  { title: t("views.playlists.List.tabs.all"), name: 'all' }
+])
+const scope = useUrlParamCache('scope', { fallback: props.scope })
+
 const isLoading = ref(false)
 const fetchData = async () => {
   isLoading.value = true
   const params = {
-    scope: props.scope,
+    scope: scope.value,
     page: page.value,
     page_size: paginateBy.value,
     q: query.value,
@@ -90,7 +103,32 @@ const fetchData = async () => {
     isLoading.value = false
   }
 }
-watch([page, q, ordering, orderingDirection, () => props.scope], fetchData)
+
+watch([page, q, ordering, orderingDirection, scope], () => {
+  fetchData()
+})
+
+watch([q, ordering, orderingDirection, scope], () => {
+  page.value = 1
+})
+
+const route = useRoute()
+const router = useRouter()
+watch(() => route.query.scope, async (newScope) => {
+  const scopeQuery = Array.isArray(newScope) ? newScope[0] : newScope
+  if (!scopeQuery) {
+    await router.replace({
+      ...route,
+      query: { ...route.query, scope: scope.value }
+    })
+  } else if (scopeQuery === 'subscribed') {
+    await router.replace({
+      ...route,
+      query: { ...route.query, scope: 'from_subscribed' }
+    })
+  }
+}, { immediate: true })
+
 fetchData()
 
 const search = () => {
@@ -103,7 +141,6 @@ onOrderingUpdate(() => {
   fetchData()
 })
 
-const { t } = useI18n()
 const labels = computed(() => ({
   playlists: t('views.playlists.List.header.playlists'),
   searchPlaceholder: t('views.playlists.List.placeholder.search')
@@ -225,45 +262,50 @@ const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value]
       </Layout>
     </Layout>
 
-    <Spacer v-if="result && result.results.length > 0" />
+    <Nav
+      v-model="tabs"
+      tab-query-field="scope"
+    >
+      <Spacer v-if="result && result.results.length > 0" />
 
-    <!-- Search results -->
-    <Section :columns-per-item="3">
-      <Loader v-if="isLoading" />
-      <Alert
-        v-if="result && result.results.length === 0"
-        blue
-        style="grid-column: 1 / -1;"
-      >
-        {{ t('views.playlists.List.empty.noResults') }}
-        <Spacer />
-        <Button
-          v-if="store.state.auth.authenticated"
-          icon="bi-list"
-          primary
-          @click="store.commit('playlists/showModal', true)"
+      <!-- Search results -->
+      <Section :columns-per-item="3">
+        <Loader v-if="isLoading" />
+        <Alert
+          v-if="result && result.results.length === 0"
+          blue
+          style="grid-column: 1 / -1;"
         >
-          {{ t('views.playlists.List.button.create') }}
-        </Button>
-      </Alert>
-      <Pagination
-        v-if="page && result && result.count > paginateBy"
-        v-model:page="page"
-        style="grid-column: 1 / -1;"
-        :pages="Math.ceil(result.count/paginateBy)"
-      />
-      <PlaylistsCard
-        v-for="playlist in (result && result.results.length > 0 ? result.results : [])"
-        :key="playlist.uuid"
-        :playlist="playlist"
-      />
-      <Spacer grow />
-      <Pagination
-        v-if="page && result && result.count > paginateBy"
-        v-model:page="page"
-        :pages="Math.ceil(result.count/paginateBy)"
-        style="grid-column: 1 / -1;"
-      />
-    </Section>
+          {{ t('views.playlists.List.empty.noResults') }}
+          <Spacer />
+          <Button
+            v-if="store.state.auth.authenticated"
+            icon="bi-list"
+            primary
+            @click="store.commit('playlists/showModal', true)"
+          >
+            {{ t('views.playlists.List.button.create') }}
+          </Button>
+        </Alert>
+        <Pagination
+          v-if="page && result && result.count > paginateBy"
+          v-model:page="page"
+          style="grid-column: 1 / -1;"
+          :pages="Math.ceil(result.count/paginateBy)"
+        />
+        <PlaylistsCard
+          v-for="playlist in (result && result.results.length > 0 ? result.results : [])"
+          :key="playlist.uuid"
+          :playlist="playlist"
+        />
+        <Spacer grow />
+        <Pagination
+          v-if="page && result && result.count > paginateBy"
+          v-model:page="page"
+          :pages="Math.ceil(result.count/paginateBy)"
+          style="grid-column: 1 / -1;"
+        />
+      </Section>
+    </Nav>
   </Layout>
 </template>

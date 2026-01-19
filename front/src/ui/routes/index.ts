@@ -122,12 +122,6 @@ export default [
             component: () => import('~/views/channels/DetailEpisodes.vue')
           }
         ]
-      },
-      {
-        path: 'subscriptions',
-        name: 'subscriptions',
-        component: () => import('~/views/channels/SubscriptionsList.vue'),
-        props: route => ({ defaultQuery: route.query.q })
       }
     ]
   },

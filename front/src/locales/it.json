@@ -3989,7 +3989,7 @@
         },
         "title": "Profilo di { username }"
       },
-      "ProfileOverview": {
+      "ProfileContent": {
         "button": {
           "cancel": "Annulla",
           "createChannel": "Crea canale",

@@ -80,7 +80,7 @@ const labels = computed(() => ({
     <template #items>
       <PopoverItem
         v-if="store.state.auth.authenticated"
-        :to="{ name: 'profile.overview', params: { username: store.state.auth.username }, }"
+        :to="{ name: 'profile.content', params: { username: store.state.auth.username }, }"
       >
         <i class="bi bi-person-fill" />
         {{ labels.profile }}

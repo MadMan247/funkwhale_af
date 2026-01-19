@@ -2,7 +2,7 @@
 
 ## The issue
 
-> Has a user I want to share my audio file with my followers
+> As a user I want to share my audio file with my followers
 
 Implement the followers privacy level for UserFollow and Playlist
 
@@ -10,7 +10,7 @@ Implement the followers privacy level for UserFollow and Playlist
 
 ### Bulk update upload
 
-We use bulk updates to moove `Uploads` from on built-in library to another one. We need to create a new `Activity` that send a collection of `Uploads` (`Audio` in AS vocabulary) to avoid rescanning the whole library.
+We use bulk updates to move `Uploads` from one built-in library to another one. We need to create a new `Activity` that send a collection of `Uploads` (`Audio` in AS vocabulary) to avoid rescanning the whole library.
 
 - [x] Create a new `AudioCollection` AP object
 - [x] Create `Update` and `Delete` activities for `AudioCollection`

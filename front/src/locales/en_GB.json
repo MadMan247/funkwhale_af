@@ -4106,7 +4106,7 @@
         },
         "title": "{username}'s profile"
       },
-      "ProfileOverview": {
+      "ProfileContent": {
         "button": {
           "cancel": "Cancel",
           "createChannel": "Create channel",

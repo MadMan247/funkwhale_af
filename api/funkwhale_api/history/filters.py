@@ -9,7 +9,9 @@ from . import models
 class ListeningFilter(moderation_filters.HiddenContentFilterSet):
     username = django_filters.CharFilter("actor__user__username")
     domain = django_filters.CharFilter("actor__domain_id")
-    scope = common_filters.ActorScopeFilter(actor_field="actor", distinct=True)
+    scope = common_filters.ActorScopeFilter(
+        actor_field="actor", object_type="listenings", distinct=True
+    )
 
     class Meta:
         model = models.Listening

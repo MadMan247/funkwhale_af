@@ -4033,7 +4033,7 @@
         },
         "title": "{ username }-(r)en profila"
       },
-      "ProfileOverview": {
+      "ProfileContent": {
         "button": {
           "cancel": "Ezeztatu",
           "createChannel": "Sortu kanala",

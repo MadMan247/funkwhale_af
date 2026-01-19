@@ -53,7 +53,11 @@ def custom_preprocessing_hook(endpoints):
         if path.startswith("/api/v2/oauth/authorize"):
             continue
 
-        if path.startswith("/api/v1") or path.startswith("/api/v2"):
+        if (
+            path.startswith("/api/v1")
+            or path.startswith("/api/v2")
+            or path.startswith("/federation/")
+        ):
             filtered.append((path, path_regex, method, callback))
 
     return filtered

@@ -4030,7 +4030,7 @@
         },
         "title": "{ username }'s profiel"
       },
-      "ProfileOverview": {
+      "ProfileContent": {
         "button": {
           "cancel": "Annuleren",
           "createChannel": "Maak kanaal",

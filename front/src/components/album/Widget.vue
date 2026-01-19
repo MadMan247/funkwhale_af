@@ -69,7 +69,7 @@ const performSearch = () => {
 }
 
 watch(
-  () => [store.state.moderation.lastUpdate, page.value],
+  () => [store.state.moderation.lastUpdate, props.filters, page.value],
   () => fetchData(),
   { immediate: true }
 )

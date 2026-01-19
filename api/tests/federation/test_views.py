@@ -682,20 +682,25 @@ def test_get_followers(factories, logged_in_api_client):
     assert response.data["totalItems"] == 5
 
 
-def test_get_followers_channels(factories, api_client):
-    actor = factories["audio.Channel"]().actor
-    factories["federation.Follow"](target=actor, approved=True)
-    factories["federation.Follow"](target=actor, approved=True)
-    factories["federation.Follow"](target=actor, approved=True)
-    factories["federation.Follow"](target=actor, approved=True)
-    factories["federation.Follow"](target=actor, approved=True)
+@pytest.mark.parametrize(
+    "privacy_level, expected",
+    [("me", 403), ("instance", 200), ("followers", 403), ("everyone", 200)],
+)
+def test_get_followers_privacy_level(
+    factories, privacy_level, expected, logged_in_api_client
+):
+    logged_in_api_client.user.create_actor()
+    follow_user = factories["users.User"](privacy_level=privacy_level)
+    follow_user.create_actor()
+    factories["federation.Follow"](target=follow_user.actor, approved=True)
+    factories["federation.Follow"](target=follow_user.actor, approved=True)
 
     url = reverse(
         "federation:actors-followers",
-        kwargs={"preferred_username": actor.preferred_username},
+        kwargs={"preferred_username": follow_user.actor.preferred_username},
     )
-    response = api_client.get(url)
-    assert response.data["totalItems"] == 5
+    response = logged_in_api_client.get(url)
+    assert response.status_code == expected
 
 
 def test_get_following(factories, logged_in_api_client):

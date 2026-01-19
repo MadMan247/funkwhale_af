@@ -47,6 +47,7 @@ export type ContentCategory = 'podcast' | 'music'
 // Use backend-defined schema types
 
 export type Actor = components['schemas']['FullActor']
+export type APIActor = components['schemas']['APIActor']
 export type Activity = components['schemas']['Activity']
 export type Album = components['schemas']['Album']
 export type ArtistCredit = components['schemas']['ArtistCredit']
@@ -64,6 +65,7 @@ export type Track = components['schemas']['Track']
 export type Usage = components['schemas']['Usage']
 export type LibraryScan = components['schemas']['LibraryScan']
 export type LibraryFollow = components['schemas']['LibraryFollow']
+export type Follow = components['schemas']['Follow']
 export type Cover = components['schemas']['CoverField']
 export type RateLimitStatus = components['schemas']['RateLimit']['scopes'][number]
 export type PaginatedAlbumList = components['schemas']['PaginatedAlbumList']

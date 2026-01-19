@@ -136,7 +136,7 @@ const remove = async () => {
   try {
     await axios.delete(`channels/${object.value?.uuid}`)
     emit('deleted')
-    return router.push({ name: 'profile.overview', params: { username: store.state.auth.username } })
+    return router.push({ name: 'profile.content', params: { username: store.state.auth.username } })
   } catch (error) {
     useErrorHandler(error as Error)
   }

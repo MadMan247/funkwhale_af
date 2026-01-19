@@ -84,7 +84,7 @@ const labels = computed(() => ({
       <div class="divider" />
       <router-link
         class="item"
-        :to="{name: 'profile.overview', params: { username: store.state.auth.username },}"
+        :to="{name: 'profile.content', params: { username: store.state.auth.username },}"
       >
         <i class="user icon" />
         {{ labels.profile }}

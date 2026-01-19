@@ -239,18 +239,18 @@ const moderationNotifications = computed(() =>
 
       <nav style="display:grid;">
         <Link
-          to="/library"
+          :to="{ name: 'library.index' }"
           ghost
           full
           align-text="start"
-          icon="bi-compass"
+          icon="bi-clock-history"
           thick-when-active
         >
-          {{ t('components.Sidebar.header.explore') }}
+          {{ t('components.Sidebar.header.activity') }}
         </Link>
 
         <Link
-          to="/library/artists"
+          :to="{ name: 'library.artists.browse' }"
           ghost
           full
           align-text="start"
@@ -262,19 +262,7 @@ const moderationNotifications = computed(() =>
         </Link>
 
         <Link
-          to="/library/channels"
-          ghost
-          full
-          align-text="start"
-          thin-font
-          icon="bi-person-square"
-          thick-when-active
-        >
-          {{ t('components.Sidebar.link.channels') }}
-        </Link>
-
-        <Link
-          to="/library/albums"
+          :to="{ name: 'library.albums.browse' }"
           ghost
           full
           align-text="start"
@@ -286,7 +274,19 @@ const moderationNotifications = computed(() =>
         </Link>
 
         <Link
-          to="/library/playlists"
+          :to="{ name: 'library.channels.browse' }"
+          ghost
+          full
+          align-text="start"
+          thin-font
+          icon="bi-person-square"
+          thick-when-active
+        >
+          {{ t('components.Sidebar.link.channels') }}
+        </Link>
+
+        <Link
+          :to="{ name: 'library.playlists.browse' }"
           ghost
           full
           align-text="start"
@@ -297,7 +297,7 @@ const moderationNotifications = computed(() =>
           {{ t('components.Sidebar.link.playlists') }}
         </Link>
         <Link
-          to="/library/radios"
+          :to="{ name: 'library.radios.browse' }"
           ghost
           full
           align-text="start"
@@ -308,7 +308,7 @@ const moderationNotifications = computed(() =>
           {{ t('components.Sidebar.link.radios') }}
         </Link>
         <Link
-          to="/library/podcasts"
+          :to="{ name: 'library.podcasts.browse' }"
           ghost
           full
           align-text="start"
@@ -319,7 +319,7 @@ const moderationNotifications = computed(() =>
           {{ t('components.Sidebar.link.podcasts') }}
         </Link>
         <Link
-          to="/favorites"
+          :to="{ name: 'favorites' }"
           ghost
           full
           align-text="start"

@@ -3296,7 +3296,7 @@
         },
         "title": "{ username } perfil"
       },
-      "ProfileOverview": {
+      "ProfileContent": {
         "button": {
           "cancel": "Cancelar",
           "createChannel": "Criar uma nova biblioteca",

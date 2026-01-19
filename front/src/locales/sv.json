@@ -2848,7 +2848,7 @@
         },
         "title": "{ username }s profil"
       },
-      "ProfileOverview": {
+      "ProfileContent": {
         "button": {
           "cancel": "Ångra",
           "createChannel": "Skapa ett konto",

@@ -3943,7 +3943,7 @@
         },
         "title": "{ username } 的个人资料"
       },
-      "ProfileOverview": {
+      "ProfileContent": {
         "button": {
           "cancel": "取消",
           "createChannel": "创建频道",

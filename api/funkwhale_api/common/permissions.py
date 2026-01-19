@@ -104,6 +104,14 @@ class PrivacyLevelPermission(BasePermission):
         else:
             return False
 
+        # User's requesting it's own objects
+        if (
+            request.user
+            and hasattr(request.user, "actor")
+            and request.user.actor == obj_actor
+        ):
+            return True
+
         if privacy_level == "instance":
             # user is local
             if request.user and hasattr(request.user, "actor"):

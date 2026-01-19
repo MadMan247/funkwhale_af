@@ -4,7 +4,10 @@ from django.core import paginator
 from django.db.models import Prefetch
 from django.http import HttpResponse
 from django.urls import reverse
-from rest_framework import exceptions, mixins, permissions, response, viewsets
+from drf_spectacular.utils import extend_schema, inline_serializer
+from rest_framework import exceptions, mixins, permissions, response
+from rest_framework import settings as rest_settings
+from rest_framework import viewsets
 from rest_framework.decorators import action
 
 from funkwhale_api.common import permissions as common_permissions
@@ -52,7 +55,9 @@ def get_collection_response(
             page_number = int(page)
         except Exception:
             return response.Response({"page": ["Invalid page number"]}, status=400)
-        conf["page_size"] = preferences.get("federation__collection_page_size")
+
+        if not conf.get("page_size", None):
+            conf["page_size"] = preferences.get("federation__collection_page_size")
         p = paginator.Paginator(conf["items"], conf["page_size"])
         try:
             page = p.page(page_number)
@@ -111,6 +116,20 @@ class ActorViewSet(FederationMixin, mixins.RetrieveModelMixin, viewsets.GenericV
         .prefetch_related("channel__artist__tagged_items__tag")
     )
     serializer_class = serializers.ActorSerializer
+
+    def get_authenticators(self):
+        # Allow session auth for GET
+        if self.request and self.request.method == "GET":
+            return [
+                auth()
+                for auth in (
+                    [authentication.SignatureAuthentication]
+                    + rest_settings.api_settings.DEFAULT_AUTHENTICATION_CLASSES
+                )
+            ]
+        return [
+            authentication.SignatureAuthentication(),
+        ]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -177,6 +196,15 @@ class ActorViewSet(FederationMixin, mixins.RetrieveModelMixin, viewsets.GenericV
             collection_serializer=serializers.ChannelOutboxSerializer(channel),
         )
 
+    @extend_schema(
+        responses=inline_serializer(
+            name="ActorCollectionPage",
+            fields={
+                **serializers.CollectionPageSerializer().fields,
+                "items": serializers.ActorSerializer(many=True),
+            },
+        )
+    )
     @action(
         methods=["get"],
         detail=True,
@@ -185,6 +213,8 @@ class ActorViewSet(FederationMixin, mixins.RetrieveModelMixin, viewsets.GenericV
     def followers(self, request, *args, **kwargs):
         actor = self.get_object()
         followers = list(actor.get_approved_followers())
+        page_size = int(request.query_params.get("page_size", 100))
+        page_size = max(1, min(page_size, 500))
         conf = {
             "id": federation_utils.full_url(
                 reverse(
@@ -194,7 +224,7 @@ class ActorViewSet(FederationMixin, mixins.RetrieveModelMixin, viewsets.GenericV
             ),
             "items": followers,
             "item_serializer": serializers.ActorSerializer,
-            "page_size": 100,
+            "page_size": page_size,
             "actor": None,
         }
         response = get_collection_response(
@@ -204,6 +234,15 @@ class ActorViewSet(FederationMixin, mixins.RetrieveModelMixin, viewsets.GenericV
         )
         return response
 
+    @extend_schema(
+        responses=inline_serializer(
+            name="ActorCollectionPage",
+            fields={
+                **serializers.CollectionPageSerializer().fields,
+                "items": serializers.ActorSerializer(many=True),
+            },
+        )
+    )
     @action(
         methods=["get"],
         detail=True,
@@ -211,9 +250,9 @@ class ActorViewSet(FederationMixin, mixins.RetrieveModelMixin, viewsets.GenericV
     )
     def following(self, request, *args, **kwargs):
         actor = self.get_object()
-        followings = list(
-            actor.emitted_follows.filter(approved=True).values_list("target", flat=True)
-        )
+        followings = list(actor.get_approved_followings())
+        page_size = int(request.query_params.get("page_size", 100))
+        page_size = max(1, min(page_size, 500))
         conf = {
             "id": federation_utils.full_url(
                 reverse(
@@ -223,7 +262,7 @@ class ActorViewSet(FederationMixin, mixins.RetrieveModelMixin, viewsets.GenericV
             ),
             "items": followings,
             "item_serializer": serializers.ActorSerializer,
-            "page_size": 100,
+            "page_size": page_size,
             "actor": None,
         }
         response = get_collection_response(
@@ -233,6 +272,15 @@ class ActorViewSet(FederationMixin, mixins.RetrieveModelMixin, viewsets.GenericV
         )
         return response
 
+    @extend_schema(
+        responses=inline_serializer(
+            name="ListeningCollectionPage",
+            fields={
+                **serializers.CollectionPageSerializer().fields,
+                "items": serializers.ListeningSerializer(many=True),
+            },
+        )
+    )
     @action(
         methods=["get"],
         detail=True,
@@ -250,7 +298,6 @@ class ActorViewSet(FederationMixin, mixins.RetrieveModelMixin, viewsets.GenericV
             ),
             "items": listenings,
             "item_serializer": serializers.ListeningSerializer,
-            "page_size": 100,
             "actor": None,
         }
         response = get_collection_response(
@@ -260,6 +307,15 @@ class ActorViewSet(FederationMixin, mixins.RetrieveModelMixin, viewsets.GenericV
         )
         return response
 
+    @extend_schema(
+        responses=inline_serializer(
+            name="LikeCollectionPage",
+            fields={
+                **serializers.CollectionPageSerializer().fields,
+                "items": serializers.TrackFavoriteSerializer(many=True),
+            },
+        )
+    )
     @action(
         methods=["get"],
         detail=True,
@@ -277,7 +333,6 @@ class ActorViewSet(FederationMixin, mixins.RetrieveModelMixin, viewsets.GenericV
             ),
             "items": likes,
             "item_serializer": serializers.TrackFavoriteSerializer,
-            "page_size": 100,
             "actor": None,
         }
         response = get_collection_response(
@@ -668,7 +723,6 @@ class IndexViewSet(FederationMixin, viewsets.GenericViewSet):
             ),
             "items": libraries,
             "item_serializer": serializers.LibrarySerializer,
-            "page_size": 100,
             "actor": None,
         }
         return get_collection_response(
@@ -699,7 +753,6 @@ class IndexViewSet(FederationMixin, viewsets.GenericViewSet):
             "id": federation_utils.full_url(reverse("federation:index:index-channels")),
             "items": actors,
             "item_serializer": serializers.ActorSerializer,
-            "page_size": 100,
             "actor": None,
         }
         return get_collection_response(

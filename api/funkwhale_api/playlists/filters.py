@@ -26,7 +26,9 @@ class PlaylistFilter(filters.FilterSet):
         queryset=music_models.Artist.objects.all(),
         distinct=True,
     )
-    scope = common_filters.ActorScopeFilter(actor_field="actor", distinct=True)
+    scope = common_filters.ActorScopeFilter(
+        actor_field="actor", object_type="playlists", distinct=True
+    )
 
     class Meta:
         model = models.Playlist

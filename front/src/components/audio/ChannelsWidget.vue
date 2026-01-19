@@ -17,7 +17,7 @@ interface Events {
 }
 
 interface Props {
-  filters: object
+  filters: Record<string, string | boolean>
   limit?: number
   title?: string
 }

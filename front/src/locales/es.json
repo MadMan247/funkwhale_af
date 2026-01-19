@@ -3870,7 +3870,7 @@
         },
         "title": "Perfil de { username }"
       },
-      "ProfileOverview": {
+      "ProfileContent": {
         "button": {
           "cancel": "Cancelar",
           "createChannel": "Crear canal",

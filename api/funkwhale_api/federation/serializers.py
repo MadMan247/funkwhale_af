@@ -14,6 +14,7 @@ from rest_framework import serializers
 
 from funkwhale_api.common import fields
 from funkwhale_api.common import models as common_models
+from funkwhale_api.common import preferences
 from funkwhale_api.common import utils as common_utils
 from funkwhale_api.favorites import models as favorites_models
 from funkwhale_api.federation import activity, actors, contexts, jsonld, models, utils
@@ -1044,7 +1045,6 @@ class LibrarySerializer(PaginatedCollectionSerializer):
         conf = {
             "id": library.fid,
             "name": library.name,
-            "page_size": 100,
             "attributedTo": library.actor,
             "actor": library.actor,
             "items": (
@@ -1897,7 +1897,6 @@ class ChannelOutboxSerializer(PaginatedCollectionSerializer):
     def to_representation(self, channel):
         conf = {
             "id": channel.actor.outbox_url,
-            "page_size": 100,
             "attributedTo": channel.actor,
             "actor": channel.actor,
             "items": channel.library.uploads.for_federation()
@@ -2207,7 +2206,10 @@ class IndexSerializer(jsonld.JsonLdSerializer):
         jsonld_mapping = PAGINATED_COLLECTION_JSONLD_MAPPING
 
     def to_representation(self, conf):
-        paginator = Paginator(conf["items"], conf["page_size"])
+        page_size = conf.get(
+            "page_size", preferences.get("federation__collection_page_size")
+        )
+        paginator = Paginator(conf["items"], page_size)
         first = common_utils.set_query_parameter(conf["id"], page=1)
         current = first
         last = common_utils.set_query_parameter(conf["id"], page=paginator.num_pages)

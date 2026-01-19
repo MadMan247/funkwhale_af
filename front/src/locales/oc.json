@@ -3972,7 +3972,7 @@
         },
         "title": "Perfil de {username}"
       },
-      "ProfileOverview": {
+      "ProfileContent": {
         "button": {
           "cancel": "Anullar",
           "createChannel": "Crear una cadena",

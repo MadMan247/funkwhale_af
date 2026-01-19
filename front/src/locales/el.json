@@ -2179,7 +2179,7 @@
         },
         "title": "προφίλ του { username }"
       },
-      "ProfileOverview": {
+      "ProfileContent": {
         "button": {
           "cancel": "Ακύρωση",
           "createChannel": "Δημιουργία καναλιού"

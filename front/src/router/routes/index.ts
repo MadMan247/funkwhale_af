@@ -95,12 +95,6 @@ export default [
     ]
   },
   {
-    path: '/subscriptions',
-    name: 'subscriptions',
-    component: () => import('~/views/channels/SubscriptionsList.vue'),
-    props: route => ({ defaultQuery: route.query.q })
-  },
-  {
     path: '/:pathMatch(.*)*',
     name: '404',
     component: () => import('~/components/PageNotFound.vue')

@@ -6,14 +6,18 @@ import Link from '@ui/Link.vue'
 import Button from '@ui/Button.vue'
 import Layout from '@ui/Layout.vue'
 
-// Tabs will lead to index positions (0, 1, 2 etc.) if it's tabs. Otherwise, their destinations needs to be specified.
 type Tab = {
   title: string,
+  name?: string,
   icon?: string,
   badge?: string | number | false,
   to?: RouterLinkProps['to']
 }
 
+/**
+ * Use `name` if you prefer strings over index positions in the URL parameter.
+ * Make sure the names are unique and conform to URL parameter name specs.
+ */
 const tabs = defineModel<Tab[]>({ required: true })
 
 /**
@@ -31,12 +35,16 @@ const id = useId();
 const currentIndex = computed(() => {
   if (isTabs) {
     const queryValue = route.query[props.tabQueryField as string]
-    const indexString = Array.isArray(queryValue)
-                ? queryValue[0] ?? '0'
-                : queryValue ?? '0'
-    return parseInt(indexString)
-  }
-  return tabs.value.findIndex(tab =>
+    const singleValue = Array.isArray(queryValue)
+                ? queryValue[0] ?? ''
+                : queryValue ?? ''
+    const currentIndex = tabs.value.findIndex((tab, index) =>
+      'name' in tab
+       ? tab.name === singleValue
+       : index === parseInt(singleValue)
+    )
+    return currentIndex >= 0 ? currentIndex : 0
+  } else return tabs.value.findIndex(tab =>
       'to' in tab && tab.to && router.resolve(tab.to).path === route.path
     )
 })
@@ -46,11 +54,15 @@ const navigateTo = ( index: number ) => {
   if (index>tabs.value.length-1) index = 0
 
   if (isTabs) {
+    const tab = tabs.value[index]
     router.replace({
     ...route,
       query: {
         ...route.query,
-        [props.tabQueryField as string]: index
+        [props.tabQueryField]:
+          tab && 'name' in tab
+            ? tab.name
+            : index
       }
     })
   } else {

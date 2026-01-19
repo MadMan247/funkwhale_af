@@ -81,7 +81,7 @@ const downloadUrl = computed(() => {
 // TODO: Still needed?:
 
 // const attributedToUrl = computed(() => router.resolve({
-//   name: 'profile.full.overview',
+//   name: 'profile.full.content',
 //   params: {
 //     username: track.value?.attributed_to?.preferred_username,
 //     domain: track.value?.attributed_to?.domain

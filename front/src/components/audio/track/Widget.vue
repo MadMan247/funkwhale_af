@@ -83,7 +83,7 @@ onMounted(() => {
 })
 
 watch(
-  () => [store.state.moderation.lastUpdate, page.value],
+  () => [store.state.moderation.lastUpdate, props.filters, page.value],
   () => fetchData(),
   { immediate: true }
 )
@@ -200,7 +200,7 @@ watch(() => props.websocketHandlers.includes('Listen'), (to) => {
         >
           <router-link
             class="funkwhale link user"
-            :to="{ name: 'profile.overview', params: { username: object.actor.name } }"
+            :to="{ name: 'profile.content', params: { username: object.actor.name } }"
           >
             <span class="at symbol" />{{ object.actor.name }}
           </router-link>

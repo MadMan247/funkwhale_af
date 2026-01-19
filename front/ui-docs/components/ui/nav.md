@@ -48,6 +48,11 @@ Typical example include:
 - A message inboxes where the primary feature is reading and archiving messages (in Funkwhale: User messages)
 - A moderation feature where reports need to be answered
 
+## Name a tab
+
+By default, the URL stores the active tab as a number (`?tab=0`).
+Add `name: 'a'` to the first tab to represent it with a unique name (`?tab=a`). If you use unsafe letters, they will automatically be url-encoded and may look confusing, so best stick to ASCII. Spaces are represented as `+`. See the `Tab C` definition in the next section for an example of using `name`.
+
 ::: tip Using this component
 
 ## A11y Checklist

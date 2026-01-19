@@ -13,7 +13,8 @@ const tabs = ref([{
   title: "Tab B"
 }, {
   title: "Tab C",
-  badge: 3
+  badge: 3,
+  name: "final ö $%&/()=?"
 }])
 // #endregion model
 
@@ -38,7 +39,7 @@ const isOn=ref<boolean[]>([false, true, false])
         :key="panel.key"
         :class="`solid ${['green', 'blue', 'purple'][index]}`"
       >
-        Tab content {{ ['1 (green)', '2 (blue)', '3 (purple)'][index] }}
+        Tab content {{ ['1 (green)', '2 (blue)', '3 (purple, named)'][index] }}
         <hr>
         <Toggle
           v-model="isOn[index]"

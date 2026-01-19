@@ -9811,6 +9811,699 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserWrite'
           description: ''
+  /federation/actors/{preferred_username}:
+    get:
+      operationId: get_federation_actor_2
+      parameters:
+      - in: path
+        name: preferred_username
+        schema:
+          type: string
+        required: true
+      tags:
+      - federation
+      security:
+      - oauth2: []
+      - ApplicationToken: []
+      responses:
+        '200':
+          content:
+            application/activity+json:
+              schema:
+                $ref: '#/components/schemas/Actor'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Actor'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Actor'
+            text/html:
+              schema:
+                $ref: '#/components/schemas/Actor'
+          description: ''
+  /federation/actors/{preferred_username}/followers:
+    get:
+      operationId: get_federation_actor_follower
+      parameters:
+      - in: path
+        name: preferred_username
+        schema:
+          type: string
+        required: true
+      tags:
+      - federation
+      security:
+      - oauth2: []
+      - ApplicationToken: []
+      responses:
+        '200':
+          content:
+            application/activity+json:
+              schema:
+                $ref: '#/components/schemas/ActorCollectionPage'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ActorCollectionPage'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActorCollectionPage'
+            text/html:
+              schema:
+                $ref: '#/components/schemas/ActorCollectionPage'
+          description: ''
+  /federation/actors/{preferred_username}/following:
+    get:
+      operationId: get_federation_actor_following
+      parameters:
+      - in: path
+        name: preferred_username
+        schema:
+          type: string
+        required: true
+      tags:
+      - federation
+      security:
+      - oauth2: []
+      - ApplicationToken: []
+      responses:
+        '200':
+          content:
+            application/activity+json:
+              schema:
+                $ref: '#/components/schemas/ActorCollectionPage'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ActorCollectionPage'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActorCollectionPage'
+            text/html:
+              schema:
+                $ref: '#/components/schemas/ActorCollectionPage'
+          description: ''
+  /federation/actors/{preferred_username}/inbox:
+    get:
+      operationId: get_federation_actor_inbox
+      parameters:
+      - in: path
+        name: preferred_username
+        schema:
+          type: string
+        required: true
+      tags:
+      - federation
+      security:
+      - oauth2: []
+      - ApplicationToken: []
+      responses:
+        '200':
+          content:
+            application/activity+json:
+              schema:
+                $ref: '#/components/schemas/Actor'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Actor'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Actor'
+            text/html:
+              schema:
+                $ref: '#/components/schemas/Actor'
+          description: ''
+    post:
+      operationId: create_federation_actor_inbox
+      parameters:
+      - in: path
+        name: preferred_username
+        schema:
+          type: string
+        required: true
+      tags:
+      - federation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActorRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ActorRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ActorRequest'
+          application/activity+json:
+            schema:
+              $ref: '#/components/schemas/ActorRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/activity+json:
+              schema:
+                $ref: '#/components/schemas/Actor'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Actor'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Actor'
+            text/html:
+              schema:
+                $ref: '#/components/schemas/Actor'
+          description: ''
+  /federation/actors/{preferred_username}/likes:
+    get:
+      operationId: get_federation_actor_like
+      parameters:
+      - in: path
+        name: preferred_username
+        schema:
+          type: string
+        required: true
+      tags:
+      - federation
+      security:
+      - oauth2: []
+      - ApplicationToken: []
+      responses:
+        '200':
+          content:
+            application/activity+json:
+              schema:
+                $ref: '#/components/schemas/LikeCollectionPage'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/LikeCollectionPage'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LikeCollectionPage'
+            text/html:
+              schema:
+                $ref: '#/components/schemas/LikeCollectionPage'
+          description: ''
+  /federation/actors/{preferred_username}/listens:
+    get:
+      operationId: get_federation_actor_listen
+      parameters:
+      - in: path
+        name: preferred_username
+        schema:
+          type: string
+        required: true
+      tags:
+      - federation
+      security:
+      - oauth2: []
+      - ApplicationToken: []
+      responses:
+        '200':
+          content:
+            application/activity+json:
+              schema:
+                $ref: '#/components/schemas/ListeningCollectionPage'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ListeningCollectionPage'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListeningCollectionPage'
+            text/html:
+              schema:
+                $ref: '#/components/schemas/ListeningCollectionPage'
+          description: ''
+  /federation/actors/{preferred_username}/outbox:
+    get:
+      operationId: get_federation_actor_outbox
+      parameters:
+      - in: path
+        name: preferred_username
+        schema:
+          type: string
+        required: true
+      tags:
+      - federation
+      security:
+      - oauth2: []
+      - ApplicationToken: []
+      responses:
+        '200':
+          content:
+            application/activity+json:
+              schema:
+                $ref: '#/components/schemas/Actor'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Actor'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Actor'
+            text/html:
+              schema:
+                $ref: '#/components/schemas/Actor'
+          description: ''
+    post:
+      operationId: create_federation_actor_outbox
+      parameters:
+      - in: path
+        name: preferred_username
+        schema:
+          type: string
+        required: true
+      tags:
+      - federation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActorRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ActorRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ActorRequest'
+          application/activity+json:
+            schema:
+              $ref: '#/components/schemas/ActorRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/activity+json:
+              schema:
+                $ref: '#/components/schemas/Actor'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Actor'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Actor'
+            text/html:
+              schema:
+                $ref: '#/components/schemas/Actor'
+          description: ''
+  /federation/edits/{uuid}:
+    get:
+      operationId: get_federation_edit
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+        required: true
+      tags:
+      - federation
+      responses:
+        '200':
+          description: No response body
+  /federation/index/channels:
+    get:
+      operationId: get_federation_index_channel
+      tags:
+      - federation
+      responses:
+        '200':
+          description: No response body
+  /federation/index/libraries:
+    get:
+      operationId: get_federation_index_library
+      tags:
+      - federation
+      responses:
+        '200':
+          description: No response body
+  /federation/music/albums/{uuid}:
+    get:
+      operationId: get_federation_music_album
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - federation
+      responses:
+        '200':
+          content:
+            application/activity+json:
+              schema:
+                $ref: '#/components/schemas/Album'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Album'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Album'
+            text/html:
+              schema:
+                $ref: '#/components/schemas/Album'
+          description: ''
+  /federation/music/artistcredit/{uuid}:
+    get:
+      operationId: get_federation_music_artistcredit
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - federation
+      responses:
+        '200':
+          content:
+            application/activity+json:
+              schema:
+                $ref: '#/components/schemas/ArtistCredit'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/ArtistCredit'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArtistCredit'
+            text/html:
+              schema:
+                $ref: '#/components/schemas/ArtistCredit'
+          description: ''
+  /federation/music/artists/{uuid}:
+    get:
+      operationId: get_federation_music_artist
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - federation
+      responses:
+        '200':
+          content:
+            application/activity+json:
+              schema:
+                $ref: '#/components/schemas/Artist'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Artist'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Artist'
+            text/html:
+              schema:
+                $ref: '#/components/schemas/Artist'
+          description: ''
+  /federation/music/libraries:
+    get:
+      operationId: get_federation_music_libraries
+      parameters:
+      - in: query
+        name: actor
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: privacy_level
+        schema:
+          type: string
+          enum:
+          - everyone
+          - followers
+          - instance
+          - me
+        description: |-
+          * `me` - Only me
+          * `followers` - Me and my followers
+          * `instance` - Everyone on my instance, and my followers
+          * `everyone` - Everyone, including people on other instances
+      - in: query
+        name: q
+        schema:
+          type: string
+      - in: query
+        name: scope
+        schema:
+          type: string
+      tags:
+      - federation
+      responses:
+        '200':
+          content:
+            application/activity+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLibraryList'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLibraryList'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLibraryList'
+            text/html:
+              schema:
+                $ref: '#/components/schemas/PaginatedLibraryList'
+          description: ''
+  /federation/music/libraries/{uuid}:
+    get:
+      operationId: get_federation_music_library
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - federation
+      responses:
+        '200':
+          content:
+            application/activity+json:
+              schema:
+                $ref: '#/components/schemas/Library'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Library'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Library'
+            text/html:
+              schema:
+                $ref: '#/components/schemas/Library'
+          description: ''
+  /federation/music/libraries/{uuid}/followers:
+    get:
+      operationId: get_federation_music_library_follower
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - federation
+      responses:
+        '200':
+          content:
+            application/activity+json:
+              schema:
+                $ref: '#/components/schemas/Library'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Library'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Library'
+            text/html:
+              schema:
+                $ref: '#/components/schemas/Library'
+          description: ''
+  /federation/music/likes/{uuid}:
+    get:
+      operationId: get_federation_music_like
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - federation
+      responses:
+        '200':
+          content:
+            application/activity+json:
+              schema:
+                $ref: '#/components/schemas/TrackFavorite'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/TrackFavorite'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackFavorite'
+            text/html:
+              schema:
+                $ref: '#/components/schemas/TrackFavorite'
+          description: ''
+  /federation/music/listenings/{uuid}:
+    get:
+      operationId: get_federation_music_listening
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - federation
+      responses:
+        '200':
+          content:
+            application/activity+json:
+              schema:
+                $ref: '#/components/schemas/Listening'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Listening'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Listening'
+            text/html:
+              schema:
+                $ref: '#/components/schemas/Listening'
+          description: ''
+  /federation/music/playlists/{uuid}:
+    get:
+      operationId: get_federation_music_playlist
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - federation
+      responses:
+        '200':
+          content:
+            application/activity+json:
+              schema:
+                $ref: '#/components/schemas/PlaylistCollection'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/PlaylistCollection'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaylistCollection'
+            text/html:
+              schema:
+                $ref: '#/components/schemas/PlaylistCollection'
+          description: ''
+  /federation/music/tracks/{uuid}:
+    get:
+      operationId: get_federation_music_track
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - federation
+      responses:
+        '200':
+          content:
+            application/activity+json:
+              schema:
+                $ref: '#/components/schemas/Track'
+            application/ld+json:
+              schema:
+                $ref: '#/components/schemas/Track'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Track'
+            text/html:
+              schema:
+                $ref: '#/components/schemas/Track'
+          description: ''
+  /federation/music/uploads/{uuid}:
+    get:
+      operationId: get_federation_music_upload
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - federation
+      responses:
+        '200':
+          description: No response body
+  /federation/music/uploads/{uuid}/activity:
+    get:
+      operationId: get_federation_music_upload_activity
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - federation
+      responses:
+        '200':
+          description: No response body
+  /federation/reports/{uuid}:
+    get:
+      operationId: get_federation_report
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - federation
+      responses:
+        '200':
+          description: No response body
+  /federation/shared/inbox:
+    post:
+      operationId: create_federation_shared_inbox
+      tags:
+      - federation
+      responses:
+        '200':
+          description: No response body
 components:
   schemas:
     APIActor:
@@ -10051,6 +10744,224 @@ components:
           maxLength: 100
       required:
       - actor
+    Actor:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uri
+          maxLength: 500
+        outbox:
+          type: string
+          format: uri
+          maxLength: 500
+        inbox:
+          type: string
+          format: uri
+          maxLength: 500
+        url:
+          type: array
+          items:
+            $ref: '#/components/schemas/URL'
+          minItems: 0
+        type:
+          $ref: '#/components/schemas/ActorTypeEnum'
+        preferredUsername:
+          type: string
+        manuallyApprovesFollowers:
+          type: boolean
+          nullable: true
+        name:
+          type: string
+          nullable: true
+          maxLength: 200
+        summary:
+          type: string
+          nullable: true
+        followers:
+          type: string
+          format: uri
+          maxLength: 500
+        following:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 500
+        publicKey:
+          $ref: '#/components/schemas/PublicKey'
+        endpoints:
+          $ref: '#/components/schemas/Endpoints'
+        icon:
+          allOf:
+          - $ref: '#/components/schemas/Image'
+          nullable: true
+        attributedTo:
+          type: string
+          format: uri
+          maxLength: 500
+        tags:
+          type: array
+          items: {}
+          nullable: true
+          minItems: 0
+        audience:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/PrivacyLevelEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        category:
+          type: string
+      required:
+      - id
+      - preferredUsername
+      - type
+    ActorCollectionPage:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/Type03cEnum'
+        totalItems:
+          type: integer
+          minimum: 0
+        actor:
+          type: string
+          format: uri
+          maxLength: 500
+        attributedTo:
+          type: string
+          format: uri
+          maxLength: 500
+        id:
+          type: string
+          format: uri
+          maxLength: 500
+        first:
+          type: string
+          format: uri
+          maxLength: 500
+        last:
+          type: string
+          format: uri
+          maxLength: 500
+        next:
+          type: string
+          format: uri
+          maxLength: 500
+        prev:
+          type: string
+          format: uri
+          maxLength: 500
+        partOf:
+          type: string
+          format: uri
+          maxLength: 500
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Actor'
+      required:
+      - first
+      - id
+      - items
+      - last
+      - partOf
+      - totalItems
+      - type
+    ActorRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 500
+        outbox:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 500
+        inbox:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 500
+        url:
+          type: array
+          items:
+            $ref: '#/components/schemas/URLRequest'
+          minItems: 0
+        type:
+          $ref: '#/components/schemas/ActorTypeEnum'
+        preferredUsername:
+          type: string
+          minLength: 1
+        manuallyApprovesFollowers:
+          type: boolean
+          nullable: true
+        name:
+          type: string
+          nullable: true
+          maxLength: 200
+        summary:
+          type: string
+          nullable: true
+        followers:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 500
+        following:
+          type: string
+          format: uri
+          nullable: true
+          minLength: 1
+          maxLength: 500
+        publicKey:
+          $ref: '#/components/schemas/PublicKeyRequest'
+        endpoints:
+          $ref: '#/components/schemas/EndpointsRequest'
+        icon:
+          allOf:
+          - $ref: '#/components/schemas/ImageRequest'
+          nullable: true
+        attributedTo:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 500
+        tags:
+          type: array
+          items: {}
+          nullable: true
+          minItems: 0
+        audience:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/PrivacyLevelEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        category:
+          type: string
+          minLength: 1
+      required:
+      - id
+      - preferredUsername
+      - type
+    ActorTypeEnum:
+      enum:
+      - https://www.w3.org/ns/activitystreams#Person
+      - https://www.w3.org/ns/activitystreams#Tombstone
+      - https://www.w3.org/ns/activitystreams#Application
+      - https://www.w3.org/ns/activitystreams#Group
+      - https://www.w3.org/ns/activitystreams#Organization
+      - https://www.w3.org/ns/activitystreams#Service
+      type: string
+      description: |-
+        * `https://www.w3.org/ns/activitystreams#Person` - https://www.w3.org/ns/activitystreams#Person
+        * `https://www.w3.org/ns/activitystreams#Tombstone` - https://www.w3.org/ns/activitystreams#Tombstone
+        * `https://www.w3.org/ns/activitystreams#Application` - https://www.w3.org/ns/activitystreams#Application
+        * `https://www.w3.org/ns/activitystreams#Group` - https://www.w3.org/ns/activitystreams#Group
+        * `https://www.w3.org/ns/activitystreams#Organization` - https://www.w3.org/ns/activitystreams#Organization
+        * `https://www.w3.org/ns/activitystreams#Service` - https://www.w3.org/ns/activitystreams#Service
     Album:
       type: object
       properties:
@@ -10956,6 +11867,14 @@ components:
         libraries:
           type: string
           format: uri
+    EndpointsRequest:
+      type: object
+      properties:
+        sharedInbox:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 500
     ErrorDetail:
       type: object
       properties:
@@ -11016,7 +11935,7 @@ components:
           - $ref: '#/components/schemas/Artist'
           - $ref: '#/components/schemas/Album'
           - $ref: '#/components/schemas/Track'
-          - $ref: '#/components/schemas/APIActor'
+          - $ref: '#/components/schemas/Actor'
           - $ref: '#/components/schemas/Channel'
           - $ref: '#/components/schemas/Playlist'
           readOnly: true
@@ -11278,6 +12197,53 @@ components:
       required:
       - id
       - type
+    Image:
+      type: object
+      properties:
+        mediaType:
+          type: string
+          nullable: true
+        type:
+          $ref: '#/components/schemas/ImageTypeEnum'
+        href:
+          type: string
+          format: uri
+          maxLength: 500
+        url:
+          type: string
+          format: uri
+          maxLength: 500
+      required:
+      - type
+    ImageRequest:
+      type: object
+      properties:
+        mediaType:
+          type: string
+          nullable: true
+          minLength: 1
+        type:
+          $ref: '#/components/schemas/ImageTypeEnum'
+        href:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 500
+        url:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 500
+      required:
+      - type
+    ImageTypeEnum:
+      enum:
+      - https://www.w3.org/ns/activitystreams#Image
+      - https://www.w3.org/ns/activitystreams#Link
+      type: string
+      description: |-
+        * `https://www.w3.org/ns/activitystreams#Image` - https://www.w3.org/ns/activitystreams#Image
+        * `https://www.w3.org/ns/activitystreams#Link` - https://www.w3.org/ns/activitystreams#Link
     ImportMetadata:
       type: object
       properties:
@@ -11691,6 +12657,58 @@ components:
       - name
       - redistribute
       - url
+    LikeCollectionPage:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/Type03cEnum'
+        totalItems:
+          type: integer
+          minimum: 0
+        actor:
+          type: string
+          format: uri
+          maxLength: 500
+        attributedTo:
+          type: string
+          format: uri
+          maxLength: 500
+        id:
+          type: string
+          format: uri
+          maxLength: 500
+        first:
+          type: string
+          format: uri
+          maxLength: 500
+        last:
+          type: string
+          format: uri
+          maxLength: 500
+        next:
+          type: string
+          format: uri
+          maxLength: 500
+        prev:
+          type: string
+          format: uri
+          maxLength: 500
+        partOf:
+          type: string
+          format: uri
+          maxLength: 500
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrackFavorite'
+      required:
+      - first
+      - id
+      - items
+      - last
+      - partOf
+      - totalItems
+      - type
     Listening:
       type: object
       properties:
@@ -11713,6 +12731,58 @@ components:
       - actor
       - id
       - track
+    ListeningCollectionPage:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/Type03cEnum'
+        totalItems:
+          type: integer
+          minimum: 0
+        actor:
+          type: string
+          format: uri
+          maxLength: 500
+        attributedTo:
+          type: string
+          format: uri
+          maxLength: 500
+        id:
+          type: string
+          format: uri
+          maxLength: 500
+        first:
+          type: string
+          format: uri
+          maxLength: 500
+        last:
+          type: string
+          format: uri
+          maxLength: 500
+        next:
+          type: string
+          format: uri
+          maxLength: 500
+        prev:
+          type: string
+          format: uri
+          maxLength: 500
+        partOf:
+          type: string
+          format: uri
+          maxLength: 500
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Listening'
+      required:
+      - first
+      - id
+      - items
+      - last
+      - partOf
+      - totalItems
+      - type
     ListeningWrite:
       type: object
       properties:
@@ -13972,6 +15042,9 @@ components:
       required:
       - anonymousCanListen
       - federationEnabled
+    NullEnum:
+      enum:
+      - null
     Oembed:
       type: object
       properties:
@@ -15287,6 +16360,38 @@ components:
           type: boolean
       required:
       - tracks
+    PlaylistCollection:
+      type: object
+      description: Used for the federation view.
+      properties:
+        type:
+          $ref: '#/components/schemas/PlaylistCollectionTypeEnum'
+        totalItems:
+          type: integer
+          minimum: 0
+        id:
+          type: string
+          format: uri
+          maxLength: 500
+        first:
+          type: string
+          format: uri
+          maxLength: 500
+        last:
+          type: string
+          format: uri
+          maxLength: 500
+      required:
+      - first
+      - id
+      - last
+      - totalItems
+      - type
+    PlaylistCollectionTypeEnum:
+      enum:
+      - https://funkwhale.audio/ns#Playlist
+      type: string
+      description: '* `https://funkwhale.audio/ns#Playlist` - https://funkwhale.audio/ns#Playlist'
     PlaylistRequest:
       type: object
       properties:
@@ -15330,6 +16435,21 @@ components:
         * `followers` - Me and my followers
         * `instance` - Everyone on my instance, and my followers
         * `everyone` - Everyone, including people on other instances
+    PublicKey:
+      type: object
+      properties:
+        publicKeyPem:
+          type: string
+      required:
+      - publicKeyPem
+    PublicKeyRequest:
+      type: object
+      properties:
+        publicKeyPem:
+          type: string
+          minLength: 1
+      required:
+      - publicKeyPem
     Radio:
       type: object
       properties:
@@ -16110,6 +17230,37 @@ components:
       - artist_credit
       - cover
       - title
+    TrackFavorite:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/TrackFavoriteTypeEnum'
+        id:
+          type: string
+          format: uri
+          maxLength: 500
+        object:
+          type: string
+          format: uri
+          maxLength: 500
+        actor:
+          type: string
+          format: uri
+          maxLength: 500
+        audience:
+          type: string
+          maxLength: 500
+      required:
+      - actor
+      - audience
+      - id
+      - object
+      - type
+    TrackFavoriteTypeEnum:
+      enum:
+      - https://www.w3.org/ns/activitystreams#Like
+      type: string
+      description: '* `https://www.w3.org/ns/activitystreams#Like` - https://www.w3.org/ns/activitystreams#Like'
     TrackMetadata:
       type: object
       properties:
@@ -16237,6 +17388,35 @@ components:
       - mimetype
       - size
       - uuid
+    Type03cEnum:
+      enum:
+      - https://www.w3.org/ns/activitystreams#CollectionPage
+      type: string
+      description: '* `https://www.w3.org/ns/activitystreams#CollectionPage` - https://www.w3.org/ns/activitystreams#CollectionPage'
+    URL:
+      type: object
+      properties:
+        href:
+          type: string
+          format: uri
+          maxLength: 500
+        mediaType:
+          type: string
+      required:
+      - href
+    URLRequest:
+      type: object
+      properties:
+        href:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 500
+        mediaType:
+          type: string
+          minLength: 1
+      required:
+      - href
     UploadBulkUpdateRequest:
       type: object
       properties:

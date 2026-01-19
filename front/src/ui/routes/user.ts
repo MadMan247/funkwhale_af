@@ -13,14 +13,20 @@ export default [
     beforeEnter: redirectOnConstraint,
     children: [{
         path: '',
-        name: `profile${route.suffix}.overview`,
-        component: () => import('~/views/auth/ProfileOverview.vue'),
+        name: `profile${route.suffix}.content`,
+        component: () => import('~/views/auth/ProfileContent.vue'),
         meta: constraints('onlyMatchingDomain')
       },
       {
         path: 'activity',
         name: `profile${route.suffix}.activity`,
         component: () => import('~/views/auth/ProfileActivity.vue'),
+        meta: constraints('onlyMatchingDomain')
+      },
+      {
+        path: 'follows',
+        name: `profile${route.suffix}.follows`,
+        component: () => import('~/views/auth/ProfileFollows.vue'),
         meta: constraints('onlyMatchingDomain')
       },
       {

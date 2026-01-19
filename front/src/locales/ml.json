@@ -1530,7 +1530,7 @@
         },
         "title": "{ username } ന്റെ പ്രൊഫൈൽ"
       },
-      "ProfileOverview": {
+      "ProfileContent": {
         "button": {
           "cancel": "റദ്ദാക്കുക",
           "createChannel": "ചാനൽ സൃഷ്ടിക്കുക"

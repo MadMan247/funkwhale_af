@@ -920,7 +920,7 @@
         },
         "title": "{ username } felhasználói fiókja"
       },
-      "ProfileOverview": {
+      "ProfileContent": {
         "link": {
           "addNew": "Új létrehozása"
         }

@@ -198,7 +198,7 @@ OBJECT_SERIALIZER_MAPPING = {
     music_models.Album: federation_serializers.AlbumSerializer,
     music_models.Track: federation_serializers.TrackSerializer,
     music_models.Library: federation_serializers.LibrarySerializer,
-    models.Actor: federation_serializers.APIActorSerializer,
+    models.Actor: federation_serializers.ActorSerializer,
     audio_models.Channel: audio_serializers.ChannelSerializer,
     playlists_models.Playlist: federation_serializers.PlaylistSerializer,
 }
@@ -290,7 +290,7 @@ class FetchSerializer(serializers.ModelSerializer):
                 {"$ref": "#/components/schemas/Artist"},
                 {"$ref": "#/components/schemas/Album"},
                 {"$ref": "#/components/schemas/Track"},
-                {"$ref": "#/components/schemas/APIActor"},
+                {"$ref": "#/components/schemas/Actor"},
                 {"$ref": "#/components/schemas/Channel"},
                 {"$ref": "#/components/schemas/Playlist"},
             ]

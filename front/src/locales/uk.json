@@ -4094,7 +4094,7 @@
         },
         "title": "Профіль користувача {username}"
       },
-      "ProfileOverview": {
+      "ProfileContent": {
         "button": {
           "cancel": "Скасувати",
           "createChannel": "Створити канал",

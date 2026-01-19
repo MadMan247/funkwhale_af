@@ -22,12 +22,17 @@ export default [
       {
         path: '',
         name: `profile${route.suffix}.overview`,
-        component: () => import('~/views/auth/ProfileOverview.vue')
+        component: () => import('~/views/auth/ProfileContent.vue')
       },
       {
         path: 'activity',
         name: `profile${route.suffix}.activity`,
         component: () => import('~/views/auth/ProfileActivity.vue')
+      },
+      {
+        path: 'follows',
+        name: `profile${route.suffix}.follows`,
+        component: () => import('~/views/auth/ProfileFollows.vue')
       }
     ]
   }

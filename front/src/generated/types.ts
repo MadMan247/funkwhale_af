@@ -3174,6 +3174,390 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/federation/actors/{preferred_username}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_actor_2"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/actors/{preferred_username}/followers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_actor_follower"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/actors/{preferred_username}/following": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_actor_following"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/actors/{preferred_username}/inbox": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_actor_inbox"];
+        put?: never;
+        post: operations["create_federation_actor_inbox"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/actors/{preferred_username}/likes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_actor_like"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/actors/{preferred_username}/listens": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_actor_listen"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/actors/{preferred_username}/outbox": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_actor_outbox"];
+        put?: never;
+        post: operations["create_federation_actor_outbox"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/edits/{uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_edit"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/index/channels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_index_channel"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/index/libraries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_index_library"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/music/albums/{uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_music_album"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/music/artistcredit/{uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_music_artistcredit"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/music/artists/{uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_music_artist"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/music/libraries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_music_libraries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/music/libraries/{uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_music_library"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/music/libraries/{uuid}/followers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_music_library_follower"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/music/likes/{uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_music_like"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/music/listenings/{uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_music_listening"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/music/playlists/{uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_music_playlist"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/music/tracks/{uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_music_track"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/music/uploads/{uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_music_upload"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/music/uploads/{uuid}/activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_music_upload_activity"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/reports/{uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_federation_report"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/federation/shared/inbox": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["create_federation_shared_inbox"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -3272,6 +3656,89 @@ export interface components {
             creation_date?: string;
             type?: string | null;
         };
+        Actor: {
+            /** Format: uri */
+            id: string;
+            /** Format: uri */
+            outbox?: string;
+            /** Format: uri */
+            inbox?: string;
+            url?: components["schemas"]["URL"][];
+            type: components["schemas"]["ActorTypeEnum"];
+            preferredUsername: string;
+            manuallyApprovesFollowers?: boolean | null;
+            name?: string | null;
+            summary?: string | null;
+            /** Format: uri */
+            followers?: string;
+            /** Format: uri */
+            following?: string | null;
+            publicKey?: components["schemas"]["PublicKey"];
+            endpoints?: components["schemas"]["Endpoints"];
+            icon?: components["schemas"]["Image"] | null;
+            /** Format: uri */
+            attributedTo?: string;
+            tags?: unknown[] | null;
+            audience?: (components["schemas"]["PrivacyLevelEnum"] | components["schemas"]["NullEnum"]) | null;
+            category?: string;
+        };
+        ActorCollectionPage: {
+            type: components["schemas"]["Type03cEnum"];
+            totalItems: number;
+            /** Format: uri */
+            actor?: string;
+            /** Format: uri */
+            attributedTo?: string;
+            /** Format: uri */
+            id: string;
+            /** Format: uri */
+            first: string;
+            /** Format: uri */
+            last: string;
+            /** Format: uri */
+            next?: string;
+            /** Format: uri */
+            prev?: string;
+            /** Format: uri */
+            partOf: string;
+            items: components["schemas"]["Actor"][];
+        };
+        ActorRequest: {
+            /** Format: uri */
+            id: string;
+            /** Format: uri */
+            outbox?: string;
+            /** Format: uri */
+            inbox?: string;
+            url?: components["schemas"]["URLRequest"][];
+            type: components["schemas"]["ActorTypeEnum"];
+            preferredUsername: string;
+            manuallyApprovesFollowers?: boolean | null;
+            name?: string | null;
+            summary?: string | null;
+            /** Format: uri */
+            followers?: string;
+            /** Format: uri */
+            following?: string | null;
+            publicKey?: components["schemas"]["PublicKeyRequest"];
+            endpoints?: components["schemas"]["EndpointsRequest"];
+            icon?: components["schemas"]["ImageRequest"] | null;
+            /** Format: uri */
+            attributedTo?: string;
+            tags?: unknown[] | null;
+            audience?: (components["schemas"]["PrivacyLevelEnum"] | components["schemas"]["NullEnum"]) | null;
+            category?: string;
+        };
+        /**
+         * @description * `https://www.w3.org/ns/activitystreams#Person` - https://www.w3.org/ns/activitystreams#Person
+         *     * `https://www.w3.org/ns/activitystreams#Tombstone` - https://www.w3.org/ns/activitystreams#Tombstone
+         *     * `https://www.w3.org/ns/activitystreams#Application` - https://www.w3.org/ns/activitystreams#Application
+         *     * `https://www.w3.org/ns/activitystreams#Group` - https://www.w3.org/ns/activitystreams#Group
+         *     * `https://www.w3.org/ns/activitystreams#Organization` - https://www.w3.org/ns/activitystreams#Organization
+         *     * `https://www.w3.org/ns/activitystreams#Service` - https://www.w3.org/ns/activitystreams#Service
+         * @enum {string}
+         */
+        ActorTypeEnum: "https://www.w3.org/ns/activitystreams#Person" | "https://www.w3.org/ns/activitystreams#Tombstone" | "https://www.w3.org/ns/activitystreams#Application" | "https://www.w3.org/ns/activitystreams#Group" | "https://www.w3.org/ns/activitystreams#Organization" | "https://www.w3.org/ns/activitystreams#Service";
         Album: {
             artist_credit: components["schemas"]["ArtistCredit"][];
             cover: components["schemas"]["CoverField"] | null;
@@ -3603,6 +4070,10 @@ export interface components {
             /** Format: uri */
             libraries?: string;
         };
+        EndpointsRequest: {
+            /** Format: uri */
+            sharedInbox?: string;
+        };
         ErrorDetail: {
             detail: string;
         };
@@ -3628,7 +4099,7 @@ export interface components {
             /** Format: date-time */
             readonly fetch_date: string | null;
             readonly type: string;
-            readonly object: components["schemas"]["Artist"] | components["schemas"]["Album"] | components["schemas"]["Track"] | components["schemas"]["APIActor"] | components["schemas"]["Channel"] | components["schemas"]["Playlist"];
+            readonly object: components["schemas"]["Artist"] | components["schemas"]["Album"] | components["schemas"]["Track"] | components["schemas"]["Actor"] | components["schemas"]["Channel"] | components["schemas"]["Playlist"];
         };
         FetchRequest: {
             object_uri: string;
@@ -3725,6 +4196,28 @@ export interface components {
             type: string;
             id: string;
         };
+        Image: {
+            mediaType?: string | null;
+            type: components["schemas"]["ImageTypeEnum"];
+            /** Format: uri */
+            href?: string;
+            /** Format: uri */
+            url?: string;
+        };
+        ImageRequest: {
+            mediaType?: string | null;
+            type: components["schemas"]["ImageTypeEnum"];
+            /** Format: uri */
+            href?: string;
+            /** Format: uri */
+            url?: string;
+        };
+        /**
+         * @description * `https://www.w3.org/ns/activitystreams#Image` - https://www.w3.org/ns/activitystreams#Image
+         *     * `https://www.w3.org/ns/activitystreams#Link` - https://www.w3.org/ns/activitystreams#Link
+         * @enum {string}
+         */
+        ImageTypeEnum: "https://www.w3.org/ns/activitystreams#Image" | "https://www.w3.org/ns/activitystreams#Link";
         ImportMetadata: {
             title: string;
             description?: string | null;
@@ -3880,12 +4373,54 @@ export interface components {
             attribution: boolean;
             copyleft: boolean;
         };
+        LikeCollectionPage: {
+            type: components["schemas"]["Type03cEnum"];
+            totalItems: number;
+            /** Format: uri */
+            actor?: string;
+            /** Format: uri */
+            attributedTo?: string;
+            /** Format: uri */
+            id: string;
+            /** Format: uri */
+            first: string;
+            /** Format: uri */
+            last: string;
+            /** Format: uri */
+            next?: string;
+            /** Format: uri */
+            prev?: string;
+            /** Format: uri */
+            partOf: string;
+            items: components["schemas"]["TrackFavorite"][];
+        };
         Listening: {
             readonly id: number;
             readonly actor: components["schemas"]["APIActor"];
             readonly track: components["schemas"]["Track"];
             /** Format: date-time */
             creation_date?: string | null;
+        };
+        ListeningCollectionPage: {
+            type: components["schemas"]["Type03cEnum"];
+            totalItems: number;
+            /** Format: uri */
+            actor?: string;
+            /** Format: uri */
+            attributedTo?: string;
+            /** Format: uri */
+            id: string;
+            /** Format: uri */
+            first: string;
+            /** Format: uri */
+            last: string;
+            /** Format: uri */
+            next?: string;
+            /** Format: uri */
+            prev?: string;
+            /** Format: uri */
+            partOf: string;
+            items: components["schemas"]["Listening"][];
         };
         ListeningWrite: {
             readonly id: number;
@@ -4777,6 +5312,8 @@ export interface components {
              */
             music: components["schemas"]["TotalHours"];
         };
+        /** @enum {unknown} */
+        NullEnum: null;
         Oembed: {
             format: components["schemas"]["FormatEnum"];
             /** Format: uri */
@@ -5536,6 +6073,22 @@ export interface components {
             tracks: number[];
             allow_duplicates?: boolean;
         };
+        /** @description Used for the federation view. */
+        PlaylistCollection: {
+            type: components["schemas"]["PlaylistCollectionTypeEnum"];
+            totalItems: number;
+            /** Format: uri */
+            id: string;
+            /** Format: uri */
+            first: string;
+            /** Format: uri */
+            last: string;
+        };
+        /**
+         * @description * `https://funkwhale.audio/ns#Playlist` - https://funkwhale.audio/ns#Playlist
+         * @enum {string}
+         */
+        PlaylistCollectionTypeEnum: "https://funkwhale.audio/ns#Playlist";
         PlaylistRequest: {
             name: string;
             privacy_level?: components["schemas"]["PrivacyLevelEnum"];
@@ -5555,6 +6108,12 @@ export interface components {
          * @enum {string}
          */
         PrivacyLevelEnum: "me" | "followers" | "instance" | "everyone";
+        PublicKey: {
+            publicKeyPem: string;
+        };
+        PublicKeyRequest: {
+            publicKeyPem: string;
+        };
         Radio: {
             readonly id: number;
             is_public?: boolean;
@@ -5840,6 +6399,21 @@ export interface components {
             /** Format: date-time */
             creation_date?: string;
         };
+        TrackFavorite: {
+            type: components["schemas"]["TrackFavoriteTypeEnum"];
+            /** Format: uri */
+            id: string;
+            /** Format: uri */
+            object: string;
+            /** Format: uri */
+            actor: string;
+            audience: string;
+        };
+        /**
+         * @description * `https://www.w3.org/ns/activitystreams#Like` - https://www.w3.org/ns/activitystreams#Like
+         * @enum {string}
+         */
+        TrackFavoriteTypeEnum: "https://www.w3.org/ns/activitystreams#Like";
         TrackMetadata: {
             title?: string | null;
             position?: string | null;
@@ -5884,6 +6458,21 @@ export interface components {
             mimetype: string;
             extension: string;
             readonly is_local: boolean;
+        };
+        /**
+         * @description * `https://www.w3.org/ns/activitystreams#CollectionPage` - https://www.w3.org/ns/activitystreams#CollectionPage
+         * @enum {string}
+         */
+        Type03cEnum: "https://www.w3.org/ns/activitystreams#CollectionPage";
+        URL: {
+            /** Format: uri */
+            href: string;
+            mediaType?: string;
+        };
+        URLRequest: {
+            /** Format: uri */
+            href: string;
+            mediaType?: string;
         };
         UploadBulkUpdateRequest: {
             /** Format: uuid */
@@ -13261,6 +13850,625 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["UserWrite"];
                 };
+            };
+        };
+    };
+    get_federation_actor_2: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                preferred_username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/activity+json": components["schemas"]["Actor"];
+                    "application/ld+json": components["schemas"]["Actor"];
+                    "application/json": components["schemas"]["Actor"];
+                    "text/html": components["schemas"]["Actor"];
+                };
+            };
+        };
+    };
+    get_federation_actor_follower: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                preferred_username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/activity+json": components["schemas"]["ActorCollectionPage"];
+                    "application/ld+json": components["schemas"]["ActorCollectionPage"];
+                    "application/json": components["schemas"]["ActorCollectionPage"];
+                    "text/html": components["schemas"]["ActorCollectionPage"];
+                };
+            };
+        };
+    };
+    get_federation_actor_following: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                preferred_username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/activity+json": components["schemas"]["ActorCollectionPage"];
+                    "application/ld+json": components["schemas"]["ActorCollectionPage"];
+                    "application/json": components["schemas"]["ActorCollectionPage"];
+                    "text/html": components["schemas"]["ActorCollectionPage"];
+                };
+            };
+        };
+    };
+    get_federation_actor_inbox: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                preferred_username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/activity+json": components["schemas"]["Actor"];
+                    "application/ld+json": components["schemas"]["Actor"];
+                    "application/json": components["schemas"]["Actor"];
+                    "text/html": components["schemas"]["Actor"];
+                };
+            };
+        };
+    };
+    create_federation_actor_inbox: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                preferred_username: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ActorRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["ActorRequest"];
+                "multipart/form-data": components["schemas"]["ActorRequest"];
+                "application/activity+json": components["schemas"]["ActorRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/activity+json": components["schemas"]["Actor"];
+                    "application/ld+json": components["schemas"]["Actor"];
+                    "application/json": components["schemas"]["Actor"];
+                    "text/html": components["schemas"]["Actor"];
+                };
+            };
+        };
+    };
+    get_federation_actor_like: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                preferred_username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/activity+json": components["schemas"]["LikeCollectionPage"];
+                    "application/ld+json": components["schemas"]["LikeCollectionPage"];
+                    "application/json": components["schemas"]["LikeCollectionPage"];
+                    "text/html": components["schemas"]["LikeCollectionPage"];
+                };
+            };
+        };
+    };
+    get_federation_actor_listen: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                preferred_username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/activity+json": components["schemas"]["ListeningCollectionPage"];
+                    "application/ld+json": components["schemas"]["ListeningCollectionPage"];
+                    "application/json": components["schemas"]["ListeningCollectionPage"];
+                    "text/html": components["schemas"]["ListeningCollectionPage"];
+                };
+            };
+        };
+    };
+    get_federation_actor_outbox: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                preferred_username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/activity+json": components["schemas"]["Actor"];
+                    "application/ld+json": components["schemas"]["Actor"];
+                    "application/json": components["schemas"]["Actor"];
+                    "text/html": components["schemas"]["Actor"];
+                };
+            };
+        };
+    };
+    create_federation_actor_outbox: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                preferred_username: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ActorRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["ActorRequest"];
+                "multipart/form-data": components["schemas"]["ActorRequest"];
+                "application/activity+json": components["schemas"]["ActorRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/activity+json": components["schemas"]["Actor"];
+                    "application/ld+json": components["schemas"]["Actor"];
+                    "application/json": components["schemas"]["Actor"];
+                    "text/html": components["schemas"]["Actor"];
+                };
+            };
+        };
+    };
+    get_federation_edit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    get_federation_index_channel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    get_federation_index_library: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    get_federation_music_album: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/activity+json": components["schemas"]["Album"];
+                    "application/ld+json": components["schemas"]["Album"];
+                    "application/json": components["schemas"]["Album"];
+                    "text/html": components["schemas"]["Album"];
+                };
+            };
+        };
+    };
+    get_federation_music_artistcredit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/activity+json": components["schemas"]["ArtistCredit"];
+                    "application/ld+json": components["schemas"]["ArtistCredit"];
+                    "application/json": components["schemas"]["ArtistCredit"];
+                    "text/html": components["schemas"]["ArtistCredit"];
+                };
+            };
+        };
+    };
+    get_federation_music_artist: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/activity+json": components["schemas"]["Artist"];
+                    "application/ld+json": components["schemas"]["Artist"];
+                    "application/json": components["schemas"]["Artist"];
+                    "text/html": components["schemas"]["Artist"];
+                };
+            };
+        };
+    };
+    get_federation_music_libraries: {
+        parameters: {
+            query?: {
+                actor?: string;
+                /** @description Which field to use when ordering the results. */
+                ordering?: string;
+                /** @description A page number within the paginated result set. */
+                page?: number;
+                /** @description Number of results to return per page. */
+                page_size?: number;
+                /**
+                 * @description * `me` - Only me
+                 *     * `followers` - Me and my followers
+                 *     * `instance` - Everyone on my instance, and my followers
+                 *     * `everyone` - Everyone, including people on other instances
+                 */
+                privacy_level?: "everyone" | "followers" | "instance" | "me";
+                q?: string;
+                scope?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/activity+json": components["schemas"]["PaginatedLibraryList"];
+                    "application/ld+json": components["schemas"]["PaginatedLibraryList"];
+                    "application/json": components["schemas"]["PaginatedLibraryList"];
+                    "text/html": components["schemas"]["PaginatedLibraryList"];
+                };
+            };
+        };
+    };
+    get_federation_music_library: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/activity+json": components["schemas"]["Library"];
+                    "application/ld+json": components["schemas"]["Library"];
+                    "application/json": components["schemas"]["Library"];
+                    "text/html": components["schemas"]["Library"];
+                };
+            };
+        };
+    };
+    get_federation_music_library_follower: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/activity+json": components["schemas"]["Library"];
+                    "application/ld+json": components["schemas"]["Library"];
+                    "application/json": components["schemas"]["Library"];
+                    "text/html": components["schemas"]["Library"];
+                };
+            };
+        };
+    };
+    get_federation_music_like: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/activity+json": components["schemas"]["TrackFavorite"];
+                    "application/ld+json": components["schemas"]["TrackFavorite"];
+                    "application/json": components["schemas"]["TrackFavorite"];
+                    "text/html": components["schemas"]["TrackFavorite"];
+                };
+            };
+        };
+    };
+    get_federation_music_listening: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/activity+json": components["schemas"]["Listening"];
+                    "application/ld+json": components["schemas"]["Listening"];
+                    "application/json": components["schemas"]["Listening"];
+                    "text/html": components["schemas"]["Listening"];
+                };
+            };
+        };
+    };
+    get_federation_music_playlist: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/activity+json": components["schemas"]["PlaylistCollection"];
+                    "application/ld+json": components["schemas"]["PlaylistCollection"];
+                    "application/json": components["schemas"]["PlaylistCollection"];
+                    "text/html": components["schemas"]["PlaylistCollection"];
+                };
+            };
+        };
+    };
+    get_federation_music_track: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/activity+json": components["schemas"]["Track"];
+                    "application/ld+json": components["schemas"]["Track"];
+                    "application/json": components["schemas"]["Track"];
+                    "text/html": components["schemas"]["Track"];
+                };
+            };
+        };
+    };
+    get_federation_music_upload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    get_federation_music_upload_activity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    get_federation_report: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    create_federation_shared_inbox: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

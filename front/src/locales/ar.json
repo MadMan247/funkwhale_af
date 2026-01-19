@@ -3313,7 +3313,7 @@
         },
         "title": "الملف الشخصي لِـ { username }"
       },
-      "ProfileOverview": {
+      "ProfileContent": {
         "button": {
           "cancel": "إلغاء",
           "createChannel": "أنشئ مكتبة جديدة",

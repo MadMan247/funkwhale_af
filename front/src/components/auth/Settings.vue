@@ -204,7 +204,7 @@ const submitPassword = async () => {
 
     logger.info('Password successfully changed')
     return router.push({
-      name: 'profile.overview',
+      name: 'profile.content',
       params: { username: store.state.auth.username }
     })
   } catch (error) {

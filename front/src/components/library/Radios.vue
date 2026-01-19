@@ -13,6 +13,13 @@ import { useStore } from '~/store'
 
 import axios from 'axios'
 
+import useUrlParamCache from '~/ui/composables/useUrlParamCache.ts'
+import useSharedLabels from '~/composables/locale/useSharedLabels'
+import useOrdering from '~/composables/navigation/useOrdering'
+import useErrorHandler from '~/composables/useErrorHandler'
+import usePage from '~/composables/navigation/usePage'
+import useLogger from '~/composables/useLogger'
+
 import Layout from '~/components/ui/Layout.vue'
 import Header from '~/components/ui/Header.vue'
 import Section from '~/components/ui/Section.vue'
@@ -22,12 +29,7 @@ import Alert from '~/components/ui/Alert.vue'
 import Input from '~/components/ui/Input.vue'
 import Link from '~/components/ui/Link.vue'
 import Spacer from '~/components/ui/Spacer.vue'
-
-import useSharedLabels from '~/composables/locale/useSharedLabels'
-import useOrdering from '~/composables/navigation/useOrdering'
-import useErrorHandler from '~/composables/useErrorHandler'
-import usePage from '~/composables/navigation/usePage'
-import useLogger from '~/composables/useLogger'
+import Nav from '~/components/ui/Nav.vue'
 
 interface Props extends OrderingProps {
   scope?: 'me' | 'all'
@@ -35,6 +37,8 @@ interface Props extends OrderingProps {
   // TODO(wvffle): Remove after https://github.com/vuejs/core/pull/4512 is merged
   orderingConfigName?: RouteRecordName
 }
+
+const { t } = useI18n()
 
 const props = withDefaults(defineProps<Props>(), {
   scope: 'all',
@@ -59,11 +63,19 @@ const sharedLabels = useSharedLabels()
 
 const { onOrderingUpdate, orderingString, paginateBy, ordering, orderingDirection } = useOrdering(props)
 
+const store = useStore()
+
+const tabs = ref([
+  { title: t("components.library.Radios.tabs.me"), name: 'me' },
+  { title: t("components.library.Radios.tabs.domain"), name: 'all' }
+])
+const scope = useUrlParamCache('scope', { fallback: props.scope })
+
 const isLoading = ref(false)
 const fetchData = async () => {
   isLoading.value = true
   const params = {
-    scope: props.scope,
+    scope: scope.value,
     page: page.value,
     page_size: paginateBy.value,
     name__icontains: query.value,
@@ -87,12 +99,16 @@ const fetchData = async () => {
   }
 }
 
-const store = useStore()
 const isAuthenticated = computed(() => store.state.auth.authenticated)
 const hasFavorites = computed(() => store.state.favorites.count > 0)
 
-watch([page, q, ordering, orderingDirection, () => props.scope], fetchData)
-fetchData()
+watch([page, q, ordering, orderingDirection, scope], () => {
+  fetchData()
+})
+
+watch([q, ordering, orderingDirection, scope], () => {
+  page.value = 1
+})
 
 const search = () => {
   page.value = 1
@@ -104,7 +120,6 @@ onOrderingUpdate(() => {
   fetchData()
 })
 
-const { t } = useI18n()
 const labels = computed(() => ({
   searchPlaceholder: t('components.library.Radios.placeholder.search'),
   title: t('components.library.Radios.title')
@@ -252,50 +267,56 @@ const paginateOptions = computed(() => sortedUniq([12, 25, 50, paginateBy.value]
           </select>
         </Layout>
       </Layout>
-      <Alert
-        v-if="result && result.results.length === 0"
-        blue
-        style="align-items: center; grid-column: 1 / -1;"
+
+      <Nav
+        v-model="tabs"
+        tab-query-field="scope"
       >
-        <i
-          class="bi bi-broadcast-pin"
-          style="font-size: 80px"
-        />
-        <Spacer />
-        {{ t('components.library.Radios.empty.noResults') }}
-        <Spacer />
-        <Link
-          v-if="store.state.auth.authenticated"
-          primary
-          style="align-self:center;"
-          :to="{name: 'library.radios.build'}"
-          icon="bi-boombox-fill"
+        <Alert
+          v-if="result && result.results.length === 0"
+          blue
+          style="align-items: center; grid-column: 1 / -1;"
         >
-          {{ t('components.library.Radios.button.add') }}
-        </Link>
-      </Alert>
-      <Layout
-        v-if="result && result.results.length > 0"
-        full
-        flex
-      >
-        <Pagination
-          v-if="page && result && result.count > paginateBy"
-          v-model:page="page"
-          :pages="Math.ceil(result.count / paginateBy)"
-        />
-        <radio-card
-          v-for="radio in result.results"
-          :key="radio.id"
-          type="custom"
-          :custom-radio="radio"
-        />
-        <Pagination
-          v-if="page && result && result.count > paginateBy"
-          v-model:page="page"
-          :pages="Math.ceil(result.count / paginateBy)"
-        />
-      </Layout>
+          <i
+            class="bi bi-broadcast-pin"
+            style="font-size: 80px"
+          />
+          <Spacer />
+          {{ t('components.library.Radios.empty.noResults') }}
+          <Spacer />
+          <Link
+            v-if="store.state.auth.authenticated"
+            primary
+            style="align-self:center;"
+            :to="{name: 'library.radios.build'}"
+            icon="bi-boombox-fill"
+          >
+            {{ t('components.library.Radios.button.add') }}
+          </Link>
+        </Alert>
+        <Layout
+          v-if="result && result.results.length > 0"
+          full
+          flex
+        >
+          <Pagination
+            v-if="page && result && result.count > paginateBy"
+            v-model:page="page"
+            :pages="Math.ceil(result.count / paginateBy)"
+          />
+          <radio-card
+            v-for="radio in result.results"
+            :key="radio.id"
+            type="custom"
+            :custom-radio="radio"
+          />
+          <Pagination
+            v-if="page && result && result.count > paginateBy"
+            v-model:page="page"
+            :pages="Math.ceil(result.count / paginateBy)"
+          />
+        </Layout>
+      </Nav>
     </Section>
   </Layout>
 </template>

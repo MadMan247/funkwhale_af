@@ -3798,7 +3798,7 @@
         },
         "title": "{ username }のプロフィール"
       },
-      "ProfileOverview": {
+      "ProfileContent": {
         "button": {
           "cancel": "キャンセル",
           "createChannel": "チャンネルを作成",

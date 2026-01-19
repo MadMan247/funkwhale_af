@@ -174,6 +174,7 @@ class ActorScopeFilter(filters.CharFilter):
     def __init__(self, *args, **kwargs):
         self.actor_field = kwargs.pop("actor_field")
         self.library_field = kwargs.pop("library_field", None)
+        self.object_type = kwargs.pop("object_type", None)
         super().__init__(*args, **kwargs)
 
     def filter(self, queryset, value):
@@ -199,6 +200,7 @@ class ActorScopeFilter(filters.CharFilter):
 
     def get_query(self, scope, user, actor):
         from funkwhale_api.federation import models as federation_models
+        from funkwhale_api.music import models as music_models
 
         if scope == "me":
             return self.filter_me(actor)
@@ -216,6 +218,28 @@ class ActorScopeFilter(filters.CharFilter):
             else:
                 predicate = f"{self.library_field}__in"
             return Q(**{predicate: followed_libraries})
+
+        elif scope == "from_subscribed":
+            if not actor:
+                raise EmptyQuerySet()
+            followed_actors = federation_models.Follow.objects.filter(
+                approved=True, actor=user.actor
+            )
+            if self.object_type:
+                ids = followed_actors.values_list(
+                    f"target__{self.object_type}__id", flat=True
+                )
+            else:
+                ids = music_models.Library.objects.filter(
+                    actor__pk__in=followed_actors.values_list("target_id", flat=True),
+                    name__in=["followers", "instance", "everyone"],
+                ).values_list("id", flat=True)
+
+            if not self.library_field:
+                predicate = "pk__in"
+            else:
+                predicate = f"{self.library_field}__in"
+            return Q(**{predicate: ids})
 
         elif scope.startswith("actor:"):
             full_username = scope.split("actor:", 1)[1]

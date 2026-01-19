@@ -12,7 +12,7 @@ const constraintPresets = {
   onlyOwnProfile: (to: RouteLocationResolvedGeneric) =>
     (!store.state.auth.authenticated || to.params.username !== store.state.auth.username)
       ? ({
-        redirectTo: { name: 'profile.overview', params: to.params },
+        redirectTo: { name: 'profile.content', params: to.params },
         isShowingLink: false
     }) : undefined,
   onlyMatchingDomain: (to: RouteLocationResolvedGeneric) =>

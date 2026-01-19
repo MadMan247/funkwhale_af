@@ -84,15 +84,19 @@ watch(props, fetchData, { immediate: true })
 const { copy, copied, isSupported } = useClipboard()
 
 const tabs = computed(() => [{
-  title: t('views.auth.ProfileBase.link.overview'),
-  to: { name: props.domain ? 'profile.full.overview' : 'profile.overview', params: routerParams.value }
+  title: t('views.auth.ProfileBase.link.content'),
+  to: { name: props.domain ? 'profile.full.content' : 'profile.content', params: routerParams.value }
 }, {
   title: t('views.auth.ProfileBase.link.activity'),
   to: { name: props.domain ? 'profile.full.activity' : 'profile.activity', params: routerParams.value }
 }, {
+  title: t('views.auth.ProfileBase.link.follows'),
+  to: { name: props.domain ? 'profile.full.follows' : 'profile.follows', params: routerParams.value }
+}, {
   title: t('views.auth.ProfileBase.link.manageUploads'),
   to: { name: 'profile.manageUploads', params: routerParams.value }
-}].filter(tab => matchedConstraint(tab.to)?.isShowingLink !== false))
+}
+].filter(tab => matchedConstraint(tab.to)?.isShowingLink !== false))
 
 const isOpen = useModal('artist-description').isOpen
 </script>

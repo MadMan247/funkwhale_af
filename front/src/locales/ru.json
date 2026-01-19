@@ -4032,7 +4032,7 @@
         },
         "title": "Профиль { username }"
       },
-      "ProfileOverview": {
+      "ProfileContent": {
         "button": {
           "cancel": "Отмена",
           "createChannel": "Создать канал",

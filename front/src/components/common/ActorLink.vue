@@ -40,11 +40,11 @@ const url = computed(() => {
   }
 
   if (actor.value?.is_local) {
-    return { name: 'profile.overview', params: { username: actor.value?.preferred_username } }
+    return { name: 'profile.content', params: { username: actor.value?.preferred_username } }
   }
 
   return {
-    name: 'profile.full.overview',
+    name: 'profile.full.content',
     params: {
       username: actor.value?.preferred_username,
       domain: actor.value?.domain

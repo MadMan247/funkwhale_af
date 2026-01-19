@@ -6,6 +6,7 @@ import type { OrderingField } from '~/store/ui'
 
 import { computed, ref, watch } from 'vue'
 import { useRouteQuery } from '@vueuse/router'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { syncRef } from '@vueuse/core'
 import { sortedUniq } from 'lodash-es'
@@ -22,12 +23,14 @@ import Layout from '~/components/ui/Layout.vue'
 import Header from '~/components/ui/Header.vue'
 import Input from '~/components/ui/Input.vue'
 import Toggle from '~/components/ui/Toggle.vue'
+import Nav from '~/components/ui/Nav.vue'
 import Alert from '~/components/ui/Alert.vue'
 import Spacer from '~/components/ui/Spacer.vue'
 import Pills from '~/components/ui/Pills.vue'
 import Section from '~/components/ui/Section.vue'
 import Loader from '~/components/ui/Loader.vue'
 
+import useUrlParamCache from '~/ui/composables/useUrlParamCache.ts'
 import useSharedLabels from '~/composables/locale/useSharedLabels'
 import useOrdering from '~/composables/navigation/useOrdering'
 import useErrorHandler from '~/composables/useErrorHandler'
@@ -35,14 +38,14 @@ import usePage from '~/composables/navigation/usePage'
 import useLogger from '~/composables/useLogger'
 
 interface Props extends OrderingProps {
-  scope?: 'me' | 'all'
+  scope?: 'me' | 'from_subscribed' | 'domain' | 'all'
 
   // TODO(wvffle): Remove after https://github.com/vuejs/core/pull/4512 is merged
   orderingConfigName?: RouteRecordName
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  scope: 'all',
+  scope: 'me',
   orderingConfigName: undefined
 })
 
@@ -57,6 +60,8 @@ syncRef(q, query, { direction: 'ltr' })
 const result = ref<BackendResponse<Artist>>()
 const excludeCompilation = ref(true)
 
+const { t } = useI18n()
+
 const orderingOptions: [OrderingField, keyof typeof sharedLabels.filters][] = [
   ['creation_date', 'creation_date'],
   ['name', 'name']
@@ -67,11 +72,30 @@ const sharedLabels = useSharedLabels()
 
 const { onOrderingUpdate, orderingString, paginateBy, ordering, orderingDirection } = useOrdering(props)
 
+const scope = useUrlParamCache('scope', { fallback: props.scope })
+const route = useRoute()
+const router = useRouter()
+
+watch(() => route.query.scope, async (newScope) => {
+  const scopeQuery = Array.isArray(newScope) ? newScope[0] : newScope
+  if (!scopeQuery) {
+    await router.replace({
+      ...route,
+      query: { ...route.query, scope: scope.value }
+    })
+  } else if (scopeQuery === 'subscribed') {
+    await router.replace({
+      ...route,
+      query: { ...route.query, scope: 'from_subscribed' }
+    })
+  }
+}, { immediate: true })
+
 const isLoading = ref(false)
 const fetchData = async () => {
   isLoading.value = true
   const params = {
-    scope: props.scope,
+    scope: scope.value,
     page: page.value,
     page_size: paginateBy.value,
     q: query.value,
@@ -103,10 +127,22 @@ const fetchData = async () => {
   }
 }
 
+const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value].sort((a, b) => a - b)))
+
 const store = useStore()
 const dataStore = useDataStore()
+
+const tabs = ref([
+  { title: t("components.library.Artists.tabs.me"), name: 'me' },
+  { title: t("components.library.Artists.tabs.subscribed"), name: 'from_subscribed' },
+  { title: t("components.library.Artists.tabs.domain"), name: 'domain:' + store.getters['instance/domain'] },
+  { title: t("components.library.Artists.tabs.all"), name: 'all' }
+])
+
 watch([() => store.state.moderation.lastUpdate, excludeCompilation], fetchData)
-watch([page, tags, q, ordering, orderingDirection, () => props.scope], fetchData)
+watch([page, tags, q, ordering, orderingDirection, scope], () => {
+  fetchData()
+})
 fetchData()
 
 const search = () => {
@@ -119,13 +155,10 @@ onOrderingUpdate(() => {
   fetchData()
 })
 
-const { t } = useI18n()
 const labels = computed(() => ({
   searchPlaceholder: t('components.library.Artists.placeholder.search'),
   title: t('components.library.Artists.title')
 }))
-
-const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value].sort((a, b) => a - b)))
 </script>
 
 <template>
@@ -244,55 +277,59 @@ const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value]
           type="checkbox"
         />
       </Layout>
-      <Loader v-if="isLoading" />
-      <Spacer />
-      <Pagination
-        v-if="page && result && result.count > paginateBy"
-        v-model:page="page"
-        :pages="Math.ceil(result.count / paginateBy)"
-      />
-      <Layout
-        v-if="result && result.results.length > 0"
-        grid
-        style="display:flex; flex-wrap:wrap; gap: 32px; margin-top:32px;"
+      <Nav
+        v-model="tabs"
+        tab-query-field="scope"
       >
-        <ArtistCard
-          v-for="artist in result.results"
-          :key="artist.id"
-          :artist="artist"
+        <Loader v-if="isLoading" />
+        <Pagination
+          v-if="page && result && result.count > paginateBy"
+          v-model:page="page"
+          :pages="Math.ceil(result.count / paginateBy)"
         />
-      </Layout>
-      <Layout
-        v-else-if="result && result.results.length === 0"
-        stack
-      >
-        <Alert yellow>
-          <i class="compact disc icon" />
-          {{ t('components.library.Artists.empty.noResults') }}
-        </Alert>
-        <Layout flex>
-          <Card
-            v-if="store.state.auth.authenticated"
-            :title="t('components.library.Artists.button.upload')"
-            primary
-            style="text-align: center;"
-            :to="useModal('upload').to"
-          >
-            <template #image>
-              <i
-                class="bi bi-upload"
-                style="font-size: 100px; position: relative; top: 50px;"
-              />
-            </template>
-          </Card>
+        <Layout
+          v-if="result && result.results.length > 0"
+          grid
+          style="display:flex; flex-wrap:wrap; gap: 32px; margin-top:32px;"
+        >
+          <ArtistCard
+            v-for="artist in result.results"
+            :key="artist.id"
+            :artist="artist"
+          />
         </Layout>
-      </Layout>
-      <Spacer grow />
-      <Pagination
-        v-if="page && result && result.count > paginateBy"
-        v-model:page="page"
-        :pages="Math.ceil(result.count / paginateBy)"
-      />
+        <Layout
+          v-else-if="result && result.results.length === 0"
+          stack
+        >
+          <Alert yellow>
+            <i class="compact disc icon" />
+            {{ t('components.library.Artists.empty.noResults') }}
+          </Alert>
+          <Layout flex>
+            <Card
+              v-if="store.state.auth.authenticated"
+              :title="t('components.library.Artists.button.upload')"
+              primary
+              style="text-align: center;"
+              :to="useModal('upload').to"
+            >
+              <template #image>
+                <i
+                  class="bi bi-upload"
+                  style="font-size: 100px; position: relative; top: 50px;"
+                />
+              </template>
+            </Card>
+          </Layout>
+        </Layout>
+        <Spacer grow />
+        <Pagination
+          v-if="page && result && result.count > paginateBy"
+          v-model:page="page"
+          :pages="Math.ceil(result.count / paginateBy)"
+        />
+      </Nav>
     </Section>
   </Layout>
 </template>

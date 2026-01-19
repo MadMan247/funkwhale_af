@@ -18,7 +18,7 @@ import { useDataStore, getKey } from '~/ui/stores/data'
 import ArtistCard from '~/components/artist/Card.vue'
 import PlaylistCard from '~/components/playlists/Card.vue'
 import ChannelCard from '~/components/audio/ChannelCard.vue'
-import ActorLink from '~/components/common/ActorLink.vue'
+import ActorCard from '~/components/federation/ActorCard.vue'
 import TrackTable from '~/components/audio/track/Table.vue'
 import AlbumCard from '~/components/album/Card.vue'
 import RadioCard from '~/components/radios/Card.vue'
@@ -387,9 +387,10 @@ watchDebounced(trimmedQuery, () => {
           v-for="result in resultsPerCategory({type: 'federation'})"
           :key="result.id"
         >
-          <ActorLink
+          <!-- TODO: use a different endpoint for remote user search with FullActor to get user avatars -->
+          <ActorCard
             v-if="result.object && result.type === 'account'"
-            :actor="result.object as components['schemas']['APIActor']"
+            :actor="result.object as components['schemas']['Actor']"
           />
           <ChannelCard
             v-else-if="result.object && result.type === 'channel'"

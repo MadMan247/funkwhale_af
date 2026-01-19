@@ -3321,7 +3321,7 @@
         },
         "title": "Profilo de {username}"
       },
-      "ProfileOverview": {
+      "ProfileContent": {
         "button": {
           "cancel": "Nuligi",
           "createChannel": "Krei novan muzikejon",

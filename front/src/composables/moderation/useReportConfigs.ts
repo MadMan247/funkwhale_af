@@ -158,7 +158,7 @@ export default (): Configs => {
       label: t('composables.moderation.useReportConfigs.account.label'),
       icon: 'user',
       urls: {
-        getDetail: (obj) => ({ name: 'profile.full.overview', params: { username: obj.preferred_username, domain: obj.domain } }),
+        getDetail: (obj) => ({ name: 'profile.full.content', params: { username: obj.preferred_username, domain: obj.domain } }),
         getAdminDetail: (obj) => ({ name: 'manage.moderation.accounts.detail', params: { id: `${obj.preferred_username}@${obj.domain}` } })
       },
       moderatedFields: [
