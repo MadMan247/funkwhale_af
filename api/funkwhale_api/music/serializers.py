@@ -141,6 +141,8 @@ class ArtistWithAlbumsSerializer(OptionalDescriptionMixin, serializers.Serialize
         return [ti.tag.name for ti in tagged_items]
 
     def get_tracks_count(self, o) -> int:
+        if not getattr(o, "_tracks_count", 0):
+            return o.get_tracks_count()
         return getattr(o, "_tracks_count", 0)
 
 

@@ -149,7 +149,6 @@ class ArtistViewSet(
         .prefetch_related(
             "channel__actor",
         )
-        .annotate(_tracks_count=Count("artist_credit__tracks"))
     )
     serializer_class = serializers.ArtistWithAlbumsSerializer
     permission_classes = [oauth_permissions.ScopePermission]

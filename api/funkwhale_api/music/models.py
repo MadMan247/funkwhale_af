@@ -273,6 +273,9 @@ class Artist(APIModelMixin):
         except ObjectDoesNotExist:
             return None
 
+    def get_tracks_count(self):
+        return Track.objects.filter(artist_credit__artist=self).count()
+
 
 def import_artist_credit(v):
     artists_credits = []
