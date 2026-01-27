@@ -210,9 +210,13 @@ class ActorScopeFilter(filters.CharFilter):
         elif scope == "subscribed":
             if not actor or self.library_field is None:
                 raise EmptyQuerySet()
-            followed_libraries = federation_models.LibraryFollow.objects.filter(
-                approved=True, actor=user.actor
-            ).values_list("target_id", flat=True)
+            followed_libraries = (
+                federation_models.LibraryFollow.objects.filter(
+                    approved=True, actor=user.actor
+                )
+                .not_blocked_or_blocking(actor)
+                .values_list("target_id", flat=True)
+            )
             if not self.library_field:
                 predicate = "pk__in"
             else:
@@ -224,7 +228,7 @@ class ActorScopeFilter(filters.CharFilter):
                 raise EmptyQuerySet()
             followed_actors = federation_models.Follow.objects.filter(
                 approved=True, actor=user.actor
-            )
+            ).not_blocked_or_blocking(actor)
             if self.object_type:
                 ids = followed_actors.values_list(
                     f"target__{self.object_type}__id", flat=True
@@ -245,14 +249,20 @@ class ActorScopeFilter(filters.CharFilter):
             full_username = scope.split("actor:", 1)[1]
             username, domain = full_username.split("@")
             try:
-                actor = federation_models.Actor.objects.get(
+                target_actor = federation_models.Actor.objects.get(
                     preferred_username__iexact=username,
                     domain_id=domain,
                 )
+                if (
+                    actor
+                    and target_actor
+                    in federation_models.Actor.objects.blocked_or_blocking(actor)
+                ):
+                    raise EmptyQuerySet()
             except federation_models.Actor.DoesNotExist:
                 raise EmptyQuerySet()
 
-            return Q(**{self.actor_field: actor})
+            return Q(**{self.actor_field: target_actor})
         elif scope.startswith("domain:"):
             domain = scope.split("domain:", 1)[1]
             return Q(**{f"{self.actor_field}__domain_id": domain})

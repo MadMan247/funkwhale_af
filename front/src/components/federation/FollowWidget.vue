@@ -19,6 +19,7 @@ interface Props {
   title?: string
 	url: string
 	pageSize?: number
+	isOwnProfile?: boolean
 }
 const props = defineProps<Props>()
 
@@ -38,6 +39,11 @@ const totalItems = ref(0)
 
 const errors = ref([] as string[])
 
+const handleActorRevoked = () => {
+  // Refetch data to reflect the revocation
+  fetchData()
+}
+
 const fetchData = async (url = props.url) => {
   isLoading.value = true
 
@@ -51,7 +57,12 @@ const fetchData = async (url = props.url) => {
     nextPage.value = response.data.partOf
     result.value = response.data
 
-    actors.splice(0, result.value?.totalItems, ...response.data.items)
+    if (response.data.items && Array.isArray(response.data.items)) {
+      actors.splice(0, actors.length, ...response.data.items)
+    } else {
+      // Clear actors if response structure is unexpected to prevent displaying stale data
+      actors.splice(0, actors.length)
+    }
   } catch (error: any) {
     const backendError = error as BackendError
 
@@ -103,9 +114,13 @@ watch(page, () => {
       flex
     >
       <actor-card
-        v-for="actor in result?.items"
+        v-for="actor in actors"
         :key="actor.id"
         :actor="actor"
+        :follower="isFollowersEndpoint"
+        :following="!isFollowersEndpoint"
+        :is-own-profile="isOwnProfile"
+        @revoked="handleActorRevoked"
       />
     </Layout>
     <Pagination

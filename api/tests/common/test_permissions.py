@@ -117,3 +117,28 @@ def test_privacylevel_permission_followers(
 
     check = permission.has_object_permission(request, view, user.actor)
     assert check is expected
+
+
+def test_privacylevel_permission_block_actor(
+    factories,
+    api_request,
+    anonymous_user,
+):
+    user = factories["users.User"](privacy_level="everyone")
+    user.create_actor()
+    blocks = factories["federation.BlockedActor"](target=user.actor)
+    view = APIView.as_view()
+    permission = permissions.PrivacyLevelPermission()
+    request = api_request.get("/")
+    setattr(request, "user", anonymous_user)
+    setattr(request, "actor", blocks.actor)
+
+    check = permission.has_object_permission(request, view, user.actor)
+    assert check is False
+
+    blocks = factories["federation.BlockedActor"](actor=user.actor)
+    setattr(request, "user", anonymous_user)
+    setattr(request, "actor", blocks.target)
+
+    check = permission.has_object_permission(request, view, user.actor)
+    assert check is False

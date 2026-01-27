@@ -928,3 +928,53 @@ def outbox_delete_audiocollection(context):
             to=[activity.PUBLIC_ADDRESS, {"type": "instances_with_followers"}],
         ),
     }
+
+
+@inbox.register({"type": "Block", "object.type": "Actor"})
+@inbox.register({"type": "Block", "object.type": "Person"})
+def inbox_block_actor(payload, context):
+    serializer = serializers.ActorSerializer(data=payload["object"], context=context)
+    serializer.is_valid(raise_exception=True)
+    target = models.Actor.objects.get(fid=serializer.validated_data["id"])
+    models.BlockedActor.objects.create(target=target, actor=context["actor"])
+
+
+@outbox.register({"type": "Block", "object.type": "Actor"})
+def outbox_block_actor(context):
+    target = context["target"]
+    serializer = serializers.ActivitySerializer(
+        {"type": "Block", "object": serializers.ActorSerializer(target).data}
+    )
+    yield {
+        "type": "Block",
+        "actor": context["actor"],
+        "payload": with_recipients(
+            serializer.data,
+            to=[target],
+        ),
+    }
+
+
+@inbox.register({"type": "Unblock", "object.type": "Actor"})
+@inbox.register({"type": "Unblock", "object.type": "Person"})
+def inbox_unblock_actor(payload, context):
+    serializer = serializers.ActorSerializer(data=payload["object"], context=context)
+    serializer.is_valid(raise_exception=True)
+    target = models.Actor.objects.get(fid=serializer.validated_data["id"])
+    models.BlockedActor.objects.get(target=target, actor=context["actor"]).delete()
+
+
+@outbox.register({"type": "Unblock", "object.type": "Actor"})
+def outbox_unblock_actor(context):
+    target = context["target"]
+    serializer = serializers.ActivitySerializer(
+        {"type": "Unblock", "object": serializers.ActorSerializer(target).data}
+    )
+    yield {
+        "type": "Unblock",
+        "actor": context["actor"],
+        "payload": with_recipients(
+            serializer.data,
+            to=[target],
+        ),
+    }

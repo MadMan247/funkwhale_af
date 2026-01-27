@@ -904,6 +904,7 @@
           "deleteAccount": "Delete my account",
           "emailFailure": "We cannot change your e-mail address",
           "hiddenArtists": "Hidden artists",
+          "hiddenActors": "Hidden users",
           "noApps": "You don't have any application connected with your account.",
           "noPersonalApps": "You don't have registered any application yet.",
           "passwordFailure": "Your password cannot be changed",
@@ -964,7 +965,8 @@
           "artists": {
             "header": {
               "creationDate": "Creation date",
-              "name": "Name"
+              "name": "Name",
+              "action": "Action"
             }
           },
           "authorizedApps": {
@@ -1451,6 +1453,14 @@
               "unknownError": "Unknown error"
             }
           }
+        }
+      },
+      "RevokeFollowerButton": {
+        "label": "Cancel follower",
+        "message": "{username} will no longer be following you",
+        "header": {
+          "title": "Revoke follower request for {username}?",
+          "revokeFailure": "Error while revoking follower request"
         }
       },
       "LibraryWidget": {
@@ -2834,7 +2844,8 @@
         },
         "header": {
           "failure": "Error while creating filter",
-          "modal": "Do you want to hide content from artist \"{name}\"?"
+          "artistModal": "Do you want to hide content from artist \"{name}\"?",
+          "actorModal": "Do you want to hide content from \"{name}\"?"
         },
         "help": {
           "createFilter": "You can manage your filters any time from your account settings."
@@ -2844,11 +2855,13 @@
         },
         "warning": {
           "createFilter": {
-            "listIntro": "You will not see tracks, albums and user activity linked to this artist any more:",
+            "listArtistIntro": "You will not see tracks, albums and user activity linked to this artist any more:",
+            "listActorIntro": "This user and you will not interact anymore through user activities:",
             "listItem1": "In other users favorites and listening history",
             "listItem2": "In \"Recently added\" widget",
             "listItem3": "In artists and album listings",
-            "listItem4": "In radio suggestions"
+            "listItem4": "In radio suggestions",
+            "listItem5": "You will also loose access to playlists and audio files uploaded by this user"
           }
         }
       },
@@ -2895,7 +2908,8 @@
           "approve": "Approve",
           "markRead": "Mark as read",
           "markUnread": "Mark as unread",
-          "reject": "Reject"
+          "reject": "Reject",
+          "revoke": "Revoke"
         },
         "message": {
           "libraryAcceptFollow": "{username} accepted your follow on library \"{library}\"",
@@ -2906,6 +2920,7 @@
           "userFollow": "{username} followed you",
           "userPendingFollow": "{username} wants to follow you",
           "userReject": "You rejected {username}'s request to follow you",
+          "userRevokedFollow": "you revoked your follow with {username}",
           "playlistFollow": "{username} got access to your audio files from the playlist \"{library}\"",
           "playlistPendingFollow": "{username} wants to access audio files from your playlist \"{library}\"",
           "playlistReject": "You rejected {username}'s request to access files from the playlist \"{library}\"",
@@ -4176,8 +4191,16 @@
           "follows": "Follows",
           "manageUploads": "Manage uploads"
         },
+        "button": {
+          "blockUser": "Block this user",
+          "unblockUser": "Unblock this user"
+        },
         "title": "{username}'s profile",
-        "copyUsername": "Copy federated profile link"
+        "copyUsername": "Copy federated profile link",
+        "alert": {
+          "follower": "This user is following you, they now have access to your content and activities if you choose to share them.",
+          "settings": "You have to choose anything else but 'me' in your settings and decide for each upload if you want to share it with followers or not. If you also want access to their content and activities, you can follow them back"
+        }
       },
       "ProfileContent": {
         "button": {
@@ -4193,7 +4216,8 @@
           "playlists": "Playlists",
           "albums": "Albums",
           "libraries": "User Libraries",
-          "sharedLibraries": "This user shared the following libraries"
+          "sharedLibraries": "This user shared the following libraries",
+          "blocked": "You have blocked interaction and content from this user"
         },
         "link": {
           "addNew": "Add New"

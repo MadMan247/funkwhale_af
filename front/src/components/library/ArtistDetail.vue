@@ -15,7 +15,6 @@ import AlbumCard from '~/components/album/Card.vue'
 import Layout from '~/components/ui/Layout.vue'
 import Heading from '~/components/ui/Heading.vue'
 import Loader from '~/components/ui/Loader.vue'
-import Link from '~/components/ui/Link.vue'
 import Spacer from '~/components/ui/Spacer.vue'
 import Button from '~/components/ui/Button.vue'
 import Alert from '~/components/ui/Alert.vue'
@@ -84,18 +83,23 @@ const loadMoreAlbums = async () => {
       <p>
         {{ t('components.library.ArtistDetail.message.filter') }}
       </p>
-      <Link
-        class="right floated"
-        :to="{name: 'settings'}"
-      >
-        {{ t('components.library.ArtistDetail.link.filter') }}
-      </Link>
-      <Button
-        class="tiny"
-        @click="store.dispatch('moderation/deleteContentFilter', contentFilter.uuid)"
-      >
-        {{ t('components.library.ArtistDetail.button.filter') }}
-      </Button>
+      <template #actions>
+        <Button
+          blue
+          raised
+          small
+          :to="{name: 'settings'}"
+        >
+          {{ t('components.library.ArtistDetail.link.filter') }}
+        </Button>
+        <Button
+          destructive
+          small
+          @click="store.dispatch('moderation/deleteContentFilter', contentFilter.uuid)"
+        >
+          {{ t('components.library.ArtistDetail.button.filter') }}
+        </Button>
+      </template>
     </Alert>
     <Loader v-if="isLoadingAlbums" />
     <template v-else-if="albums && albums.length > 0">

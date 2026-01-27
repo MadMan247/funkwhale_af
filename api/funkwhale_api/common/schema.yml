@@ -2862,6 +2862,84 @@ paths:
               schema:
                 $ref: '#/components/schemas/FullActor'
           description: ''
+  /api/v2/federation/actors/{full_username}/block/:
+    post:
+      operationId: create_federation_actor_block
+      parameters:
+      - in: path
+        name: full_username
+        schema:
+          type: string
+          pattern: ^([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)$
+        required: true
+      tags:
+      - federation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FullActorRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FullActorRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FullActorRequest'
+          application/activity+json:
+            schema:
+              $ref: '#/components/schemas/FullActorRequest'
+        required: true
+      security:
+      - oauth2: []
+      - ApplicationToken: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FullActor'
+          description: ''
+  /api/v2/federation/actors/{full_username}/blocks/:
+    get:
+      operationId: get_federation_actor_blocks
+      description: List actors blocked by the authenticated user
+      parameters:
+      - in: path
+        name: full_username
+        schema:
+          type: string
+          pattern: ^([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)$
+        required: true
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - federation
+      security:
+      - oauth2: []
+      - ApplicationToken: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAPIActorList'
+          description: ''
   /api/v2/federation/actors/{full_username}/libraries/:
     get:
       operationId: get_federation_actor_library
@@ -2883,6 +2961,43 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LibraryForOwner'
+          description: ''
+  /api/v2/federation/actors/{full_username}/unblock/:
+    post:
+      operationId: create_federation_actor_unblock
+      parameters:
+      - in: path
+        name: full_username
+        schema:
+          type: string
+          pattern: ^([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)$
+        required: true
+      tags:
+      - federation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FullActorRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FullActorRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FullActorRequest'
+          application/activity+json:
+            schema:
+              $ref: '#/components/schemas/FullActorRequest'
+        required: true
+      security:
+      - oauth2: []
+      - ApplicationToken: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FullActor'
           description: ''
   /api/v2/federation/domains/:
     get:

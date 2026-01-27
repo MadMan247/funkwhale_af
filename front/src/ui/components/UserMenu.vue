@@ -115,7 +115,7 @@ const labels = computed(() => ({
       </PopoverItem>
       <PopoverItem
         v-if="store.state.auth.authenticated"
-        :to="{ path: '/settings' }"
+        :to="{ name: 'settings' }"
       >
         <i class="bi bi-gear-fill" />
         {{ labels.settings }}

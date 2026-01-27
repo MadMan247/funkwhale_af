@@ -61,6 +61,13 @@ class ActorAdmin(admin.ModelAdmin):
     list_filter = ["type"]
 
 
+@admin.register(models.BlockedActor)
+class BlockedActorAdmin(admin.ModelAdmin):
+    list_display = ["actor", "target"]
+    search_fields = ["actor__fid", "target__fid"]
+    list_select_related = True
+
+
 @admin.register(models.Follow)
 class FollowAdmin(admin.ModelAdmin):
     list_display = ["actor", "target", "approved", "creation_date"]

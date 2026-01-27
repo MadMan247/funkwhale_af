@@ -22,7 +22,9 @@ const emit = defineEmits<Events>()
 const props = defineProps<Props>()
 
 const store = useStore()
-const follow = computed(() => store.getters['users/follow'](props.actor.fid))
+
+const actorFid = props.actor.fid
+const follow = computed(() => store.getters['users/follow'](actorFid))
 const isPending = computed(() => follow.value && follow.value.approved === null)
 const isApproved = computed(() => follow.value && follow.value.approved === true)
 
@@ -33,7 +35,7 @@ const toggle = () => {
     emit('followed')
   }
 
-  return store.dispatch('users/toggle', props.actor.fid)
+  return store.dispatch('users/toggle', actorFid)
 }
 </script>
 

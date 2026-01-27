@@ -128,6 +128,8 @@ const fetchData = async () => {
 
 const totalDuration = computed(() => sum((tracks.value ?? []).map(track => track.uploads[0]?.duration ?? 0)))
 
+const filterArtist = async () => store.dispatch('moderation/hide', { type: 'artist', target: object.value })
+
 watch(() => props.id, fetchData, { immediate: true })
 
 const isOpen = useModal('artist-description').isOpen
@@ -300,6 +302,14 @@ const isOpen = useModal('artist-description').isOpen
             </PopoverItem>
 
             <hr v-if="getReportableObjects({artist: object}).length>0">
+
+            <PopoverItem
+              :title="t('components.audio.PlayButton.button.hideArtist')"
+              icon="bi-eye-slash"
+              @click.stop.prevent="filterArtist"
+            >
+              {{ t('components.audio.PlayButton.button.hideArtist') }}
+            </PopoverItem>
 
             <PopoverItem
               v-if="store.state.auth.availablePermissions['library']"

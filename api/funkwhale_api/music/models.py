@@ -1341,6 +1341,11 @@ class LibraryQuerySet(models.QuerySet):
             )
         else:
             remote_service_actors = Q()
+
+        # blocked actors
+        blocked_exclusion = ~models.Q(**{"actor__blocks": actor})
+        blocking_exclusion = ~models.Q(**{"actor__blocked_by": actor})
+
         return self.filter(
             me_query
             | instance_query
@@ -1350,6 +1355,8 @@ class LibraryQuerySet(models.QuerySet):
             | models.Q(pk__in=followed_channels_libraries)
             | models.Q(actor__in=followed_actors, privacy_level="followers")
             & models.Q(actor__domain__in=domains_reachable)
+            & blocked_exclusion
+            & blocking_exclusion
         )
 
 

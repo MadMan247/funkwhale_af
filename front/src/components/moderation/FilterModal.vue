@@ -34,7 +34,7 @@ const isLoading = ref(false)
 const hide = async () => {
   isLoading.value = true
 
-  const payload = {
+  const artistPayload = {
     target: {
       type: type.value,
       id: target.value?.id
@@ -42,15 +42,26 @@ const hide = async () => {
   }
 
   try {
-    const response = await axios.post('moderation/content-filters/', payload)
-    logger.info(`Successfully hidden ${type.value} ${target.value?.id}`)
-    show.value = false
-    store.state.moderation.lastUpdate = new Date()
-    store.commit('moderation/contentFilter', response.data)
-    store.commit('ui/addMessage', {
-      content: t('components.moderation.FilterModal.message.success'),
-      date: new Date()
-    })
+    if (type.value === 'artist') {
+      const response = await axios.post('moderation/content-filters/', artistPayload)
+      logger.info(`Successfully hidden ${type.value} ${target.value?.id}`)
+      show.value = false
+      store.state.moderation.lastUpdate = new Date()
+      store.commit('moderation/contentFilter', response.data)
+      store.commit('ui/addMessage', {
+        content: t('components.moderation.FilterModal.message.success'),
+        date: new Date()
+      })
+    } else if (type.value === 'actor') {
+      await store.dispatch('moderation/blockActor', target.value?.name)
+      logger.info(`Successfully hidden ${type.value} ${target.value?.name}`)
+      show.value = false
+      store.state.moderation.lastUpdate = new Date()
+      store.commit('ui/addMessage', {
+        content: t('components.moderation.FilterModal.message.success'),
+        date: new Date()
+      })
+    }
   } catch (error) {
     logger.error(`Error while hiding ${type.value} ${target.value?.id}`)
     errors.value = (error as BackendError).backendErrors
@@ -63,8 +74,8 @@ const hide = async () => {
 <template>
   <Modal
     v-model="show"
-    destructive
-    :title="type==='artist' ? t('components.moderation.FilterModal.header.modal', {name: target?.name}) : errors.length > 0 ? t('components.moderation.FilterModal.header.failure') : ''"
+    is-destructive
+    :title="type==='artist' ? t('components.moderation.FilterModal.header.artistModal', {name: target?.name}) : type==='actor' ? t('components.moderation.FilterModal.header.actorModal', {name: target?.name}) : errors.length > 0 ? t('components.moderation.FilterModal.header.failure') : ''"
     :cancel="t('components.moderation.FilterModal.button.cancel')"
   >
     <div class="scrolling content">
@@ -82,28 +93,32 @@ const hide = async () => {
             </li>
           </ul>
         </Alert>
-        <template v-if="type === 'artist'">
-          <p>
-            {{ t('components.moderation.FilterModal.warning.createFilter.listIntro') }}
-          </p>
-          <ul>
-            <li>
-              {{ t('components.moderation.FilterModal.warning.createFilter.listItem1') }}
-            </li>
-            <li>
-              {{ t('components.moderation.FilterModal.warning.createFilter.listItem2') }}
-            </li>
-            <li>
-              {{ t('components.moderation.FilterModal.warning.createFilter.listItem3') }}
-            </li>
-            <li>
-              {{ t('components.moderation.FilterModal.warning.createFilter.listItem4') }}
-            </li>
-          </ul>
-          <p>
-            {{ t('components.moderation.FilterModal.help.createFilter') }}
-          </p>
-        </template>
+        <p v-if="type === 'actor'">
+          {{ t('components.moderation.FilterModal.warning.createFilter.listActorIntro') }}
+        </p>
+        <p v-if="type === 'artist'">
+          {{ t('components.moderation.FilterModal.warning.createFilter.listArtistIntro') }}
+        </p>
+        <ul>
+          <li>
+            {{ t('components.moderation.FilterModal.warning.createFilter.listItem1') }}
+          </li>
+          <li>
+            {{ t('components.moderation.FilterModal.warning.createFilter.listItem2') }}
+          </li>
+          <li>
+            {{ t('components.moderation.FilterModal.warning.createFilter.listItem3') }}
+          </li>
+          <li>
+            {{ t('components.moderation.FilterModal.warning.createFilter.listItem4') }}
+          </li>
+          <li v-if="type === 'actor'">
+            {{ t('components.moderation.FilterModal.warning.createFilter.listItem5') }}
+          </li>
+        </ul>
+        <p>
+          {{ t('components.moderation.FilterModal.help.createFilter') }}
+        </p>
       </div>
     </div>
     <template #actions>

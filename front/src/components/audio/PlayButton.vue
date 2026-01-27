@@ -134,7 +134,7 @@ const playlistLibraryFollowInfo = computed(() => {
   return {
     label: labels.value.PlaylistUploadNotRequest,
     tooltip: labels.value.PlaylistUploadTooltip,
-    icon: 'bi-eye-slash',
+    icon: 'bi-ear-fill',
     disabled: false,
     action: requestPlaylistUploadsAccess
   }

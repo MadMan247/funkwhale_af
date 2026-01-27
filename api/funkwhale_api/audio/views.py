@@ -107,6 +107,12 @@ class ChannelViewSet(
             queryset = queryset.annotate(
                 _downloads_count=Sum("artist__artist_credit__tracks__downloads_count")
             )
+        if self.request.user.is_authenticated:
+            queryset = queryset.exclude(
+                actor__in=federation_models.BlockedActor.objects.filter(
+                    actor=self.request.user.actor
+                ).values("target")
+            )
         return queryset
 
     def perform_create(self, serializer):

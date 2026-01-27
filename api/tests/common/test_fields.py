@@ -10,13 +10,17 @@ from funkwhale_api.history import models
 def test_privacy_level_query(factories):
     user = factories["users.User"](with_actor=True)
     user_query = (
-        Q(privacy_level__in=["instance", "everyone"])
-        | Q(privacy_level="me", user=user)
-        | Q(
-            privacy_level="followers",
-            actor__in=user.actor.get_approved_followings(),
+        (
+            Q(privacy_level__in=["instance", "everyone"])
+            | Q(privacy_level="me", user=user)
+            | Q(
+                privacy_level="followers",
+                actor__in=user.actor.get_approved_followings(),
+            )
+            | Q(privacy_level="followers", user=user)
         )
-        | Q(privacy_level="followers", user=user)
+        & ~Q(actor__blocked_by=user.actor)
+        & ~Q(actor__blocks=user.actor)
     )
 
     query = fields.privacy_level_query(user)
@@ -50,6 +54,43 @@ def test_privacy_level_query_followers(factories):
 
     assert listening in queryset
     assert favorite in fav_qs
+
+
+def test_privacy_level_query_followers_blocked(factories):
+    user = factories["users.User"](with_actor=True)
+    target = factories["users.User"](with_actor=True, privacy_level="everyone")
+    factories["federation.Follow"](actor=user.actor, target=target.actor, approved=True)
+    factories["federation.BlockedActor"](actor=user.actor, target=target.actor)
+
+    assert user.actor.get_approved_followings()[0] == target.actor
+
+    # blocking user do not have access to the object from blocked user
+    listening = factories["history.Listening"](actor=target.actor)
+    favorite = factories["favorites.TrackFavorite"](actor=target.actor)
+    factories["history.Listening"]()
+    factories["favorites.TrackFavorite"]()
+    factories["favorites.TrackFavorite"]()
+    queryset = models.Listening.objects.all().filter(
+        fields.privacy_level_query(user, "actor__user__privacy_level", "actor__user")
+    )
+    fav_qs = favorite_models.TrackFavorite.objects.all().filter(
+        fields.privacy_level_query(user, "actor__user__privacy_level", "actor__user")
+    )
+    assert listening not in queryset
+    assert favorite not in fav_qs
+
+    # blocked user do not have access to the object from blocking user
+    listening = factories["history.Listening"](actor=user.actor)
+    favorite = factories["favorites.TrackFavorite"](actor=user.actor)
+    queryset = models.Listening.objects.all().filter(
+        fields.privacy_level_query(target, "actor__user__privacy_level", "actor__user")
+    )
+    fav_qs = favorite_models.TrackFavorite.objects.all().filter(
+        fields.privacy_level_query(target, "actor__user__privacy_level", "actor__user")
+    )
+
+    assert listening not in queryset
+    assert favorite not in fav_qs
 
 
 def test_privacy_level_query_not_followers(factories):

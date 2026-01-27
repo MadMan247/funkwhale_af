@@ -46,7 +46,7 @@ Let users finish a workflow inside a floating window without sending them to a n
 ```ts
 {
   title: string,
-  isdestructive?: true,
+  isDestructive?: true,
   cancel?: string | true,
   icon?: string,
   autofocus?: true | 'off'
@@ -226,15 +226,15 @@ Note that confirmation dialogs interrupt the user's workflow. Consider adding a 
 
 ### Destructive Modal
 
-The `destructive` prop is used to visually indicate a potentially dangerous or irreversible action. When set to `true`, the modal will have a distinctive red styling to draw the user's attention and highlight the critical nature of the action.
+The `is-destructive` prop is used to visually indicate a potentially dangerous or irreversible action. When set to `true`, the modal will have a distinctive red styling to draw the user's attention and highlight the critical nature of the action.
 
-| Prop          | Data type | Required? | Default | Description                                          |
-| ------------- | --------- | --------- | ------- | ---------------------------------------------------- |
-| `destructive` | `true`    | No        | `false` | Applies a red styling to emphasize dangerous actions |
+| Prop             | Data type | Required? | Default | Description                                          |
+| ---------------- | --------- | --------- | ------- | ---------------------------------------------------- |
+| `is-destructive` | `true`    | No        | `false` | Applies a red styling to emphasize dangerous actions |
 
 ### Styling Effects
 
-When the `destructive` prop is set to `true`, the modal will:
+When the `is-destructive` prop is set to `true`, the modal will:
 
 - Add a red border
 - Style the title in red
@@ -243,12 +243,12 @@ To visually distinguish the modal from standard modals
 
 ### Best Practices
 
-- Use the `destructive` prop sparingly
+- Use the `is-destructive` prop sparingly
 - Clearly explain the consequences of the action using `<Alert red>`
 - Provide a clear way to cancel the action. If you use the `cancel` prop, the Cancel button will have autofocus, preventing accidental confirmation.
 - Use descriptive action button labels
 
-The example in the "Confirm a dangerous action" section demonstrates the recommended usage of the destructive modal.
+The example in the "Confirm a dangerous action" section demonstrates the recommended usage of the is-destructive modal.
 
 <Layout flex>
 
@@ -262,7 +262,7 @@ Delete my account
 <Modal
   v-model="isOpen4"
   title="Delete Account?"
-  destructive
+  is-destructive
   cancel="Cancel"
 >
   <template #alert>
@@ -292,7 +292,7 @@ Delete my account
 <Modal
   v-model="isOpen4"
   title="Delete Account?"
-  destructive
+  is-destructive
   cancel="Cancel"
 >
   <template #alert>

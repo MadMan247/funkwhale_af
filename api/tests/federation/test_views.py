@@ -742,6 +742,7 @@ def test_get_listenings(factories, logged_in_api_client):
     factories["history.Listening"](actor=actor)
     factories["history.Listening"](actor=actor)
     factories["history.Listening"](actor=actor)
+    assert actor.user == logged_in_api_client.user
 
     url = reverse(
         "federation:actors-listens",
@@ -759,6 +760,7 @@ def test_get_listenings_honours_privacy_level(
 ):
     user = factories["users.User"](with_actor=True, privacy_level=privacy_level)
     factories["history.Listening"](actor=user.actor)
+    logged_in_api_client.user.create_actor()
 
     url = reverse(
         "federation:actors-listens",
@@ -772,6 +774,7 @@ def test_get_listenings_honours_privacy_level(
     "privacy_level, expected", [("me", 403), ("instance", 200), ("everyone", 200)]
 )
 def test_get_favorite(factories, logged_in_api_client, privacy_level, expected):
+    logged_in_api_client.user.create_actor()
     user = factories["users.User"](with_actor=True, privacy_level=privacy_level)
     favorite = factories["favorites.TrackFavorite"](
         actor=user.actor, local=True, privacy_level=privacy_level
@@ -804,6 +807,7 @@ def test_get_favorite_anonymous(factories, api_client, privacy_level, expected):
     "privacy_level, expected", [("me", 403), ("instance", 200), ("everyone", 200)]
 )
 def test_get_listening(factories, logged_in_api_client, privacy_level, expected):
+    logged_in_api_client.user.create_actor()
     user = factories["users.User"](with_actor=True, privacy_level=privacy_level)
     listening = factories["history.Listening"](
         actor=user.actor, local=True, privacy_level=privacy_level

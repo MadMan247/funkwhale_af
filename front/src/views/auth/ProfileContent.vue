@@ -52,6 +52,7 @@ const createForm = ref()
     page-heading
     :h1="t('views.auth.ProfileContent.header.content')"
   >
+    <!-- TODO: Fix actor radio
     <template #action>
       <radio-button
         v-if="typeof object?.preferred_username === 'string' && typeof object?.full_username === 'string'"
@@ -60,7 +61,7 @@ const createForm = ref()
         :object-id="{ username: object?.preferred_username, fullUsername: object?.full_username }"
         :client-only="true"
       />
-    </template>
+    </template> -->
   </Header>
   <Layout
     main

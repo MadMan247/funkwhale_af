@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import type { components } from '~/generated/types'
+
 import { computed } from 'vue'
 
 import { useStore } from '~/store'
 import Card from '~/components/ui/Card.vue'
 
-// TODO: use Actor (FullActor) until we have a different endpoint for remote user search with FullActor to get user avatars -->
+// TODO: use FullActor when we have a different endpoint for remote user search to get user avatars -->
 interface Props {
   actor: components['schemas']['Actor']
+  follower?: boolean
+  following?: boolean
+  isOwnProfile?: boolean
 }
 
 const props = defineProps<Props>()
@@ -15,12 +19,17 @@ const props = defineProps<Props>()
 const store = useStore()
 const localurl = store.getters['instance/domain']
 
+
 function getDomain(id: string): string {
   const url = new URL(id)
   return url.hostname
 }
 
 const domain = getDomain(props.actor.id)
+
+const displayDomain = computed(() => {
+  return domain.length > 10 ? domain.slice(0, 10) + '...' : domain
+})
 
 const description = computed(() => {
   return props.actor.summary?.length && props.actor.summary.length > 50
@@ -51,15 +60,15 @@ const description = computed(() => {
         style="font-size: 167px; margin: 16px;"
       />
     </template>
-
     <div v-text="description" />
 
-    <template
-      v-if="domain && domain != localurl"
-      #footer
-    >
-      <i class="bi bi-globe" />
-      <span>{{ domain }}</span>
+    <template #footer>
+      <template
+        v-if="domain && domain != localurl"
+      >
+        <i class="bi bi-globe" />
+        <span :title="domain">{{ displayDomain }}</span>
+      </template>
     </template>
   </Card>
 
@@ -86,13 +95,13 @@ const description = computed(() => {
     </template>
 
     <div v-text="description" />
-
-    <template
-      v-if="domain && domain != localurl"
-      #footer
-    >
-      <i class="bi bi-globe" />
-      <span>{{ domain }}</span>
+    <template #footer>
+      <template
+        v-if="domain && domain != localurl"
+      >
+        <i class="bi bi-globe" />
+        <span :title="domain">{{ displayDomain }}</span>
+      </template>
     </template>
   </Card>
 </template>

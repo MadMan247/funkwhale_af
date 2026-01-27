@@ -177,7 +177,7 @@ const remove = async () => {
       <Layout
         flex
         gap-4
-        style="line-height: 32px; opacity: .6; font-size: 15px;/* TODO: find more consistent way to express this with layout primitives *?"
+        style="line-height: 32px; opacity: .6; font-size: 15px;/* TODO: find more consistent way to express this with layout primitives */"
       >
         <template v-if="object.release_date">
           {{ momentFormat(new Date(object.release_date ?? '1970-01-01'), 'Y') }}

@@ -74,7 +74,7 @@ def test_authenticate_skips_blocked_domain(factories, api_request):
         authenticator.authenticate(django_request)
 
 
-def test_authenticate_skips_blocked_actor(factories, api_request):
+def test_authenticate_skips_blocks(factories, api_request):
     policy = factories["moderation.InstancePolicy"](block_all=True, for_actor=True)
     private, public = keys.get_key_pair()
     actor_url = policy.target_actor.fid

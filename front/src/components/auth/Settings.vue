@@ -26,6 +26,7 @@ import Button from '~/components/ui/Button.vue'
 import Link from '~/components/ui/Link.vue'
 import Textarea from '~/components/ui/Textarea.vue'
 import Section from '~/components/ui/Section.vue'
+import Table from '~/components/ui/Table.vue'
 
 const SETTINGS_ORDER: FieldId[] = ['summary', 'privacy_level']
 
@@ -272,6 +273,8 @@ const changeEmail = async () => {
 
 fetchApps()
 fetchOwnedApps()
+store.dispatch('moderation/fetchContentFilters')
+store.dispatch('moderation/fetchActorFilters')
 </script>
 
 <template>
@@ -456,7 +459,6 @@ fetchOwnedApps()
       large-section-heading
       icon="bi-eye-slash"
       :h2="t('components.auth.Settings.header.contentFilters')"
-      class="ui text container"
     >
       <p>
         {{ t('components.auth.Settings.description.contentFilters') }}
@@ -465,48 +467,59 @@ fetchOwnedApps()
       <Button
         primary
         icon="bi-arrow-clockwise"
-        @click="store.dispatch('moderation/fetchContentFilters')"
+        @click="store.dispatch('moderation/fetchContentFilters'); store.dispatch('moderation/fetchActorFilters')"
       >
         {{ t('components.auth.Settings.button.refresh') }}
       </Button>
       <h3 class="ui header">
         {{ t('components.auth.Settings.header.hiddenArtists') }}
       </h3>
-      <table class="ui compact very basic unstackable table">
-        <thead>
-          <tr>
-            <th>
-              {{ t('components.auth.Settings.table.artists.header.name') }}
-            </th>
-            <th>
-              {{ t('components.auth.Settings.table.artists.header.creationDate') }}
-            </th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="filter in store.getters['moderation/artistFilters']()"
-            :key="filter.uuid"
-          >
-            <td>
-              <router-link :to="{name: 'library.artists.detail', params: {id: filter.target.id }}">
-                {{ filter.target.name }}
-              </router-link>
-            </td>
-            <td>
-              <human-date :date="filter.creation_date" />
-            </td>
-            <td>
-              <Button
-                secondary
-                @click="store.dispatch('moderation/deleteContentFilter', filter.uuid)"
-              >
-                {{ t('components.auth.Settings.button.delete') }}
-              </Button>
-            </td>
-          </tr>
-        </tbody>
+      <Table :grid-template-columns="['auto', 'auto', 'auto']">
+        <template #header>
+          <label>{{ t('components.auth.Settings.table.artists.header.name') }}</label>
+          <label>{{ t('components.auth.Settings.table.artists.header.creationDate') }}</label>
+          <label>{{ t('components.auth.Settings.table.artists.header.action') }}</label>
+        </template>
+        <template
+          v-for="filter in store.getters['moderation/artistFilters']()"
+          :key="filter.uuid"
+        >
+          <router-link :to="{name: 'library.artists.detail', params: {id: filter.target.id }}">
+            {{ filter.target.name }}
+          </router-link>
+          <human-date :date="filter.creation_date" />
+          <Button
+            destructive
+            square
+            icon="bi-trash"
+            @click="async () => {
+              await store.dispatch('moderation/deleteContentFilter', filter.uuid)
+            }"
+          />
+        </template>
+      </Table>
+      <h3 class="ui header">
+        {{ t('components.auth.Settings.header.hiddenActors') }}
+      </h3>
+      <Table :grid-template-columns="['auto', 'auto']">
+        <template #header>
+          <label>{{ t('components.auth.Settings.table.artists.header.name') }}</label>
+          <label>{{ t('components.auth.Settings.table.artists.header.action') }}</label>
+        </template>
+        <template
+          v-for="filter in store.getters['moderation/actorFilters']()"
+          :key="filter.fid"
+        >
+          <actor-link :actor="filter" />
+          <Button
+            destructive
+            square
+            icon="bi-trash"
+            @click="async () => {
+              await store.dispatch('moderation/deleteActorFilter', filter.full_username)
+            }"
+          />
+        </template>
       </table>
     </Section>
     <Section
@@ -589,70 +602,76 @@ fetchOwnedApps()
         {{ t('components.auth.Settings.description.yourApps') }}
       </p>
       <Link
-        class="ui success button"
+        solid
+        primary
+        icon="bi-plus-lg"
         :to="{name: 'settings.applications.new'}"
       >
         {{ t('components.auth.Settings.link.newApp') }}
       </Link>
-      <table
+      <Table
         v-if="ownedApps.length > 0"
-        class="ui compact very basic unstackable table"
+        :grid-template-columns="['auto', 'auto', 'auto', '136px']"
       >
-        <thead>
-          <tr>
-            <th>
-              {{ t('components.auth.Settings.table.yourApps.header.application') }}
-            </th>
-            <th>
-              {{ t('components.auth.Settings.table.yourApps.header.scopes') }}
-            </th>
-            <th>
-              {{ t('components.auth.Settings.table.yourApps.header.creationDate') }}
-            </th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="app in ownedApps"
-            :key="app.client_id"
+        <template #header>
+          <label>
+            {{ t('components.auth.Settings.table.yourApps.header.application') }}
+          </label>
+          <label>
+            {{ t('components.auth.Settings.table.yourApps.header.scopes') }}
+          </label>
+          <label>
+            {{ t('components.auth.Settings.table.yourApps.header.creationDate') }}
+          </label>
+          <label>
+            {{ t('components.auth.Settings.table.artists.header.action') }}
+          </label>
+        </template>
+        <template
+          v-for="app in ownedApps"
+          :key="app.client_id"
+        >
+          <div>
+            <router-link :to="{name: 'settings.applications.edit', params: {id: app.client_id}}">
+              {{ app.name }}
+            </router-link>
+          </div>
+          <div>
+            {{ app.scopes }}
+          </div>
+          <div>
+            <human-date :date="app.created" />
+          </div>
+          <Layout
+            stack
+            gap-8
           >
-            <td>
-              <router-link :to="{name: 'settings.applications.edit', params: {id: app.client_id}}">
-                {{ app.name }}
-              </router-link>
-            </td>
-            <td>
-              {{ app.scopes }}
-            </td>
-            <td>
-              <human-date :date="app.created" />
-            </td>
-            <td>
-              <Link
-                class="ui tiny success button"
-                :to="{name: 'settings.applications.edit', params: {id: app.client_id}}"
-              >
-                {{ t('components.auth.Settings.button.edit') }}
-              </Link>
-              <DangerousButton
-                :is-loading="isDeleting.has(app.client_id)"
-                class="tiny"
-                :title="t('components.auth.Settings.modal.deleteApp.header', {app: app.name})"
-                @confirm="deleteApp(app.client_id)"
-              >
-                {{ t('components.auth.Settings.button.remove') }}
-                <template #content>
-                  {{ t('components.auth.Settings.modal.deleteApp.content.warning') }}
-                </template>
-                <template #confirm>
-                  {{ t('components.auth.Settings.button.removeApp') }}
-                </template>
-              </DangerousButton>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            <Link
+              solid
+              primary
+              icon="bi-pencil-fill"
+              class="ui tiny success button"
+              :to="{name: 'settings.applications.edit', params: {id: app.client_id}}"
+            >
+              {{ t('components.auth.Settings.button.edit') }}
+            </Link>
+            <DangerousButton
+              :is-loading="isDeleting.has(app.client_id)"
+              class="tiny"
+              :title="t('components.auth.Settings.modal.deleteApp.header', {app: app.name})"
+              @confirm="deleteApp(app.client_id)"
+            >
+              {{ t('components.auth.Settings.button.remove') }}
+              <template #content>
+                {{ t('components.auth.Settings.modal.deleteApp.content.warning') }}
+              </template>
+              <template #confirm>
+                {{ t('components.auth.Settings.button.removeApp') }}
+              </template>
+            </DangerousButton>
+          </Layout>
+        </template>
+      </Table>
       <empty-state v-else>
         <template #title>
           {{ t('components.auth.Settings.header.noPersonalApps') }}

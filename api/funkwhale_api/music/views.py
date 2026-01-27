@@ -80,7 +80,9 @@ def get_actors(filter_uploads):
         uploads = filter_uploads(obj, uploads)
         uploads = uploads.playable_by(actor)
         actor_ids = uploads.values_list("library__actor__id", flat=True).distinct()
-        qs = federation_models.Actor.objects.filter(id__in=actor_ids)
+        qs = federation_models.Actor.objects.not_blocked_or_blocking(actor).filter(
+            id__in=actor_ids
+        )
         page = self.paginate_queryset(qs)
         if page is not None:
             serializer = federation_serializers.APIActorSerializer(page, many=True)

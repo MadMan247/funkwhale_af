@@ -22,6 +22,10 @@ def privacy_level_query(user, lookup_field="privacy_level", user_field="user"):
     if user.is_anonymous:
         return models.Q(**{lookup_field: "everyone"})
 
+    blocked_exclusion = ~models.Q(**{"actor__blocks": user.actor})
+    blocking_exclusion = ~models.Q(**{"actor__blocked_by": user.actor})
+    exclusion_query = blocking_exclusion & blocked_exclusion
+
     followers_query = models.Q(
         **{
             f"{lookup_field}": "followers",
@@ -37,7 +41,7 @@ def privacy_level_query(user, lookup_field="privacy_level", user_field="user"):
         models.Q(**{f"{lookup_field}__in": ["instance", "everyone"]})
         | models.Q(**{lookup_field: "me", user_field: user})
         | followers_query
-    )
+    ) & exclusion_query
 
 
 class SearchFilter(django_filters.CharFilter):

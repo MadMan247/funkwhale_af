@@ -1,9 +1,12 @@
 import requests.exceptions
 from django.conf import settings
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from django.db.models import Count, Q
 from drf_spectacular.utils import extend_schema, extend_schema_view
-from rest_framework import decorators, mixins, permissions, response, viewsets
+from rest_framework import decorators, mixins
+from rest_framework import permissions
+from rest_framework import permissions as rest_permissions
+from rest_framework import response, status, viewsets
 from rest_framework.exceptions import NotFound as RestNotFound
 
 from funkwhale_api.common import preferences
@@ -317,6 +320,93 @@ class ActorViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
             filter_uploads=lambda o, uploads: uploads.filter(library__actor=o)
         )
     )
+
+    @decorators.action(
+        methods=["post"],
+        detail=True,
+        permission_classes=[rest_permissions.IsAuthenticated],
+    )
+    def block(self, request, *args, **kwargs):
+        target = self.get_object()
+        actor = request.user.actor
+        if actor == target:
+            return response.Response(
+                {"detail": "You cannot block yourself"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            models.BlockedActor.objects.create(
+                actor=actor,
+                target=target,
+            )
+        except IntegrityError:
+            return response.Response(
+                {"detail": "Already blocked"},
+                status=status.HTTP_409_CONFLICT,
+            )
+
+        if not target.is_local:
+            routes.outbox.dispatch(
+                {"type": "Block", "object": {"type": "Actor"}},
+                context={"actor": actor, "target": target},
+            )
+
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
+
+    @decorators.action(
+        methods=["post"],
+        detail=True,
+        permission_classes=[rest_permissions.IsAuthenticated],
+    )
+    def unblock(self, request, *args, **kwargs):
+        target = self.get_object()
+        actor = request.user.actor
+        try:
+            models.BlockedActor.objects.get(
+                actor=actor,
+                target=target,
+            ).delete()
+        except models.BlockedActor.DoesNotExist:
+            return response.Response(status=status.HTTP_404_NOT_FOUND)
+
+        if not target.is_local:
+            routes.outbox.dispatch(
+                {"type": "Unblock", "object": {"type": "Actor"}},
+                context={"actor": actor, "target": target},
+            )
+
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
+
+    @extend_schema(
+        methods=["GET"],
+        responses=serializers.APIActorSerializer(many=True),
+        description="List actors blocked by the authenticated user",
+    )
+    @decorators.action(
+        methods=["get"],
+        detail=True,
+        permission_classes=[rest_permissions.IsAuthenticated],
+    )
+    def blocks(self, request, *args, **kwargs):
+        actor = request.user.actor
+        actor.blocked_by.all()
+        queryset = actor.blocks.all()
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = serializers.APIActorSerializer(
+                page,
+                many=True,
+                context=self.get_serializer_context(),
+            )
+            return self.get_paginated_response(serializer.data)
+
+        serializer = serializers.APIActorSerializer(
+            queryset,
+            many=True,
+            context=self.get_serializer_context(),
+        )
+        return response.Response(serializer.data)
 
 
 @extend_schema_view(

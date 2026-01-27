@@ -502,6 +502,102 @@ We send the [Listen](https://www.w3.org/TR/activitystreams-vocabulary/#dfn-liste
 }
 ```
 
+### Block
+
+We send the [Block](https://www.w3.org/TR/activitypub/#block-activity-outbox) to allow remote server blocking content from the activity actor to the activity object (the blocked target).
+
+#### Example
+
+```json
+{
+    "to": ["https://node2.funkwhale.test/federation/actors/node2"],
+    "type": "Block",
+    "actor": "https://node1.funkwhale.test/federation/actors/node1",
+    "object": {
+        "id": "https://node2.funkwhale.test/federation/actors/node2",
+        "url": [
+            {
+                "href": "https://node2.funkwhale.test/@node2",
+                "type": "Link",
+                "mediaType": "text/html",
+            }
+        ],
+        "icon": "None",
+        "name": "node2",
+        "type": "Person",
+        "inbox": "https://node2.funkwhale.test/federation/actors/node2/inbox",
+        "outbox": "https://node2.funkwhale.test/federation/actors/node2/outbox",
+        "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            "https://funkwhale.audio/ns",
+            {
+                "Hashtag": "as:Hashtag",
+                "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            },
+        ],
+    },
+    "@context": [
+        "https://www.w3.org/ns/activitystreams",
+        "https://w3id.org/security/v1",
+        "https://funkwhale.audio/ns",
+        {
+            "Hashtag": "as:Hashtag",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+        },
+    ],
+}
+
+```
+
+### Unblock
+
+We have a custom `Unblock` activity.
+
+#### Example
+
+```json
+{
+    "to": ["https://node2.funkwhale.test/federation/actors/node2"],
+    "type": "Unblock",
+    "actor": "https://node1.funkwhale.test/federation/actors/node1",
+    "object": {
+        "id": "https://node2.funkwhale.test/federation/actors/node2",
+        "url": [
+            {
+                "href": "https://node2.funkwhale.test/@node2",
+                "type": "Link",
+                "mediaType": "text/html",
+            }
+        ],
+        "icon": "None",
+        "name": "node2",
+        "type": "Person",
+        "inbox": "https://node2.funkwhale.test/federation/actors/node2/inbox",
+        "outbox": "https://node2.funkwhale.test/federation/actors/node2/outbox",
+        "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
+            "https://funkwhale.audio/ns",
+            {
+                "Hashtag": "as:Hashtag",
+                "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+            },
+        ],
+    },
+    "@context": [
+        "https://www.w3.org/ns/activitystreams",
+        "https://w3id.org/security/v1",
+        "https://funkwhale.audio/ns",
+        {
+            "Hashtag": "as:Hashtag",
+            "manuallyApprovesFollowers": "as:manuallyApprovesFollowers",
+        },
+    ],
+}
+
+```
+
 ## Supported objects
 
 ### Artist

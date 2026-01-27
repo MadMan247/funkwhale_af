@@ -288,3 +288,48 @@ def test_update_library_follow_delete_delete_denormalization_entries(
         actor = actors[actor_name]
         expected_tracks = [tracks[i] for i in expected]
         assert list(music_models.Track.objects.playable_by(actor)) == expected_tracks
+
+
+def test_blocks_update_denormalization_entries(factories, mocker):
+    blocker = factories["federation.Actor"](local=True)
+    blocked = factories["federation.Actor"](local=True)
+
+    library = factories["music.Library"](
+        actor=blocker,
+        privacy_level="followers",
+        name="followers",
+    )
+
+    upload1 = factories["music.Upload"](playable=True, library=library)
+    upload2 = factories["music.Upload"](playable=True, library=library)
+
+    tracks = [upload2.track, upload1.track]
+
+    mocker.patch(
+        "funkwhale_api.federation.utils.get_or_create_builtin_actor_library",
+        return_value=library,
+    )
+
+    follow = factories["federation.Follow"](
+        target=library.actor,
+        actor=blocked,
+        approved=False,
+    )
+    follow.approved = True
+    follow.save()
+
+    assert list(music_models.Track.objects.playable_by(blocked)) == tracks
+
+    # BLOCK
+    blocks = factories["federation.BlockedActor"](
+        actor=blocker,
+        target=blocked,
+    )
+
+    assert list(music_models.Track.objects.playable_by(blocked)) == []
+
+    # UNBLOCK → post_delete signal
+    blocks.delete()
+
+    # Entries must be recreated
+    assert list(music_models.Track.objects.playable_by(blocked)) == tracks

@@ -93,27 +93,13 @@ const submit = async () => {
 </script>
 
 <template>
-  <Section
-    :action="isTruncated ? {
-      text:
-        showMore
-          ? t('components.common.RenderedDescription.button.less')
-          : t('components.common.RenderedDescription.button.more'),
-      onClick:() => { showMore = !showMore },
-      style:'color: var(--fw-primary)',
-      id: 'expandOrCollapseButton'
-    } : undefined"
-  >
-    <label
+  <Section>
+    <!-- Render the truncated or full description -->
+    <sanitized-html
       v-if="content && !isUpdating"
-      for="expandOrCollapseButton"
-    >
-      <!-- Render the truncated or full description -->
-      <sanitized-html
-        :html="html"
-        :class="['description', isTruncated ? 'truncated' : '']"
-      />
-    </label>
+      :html="html"
+      :class="['description', isTruncated ? 'truncated' : '']"
+    />
     <span v-else-if="!isUpdating">
       {{ t('components.common.RenderedDescription.empty.noDescription') }}
     </span>

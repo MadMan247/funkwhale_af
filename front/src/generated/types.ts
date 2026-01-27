@@ -731,6 +731,39 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/federation/actors/{full_username}/block/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["create_federation_actor_block"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/federation/actors/{full_username}/blocks/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description List actors blocked by the authenticated user */
+        get: operations["get_federation_actor_blocks"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/federation/actors/{full_username}/libraries/": {
         parameters: {
             query?: never;
@@ -741,6 +774,22 @@ export interface paths {
         get: operations["get_federation_actor_library"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/federation/actors/{full_username}/unblock/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["create_federation_actor_unblock"];
         delete?: never;
         options?: never;
         head?: never;
@@ -8495,6 +8544,62 @@ export interface operations {
             };
         };
     };
+    create_federation_actor_block: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                full_username: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FullActorRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["FullActorRequest"];
+                "multipart/form-data": components["schemas"]["FullActorRequest"];
+                "application/activity+json": components["schemas"]["FullActorRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FullActor"];
+                };
+            };
+        };
+    };
+    get_federation_actor_blocks: {
+        parameters: {
+            query?: {
+                /** @description Which field to use when ordering the results. */
+                ordering?: string;
+                /** @description A page number within the paginated result set. */
+                page?: number;
+                /** @description Number of results to return per page. */
+                page_size?: number;
+            };
+            header?: never;
+            path: {
+                full_username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedAPIActorList"];
+                };
+            };
+        };
+    };
     get_federation_actor_library: {
         parameters: {
             query?: never;
@@ -8512,6 +8617,34 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["LibraryForOwner"];
+                };
+            };
+        };
+    };
+    create_federation_actor_unblock: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                full_username: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FullActorRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["FullActorRequest"];
+                "multipart/form-data": components["schemas"]["FullActorRequest"];
+                "application/activity+json": components["schemas"]["FullActorRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FullActor"];
                 };
             };
         };

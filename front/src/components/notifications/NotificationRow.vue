@@ -29,7 +29,11 @@ const labels = computed(() => ({
 }))
 
 const item = ref(props.initialItem)
-watchEffect(() => (item.value = props.initialItem))
+const read = ref(props.initialItem.is_read)
+watchEffect(() => {
+  item.value = props.initialItem
+  read.value = props.initialItem.is_read
+})
 
 const username = computed(() => props.initialItem.activity.actor.preferred_username)
 const notificationData = computed(() => {
@@ -40,7 +44,6 @@ const notificationData = computed(() => {
       const libraryFollow = activity.related_object as LibraryFollow
 
       if (activity.related_object?.approved === null) {
-        // to do : dirty hack
       let labelPendingFollow = ""
       if (typeof activity.object?.name === 'string' && activity.object.name.startsWith('playlist_')) {
           labelPendingFollow = t('components.notifications.NotificationRow.message.playlistPendingFollow', { username: username.value, library: activity.object.name.slice("playlist_".length) })
@@ -49,14 +52,10 @@ const notificationData = computed(() => {
         return {
           message: labelPendingFollow,
           acceptFollow: {
-            buttonClass: 'success',
-            icon: 'check',
             label: t('components.notifications.NotificationRow.button.approve'),
             handler: () => approveLibraryFollow(libraryFollow)
           },
           rejectFollow: {
-            buttonClass: 'danger',
-            icon: 'x',
             label: t('components.notifications.NotificationRow.button.reject'),
             handler: () => rejectLibraryFollow(libraryFollow)
           }
@@ -68,8 +67,11 @@ const notificationData = computed(() => {
         } else {    labelFollow = t('components.notifications.NotificationRow.message.libraryFollow', { username: username.value, library: activity.object.name })
       }
         return {
-
-          message: labelFollow
+          message: labelFollow,
+          revokeFollow: {
+            label: t('components.notifications.NotificationRow.button.revoke'),
+            handler: () => revokeLibraryFollow(libraryFollow)
+          }
         }
       }
       let labelReject = ""
@@ -93,22 +95,22 @@ const notificationData = computed(() => {
             // @ts-expect-error `activity.object needs to have a type. Where is it declared?
             user: activity.object.target?.full_username }),
           acceptFollow: {
-            buttonClass: 'success',
-            icon: 'bi-check',
             label: t('components.notifications.NotificationRow.button.approve'),
             handler: () => approveUserFollow(userFollow)
           },
           rejectFollow: {
-            buttonClass: 'danger',
-            icon: 'bi-x',
             label: t('components.notifications.NotificationRow.button.reject'),
             handler: () => rejectUserFollow(userFollow)
           }
         }
-      } else if (activity.related_object?.approved) {
+      } else if (userFollow?.approved) {
         return {
           detailUrl,
-          message: t('components.notifications.NotificationRow.message.userFollow', { username: username.value, user: activity.actor.full_username })
+          message: t('components.notifications.NotificationRow.message.userFollow', { username: username.value, user: activity.actor.full_username }),
+          revokeFollow: {
+            label: t('components.notifications.NotificationRow.button.revoke'),
+            handler: () => revokeUserFollow(userFollow)
+          }
         }
       }
 
@@ -121,9 +123,14 @@ const notificationData = computed(() => {
 
   if (activity.type === 'Accept') {
     const library = activity.related_object as components["schemas"]["Library"]
+    const userFollow = activity.object as components["schemas"]["Follow"]
     if (activity.object?.type === 'federation.LibraryFollow' && library.name.startsWith('playlist_')) {
       return {
-        message: t('components.notifications.NotificationRow.message.playlistAccept', { username: username.value, library: activity.related_object.name })
+        message: t('components.notifications.NotificationRow.message.playlistAccept', { username: username.value, library: activity.related_object.name }),
+        revokeFollow: {
+          label: t('components.notifications.NotificationRow.button.revoke'),
+          handler: () => revokeLibraryFollow(activity.related_object as LibraryFollow)
+        }
       }
     }
     else if (activity.object?.type === 'federation.Follow') {
@@ -132,15 +139,18 @@ const notificationData = computed(() => {
       }
     }
     else if (activity.related_object?.type === 'federation.Actor') {
-      return {
-        message: t('components.notifications.NotificationRow.message.userFollow', { username: username.value })
-      }}
+        return {
+          message: t('components.notifications.NotificationRow.message.userFollow', { username: username.value }),
+          revokeFollow: {
+          label: t('components.notifications.NotificationRow.button.revoke'),
+          handler: () => revokeUserFollow(userFollow)
+        }
+        }
+    }
   }
-
   return {}
 })
 
-const read = ref(false)
 watch(read, async () => {
   await axios.patch(`federation/inbox/${item.value.id}/`, { is_read: read.value })
 
@@ -172,6 +182,10 @@ const rejectLibraryFollow = async (follow: LibraryFollow) => {
   item.value.is_read = true
 }
 
+const revokeLibraryFollow = async (follow: LibraryFollow) => {
+  await axios.delete(`federation/follows/library/${follow.uuid}/`)
+}
+
 const approveUserFollow = async (follow: components["schemas"]["Follow"]) => {
   await axios.post(`federation/follows/user/${follow.uuid}/accept/`)
   // TODO: This is not how Axios works. You have to send a request with
@@ -188,6 +202,16 @@ const rejectUserFollow = async (follow: components["schemas"]["Follow"]) => {
   // the correct type as a parameter.
   // @ts-expect-error Post this with the axios payload: { ...follow, approved: false}
   follow.approved = false
+  item.value.is_read = true
+}
+
+const revokeUserFollow = async (follow: components["schemas"]["Follow"]) => {
+  await axios.delete(`federation/follows/user/${follow.uuid}/`)
+  // Update the related_object to trigger UI re-render with success message
+  const relatedFollow = item.value.activity.related_object as components["schemas"]["Follow"]
+  if (relatedFollow) {
+    item.value.activity = { ...item.value.activity, related_object: { ...relatedFollow, approved: false } }
+  }
   item.value.is_read = true
 }
 </script>
@@ -253,25 +277,35 @@ const rejectUserFollow = async (follow: components["schemas"]["Follow"]) => {
     </Layout>
     <Spacer />
     <template
-      v-if="notificationData.acceptFollow"
+      v-if="notificationData.acceptFollow || notificationData.rejectFollow || notificationData.revokeFollow"
       #actions
     >
-&nbsp;
       <Button
-        :class="['ui', 'basic', 'tiny', notificationData.acceptFollow.buttonClass || '', 'button']"
-        :icon="notificationData.acceptFollow.icon"
+        v-if="notificationData.acceptFollow"
+        :class="['ui', 'basic', 'tiny', 'success', 'button']"
+        icon="bi-check"
         green
         @click="handleAction(notificationData.acceptFollow?.handler)"
       >
         {{ notificationData.acceptFollow.label }}
       </Button>
       <Button
-        :class="['ui', 'basic', 'tiny', notificationData.rejectFollow.buttonClass || '', 'button']"
-        :icon="notificationData.rejectFollow.icon"
+        v-if="notificationData.rejectFollow"
+        :class="['ui', 'basic', 'tiny', 'danger', 'button']"
+        icon="bi-x"
         red
         @click="handleAction(notificationData.rejectFollow?.handler)"
       >
         {{ notificationData.rejectFollow.label }}
+      </Button>
+      <Button
+        v-if="notificationData.revokeFollow"
+        :class="['ui', 'basic', 'tiny', 'danger', 'button']"
+        icon="bi-x-circle"
+        red
+        @click="handleAction(notificationData.revokeFollow?.handler)"
+      >
+        {{ notificationData.revokeFollow.label }}
       </Button>
     </template>
   </Alert>

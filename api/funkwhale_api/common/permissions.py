@@ -67,20 +67,16 @@ class PrivacyLevelPermission(BasePermission):
     """
 
     def has_object_permission(self, request, view, obj):
-        if (
-            not hasattr(obj, "user")
-            and hasattr(obj, "actor")
-            and not obj.actor.is_local
-        ):
-            # it's a remote actor object. It should be public.
-            # But we could trigger an update of the remote actor data
-            # to avoid leaking data (#2326)
-            return True
-
-        # Channels
-        if isinstance(obj, models.Actor) and hasattr(obj, "channel"):
-            privacy_level = "everyone"
+        if isinstance(obj, models.Actor):
+            # Channels
+            if hasattr(obj, "channel"):
+                privacy_level = "everyone"
             obj_actor = obj
+            if obj_actor.is_local:
+                privacy_level = obj.user.privacy_level
+            else:
+                privacy_level = "everyone"
+
         # listening/playlist/favorite
         elif hasattr(obj, "actor") and obj.actor.user:
             privacy_level = obj.actor.user.privacy_level
@@ -93,16 +89,36 @@ class PrivacyLevelPermission(BasePermission):
             privacy_level = obj.user.privacy_level
             obj_actor = obj.user.actor
 
-        if privacy_level == "everyone":
-            return True
-
-        # user is anonymous
-        if hasattr(request, "actor"):
+        # user is anonymous ?
+        if hasattr(request, "actor") and request.actor:
             request_actor = request.actor
         elif request.user and request.user.is_authenticated:
             request_actor = request.user.actor
         else:
+            request_actor = None
+
+        # check blocking users
+        if request_actor and (
+            request_actor in obj_actor.blocks.all()
+            or request_actor in obj_actor.blocked_by.all()
+        ):
             return False
+
+        # no auth, return true only if pl is everyone
+        if privacy_level == "everyone":
+            return True
+        elif not request_actor:
+            return False
+
+        if (
+            not hasattr(obj, "user")
+            and hasattr(obj, "actor")
+            and not obj.actor.is_local
+        ):
+            # it's a remote actor object. It should be public.
+            # But we could trigger an update of the remote actor data
+            # to avoid leaking data (#2326)
+            return True
 
         # User's requesting it's own objects
         if (

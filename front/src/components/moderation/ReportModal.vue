@@ -129,6 +129,7 @@ watchEffect(async () => {
     v-model="show"
     :title="target ? t('components.moderation.ReportModal.header.modal') : errors.length > 0 ? t('components.moderation.ReportModal.header.submissionFailure') : ''"
     :cancel="t('components.moderation.ReportModal.button.cancel')"
+    is-destructive
   >
     <h2
       v-if="target"

@@ -18,7 +18,7 @@ const { t } = useI18n()
 const props = withDefaults(
     defineProps<{
       title?: string,
-      isdestructive?: true,
+      isDestructive?: false,
       cancel?: string | true,
       icon?: string,
       autofocus?: true | 'off',
@@ -81,11 +81,12 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
         @click.exact.stop="isOpen = false"
       >
         <div
-          class="funkwhale modal"
           :class="[
             {
-              'isdestructive': isdestructive,
+              'isdestructive': isDestructive,
               'has-alert': !!$slots.alert,
+              'funkwhale': true,
+              'modal': true
             }
           ]"
           v-bind="{ ...$attrs, ...color(props, ['default'])() }"
@@ -118,7 +119,7 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
               v-if="title !== ''"
               :h2="title"
               section-heading
-              :class="{ 'destructive-header': isdestructive }"
+              :class="{ 'destructive-header': isDestructive }"
             />
             <Spacer
               v-if="title !== ''"
@@ -205,10 +206,8 @@ onKeyboardShortcut('escape', () => { isOpen.value = false })
   &.isdestructive {
     border-top: 24px solid var(--fw-red-400);
 
-    > h2 {
-      &.destructive-header {
+    h2.destructive-header {
         color: var(--fw-red-400);
-      }
     }
   }
 

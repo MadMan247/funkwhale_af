@@ -22,7 +22,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  scope: 'me'
+  scope: 'all'
 })
 
 const store = useStore()

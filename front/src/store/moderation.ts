@@ -7,6 +7,7 @@ import useLogger from '~/composables/useLogger'
 
 export interface State {
   filters: ContentFilter[]
+  actorFilters: ActorFilter[]
   showFilterModal: boolean
   showReportModal: boolean
   lastUpdate: Date,
@@ -35,12 +36,18 @@ export interface ContentFilter {
   }
 }
 
+export interface ActorFilter {
+  name: string
+  full_username: string
+}
+
 const logger = useLogger()
 
 const store: Module<State, RootState> = {
   namespaced: true,
   state: {
     filters: [],
+    actorFilters: [],
     showFilterModal: false,
     showReportModal: false,
     lastUpdate: new Date(),
@@ -64,6 +71,7 @@ const store: Module<State, RootState> = {
     },
     empty (state) {
       state.filters = []
+      state.actorFilters = []
     },
     contentFilter (state, value) {
       state.filters.push(value)
@@ -90,6 +98,7 @@ const store: Module<State, RootState> = {
     },
     reset (state) {
       state.filters = []
+      state.actorFilters = []
       state.filterModalTarget = {
         type: null,
         target: null
@@ -107,6 +116,12 @@ const store: Module<State, RootState> = {
       state.filters = state.filters.filter((e) => {
         return e.uuid !== uuid
       })
+    },
+    addActorFilter (state, filter: ActorFilter) {
+      state.actorFilters = [...state.actorFilters, filter]
+    },
+    deleteActorFilter (state, fullUsername) {
+      state.actorFilters = state.actorFilters.filter((e) => e.full_username !== fullUsername)
     }
   },
   getters: {
@@ -114,6 +129,9 @@ const store: Module<State, RootState> = {
       const filters = state.filters.filter((filter) => filter.target.type === 'artist')
       const sorted = sortBy(filters, [(e) => { return e.creation_date }])
       return sorted.reverse()
+    },
+    actorFilters: (state) => () => {
+      return state.actorFilters
     }
   },
   actions: {
@@ -149,6 +167,37 @@ const store: Module<State, RootState> = {
     async deleteContentFilter ({ commit }, uuid) {
       return axios.delete(`moderation/content-filters/${uuid}/`).then(() => {
         commit('deleteContentFilter', uuid)
+      })
+    },
+    async fetchActorFilters ({ dispatch, commit }, url) {
+
+      if (!url) commit('empty')
+      const username = this.state.auth.fullUsername
+      const response = await axios.get(url ?? `federation/actors/${username}/blocks/`, {
+        params: {
+          name: username
+        }
+      })
+      logger.info(`Fetched a batch of ${response.data.results.length} actor filters`)
+
+      for (const result of response.data.results) {
+        commit('addActorFilter', { ...result })
+      }
+      if (response.data.next) {
+        await dispatch('fetchActorFilters', response.data.next)
+      }
+    },
+    async blockActor ({ commit }, name) {
+      return axios.post(`federation/actors/${name}/block/`).then(() => {
+        const preferred = name.split('@')[0]
+        commit('addActorFilter', { name: preferred, full_username: name })
+        logger.info(`Blocked actor ${name}`)
+      })
+    },
+    async deleteActorFilter ({ commit }, fullUsername) {
+      return axios.post(`federation/actors/${fullUsername}/unblock/`).then(() => {
+        commit('deleteActorFilter', fullUsername)
+        logger.info(`Unblocked actor ${fullUsername}`)
       })
     }
   }

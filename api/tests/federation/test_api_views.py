@@ -475,3 +475,47 @@ def test_user_can_accept_or_reject_own_received_follows(
     mocked_dispatch.assert_called_once_with(
         {"type": action.title()}, context={"follow": follow}
     )
+
+
+def test_user_can_block_actor(factories, logged_in_api_client):
+    actor = factories["federation.Actor"]()
+    logged_in_api_client.user.create_actor()
+    url = reverse(
+        "api:v2:federation:actors-block", kwargs={"full_username": actor.full_username}
+    )
+    response = logged_in_api_client.post(url)
+    assert response.status_code == 204
+
+
+def test_user_can_unblock_actor(factories, logged_in_api_client):
+    actor = factories["federation.Actor"]()
+    user_actor = logged_in_api_client.user.create_actor()
+    factories["federation.BlockedActor"](actor=user_actor, target=actor)
+    url = reverse(
+        "api:v2:federation:actors-unblock",
+        kwargs={"full_username": actor.full_username},
+    )
+    response = logged_in_api_client.post(url)
+    assert response.status_code == 204
+
+
+def test_user_can_get_blocked_users(factories, logged_in_api_client):
+    user_actor = logged_in_api_client.user.create_actor()
+    factories["federation.BlockedActor"](actor=user_actor)
+    url = reverse(
+        "api:v2:federation:actors-blocks",
+        kwargs={"full_username": user_actor.full_username},
+    )
+    response = logged_in_api_client.get(url)
+    assert response.status_code == 200
+
+
+def test_user_cannot_get_blocked_users(factories, api_client):
+    blocks = factories["federation.BlockedActor"]()
+    url = reverse(
+        "api:v2:federation:actors-blocks",
+        kwargs={"full_username": blocks.actor.full_username},
+    )
+
+    response = api_client.get(url)
+    assert response.status_code == 401

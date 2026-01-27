@@ -391,7 +391,7 @@ watch(showDeleteModal, (newValue) => {
     <Modal
       v-model="showDeleteModal"
       :title="t('components.library.TrackBase.modal.delete.header')"
-      isdestructive
+      is-destructive
     >
       <template #alert>
         <Alert red>

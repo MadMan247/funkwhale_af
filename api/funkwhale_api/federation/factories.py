@@ -171,6 +171,15 @@ class ActorFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
 
 
 @registry.register
+class BlockedActorFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
+    actor = factory.SubFactory(ActorFactory)
+    target = factory.SubFactory(ActorFactory)
+
+    class Meta:
+        model = models.BlockedActor
+
+
+@registry.register
 class FollowFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
     target = factory.SubFactory(ActorFactory)
     actor = factory.SubFactory(ActorFactory)

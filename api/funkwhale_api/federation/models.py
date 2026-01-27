@@ -93,6 +93,12 @@ class ActorQuerySet(models.QuerySet):
             uploads_count=models.Count("libraries__uploads", distinct=True)
         )
 
+    def not_blocked_or_blocking(self, actor):
+        return self.exclude(models.Q(blocks=actor) | models.Q(blocked_by=actor))
+
+    def blocked_or_blocking(self, actor):
+        return self.filter(models.Q(blocks=actor) | models.Q(blocked_by=actor))
+
 
 class DomainQuerySet(models.QuerySet):
     def external(self):
@@ -218,6 +224,14 @@ class Actor(models.Model):
         blank=True,
         on_delete=models.SET_NULL,
         related_name="iconed_actor",
+    )
+
+    blocks = models.ManyToManyField(
+        to="self",
+        symmetrical=False,
+        through="BlockedActor",
+        through_fields=("actor", "target"),
+        related_name="blocked_by",
     )
     objects = ActorQuerySet.as_manager()
 
@@ -354,6 +368,18 @@ class Actor(models.Model):
     @property
     def display_name(self):
         return self.name or self.preferred_username
+
+
+class BlockedActor(models.Model):
+    actor = models.ForeignKey(
+        Actor, on_delete=models.CASCADE, related_name="emitted_block"
+    )
+    target = models.ForeignKey(
+        Actor, on_delete=models.CASCADE, related_name="received_block"
+    )
+
+    class Meta:
+        unique_together = ["actor", "target"]
 
 
 FETCH_STATUSES = [
@@ -508,6 +534,16 @@ class AbstractFollow(models.Model):
         return federation_utils.full_url(f"{self.actor.fid}#follows/{self.uuid}")
 
 
+class FollowQueryset(models.QuerySet):
+    def not_blocked_or_blocking(self, actor):
+        return self.exclude(
+            models.Q(actor__blocks=actor)
+            | models.Q(actor__blocked_by=actor)
+            | models.Q(target__blocks=actor)
+            | models.Q(target__blocked_by=actor)
+        )
+
+
 class Follow(AbstractFollow):
     actor = models.ForeignKey(
         Actor, related_name="emitted_follows", on_delete=models.CASCADE
@@ -515,9 +551,20 @@ class Follow(AbstractFollow):
     target = models.ForeignKey(
         Actor, related_name="received_follows", on_delete=models.CASCADE
     )
+    objects = FollowQueryset.as_manager()
 
     class Meta:
         unique_together = ["actor", "target"]
+
+
+class LibraryFollowQueryset(models.QuerySet):
+    def not_blocked_or_blocking(self, actor):
+        return self.exclude(
+            models.Q(actor__blocks=actor)
+            | models.Q(actor__blocked_by=actor)
+            | models.Q(target__actor__blocks=actor)
+            | models.Q(target__actor__blocked_by=actor)
+        )
 
 
 class LibraryFollow(AbstractFollow):
@@ -527,6 +574,7 @@ class LibraryFollow(AbstractFollow):
     target = models.ForeignKey(
         "music.Library", related_name="received_follows", on_delete=models.CASCADE
     )
+    objects = LibraryFollowQueryset.as_manager()
 
     class Meta:
         unique_together = ["actor", "target"]
@@ -672,8 +720,66 @@ def update_denormalization_follow_deleted(sender, instance, **kwargs):
 
         elif isinstance(instance, Follow):
             builtin_lib_uploads = music_models.Upload.objects.filter(
-                library__actor=instance.target
+                library__actor=instance.target, library__name="followers"
             )
             music_models.TrackActor.objects.filter(
                 actor=instance.actor, upload__in=builtin_lib_uploads
             ).delete()
+
+
+# to do reverse relation :
+@receiver(post_save, sender=BlockedActor)
+def update_denormalization_blocks(sender, instance, created, **kwargs):
+    from funkwhale_api.music import models as music_models
+
+    # blocking user do no have access to blocked uploads
+    if created and instance.actor.is_local:
+        lib_uploads = music_models.Upload.objects.filter(
+            library__actor=instance.target
+        ).values_list("pk", flat=True)
+        music_models.TrackActor.objects.filter(
+            actor=instance.actor, upload__pk__in=lib_uploads
+        ).delete()
+    # reverse : blocked user do no have access to blocking uploads
+    if created and instance.target.is_local:
+        lib_uploads = music_models.Upload.objects.filter(
+            library__actor=instance.actor
+        ).values_list("pk", flat=True)
+        music_models.TrackActor.objects.filter(
+            actor=instance.target, upload__pk__in=lib_uploads
+        ).delete()
+
+
+@receiver(post_delete, sender=BlockedActor)
+def update_denormalization_unblocks(sender, instance, **kwargs):
+    from funkwhale_api.music import models as music_models
+
+    if (
+        instance.actor.is_local
+        and not instance.target.blocks.filter(pk=instance.actor.pk).exists()
+    ):
+        try:
+            builtin_lib = music_models.Library.objects.get(
+                actor=instance.target, name__in=["followers"]
+            )
+            music_models.TrackActor.create_entries(
+                builtin_lib,
+                actor_ids=[instance.actor.pk],
+            )
+        except music_models.Library.DoesNotExist:
+            pass
+
+    if (
+        instance.target.is_local
+        and not instance.actor.blocks.filter(pk=instance.target.pk).exists()
+    ):
+        try:
+            builtin_lib = music_models.Library.objects.get(
+                actor=instance.actor, name__in=["followers"]
+            )
+            music_models.TrackActor.create_entries(
+                builtin_lib,
+                actor_ids=[instance.target.pk],
+            )
+        except music_models.Library.DoesNotExist:
+            pass

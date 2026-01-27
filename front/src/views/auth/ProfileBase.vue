@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { components } from '~/generated/types'
+import type { BackendError } from '~/types'
 
 import { onBeforeRouteUpdate } from 'vue-router'
 import { computed, ref, watch } from 'vue'
@@ -10,21 +11,25 @@ import { hashCode, intToRGB } from '~/utils/color'
 
 import UserFollowButton from '~/components/federation/UserFollowButton.vue'
 import { useModal } from '~/ui/composables/useModal.ts'
+import useErrorHandler from '~/composables/useErrorHandler'
 
 import axios from 'axios'
 
-import useErrorHandler from '~/composables/useErrorHandler'
 import RenderedDescription from '~/components/common/RenderedDescription.vue'
 
 import Layout from '~/components/ui/Layout.vue'
 import Spacer from '~/components/ui/Spacer.vue'
 import Header from '~/components/ui/Header.vue'
+import OptionsButton from '~/components/ui/button/Options.vue'
+import Popover from '~/components/ui/Popover.vue'
+import PopoverItem from '~/components/ui/popover/PopoverItem.vue'
 import Button from '~/components/ui/Button.vue'
 import Link from '~/components/ui/Link.vue'
 import Nav from '~/components/ui/Nav.vue'
 import Alert from '~/components/ui/Alert.vue'
 import Modal from '~/components/ui/Modal.vue'
 import { matchedConstraint } from '~/router/guards'
+import RevokeFollowerButton from '~/components/federation/RevokeFollowerButton.vue'
 
 interface Props {
   username: string
@@ -72,12 +77,45 @@ const fetchData = async () => {
   try {
     const response = await axios.get(`federation/actors/${fullUsername.value}/`)
     object.value = response.data
+    await store.dispatch('moderation/fetchActorFilters')
+    if (store.state.auth.authenticated) {
+      await store.dispatch('users/fetchIncomingFollows')
+    }
   } catch (error) {
-    useErrorHandler(error as Error)
+    useErrorHandler(error as BackendError)
   }
 
   isLoading.value = false
 }
+
+const isBlocked = computed(() => {
+  const blockedActors = store.getters['moderation/actorFilters']()
+  return blockedActors.some((filter: { name: string }) => filter.name === props.username)
+})
+
+const blockActor = () => {
+  store.dispatch('moderation/hide', {
+    type: 'actor',
+    target: {
+      name: object.value?.full_username
+    }
+  })
+}
+
+const unblockActor = async () => {
+  if (!object.value?.full_username) return
+
+  try {
+    await store.dispatch('moderation/deleteActorFilter', object.value.full_username)
+    await store.dispatch('moderation/fetchActorFilters')
+  } catch (error) {
+    useErrorHandler(error as BackendError)
+  }
+}
+
+const isFollower = computed(() => store.getters['users/incomingFollow'](object.value?.fid))
+
+const open = ref(false)
 
 watch(props, fetchData, { immediate: true })
 
@@ -108,7 +146,6 @@ const isOpen = useModal('artist-description').isOpen
     main
     no-gap
   >
-    <!-- TODO: Translate Edit Link -->
     <!-- TODO: `yarn lint:tsc` doesn't understand the `Prop` type for `Header` while the language server does. It may be a question of typescript version... Investigate and fix! https://dev.funkwhale.audio/funkwhale/funkwhale/-/issues/2437 -->
     <!-- @vue-ignore -->
     <Header
@@ -215,12 +252,75 @@ const isOpen = useModal('artist-description').isOpen
           :html="object?.summary.html"
         />
       </Modal>
-      <UserFollowButton
-        v-if="store.state.auth.authenticated && fullUsername !== store.state.auth.fullUsername && object"
-        low-height
-        :actor="object"
-      />
+      <Layout flex>
+        <UserFollowButton
+          v-if="store.state.auth.authenticated && fullUsername !== store.state.auth.fullUsername && object"
+          low-height
+          :actor="object"
+        />
+        <RevokeFollowerButton
+          v-if="isFollower && object && fullUsername !== store.state.auth.fullUsername"
+          low-height
+          :actor="object"
+        />
+        <Spacer grow />
+        <Popover
+          v-if="store.state.auth.authenticated && fullUsername !== store.state.auth.fullUsername && object"
+          v-model="open"
+        >
+          <template #default="{ toggleOpen }">
+            <OptionsButton
+              is-square-small
+              @click="toggleOpen"
+            />
+          </template>
+          <template #items>
+            <PopoverItem
+              v-if="!isBlocked"
+              icon="bi-ban"
+              destructive
+              @click="blockActor"
+            >
+              <span>{{ t('views.auth.ProfileBase.button.blockUser') }}</span>
+            </PopoverItem>
+            <PopoverItem
+              v-else
+              icon="bi-check-circle"
+              @click="unblockActor"
+            >
+              <span>{{ t('views.auth.ProfileBase.button.unblockUser') }}</span>
+            </PopoverItem>
+          </template>
+        </Popover>
+      </Layout>
     </Header>
+
+    <Alert
+      v-if="store.state.auth.authenticated && isBlocked"
+      blue
+    >
+      <p>
+        {{ t('views.auth.ProfileContent.header.blocked') }}
+      </p>
+      <template #actions>
+        <Link
+          solid
+          secondary
+          small
+          icon="bi-wrench"
+          :to="{name: 'settings', hash: '#content-filters'}"
+        >
+          {{ t('components.library.ArtistDetail.link.filter') }}
+        </Link>
+        <Button
+          destructive
+          small
+          @click="unblockActor"
+        >
+          {{ t('components.library.ArtistDetail.button.filter') }}
+        </Button>
+      </template>
+    </Alert>
 
     <Nav v-model="tabs" />
 

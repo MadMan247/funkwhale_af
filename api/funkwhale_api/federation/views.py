@@ -113,7 +113,7 @@ class ActorViewSet(FederationMixin, mixins.RetrieveModelMixin, viewsets.GenericV
     queryset = (
         models.Actor.objects.local()
         .select_related("user", "channel__artist", "channel__attributed_to")
-        .prefetch_related("channel__artist__tagged_items__tag")
+        .prefetch_related("channel__artist__tagged_items__tag", "blocks", "blocked_by")
     )
     serializer_class = serializers.ActorSerializer
 
