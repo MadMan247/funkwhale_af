@@ -200,7 +200,7 @@ watch(() => props.websocketHandlers.includes('Listen'), (to) => {
         >
           <router-link
             class="funkwhale link user"
-            :to="{ name: 'profile.content', params: { username: object.actor.name } }"
+            :to="{ name: 'profile.content', params: { username: object.actor.preferred_username, domain: object.actor.domain } }"
           >
             <span class="at symbol" />{{ object.actor.name }}
           </router-link>
