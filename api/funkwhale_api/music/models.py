@@ -541,7 +541,7 @@ class TrackQuerySet(common_models.LocalFromFidQuerySet, models.QuerySet):
         batch_size = min(batch_size, len(ids))
         logger.debug(f"Had to save {len(ids)} into memory for random radio")
         selected_ids = random.sample(ids, batch_size)
-        return self.filter(pk__in=selected_ids)
+        return self.filter(pk__in=selected_ids).order_by("?")
 
 
 def get_artist(release_list):
