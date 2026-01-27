@@ -525,16 +525,17 @@ fetchData()
       </b>
 
       <!-- 1. filename -->
+      <template v-if="item.track?.id">
+        <Link
+          :to="{ name: 'library.tracks.detail', params: { id: item.track.id } }"
+        >
+          {{ truncate(displayName(item), 30, undefined, true) }}
+        </Link>
+      </template>
 
-      <Link
-        :to="{
-          name: 'manage.library.uploads.detail',
-          params: { id: item.uuid }
-        }"
-      >
+      <span v-else>
         {{ truncate(displayName(item), 30, undefined, true) }}
-      </Link>
-
+      </span>
       <!-- 2. privacy_level -->
 
       <Pill
