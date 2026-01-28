@@ -22,7 +22,6 @@ user/favorites/index
 user/reports/index
 user/subsonic/index
 user/plugins/index
-user/info/cli
 
 ```
 

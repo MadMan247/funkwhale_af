@@ -1,5 +1,3 @@
-cli/index.html, ../user/info/cli.html
-cli/examples.html, ../user/info/cli.html#examples
 users/create.html, ../user/accounts/create.html
 users/tagging.html, ../user/libraries/content/tag.html
 users/upload.html, ../user/libraries/content/upload.html

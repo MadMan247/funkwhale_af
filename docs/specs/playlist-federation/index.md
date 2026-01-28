@@ -1,18 +1,18 @@
-## Playlist Federation
+# Playlist Federation
 
-### The Issue
+## The Issue
 
 Playlists are a useful way to curate content and share curated lists of tracks. Currently, only local playlists are browsable in the pods. A user cannot add a playlist to their library/collection.
 
-### Proposed Solution
+## Proposed Solution
 
 Make playlists a federated object to allow them to be added to remote libraries/pods. Send playlist updates via federation activities.
 
-### Feature Behavior
+## Feature Behavior
 
 Users will be able to click on a "Follow playlist" button. The playlist content and the playlist itself will be added to the user's library section ("My library").
 
-#### Backend
+### Backend
 
 In the context of an user A following user B owner of Playlist B. The User A will receive an `Create` activity when User B create a playlist. `Update` activities with `Playlist` objects will be send to the Instance A service actor. They **don't** contain PlalistTracks, only the playlist metatadat is added to database. Playlist tracks are imported thanks to the playlist scan. Or in some case through playlist track create activity.
 
@@ -29,25 +29,25 @@ If a `PlaylistTrack` `Create` is sent and the index is not the good one it eans 
 
 This will allow to receive notification when a user Add a track to a playlist. Other playlist actions will be silent but the playlist will be kept updated.
 
-#### Frontend
+### Frontend
 
 - Add a "Follow" button that will call an ActivityPub follow request on the playlist actor.
 - Update the playlist request in the "My library/Playlist" section to include followed playlist on top of owned playlist.
 - Make a visual distinction between owned and followed playlist in this page (optional)
 
-### Availability
+## Availability
 
 - [ ] Admin panel
 - [x] App frontend
 - [ ] CLI
 
-### Open Questions
+## Open Questions
 
 - Frontend design: There isn't any space for followed content in the UI (either for user or playlist follow). A dedicated page could be created. At least a feed page should be create that regroup followed content update (user and playlist follows activities)
 
-### Minimum Viable Product
+## Minimum Viable Product
 
-### Next Steps
+## Next Steps
 
 - [ ] Add playlist update activities to notifications.
 - [ ] Create a frontend thread with Update Playlist activities

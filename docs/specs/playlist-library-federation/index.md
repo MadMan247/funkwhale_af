@@ -1,21 +1,21 @@
-## Playlist libraries to share audio files
+# Playlist libraries to share audio files
 
-### The Issue
+## The Issue
 
 - As a user I want to share a list of tracks privately to my friends
 - As a user I want to have a single container to curate my content (not playlist and libraries, only playlists)
 
-### Proposed Solution
+## Proposed Solution
 
 The users can request access to the playlist content to the playlist owner
 
-### Feature Behavior
+## Feature Behavior
 
 Users will be able to click on a "Request access to playlist audios files" button. This is a `LibraryFollow` request of the `playlist.library`. Not to be confused with the playlist follow request (see #-followup)
 
-#### Backend
+### Backend
 
-##### Data model
+#### Data model
 
 `Playlist` one_to_one with `Library` through `library` field
 `Upload` many_to_one with `Library` through `library` (reverse is `library.uploads`)
@@ -23,23 +23,23 @@ Users will be able to click on a "Request access to playlist audios files" butto
 
 We could migrate from O2M to M2M, but this is super complicated since : - it adds a lot of extra logic (you can't query the m2m if the instance is not save -> this generated problem to validate incoming AP objects) - having a built-in lib and playlist libs make verifications easier (only three built-in lib, playlist_lib are always private)
 
-##### Workflow
+#### Workflow
 
 Playlist activity -> library_scan(get the uploads) -> playlist_scan (set the upload.playlist_relation and create plts)
 
-##### Federation
+#### Federation
 
 Since `Playlist` is the main object here, we use the `Playlist` activities to send the `Library` information on ActivitiPub.
 There is no other reason to share the playlit.library to remote.
 
-##### Migrations
+#### Migrations
 
 1. Remote library are not changed
 2. Local lib are not deleted but are assigned to a playlist
 3. Libraries Follows are not touched
 4. Remote want fetch local libs as always but they will need to update the data or fail (migrating uploads from `library` to `playlist_library`)
 
-##### Done
+#### Done
 
 - [x] `PlaylistViewSet` `add` `clear` `remove` update the uploads.playlist_libraries relationships
 - [x] `PlaylistViewSet` `add` `clear` `remove` -> `schedule_scan` -> Update activity to remote -> playlist.library scan on remote
@@ -54,7 +54,7 @@ There is no other reason to share the playlit.library to remote.
 - [x] Playlist discovery : fetch federation endpoint for playlists
 - [ ] Seem like the federation fetch (either with fetch endpoint or retreive_ap_obj) is deleting the `privacy_level` since `audience` can only be public or null. Avoid `privacy_level` to be updated if it a local playlist.
 
-### Follow up
+## Follow up
 
 - [ ] Add the frontend playlist button in the new ui
 - [ ] Playlist discovery : display playlist fid in the frontend

@@ -16,12 +16,11 @@ When you delete your account, your pod sends a message to other Funkwhale pods n
 Other pods should delete local copies of your data in compliance with your request. There is no guarantee that they will do so, and some data may remain available. This can happen if a pod is offline or unavailable when your pod sends out the deletion message.
 ```
 
+```{warning}
+When you delete your account we generate a `Tombstone`. Is a object that is used to prevent another person to create an account with the same username. So **you will not be hable to create a new one with the same name.** This is done to avoid impersonation. If you want to remove the `Tombstone` to be hable to create an account with the same name you should contact the instance admin.
+```
+
 To delete your account:
-
-::::{tab-set}
-
-:::{tab-item} Desktop
-:sync: desktop
 
 1. Log in to your account.
 2. Select the cog icon ({fa}`cog`) or your avatar to expand the user menu.
@@ -30,21 +29,5 @@ To delete your account:
 5. Enter your {guilabel}`Password`.
 6. Select {guilabel}`Delete my account…`.
 7. Select {guilabel}`Delete my account` on the warning notice that appears.
-
-:::
-
-:::{tab-item} Mobile
-:sync: mobile
-
-1. Log in to your account.
-2. Select the cog icon ({fa}`cog`) or your avatar to open the {guilabel}`Options` menu.
-3. Select {guilabel}`Settings`.
-4. Scroll to the {guilabel}`Delete my account` section.
-5. Enter your {guilabel}`Password`.
-6. Select {guilabel}`Delete my account…`.
-7. Select {guilabel}`Delete my account` on the warning notice that appears.
-
-:::
-::::
 
 That's it! You've deleted your account. You can [create another account](create.md) at any time.

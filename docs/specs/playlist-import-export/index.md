@@ -1,18 +1,18 @@
-## Playlist Import export
+# Playlist Import export
 
-### The Issue
+## The Issue
 
 Playlists cannot be imported/exported.
 
-### Proposed Solution
+## Proposed Solution
 
 Add endpoints to allow import/export.
 
-### Feature Behavior
+## Feature Behavior
 
 Users will be able to click on a "Download playlist" or "Rebuild playlist" button. The playlist content and the playlist itself will be added to the user's library section ("My library").
 
-#### Backend
+### Backend
 
 GET from the `/api/v2/playlists/{guid}` endpoint and receive either:
 
