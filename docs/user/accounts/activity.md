@@ -64,4 +64,20 @@ Here is a list of activities you can produce :
 
 ## Understand where your data goes
 
-Funkwhale is a federated software. It means data is share across the network and some of you personal data might be sended to remote instances/servers. When your visibility settings is set to `everyone` or to `followers` data will be send to remote pods. For the `followers` privacy level, your data will be sent to each one of them. It mean it will be sent to each one of their instances. If you delete a user from your followers or if you change your activities visibility your instance should send a request to the remotes servers to ask them to delete your data. But there is nothing we can to to force them to comply. So when you trust a followers, you're also trusting his instance.
+Funkwhale is a federated software. It means data is shared across the network of websites using the same software (instances). When your visibility settings is set to `followers` data will be send to each follower on their instances. This means your data will leave your own instance to go to your followers instances. If you delete a user from your followers or if you change your activity visibility, your instance should send a request to the remote servers to delete your data. But there is nothing we can do to force it to do so. So when you trust a follower, you're also trusting his instance.
+
+## Your activities
+
+As a user you can produce the following activities:
+
+- Playlist create
+- Playlist update
+- Playlist delete
+
+- Listening create
+- Listening delete
+
+- Track Favorite create
+- Track Favorite delete
+
+- Track update

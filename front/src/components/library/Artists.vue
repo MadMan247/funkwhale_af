@@ -166,7 +166,6 @@ const labels = computed(() => ({
     v-title="labels.title"
     main
     stack
-    gap-64
   >
     <Header
       :h1="t('components.library.Artists.header.browse')"

@@ -23,7 +23,7 @@ const props = defineProps<{
 } & {
   [H in `h${ '1' | '2' | '3' | '4' | '5' | '6' }`]? : string
 } & {
-  [S in 'page-heading' | 'section-heading' | 'large-section-heading' | 'subsection-heading' | 'caption' | 'title' | 'radio' | 'secondary' ]? : true
+  [S in 'pageHeading' | 'sectionHeading' | 'largeSectionHeading' | 'subsectionHeading' | 'caption' | 'title' | 'radio' | 'secondary' ]? : true
 } & {
   [Operation in 'expand' | 'collapse']?: () => void
 }>()
@@ -55,6 +55,7 @@ const props = defineProps<{
       >
         <!-- Set distance between baseline and previous row -->
         <Spacer
+          v-if="!props.pageHeading"
           v
           :size="53"
           style="align-self: baseline;"

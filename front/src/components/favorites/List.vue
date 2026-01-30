@@ -140,7 +140,7 @@ const paginateOptions = computed(() => sortedUniq([12, 25, 50, paginateBy.value]
       stack
       :class="['ui', { 'loading': isLoading }, 'form']"
     >
-      <Spacer :size="16" />
+      <Spacer no-size />
       <Layout
         flex
         style="justify-content: flex-end;"

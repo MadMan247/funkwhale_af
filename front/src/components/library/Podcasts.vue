@@ -198,7 +198,6 @@ const showCreateModal = ref(false)
     stack
     main
   >
-    <Spacer no-size />
     <Header
       page-heading
       :h1="t('components.library.Podcasts.header.browse')"

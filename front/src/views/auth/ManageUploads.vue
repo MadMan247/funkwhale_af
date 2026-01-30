@@ -36,6 +36,7 @@ import Table from '~/components/ui/Table.vue'
 import Slider from '~/components/ui/Slider.vue'
 import Select from '~/components/ui/Select.vue'
 import DangerousButton from '~/components/common/DangerousButton.vue'
+import Alert from '~/components/ui/Alert.vue'
 
 interface Props extends SmartSearchProps, OrderingProps {
   object: Actor
@@ -422,9 +423,9 @@ fetchData()
   <Spacer />
 
   <!-- Edit the currently selected items -->
-  <div
+  <Layout
     :class="['default solid raised', $style.toolbox]"
-    style="display: flex; align-items: center; gap: 1rem;"
+    stack
   >
     <Spacer />
     <Slider
@@ -434,7 +435,14 @@ fetchData()
       :label="`Privacy level (${selectedItems.length} items)`"
       style="flex: 1;"
     />
-  </div>
+    <Alert
+      v-if="globalPrivacyLevel && ['instance', 'everyone'].includes(globalPrivacyLevel)"
+      red
+      role="alert"
+    >
+      {{ t('views.auth.ProfileBase.ManageUploads.alert') }}
+    </Alert>
+  </Layout>
   <div
     :class="['default solid raised', $style.toolbox]"
     style="display: flex; align-items: center; gap: 1rem;"

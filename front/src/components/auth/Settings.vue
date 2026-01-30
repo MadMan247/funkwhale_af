@@ -338,6 +338,32 @@ store.dispatch('moderation/fetchActorFilters')
             v-model="f.value"
             :options="Object.fromEntries(f.choices.map(c => [c, sharedLabels.fields[f.id].choices?.[c] || c]))"
           />
+          <Alert
+            v-if="f.value === 'instance'"
+            yellow
+          >
+            <p>
+              {{ t('components.auth.Settings.PrivacySettings.warningInstance') }}
+              <Link
+                to="https://docs.funkwhale.audio/user/accounts/activity.html"
+              >
+                {{ t('components.auth.Settings.PrivacySettings.moreInfoLink') }}
+              </Link>
+            </p>
+          </Alert>
+          <Alert
+            v-else-if="f.value === 'everyone'"
+            yellow
+          >
+            <p>
+              {{ t('components.auth.Settings.PrivacySettings.warningEveryone') }}
+              <Link
+                to="https://docs.funkwhale.audio/user/accounts/activity.html"
+              >
+                {{ t('components.auth.Settings.PrivacySettings.moreInfoLink') }}
+              </Link>
+            </p>
+          </Alert>
         </template>
       </div>
       <Button

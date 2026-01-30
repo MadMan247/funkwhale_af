@@ -913,6 +913,11 @@
           "updateFailure": "Your settings can't be updated",
           "yourApps": "Your applications"
         },
+        "PrivacySettings": {
+          "warningInstance": "You are sharing your activities with the users of your instance. They can see what you listen to and your favorites. More info {0}",
+          "warningEveryone": "You are sharing your activities publicly. Everyone can see what you listen to and your favorites. More info {0}",
+          "moreInfoLink": "here."
+        },
         "help": {
           "changePassword": "Please double-check your password is correct",
           "noApps": "If you authorize third-party applications to access your data, those applications will be listed here.",
@@ -4200,6 +4205,9 @@
         "alert": {
           "follower": "This user is following you, they now have access to your content and activities if you choose to share them.",
           "settings": "You have to choose anything else but 'me' in your settings and decide for each upload if you want to share it with followers or not. If you also want access to their content and activities, you can follow them back"
+        },
+        "ManageUploads": {
+          "alert": "You are about to share your uploads publicly. Before proceeding, please ensure that it is not copyrighted content, otherwise you may be infringing the law"
         }
       },
       "ProfileContent": {

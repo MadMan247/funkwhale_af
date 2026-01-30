@@ -35,7 +35,7 @@ import Button from '~/components/ui/Button.vue'
 import Input from '~/components/ui/Input.vue'
 import Pills from '~/components/ui/Pills.vue'
 import Spacer from '~/components/ui/Spacer.vue'
-import Section from '~/components/ui/Section.vue'
+import Header from '~/components/ui/Header.vue'
 import Select from '~/components/ui/Select.vue'
 import Nav from '~/components/ui/Nav.vue'
 
@@ -213,12 +213,11 @@ const showCreateModal = ref(false)
   <Layout
     stack
     main
-    gap-84
   >
-    <Spacer no-size />
     <!-- TODO: `yarn lint:tsc` doesn't understand the `Prop` type for `Header` while the language server does. It may be a question of typescript version... Investigate and fix! https://dev.funkwhale.audio/funkwhale/funkwhale/-/issues/2437 -->
     <!-- @vue-ignore -->
-    <Section
+    <Header
+      page-heading
       :h1="t('views.auth.ProfileContent.header.channels')"
       :action="{
         text: ScopeOption === 'me' ? t('views.channels.List.link.addNew') : t('views.channels.List.link.addRemote'),
@@ -232,188 +231,185 @@ const showCreateModal = ref(false)
         // @ts-ignore
         icon: 'bi-plus'
       }"
-      large-section-heading
+    />
+    <Modal
+      v-if="store.state.auth.authenticated"
+      v-model="showSubscribeModal"
+      :title="t('views.channels.SubscriptionsList.modal.subscription.header')"
     >
-      <Modal
-        v-if="store.state.auth.authenticated"
-        v-model="showSubscribeModal"
-        :title="t('views.channels.SubscriptionsList.modal.subscription.header')"
+      <div
+        ref="modalContent"
+        class="scrolling content"
       >
-        <div
-          ref="modalContent"
-          class="scrolling content"
+        <remote-search-form
+          initial-type="both"
+          :show-submit="false"
+          :standalone="false"
+          :redirect="true"
+          @subscribed="showSubscribeModal = false; reloadWidget()"
+        />
+      </div>
+      <template #actions>
+        <Button
+          secondary
+          @click="showSubscribeModal = false"
         >
-          <remote-search-form
-            initial-type="both"
-            :show-submit="false"
-            :standalone="false"
-            :redirect="true"
-            @subscribed="showSubscribeModal = false; reloadWidget()"
-          />
-        </div>
+          {{ t('views.channels.SubscriptionsList.button.cancel') }}
+        </Button>
+        <Button
+          form="remote-search"
+          type="submit"
+          icon="bi-bookmark-check-fill"
+          primary
+        >
+          {{ t('views.channels.SubscriptionsList.button.subscribe') }}
+        </Button>
+      </template>
+    </Modal>
+    <Layout
+      form
+      flex
+      @submit.prevent="search"
+    >
+      <!-- TODO: Translations -->
+      <Input
+        id="artist-search"
+        v-model="query"
+        search
+        name="search"
+        :label="t('components.library.Podcasts.label.search')"
+        autofocus
+        :placeholder="labels.searchPlaceholder"
+      />
+      <Pills
+        v-if="typeof tags === 'object'"
+        :get="model => { tags = model.currents.map(({ label }) => label) }"
+        :set="model => ({
+          currents: tags.map(tag => ({ type: 'custom' as const, label: tag })),
+          others: dataStore.tags().value
+            .filter(({ name }) => result?.results?.some((object) => object.artist.tags?.includes(name)) && !tags.includes(name))
+            .map(({ name }) => ({ type: 'preset' as const, label: name })),
+        })"
+        :label="t('components.library.Podcasts.label.tags')"
+        style="max-width: 350px;"
+      />
+      <Select
+        v-for="[id, filter] in Object.entries(searchFilters)"
+        :id="`artist-${id}`"
+        :key="id"
+        v-model:current="filter.current"
+        v-model:options="filter.options"
+        :label="filter.label"
+      />
+    </Layout>
+
+    <Nav
+      v-model="tabs"
+      tab-query-field="scope"
+    >
+      <Loader v-if="isLoading" />
+      <Pagination
+        v-if="page && result && result.count > paginateBy"
+        v-model:page="page"
+        :pages="Math.ceil(result.count / paginateBy)"
+      />
+      <Layout
+        v-if="result && result.results.length > 0"
+        grid
+        style="display:flex; flex-wrap:wrap; gap: 32px; margin-top:32px;"
+      >
+        <channel-card
+          v-for="channel in result?.results"
+          :key="channel.uuid"
+          :object="channel"
+        />
+      </Layout>
+      <Layout
+        v-else-if="result && result.results.length === 0"
+        stack
+      >
+        <Alert yellow>
+          <i class="compact disc icon" />
+          {{ t('components.library.Artists.empty.noResults') }}
+        </Alert>
+        <Layout flex>
+          <Card
+            v-if="store.state.auth.authenticated"
+            :title="t('components.library.Artists.button.upload')"
+            primary
+            style="text-align: center;"
+            :to="useModal('upload').to"
+          >
+            <template #image>
+              <i
+                class="bi bi-upload"
+                style="font-size: 100px; position: relative; top: 50px;"
+              />
+            </template>
+          </Card>
+        </Layout>
+      </Layout>
+      <Spacer grow />
+      <Pagination
+        v-if="page && result && result.count > paginateBy"
+        v-model:page="page"
+        :pages="Math.ceil(result.count / paginateBy)"
+      />
+      <Modal
+        v-model="showCreateModal"
+        :title="
+          step === 1
+            ? t('views.auth.ProfileContent.modal.createChannel.header')
+            : category === 'podcast'
+              ? t('views.auth.ProfileContent.modal.createChannel.podcast.header')
+              : t('views.auth.ProfileContent.modal.createChannel.artist.header')
+        "
+      >
+        <channel-form
+          ref="createForm"
+          :object="null"
+          :step="step"
+          @loading="isLoading = $event"
+          @submittable="submittable = $event"
+          @category="category = $event"
+          @errored="modalContent.scrollTop = 0"
+          @created="router.push({name: 'channels.detail', params: {id: $event.actor.preferred_username}})"
+        />
         <template #actions>
           <Button
             secondary
-            @click="showSubscribeModal = false"
+            autofocus
+            @click="showCreateModal = false"
           >
-            {{ t('views.channels.SubscriptionsList.button.cancel') }}
+            {{ t('views.auth.ProfileContent.button.cancel') }}
+          </Button>
+          <Spacer grow />
+          <Button
+            v-if="step > 1"
+            secondary
+            @click.stop.prevent="step -= 1"
+          >
+            {{ t('views.auth.ProfileContent.button.previous') }}
           </Button>
           <Button
-            form="remote-search"
-            type="submit"
-            icon="bi-bookmark-check-fill"
+            v-if="step === 1"
             primary
+            @click.stop.prevent="step += 1"
           >
-            {{ t('views.channels.SubscriptionsList.button.subscribe') }}
+            {{ t('views.auth.ProfileContent.button.next') }}
+          </Button>
+          <Button
+            v-if="step === 2"
+            primary
+            type="submit"
+            :disabled="!submittable && !isLoading"
+            :is-loading="isLoading"
+            @click.prevent.stop="createForm.submit"
+          >
+            {{ t('views.auth.ProfileContent.button.createChannel') }}
           </Button>
         </template>
       </Modal>
-      <Spacer no-size />
-      <Layout
-        form
-        flex
-        @submit.prevent="search"
-      >
-        <!-- TODO: Translations -->
-        <Input
-          id="artist-search"
-          v-model="query"
-          search
-          name="search"
-          :label="t('components.library.Podcasts.label.search')"
-          autofocus
-          :placeholder="labels.searchPlaceholder"
-        />
-        <Pills
-          v-if="typeof tags === 'object'"
-          :get="model => { tags = model.currents.map(({ label }) => label) }"
-          :set="model => ({
-            currents: tags.map(tag => ({ type: 'custom' as const, label: tag })),
-            others: dataStore.tags().value
-              .filter(({ name }) => result?.results?.some((object) => object.artist.tags?.includes(name)) && !tags.includes(name))
-              .map(({ name }) => ({ type: 'preset' as const, label: name })),
-          })"
-          :label="t('components.library.Podcasts.label.tags')"
-          style="max-width: 350px;"
-        />
-        <Select
-          v-for="[id, filter] in Object.entries(searchFilters)"
-          :id="`artist-${id}`"
-          :key="id"
-          v-model:current="filter.current"
-          v-model:options="filter.options"
-          :label="filter.label"
-        />
-      </Layout>
-
-      <Nav
-        v-model="tabs"
-        tab-query-field="scope"
-      >
-        <Loader v-if="isLoading" />
-        <Pagination
-          v-if="page && result && result.count > paginateBy"
-          v-model:page="page"
-          :pages="Math.ceil(result.count / paginateBy)"
-        />
-        <Layout
-          v-if="result && result.results.length > 0"
-          grid
-          style="display:flex; flex-wrap:wrap; gap: 32px; margin-top:32px;"
-        >
-          <channel-card
-            v-for="channel in result?.results"
-            :key="channel.uuid"
-            :object="channel"
-          />
-        </Layout>
-        <Layout
-          v-else-if="result && result.results.length === 0"
-          stack
-        >
-          <Alert yellow>
-            <i class="compact disc icon" />
-            {{ t('components.library.Artists.empty.noResults') }}
-          </Alert>
-          <Layout flex>
-            <Card
-              v-if="store.state.auth.authenticated"
-              :title="t('components.library.Artists.button.upload')"
-              primary
-              style="text-align: center;"
-              :to="useModal('upload').to"
-            >
-              <template #image>
-                <i
-                  class="bi bi-upload"
-                  style="font-size: 100px; position: relative; top: 50px;"
-                />
-              </template>
-            </Card>
-          </Layout>
-        </Layout>
-        <Spacer grow />
-        <Pagination
-          v-if="page && result && result.count > paginateBy"
-          v-model:page="page"
-          :pages="Math.ceil(result.count / paginateBy)"
-        />
-        <Modal
-          v-model="showCreateModal"
-          :title="
-            step === 1
-              ? t('views.auth.ProfileContent.modal.createChannel.header')
-              : category === 'podcast'
-                ? t('views.auth.ProfileContent.modal.createChannel.podcast.header')
-                : t('views.auth.ProfileContent.modal.createChannel.artist.header')
-          "
-        >
-          <channel-form
-            ref="createForm"
-            :object="null"
-            :step="step"
-            @loading="isLoading = $event"
-            @submittable="submittable = $event"
-            @category="category = $event"
-            @errored="modalContent.scrollTop = 0"
-            @created="router.push({name: 'channels.detail', params: {id: $event.actor.preferred_username}})"
-          />
-          <template #actions>
-            <Button
-              secondary
-              autofocus
-              @click="showCreateModal = false"
-            >
-              {{ t('views.auth.ProfileContent.button.cancel') }}
-            </Button>
-            <Spacer grow />
-            <Button
-              v-if="step > 1"
-              secondary
-              @click.stop.prevent="step -= 1"
-            >
-              {{ t('views.auth.ProfileContent.button.previous') }}
-            </Button>
-            <Button
-              v-if="step === 1"
-              primary
-              @click.stop.prevent="step += 1"
-            >
-              {{ t('views.auth.ProfileContent.button.next') }}
-            </Button>
-            <Button
-              v-if="step === 2"
-              primary
-              type="submit"
-              :disabled="!submittable && !isLoading"
-              :is-loading="isLoading"
-              @click.prevent.stop="createForm.submit"
-            >
-              {{ t('views.auth.ProfileContent.button.createChannel') }}
-            </Button>
-          </template>
-        </Modal>
-      </Nav>
-    </Section>
+    </Nav>
   </Layout>
 </template>
