@@ -68,10 +68,10 @@ const move = (idx: number, increment: number) => {
   arrayMove(value.value.fields, idx, idx + increment)
 }
 
-const inputTypeOptions = {
+const inputTypeOptions = ref({
   short_text: t('components.admin.SignupFormBuilder.table.additionalFields.type.short'),
   long_text: t('components.admin.SignupFormBuilder.table.additionalFields.type.long')
-}
+})
 
 const navTabs = computed(() => [
   { title: t('components.admin.SignupFormBuilder.button.edit'), name: 'edit' },
@@ -140,7 +140,7 @@ const navTabs = computed(() => [
             />
             <Select
               v-model:current="field.input_type"
-              v-model:options="inputTypeOptions"
+              :options="inputTypeOptions"
             />
             <Toggle
               v-model="field.required"
