@@ -4,7 +4,7 @@ import { color } from '~/composables/color'
 // TODO: Rename `big` to `large` for parity with large icons, and design appropriate tokens for consistency and customization (theming)
 const { big } = defineProps<{
   big?: boolean
-  label: string
+  label?: string
 }>()
 
 const isOn = defineModel<boolean>()
