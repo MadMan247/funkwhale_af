@@ -42,7 +42,8 @@ export const install: InitModule = ({ app }) => {
           { src: coverUrl, sizes: '192x192', type: 'image/png' },
           { src: coverUrl, sizes: '256x256', type: 'image/png' },
           { src: coverUrl, sizes: '384x384', type: 'image/png' },
-          { src: coverUrl, sizes: '512x512', type: 'image/png' }
+          { src: coverUrl, sizes: '512x512', type: 'image/png' },
+          { src: coverUrl, sizes: '1024x1024', type: 'image/png' }
         ]
       }
 

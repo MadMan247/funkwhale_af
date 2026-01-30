@@ -43,7 +43,7 @@ export const isPlaying = ref(false)
 // Use Player
 export const usePlayer = createGlobalState(() => {
   const { currentSound } = useTracks()
-  const { playNext, playPrevious } = useQueue()
+  const { playNext } = useQueue()
 
   const pauseReason = ref(PauseReason.UserInput)
 
@@ -227,52 +227,6 @@ export const usePlayer = createGlobalState(() => {
 
   watch(currentIndex, stopErrorTimeout)
   whenever(errored, startErrorTimeout)
-
-  // Mobile controls and lockscreen cover art
-  const updateMediaSession = () => {
-    if ('mediaSession' in navigator && currentTrack.value) {
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: currentTrack.value.title,
-        artist: currentTrack.value.artistCredit?.map(ac => ac.credit).join(', ') || 'Unknown Artist',
-        album: currentTrack.value.albumTitle || 'Unknown Album',
-        artwork: [
-          { src: currentTrack.value.coverUrl, sizes: '1200x1200', type: 'image/jpeg' }
-        ]
-      })
-
-      navigator.mediaSession.setActionHandler('play', () => {
-        isPlaying.value = true
-      })
-
-      navigator.mediaSession.setActionHandler('pause', () => {
-        isPlaying.value = false
-      })
-
-      navigator.mediaSession.setActionHandler('previoustrack', () => {
-        playPrevious()
-      })
-
-      navigator.mediaSession.setActionHandler('nexttrack', () => {
-        playNext()
-      })
-
-      navigator.mediaSession.setActionHandler('seekbackward', (details) => {
-        seekBy(details.seekOffset || -10)
-      })
-
-      navigator.mediaSession.setActionHandler('seekforward', (details) => {
-        seekBy(details.seekOffset || 10)
-      })
-    }
-  }
-
-  watch(currentTrack, () => {
-    updateMediaSession()
-  })
-
-  watch(isPlaying, () => {
-    navigator.mediaSession.playbackState = isPlaying.value ? 'playing' : 'paused'
-  })
 
   return {
     initializeFirstTrack,
