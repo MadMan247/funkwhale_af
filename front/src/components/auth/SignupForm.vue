@@ -195,7 +195,7 @@ fetchInstanceSettings()
     />
     <div
       v-for="(field, idx) in
-      ( signupRequiresApproval && formCustomization && (formCustomization.fields.length ?? 0) > 0
+      ( formCustomization && (formCustomization.fields.length ?? 0) > 0
         ? formCustomization.fields
         : []
       )"
