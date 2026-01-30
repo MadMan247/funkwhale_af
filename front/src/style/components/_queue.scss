@@ -2,6 +2,15 @@
 @use '~/style/inc/theme';
 @use '~/style/vendor/media' as *;
 
+@keyframes scroll-text {
+  0%, 10%, 90%, 100% {
+    transform: translateX(0);
+  }
+  45%, 55% {
+    transform: translateX(calc(-25% + 10px));
+  }
+}
+
 .opaque {
   @include theme.dark-theme {
     background-color: rgba(#292525, 0.8);
@@ -9,8 +18,8 @@
   @include theme.light-theme {
     background-color: rgba(#ffffff, 0.8);
   }
-  backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 }
 
 .queue-controls {
@@ -189,8 +198,9 @@
   }
 
   .ui.progress .buffer.bar {
-    position: absolute;
     background-color: rgba(255, 255, 255, 0.15);
+    height: 1em;
+    margin-bottom: -1em;
   }
   .ui.progress:not(.indeterminate) .bar.position:not(.buffer) {
     background: var(--vibrant-color);
@@ -212,7 +222,7 @@
     }
   }
   .ui.progress {
-    margin: 0.5rem 0;
+    margin: 1.5rem 0;
   }
   .timer {
     font-size: 0.7em;
@@ -317,16 +327,21 @@
       text-align: center;
       max-width: 100vw;
 
-      .ui.header {
+      h1 {
         width: 100%;
         max-width: 90%;
-      }
+        margin: 0px;
+        overflow: clip;
 
-      h1 {
-        margin-bottom: 0px;
         a.track {
           font-size: 24px;
           font-weight: 600;
+          display: inline-block;
+          white-space: nowrap;
+
+          &.scrolling {
+            animation: scroll-text 8s ease-in-out infinite;
+          }
         }
       }
       h2 {
@@ -456,12 +471,11 @@
 
       .progress-wrapper {
         font-size: 1.5rem;
-        width: 54vh;
         max-width: 90%;
         .position.bar {
           position: relative;
-          bottom: 5px;
-          height: 5px;
+          bottom: 0px;
+          height: 1em;
         }
       }
     }
@@ -488,7 +502,7 @@
   }
 
   .queue-item {
-    height: 50px;
+    height: 60px;
     display: grid;
     grid-template-columns: 10% auto 1fr 10% auto;
     cursor: pointer;

@@ -159,6 +159,36 @@ const { idle } = useIdle(2000)
 const showTrackInfo = refAutoReset(false, 5000)
 whenever(currentTrack, () => (showTrackInfo.value = true))
 
+const trackLinkIsOverflowing = ref(false)
+const trackLinkRef = ref<HTMLElement>()
+
+const checkTrackLinkOverflow = () => {
+  let linkElement = (trackLinkRef.value as any)?.$el || trackLinkRef.value
+
+  if (linkElement?.tagName !== 'A') {
+    linkElement = linkElement?.querySelector('a')
+  }
+
+  if (linkElement?.parentElement) {
+    trackLinkIsOverflowing.value = linkElement.scrollWidth > linkElement.parentElement.clientWidth
+  }
+}
+
+watchEffect(() => {
+  if (currentTrack.value) {
+    nextTick(() => checkTrackLinkOverflow())
+  }
+})
+
+const resizeObserver = new ResizeObserver(() => checkTrackLinkOverflow())
+watchEffect(() => {
+  const playerDiv = document.getElementById('player')
+  if (playerDiv) {
+    resizeObserver.observe(playerDiv)
+    return () => resizeObserver.disconnect()
+  }
+})
+
 const milkdrop = ref()
 const loadRandomPreset = () => {
   milkdrop.value?.loadRandomPreset()
@@ -282,13 +312,15 @@ if (!isWebGLSupported) {
           </div>
           <h1 class="ui header">
             <Link
+              ref="trackLinkRef"
               class="track"
+              :class="{ scrolling: trackLinkIsOverflowing }"
               :to="{name: 'library.tracks.detail', params: {id: currentTrack.id }}"
             >
               {{ currentTrack.title }}
             </Link>
           </h1>
-          <h2>
+          <h2 class="ui header">
             <template v-if="currentTrack.albumId !== -1">
               <Link
                 class="album"
@@ -441,7 +473,7 @@ if (!isWebGLSupported) {
           ref="list"
           :list="queueItems"
           :component="QueueItem"
-          :size="50"
+          :size="60"
           @reorder="reorderTracks"
           @visible="list.scrollToIndex(currentIndex, 'center')"
         >

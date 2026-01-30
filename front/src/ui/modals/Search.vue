@@ -923,7 +923,7 @@ watchDebounced(trimmedQuery, () => {
 }
 .input.input.input {
     height: 48px;
-    z-index: v-bind("isOpen ? 99999 : 9000");
+    z-index: v-bind("isOpen ? 99999 : 0");
     position: fixed;
     &> * {
         z-index: 99999;
