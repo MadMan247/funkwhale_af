@@ -58,8 +58,8 @@ const props = defineProps<Props>()
   // Add styles for when alert is used as a notification
   &.is-notification {
     position: fixed;
-    bottom: 1rem;
-    right: 1rem;
+    bottom: 80px;
+    right: 15px;
     z-index: 1000;
     min-width: 200px;
     max-width: 400px;
