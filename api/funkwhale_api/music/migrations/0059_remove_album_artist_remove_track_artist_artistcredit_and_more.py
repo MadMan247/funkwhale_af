@@ -6,16 +6,29 @@ import django.db.models.deletion
 import django.utils.timezone
 import uuid
 
+from funkwhale_api.federation import utils as federation_utils
+from django.urls import reverse
+
 
 def skip(apps, schema_editor):
     pass
 
 
 def save_artist_credit(obj, ArtistCredit):
+    new_uuid = uuid.uuid4()
     artist_credit, created = ArtistCredit.objects.get_or_create(
         artist=obj.artist,
         joinphrase="",
         credit=obj.artist.name,
+        defaults={
+            "uuid": new_uuid,
+            "fid": federation_utils.full_url(
+                reverse(
+                    "federation:music:artistcredit-detail",
+                    kwargs={"uuid": new_uuid},
+                )
+            ),
+        },
     )
     return (obj.pk, artist_credit.pk)
 
