@@ -304,7 +304,7 @@ def test_can_create_track_from_file_metadata_mbid_existing_album_artist(
                     "name": artist_credit.artist.name,
                 },
                 "name": artist_credit.artist.name,
-                "joinphrase": "; ",
+                "joinphrase": "",
             },
         ]
     }
