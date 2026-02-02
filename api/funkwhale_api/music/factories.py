@@ -84,6 +84,7 @@ class ArtistCreditFactory(factory.django.DjangoModelFactory):
     artist = factory.SubFactory(ArtistFactory)
     credit = factory.LazyAttribute(lambda obj: obj.artist.name)
     joinphrase = ""
+    index = 0
 
     class Meta:
         model = "music.ArtistCredit"

@@ -837,7 +837,7 @@ def test_activity_pub_album_serializer_to_ap_channel_artist(factories):
             },
             "joinphrase": "",
             "credit": album.artist_credit.all()[0].credit,
-            "index": None,
+            "index": 0,
             "published": album.artist_credit.all()[0].creation_date.isoformat(),
         }
     ]
@@ -2096,3 +2096,54 @@ def test_accept_follow_trigger_built_in_lib_creation(factories, mocker):
     follow.approved = True
     follow.save(update_fields=["approved"])
     assert music_models.Library.objects.filter(actor=follow.target).count() == 2
+
+
+def test_retrive_ap_object_can_create_artist_credit(factories, mocker):
+    album = factories["music.Album"]()
+    channel = factories["audio.Channel"](artist=album.artist_credit.all()[0].artist)
+
+    # --- Album AP payload ---
+    album_payload = serializers.AlbumSerializer(
+        channel.artist.artist_credit.albums()[0]
+    ).data
+    album_payload["@context"] = "https://www.w3.org/ns/activitystreams"
+    album_payload["id"] = "https://remote.test/albums/1"
+
+    # --- ArtistCredit AP payload ---
+    artist_credit_payload = serializers.ArtistCreditSerializer(
+        album.artist_credit.all()[0]
+    ).data
+    artist_credit_payload["@context"] = "https://www.w3.org/ns/activitystreams"
+    artist_credit_payload["id"] = "https://remote.test/artist-credits/1"
+    # --- First response (Album) ---
+    response_1 = Mock()
+    response_1.raise_for_status.return_value = None
+    response_1.json.return_value = album_payload
+
+    # --- Second response (ArtistCredit) ---
+    response_2 = Mock()
+    response_2.raise_for_status.return_value = None
+    response_2.json.return_value = artist_credit_payload
+
+    mock_session = Mock()
+    mock_session.get.side_effect = [response_1, response_2]
+
+    mocker.patch(
+        "funkwhale_api.federation.utils.session.get_session",
+        return_value=mock_session,
+    )
+
+    # Force artist recreation
+    album.artist_credit.all()[0].artist.delete()
+    album.delete()
+    assert not album.pk
+    album_instance = utils.retrieve_ap_object(
+        "some fid",
+        actor=actors.get_service_actor(),
+        serializer_class=serializers.AlbumSerializer,
+        queryset=music_models.Album.objects.filter(
+            artist_credit__artist__channel=channel
+        ),
+    )
+
+    assert album_instance

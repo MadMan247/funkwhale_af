@@ -1346,6 +1346,7 @@ class ArtistSerializer(MusicEntitySerializer):
 
 
 class ArtistCreditSerializer(jsonld.JsonLdSerializer):
+    id = serializers.URLField(max_length=500)
     artist = ArtistSerializer()
     joinphrase = serializers.CharField(
         trim_whitespace=False, required=False, allow_null=True, allow_blank=True
@@ -1355,6 +1356,7 @@ class ArtistCreditSerializer(jsonld.JsonLdSerializer):
     )
     published = serializers.DateTimeField()
     id = serializers.URLField(max_length=500)
+    index = serializers.IntegerField(min_value=0, allow_null=True, required=False)
 
     updateable_fields = [
         ("credit", "credit"),
@@ -1387,6 +1389,29 @@ class ArtistCreditSerializer(jsonld.JsonLdSerializer):
         if self.context.get("include_ap_context", self.parent is None):
             data["@context"] = jsonld.get_default_context()
         return data
+
+    def create(self, validated_data):
+        artist_defaults = {
+            "name": validated_data["artist"].get("name"),
+            "fid": validated_data["artist"]["id"],
+            "content_category": validated_data["artist"].get("category", "music")
+            or "music",
+            # "attributed_to": attributed_to,
+        }
+        artist, created = music_models.Artist.objects.update_or_create(
+            fid=validated_data["artist"]["id"],
+            defaults=artist_defaults,
+        )
+        ac, created = music_models.ArtistCredit.objects.get_or_create(
+            fid=validated_data["id"],
+            defaults={
+                "artist": artist,
+                "joinphrase": validated_data["joinphrase"],
+                "credit": validated_data["credit"],
+                "index": validated_data["index"],
+            },
+        )
+        return ac
 
 
 class AlbumSerializer(MusicEntitySerializer):
