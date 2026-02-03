@@ -220,10 +220,10 @@ const showCreateModal = ref(false)
       page-heading
       :h1="t('views.auth.ProfileContent.header.channels')"
       :action="{
-        text: ScopeOption === 'me' ? t('views.channels.List.link.addNew') : t('views.channels.List.link.addRemote'),
+        text: scope === 'me' ? t('views.channels.List.link.addNew') : t('views.channels.List.link.addRemote'),
         // @ts-ignore
         onClick: () => {
-          if (ScopeOption === 'me') { showCreateModal = true }
+          if (scope === 'me') { showCreateModal = true }
           else { showSubscribeModal = true }
         },
         // @ts-ignore
