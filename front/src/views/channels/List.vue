@@ -207,6 +207,20 @@ const searchFilters = ref({
 
 const showSubscribeModal = ref(false)
 const showCreateModal = ref(false)
+
+const headerAction = computed(() => {
+  if (!store.state.auth.authenticated) return undefined
+
+  return {
+    text: scope.value === 'me' ? t('views.channels.List.link.addNew') : t('views.channels.List.link.addRemote'),
+    onClick: () => {
+      if (scope.value === 'me') { showCreateModal.value = true }
+      else { showSubscribeModal.value = true }
+    },
+    primary: true,
+    icon: 'bi-plus'
+  }
+})
 </script>
 
 <template>
@@ -219,23 +233,12 @@ const showCreateModal = ref(false)
     <Header
       page-heading
       :h1="t('views.auth.ProfileContent.header.channels')"
-      :action="{
-        text: scope === 'me' ? t('views.channels.List.link.addNew') : t('views.channels.List.link.addRemote'),
-        // @ts-ignore
-        onClick: () => {
-          if (scope === 'me') { showCreateModal = true }
-          else { showSubscribeModal = true }
-        },
-        // @ts-ignore
-        primary: true,
-        // @ts-ignore
-        icon: 'bi-plus'
-      }"
+      :action="headerAction"
     />
     <Modal
       v-if="store.state.auth.authenticated"
       v-model="showSubscribeModal"
-      :title="t('views.channels.SubscriptionsList.modal.subscription.header')"
+      :title="t('views.channels.List.modal.subscription.header')"
     >
       <div
         ref="modalContent"
@@ -254,7 +257,7 @@ const showCreateModal = ref(false)
           secondary
           @click="showSubscribeModal = false"
         >
-          {{ t('views.channels.SubscriptionsList.button.cancel') }}
+          {{ t('views.channels.List.button.cancel') }}
         </Button>
         <Button
           form="remote-search"
@@ -262,7 +265,7 @@ const showCreateModal = ref(false)
           icon="bi-bookmark-check-fill"
           primary
         >
-          {{ t('views.channels.SubscriptionsList.button.subscribe') }}
+          {{ t('views.channels.List.button.subscribe') }}
         </Button>
       </template>
     </Modal>
