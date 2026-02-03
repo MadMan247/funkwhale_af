@@ -292,7 +292,11 @@ def test_can_create_track_from_file_metadata_mbid_existing_album_artist(
         "title": "Hello",
         "position": 4,
         "artist_credit": [
-            {"mbid": album.artist_credit.all()[0].mbid, "credit": "", "joinphrase": ""}
+            {
+                "mbid": album.artist_credit.all().order_by("index")[0].mbid,
+                "credit": "",
+                "joinphrase": "",
+            }
         ],
         "mbid": "f269d497-1cc0-4ae4-a0c4-157ec7d73acb",
     }
@@ -1659,13 +1663,12 @@ def test_can_import_track_with_same_position_in_different_discs(factories, mocke
 
 def test_can_import_track_with_same_position_in_same_discs_skipped(factories, mocker):
     ac = factories["music.ArtistCredit"](joinphrase="", index=0)
-    upload = factories["music.Upload"](
-        playable=True, track__artist_credit=ac, track__album__artist_credit=ac
-    )
+    track = factories["music.Track"](artist_credit=ac, album__artist_credit=ac)
+    upload = factories["music.Upload"](playable=True, track=track)
     artist_data = [
         {
-            "credit": upload.track.album.artist_credit.all()[0].artist.name,
-            "mbid": upload.track.album.artist_credit.all()[0].artist.mbid,
+            "credit": ac.artist.name,
+            "mbid": ac.mbid,
             "joinphrase": "",
         }
     ]
@@ -1698,6 +1701,9 @@ def test_can_import_track_with_same_position_in_same_discs_skipped(factories, mo
     mocker.patch.object(
         tasks.musicbrainz.api.releases, "get", return_value={"recording": mb_ac_album}
     )
+    mocker.patch.object(
+        tasks.musicbrainz.api.recordings, "get", return_value={"recording": mb_ac_album}
+    )
     mocker.patch.object(metadata.TrackMetadataSerializer, "validated_data", data)
     mocker.patch.object(tasks, "populate_album_cover")
 
@@ -1706,7 +1712,6 @@ def test_can_import_track_with_same_position_in_same_discs_skipped(factories, mo
     tasks.process_upload(upload_id=new_upload.pk)
 
     new_upload.refresh_from_db()
-
     assert new_upload.import_status == "skipped"
 
 
