@@ -860,7 +860,7 @@ def get_or_create_artists_credits_from_musicbrainz(
         )
 
         artist_credit, created = get_best_candidate_or_create(
-            models.ArtistCredit, query, defaults=defaults
+            models.ArtistCredit, query, defaults=defaults, sort_fields=["artist"]
         )
         artists_credits.append(artist_credit)
     return artists_credits
