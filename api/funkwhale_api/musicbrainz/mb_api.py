@@ -476,18 +476,6 @@ class WebServiceError(MusicBrainzError):
         return msg
 
 
-class NetworkError(WebServiceError):
-    """Problem communicating with the MB server."""
-
-    pass
-
-
-class ResponseError(WebServiceError):
-    """Bad response sent by the MB server."""
-
-    pass
-
-
 class AuthenticationError(WebServiceError):
     """Received a HTTP 401 response while accessing a protected resource."""
 
@@ -729,7 +717,7 @@ class _rate_limit:
                 while self.remaining_requests < 0.999:
                     time.sleep(
                         (1.0 - self.remaining_requests)
-                        * (limit_requests / limit_interval)
+                        * (limit_interval / limit_requests)
                     )
                     self._update_remaining()
 
@@ -808,7 +796,7 @@ def _mb_request(
     retry_num = 0
     for retry_num in range(max_retries):
         if retry_num:  # Not the first try: delay an increasing amount.
-            logger.info("retrying after delay (#%i)" % retry_num)
+            logger.info(f"retrying after delay {retry_num}")
             time.sleep(retry_num * 2)
 
         try:

@@ -10,7 +10,7 @@ from django.db import transaction
 from django.db.models import F, Q
 from django.dispatch import receiver
 from django.utils import timezone
-from musicbrainzngs import NetworkError, ResponseError
+from requests import HTTPError
 from requests.exceptions import RequestException
 
 from funkwhale_api import musicbrainz
@@ -46,7 +46,7 @@ def populate_album_cover(album, source=None, replace=False):
         )
         try:
             image_data = musicbrainz.api.images.get_front(str(album.mbid))
-        except ResponseError as exc:
+        except HTTPError as exc:
             logger.warning(
                 "[Album %s] cannot fetch cover from musicbrainz: %s", album.pk, str(exc)
             )
@@ -272,7 +272,7 @@ def process_upload(upload, update_denormalization=True):
     except UploadImportError as e:
         return fail_import(upload, e.code)
     except Exception as e:
-        fail_import(upload, "unknown_error", e)
+        fail_import(upload, "unknown_error", detail=str(e))
         raise
 
     broadcast = getter(
@@ -602,7 +602,7 @@ def _get_track(data, attributed_to=None, query_mb=True, **forced_values):
                 attributed_to=attributed_to,
                 from_activity_id=from_activity_id,
             )
-        except (NoMbid, ResponseError, NetworkError):
+        except (NoMbid, HTTPError):
             track_artists_credits = (
                 get_or_create_artists_credits_from_artist_credit_metadata(
                     artist_credit_data,
@@ -626,7 +626,7 @@ def _get_track(data, attributed_to=None, query_mb=True, **forced_values):
                 attributed_to=attributed_to,
                 from_activity_id=from_activity_id,
             )
-        except (NoMbid, ResponseError, NetworkError):
+        except (NoMbid, HTTPError):
             if album_artists := getter(data, "album", "artist_credit", default=None):
                 album_artists_credits = (
                     get_or_create_artists_credits_from_artist_credit_metadata(
@@ -777,11 +777,10 @@ def get_or_create_artist_from_ac(ac_data, attributed_to, from_activity_id):
 
     if mbid:
         query = Q(mbid=mbid)
+    elif fid:
+        query = Q(fid=fid)
     else:
         query = Q(name__iexact=name)
-
-    if fid:
-        query |= Q(fid=fid)
 
     defaults = {
         "name": name,
@@ -822,7 +821,7 @@ def get_or_create_artists_credits_from_musicbrainz(
             mb_obj = musicbrainz.api.releases.get(mbid, includes=["artists"])
         elif mb_obj_type == "recording":
             mb_obj = musicbrainz.api.recordings.get(mbid, includes=["artists"])
-    except (ResponseError, NetworkError) as e:
+    except HTTPError as e:
         logger.warning(
             f"Couldn't get Musicbrainz information for {mb_obj_type} with {mbid} mbid  \
             because of the following exception : {e}"
