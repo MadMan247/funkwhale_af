@@ -10,10 +10,10 @@ __all__ = [
     "get_image_back",
     "get_image",
 ]
-
 import json
 from urllib.parse import urlunparse
-from urllib.request import HTTPHandler, build_opener
+
+import requests
 
 from . import mb_api
 
@@ -59,20 +59,16 @@ def _caa_request(mbid, imageid=None, size=None, entitytype="release"):
         ("https" if https else "http", hostname, "/%s" % "/".join(path), "", "", "")
     )
 
-    # Set up HTTP request handler and URL opener.
-    httpHandler = HTTPHandler(debuglevel=0)
-    handlers = [httpHandler]
-
-    opener = build_opener(*handlers)
-
     # Make request.
-    req = mb_api._MusicbrainzHttpRequest("GET", url, None)
-    # Useragent isn't needed for CAA, but we'll add it if it exists
-    if mb_api._useragent != "":
-        req.add_header("User-Agent", mb_api._useragent)
-        mb_api.logger.debug("requesting with UA %s" % mb_api._useragent)
+    headers = {}
+    if mb_api._useragent:
+        headers["User-Agent"] = mb_api._useragent
+        mb_api.logger.debug("requesting with UA %s", mb_api._useragent)
 
-    resp = mb_api._safe_read(opener, req, None)
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+
+    resp = response.content
 
     # TODO: The content type declared by the CAA for JSON files is
     # 'applicaiton/octet-stream'. This is not useful to detect whether the
