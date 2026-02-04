@@ -89,14 +89,6 @@ def get_image_list(releaseid):
     The return value is the deserialized response of the `JSON listing
     <http://mb_api.org/doc/Cover_Art_Archive/API#.2Frelease.2F.7Bmbid.7D.2F>`_
     returned by the Cover Art Archive API.
-
-    If an error occurs then a :class:`~musicbrainzngs.ResponseError` will
-    be raised with one of the following HTTP codes:
-
-    * 400: `releaseid` is not a valid UUID
-    * 404: The release with an MBID of `releaseid` does not exist or
-           there is no cover art available for it.
-    * 503: Ratelimit exceeded
     """
     return _caa_request(releaseid)
 
@@ -107,14 +99,6 @@ def get_release_group_image_list(releasegroupid):
     The return value is the deserialized response of the `JSON listing
     <http://mb_api.org/doc/Cover_Art_Archive/API#.2Frelease-group.2F.7Bmbid.7D.2F>`_
     returned by the Cover Art Archive API.
-
-    If an error occurs then a :class:`~musicbrainzngs.ResponseError` will
-    be raised with one of the following HTTP codes:
-
-    * 400: `releasegroupid` is not a valid UUID
-    * 404: The release group with an MBID of `releasegroupid` does not exist or
-           there is no cover art available for it.
-    * 503: Ratelimit exceeded
     """
     return _caa_request(releasegroupid, entitytype="release-group")
 
@@ -149,14 +133,6 @@ def get_image(mbid, coverid, size=None, entitytype="release"):
 
     If `size` is not specified, download the largest copy present, which can be
     very large.
-
-    If an error occurs then a :class:`~musicbrainzngs.ResponseError`
-    will be raised with one of the following HTTP codes:
-
-    * 400: `releaseid` is not a valid UUID or `coverid` is invalid
-    * 404: The release with an MBID of `releaseid` does not exist or no cover
-           art with an id of `coverid` exists.
-    * 503: Ratelimit exceeded
 
     :param coverid: ``front``, ``back`` or a number from the listing obtained
                     with :meth:`get_image_list`

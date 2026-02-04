@@ -285,7 +285,7 @@ def test_can_create_track_from_file_metadata_mbid_existing_album_artist(
                 {
                     "credit": "lol",
                     "joinphrase": "",
-                    "mbid": album.artist_credit.all()[0].mbid,
+                    "mbid": artist_credit.mbid,
                 }
             ],
         },
@@ -293,7 +293,7 @@ def test_can_create_track_from_file_metadata_mbid_existing_album_artist(
         "position": 4,
         "artist_credit": [
             {
-                "mbid": album.artist_credit.all().order_by("index")[0].mbid,
+                "mbid": artist_credit.mbid,
                 "credit": "",
                 "joinphrase": "",
             }
@@ -316,11 +316,11 @@ def test_can_create_track_from_file_metadata_mbid_existing_album_artist(
         "artist-credit": [
             {
                 "artist": {
-                    "id": album.artist_credit.all()[0].artist.mbid,
+                    "id": artist_credit.artist.mbid,
                     "name": "Test artist",
                 },
                 "joinphrase": "",
-                "name": album.artist_credit.all()[0].artist.name,
+                "name": artist_credit.artist.name,
             }
         ]
     }
