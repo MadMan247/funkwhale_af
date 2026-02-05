@@ -56,7 +56,7 @@ class TrackAdmin(admin.ModelAdmin):
 @admin.register(models.TrackActor)
 class TrackActorAdmin(admin.ModelAdmin):
     list_display = ["actor", "track", "upload", "internal"]
-    search_fields = ["actor__preferred_username", "track__name"]
+    search_fields = ["actor__preferred_username", "track__title"]
     list_select_related = ["actor", "track"]
 
 
