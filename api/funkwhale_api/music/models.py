@@ -1514,7 +1514,6 @@ class TrackActor(models.Model):
             final_actor_ids = list(follow_queryset.values_list("actor", flat=True))
             if owner and (not actor_ids or owner in final_actor_ids):
                 final_actor_ids.append(owner.pk)
-            final_actor_ids = list(follow_queryset.values_list("actor", flat=True))
             for actor_id in final_actor_ids:
                 for upload_id, track_id in upload_and_track_ids:
                     objs.append(
