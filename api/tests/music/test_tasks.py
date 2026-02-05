@@ -750,6 +750,27 @@ def test_upload_import_error(factories, now, temp_signal):
     )
 
 
+def test_upload_import_error_audio_file_metadata(factories, now, mocker):
+    path = os.path.join(DATA_DIR, "test.ogg")
+    upload = factories["music.Upload"](audio_file__frompath=path)
+    mocker.patch.object(
+        metadata.Metadata,
+        "__init__",
+        side_effect=ValueError("omygood an error"),
+    )
+    try:
+        tasks.process_upload(upload_id=upload.pk)
+    except ValueError:
+        pass
+    upload.refresh_from_db()
+    assert upload.import_status == "errored"
+    assert upload.import_date == now
+    assert upload.import_details == {
+        "detail": "omygood an error",
+        "error_code": "unknown_error_audio_metadata_error",
+    }
+
+
 def test_upload_import_error_metadata(factories, now, temp_signal, mocker):
     path = os.path.join(DATA_DIR, "test.ogg")
     upload = factories["music.Upload"](audio_file__frompath=path)

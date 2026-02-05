@@ -232,7 +232,12 @@ def process_upload(upload, update_denormalization=True):
     if use_file_metadata:
         audio_file = upload.get_audio_file()
 
-        m = metadata.Metadata(audio_file)
+        try:
+            m = metadata.Metadata(audio_file)
+        except Exception as e:
+            fail_import(upload, "unknown_error_audio_metadata_error", detail=str(e))
+            raise
+
         try:
             serializer = metadata.TrackMetadataSerializer(data=m)
             serializer.is_valid()
