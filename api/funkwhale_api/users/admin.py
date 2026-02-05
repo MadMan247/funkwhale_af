@@ -56,6 +56,7 @@ class UserAdmin(AuthUserAdmin):
         "last_login",
         "is_staff",
         "is_superuser",
+        "privacy_level",
     ]
     list_filter = [
         "is_superuser",
@@ -66,7 +67,7 @@ class UserAdmin(AuthUserAdmin):
     ]
     actions = [disable, enable]
     fieldsets = (
-        (None, {"fields": ("username", "password")}),
+        (None, {"fields": ("username", "password", "privacy_level")}),
         (
             _("Personal info"),
             {"fields": ("first_name", "last_name", "email", "avatar")},

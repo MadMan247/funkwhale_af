@@ -27,7 +27,7 @@ class ListeningSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Listening
-        fields = ("id", "actor", "track", "creation_date", "actor")
+        fields = ("fid", "actor", "track", "creation_date")
 
     def create(self, validated_data):
         validated_data["actor"] = self.context["user"].actor

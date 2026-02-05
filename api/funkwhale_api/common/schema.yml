@@ -12525,6 +12525,8 @@ components:
           - $ref: '#/components/schemas/Actor'
           - $ref: '#/components/schemas/Channel'
           - $ref: '#/components/schemas/Playlist'
+          - $ref: '#/components/schemas/Library'
+          - $ref: '#/components/schemas/TrackFavorite'
           readOnly: true
       required:
       - actor
@@ -13299,9 +13301,10 @@ components:
     Listening:
       type: object
       properties:
-        id:
-          type: integer
-          readOnly: true
+        fid:
+          type: string
+          format: uri
+          maxLength: 500
         actor:
           allOf:
           - $ref: '#/components/schemas/APIActor'
@@ -13316,7 +13319,7 @@ components:
           nullable: true
       required:
       - actor
-      - id
+      - fid
       - track
     ListeningCollectionPage:
       type: object
@@ -18282,9 +18285,10 @@ components:
     UserTrackFavorite:
       type: object
       properties:
-        id:
-          type: integer
-          readOnly: true
+        fid:
+          type: string
+          format: uri
+          maxLength: 500
         actor:
           allOf:
           - $ref: '#/components/schemas/APIActor'
@@ -18298,7 +18302,7 @@ components:
           format: date-time
       required:
       - actor
-      - id
+      - fid
       - track
     UserTrackFavoriteWrite:
       type: object

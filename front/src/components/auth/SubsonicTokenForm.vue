@@ -103,7 +103,7 @@ fetchToken()
     </p>
     <p>
       <a
-        href="https://docs.funkwhale.audio/user/apps.html#subsonic-compatible-clients"
+        href="https://docs.funkwhale.audio/user/subsonic/index.html"
         target="_blank"
       >
         {{ t('components.auth.SubsonicTokenForm.link.apps') }}

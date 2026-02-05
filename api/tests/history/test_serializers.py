@@ -8,7 +8,7 @@ def test_listening_serializer(factories, to_api_date):
     actor = listening.actor
 
     expected = {
-        "id": listening.pk,
+        "fid": listening.fid,
         "creation_date": to_api_date(listening.creation_date),
         "track": music_serializers.TrackSerializer(listening.track).data,
         "actor": federation_serializers.APIActorSerializer(actor).data,

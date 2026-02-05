@@ -27,7 +27,7 @@ class UserTrackFavoriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.TrackFavorite
-        fields = ("id", "actor", "track", "creation_date", "actor")
+        fields = ("fid", "actor", "track", "creation_date", "actor")
 
 
 class UserTrackFavoriteWriteSerializer(serializers.ModelSerializer):

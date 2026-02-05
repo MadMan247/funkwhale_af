@@ -10,6 +10,7 @@ from django.core.cache import cache
 from django.db import transaction
 from django.db.models import F, Q
 from django.db.models.deletion import Collector
+from django.urls import reverse
 from django.utils import timezone
 from dynamic_preferences.registries import global_preferences_registry
 from requests.exceptions import RequestException
@@ -18,6 +19,8 @@ from funkwhale_api.audio import models as audio_models
 from funkwhale_api.common import models as common_models
 from funkwhale_api.common import preferences, session
 from funkwhale_api.common import utils as common_utils
+from funkwhale_api.history import models as history_models
+from funkwhale_api.history import tasks as history_tasks
 from funkwhale_api.moderation import mrf
 from funkwhale_api.music import models as music_models
 from funkwhale_api.playlists import models as playlists_models
@@ -315,6 +318,56 @@ def rotate_actor_key(actor):
     actor.save(update_fields=["private_key", "public_key"])
 
 
+@celery.app.task(name="federation.parse_actor_collection")
+def parse_actor_collection(target, actor, object_type):
+    from . import api_serializers
+
+    auth = signing.get_auth(actor.private_key, actor.private_key_id)
+    response = session.get_session().get(
+        "https://"
+        + target.domain.name
+        + reverse(
+            f"api:v2:{object_type}-list",
+        ),
+        params={"scope": f"actor:{target.full_username}"},
+        auth=auth,
+        headers={"Accept": "application/json"},
+    )
+
+    logger.debug(f"Remote answered with {response.json()}")
+
+    for obj in response.json()["results"]:
+        if object_type == "channels":
+            fid = obj["actor"]["fid"]
+        else:
+            fid = obj["fid"]
+
+        fetch_serializer = api_serializers.FetchSerializer(data={"object_uri": fid})
+        fetch_serializer.is_valid()
+        fetch_obj = fetch_serializer.save(actor=actor)
+        if fetch_obj.status != "finished":
+            # no duplicate was returned, we can fetch again
+            fetch.delay(fetch_id=fetch_obj.pk)
+
+
+@celery.app.task(name="federation.fetch_past_activities")
+@celery.require_instance(models.Actor.objects.local(include=False), "target")
+@celery.require_instance(models.Actor.objects.local(), "actor")
+def fetch_past_activities(target, actor):
+    # fetch_objects_collection_from_actor(target, actor, "channels")
+    parse_actor_collection.delay(target, actor, "libraries")
+    parse_actor_collection.delay(target, actor, "playlists")
+    parse_actor_collection.delay(target, actor, "favorites:tracks")
+    # This is (way) more efficient than parse_actor_collection since it only use one query
+    # per page (but it still need to fetch tracks on by one).
+    # Could implement the same for TrackFavorites
+    # (not needed for libraries and playlists since they are collections)
+    listenings_scan = history_models.ListeningsScan.objects.create(
+        actor=actor, target=target
+    )
+    history_tasks.start_listenings_scan.delay(listenings_scan_id=listenings_scan.pk)
+
+
 @celery.app.task(name="federation.fetch")
 @transaction.atomic
 @celery.require_instance(
@@ -462,6 +515,20 @@ def fetch(fetch_obj):
                         max_pages=settings.FEDERATION_COLLECTION_MAX_PAGES - 1,
                         is_page=True,
                     )
+    # if it's an actor user we trigger a fetch on its activities
+    elif (
+        isinstance(obj, models.Actor) and not obj.get_channel() and obj.type == "Person"
+    ):
+        common_utils.on_commit(
+            fetch_past_activities.delay, target_id=obj.pk, actor_id=actor.pk
+        )
+
+    elif isinstance(obj, music_models.Library):
+        logger.info("fetch library trigger library scan")
+        obj.schedule_scan(actor)
+    elif isinstance(obj, playlists_models.Playlist):
+        logger.info("fetch playlist trigger playlist scan")
+        obj.schedule_scan(actor)
 
     fetch_obj.object = obj
     fetch_obj.status = "finished"

@@ -300,5 +300,7 @@ def test_updating_privacy_level_update_listenings_and_favorites(factories):
     favorite = factories["favorites.TrackFavorite"](actor=user.actor)
     user.privacy_level = "everyone"
     user.save()
+    listening.refresh_from_db()
+    favorite.refresh_from_db()
     assert listening.privacy_level == "everyone"
     assert favorite.privacy_level == "everyone"

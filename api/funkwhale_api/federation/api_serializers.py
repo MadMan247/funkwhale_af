@@ -12,6 +12,7 @@ from rest_framework import serializers
 from funkwhale_api.audio import models as audio_models
 from funkwhale_api.audio import serializers as audio_serializers
 from funkwhale_api.common import serializers as common_serializers
+from funkwhale_api.favorites import models as favorites_models
 from funkwhale_api.music import models as music_models
 from funkwhale_api.playlists import models as playlists_models
 from funkwhale_api.users import serializers as users_serializers
@@ -201,6 +202,7 @@ OBJECT_SERIALIZER_MAPPING = {
     models.Actor: federation_serializers.ActorSerializer,
     audio_models.Channel: audio_serializers.ChannelSerializer,
     playlists_models.Playlist: federation_serializers.PlaylistSerializer,
+    favorites_models.TrackFavorite: federation_serializers.TrackFavoriteSerializer,
 }
 
 
@@ -267,6 +269,10 @@ class FetchSerializer(serializers.ModelSerializer):
             return "channel"
         elif isinstance(obj, playlists_models.Playlist):
             return "playlist"
+        elif isinstance(obj, music_models.Library):
+            return "library"
+        elif isinstance(obj, favorites_models.TrackFavorite):
+            return "like"
         else:
             return None
 
@@ -293,6 +299,8 @@ class FetchSerializer(serializers.ModelSerializer):
                 {"$ref": "#/components/schemas/Actor"},
                 {"$ref": "#/components/schemas/Channel"},
                 {"$ref": "#/components/schemas/Playlist"},
+                {"$ref": "#/components/schemas/Library"},
+                {"$ref": "#/components/schemas/TrackFavorite"},
             ]
         }
     )

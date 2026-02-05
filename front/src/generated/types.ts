@@ -4197,7 +4197,7 @@ export interface components {
             /** Format: date-time */
             readonly fetch_date: string | null;
             readonly type: string;
-            readonly object: components["schemas"]["Artist"] | components["schemas"]["Album"] | components["schemas"]["Track"] | components["schemas"]["Actor"] | components["schemas"]["Channel"] | components["schemas"]["Playlist"];
+            readonly object: components["schemas"]["Artist"] | components["schemas"]["Album"] | components["schemas"]["Track"] | components["schemas"]["Actor"] | components["schemas"]["Channel"] | components["schemas"]["Playlist"] | components["schemas"]["Library"] | components["schemas"]["TrackFavorite"];
         };
         FetchRequest: {
             object_uri: string;
@@ -4493,7 +4493,8 @@ export interface components {
             items: components["schemas"]["TrackFavorite"][];
         };
         Listening: {
-            readonly id: number;
+            /** Format: uri */
+            fid: string;
             readonly actor: components["schemas"]["APIActor"];
             readonly track: components["schemas"]["Track"];
             /** Format: date-time */
@@ -6686,7 +6687,8 @@ export interface components {
             target: components["schemas"]["ModerationTargetRequest"];
         };
         UserTrackFavorite: {
-            readonly id: number;
+            /** Format: uri */
+            fid: string;
             readonly actor: components["schemas"]["APIActor"];
             readonly track: components["schemas"]["Track"];
             /** Format: date-time */

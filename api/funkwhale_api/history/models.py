@@ -57,6 +57,23 @@ class Listening(federation_models.FederationMixin):
     def save(self, **kwargs):
         if not self.pk and not self.fid:
             self.fid = self.get_federation_id()
-        if not self.privacy_level:
+        if hasattr(self.actor, "user"):
             self.privacy_level = self.actor.user.privacy_level
         return super().save(**kwargs)
+
+
+class ListeningsScan(models.Model):
+    actor = models.ForeignKey(
+        "federation.Actor", null=True, blank=True, on_delete=models.CASCADE
+    )
+    target = models.ForeignKey(
+        federation_models.Actor,
+        related_name="listening_scans",
+        on_delete=models.CASCADE,
+    )
+    total_files = models.PositiveIntegerField(default=0)
+    processed_files = models.PositiveIntegerField(default=0)
+    errored_files = models.PositiveIntegerField(default=0)
+    status = models.CharField(default="pending", max_length=25)
+    creation_date = models.DateTimeField(default=timezone.now)
+    modification_date = models.DateTimeField(null=True, blank=True)

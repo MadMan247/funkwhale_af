@@ -7,7 +7,7 @@ def test_track_favorite_serializer(factories, to_api_date):
     favorite = factories["favorites.TrackFavorite"]()
 
     expected = {
-        "id": favorite.pk,
+        "fid": favorite.fid,
         "creation_date": to_api_date(favorite.creation_date),
         "track": music_serializers.TrackSerializer(favorite.track).data,
         "actor": federation_serializers.APIActorSerializer(favorite.actor).data,

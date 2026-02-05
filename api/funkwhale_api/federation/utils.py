@@ -1,4 +1,5 @@
 import html.parser
+import logging
 import re
 import unicodedata
 import urllib.parse
@@ -12,6 +13,8 @@ from funkwhale_api.common import session
 from funkwhale_api.moderation import mrf
 
 from . import exceptions, signing
+
+logger = logging.getLogger("__name__")
 
 
 def full_url(path):
@@ -72,6 +75,8 @@ def retrieve_ap_object(
     queryset=None,
     apply_instance_policies=True,
 ):
+    from funkwhale_api.federation import serializers
+
     # we have a duplicate check here because it's less expensive to do those checks
     # twice than to trigger a HTTP request
     payload, updated = mrf.inbox.apply({"id": fid})
@@ -99,7 +104,7 @@ def retrieve_ap_object(
     )
     response.raise_for_status()
     data = response.json()
-
+    logger.debug(f"AP retrieved data is {data}")
     # we match against mrf here again, because new data may yield different
     # results
     data, updated = mrf.inbox.apply(data)
@@ -108,6 +113,20 @@ def retrieve_ap_object(
 
     if not serializer_class:
         return data
+
+    if (
+        data.get("type", False)
+        and data.get("type") == "Audio"
+        and serializer_class != serializers.ChannelUploadSerializer
+    ):
+        # for channels, track.fid is an upload fid and not a track fid.
+        # This is needed when we fetch listening collection, since we only have the track fid.
+        # Need to investigate why this is done like this
+        serializer_class = serializers.ChannelUploadSerializer
+        serializer = serializer_class(data=data)
+        serializer.is_valid(raise_exception=True)
+        upload = serializer.save()
+        return upload.track
     serializer = serializer_class(data=data, context={"fetch_actor": actor})
     serializer.is_valid(raise_exception=True)
     try:

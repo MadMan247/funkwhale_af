@@ -8,7 +8,7 @@ from funkwhale_api.history import models as history_models
 from funkwhale_api.music import models as music_models
 from funkwhale_api.playlists import models as playlist_models
 
-from . import activity, actors, models, serializers
+from . import activity, actors, models, serializers, tasks
 
 logger = logging.getLogger(__name__)
 inbox = activity.InboxRouter()
@@ -774,6 +774,17 @@ def inbox_update_actor(payload, context):
             # we delete all activities inheriting user.privacy_level
             history_models.Listening.objects.filter(actor=actor).delete()
             favorites_models.TrackFavorite.objects.filter(actor=actor).delete()
+        elif privacy_level in ["followers", "everyone"]:
+            # we scan actor activities
+            not_blocked_follower_actor = actor.followers.not_blocked_or_blocking(
+                actor
+            ).local()
+            request_actor = (
+                not_blocked_follower_actor.first() or actors.get_service_actor()
+            )
+            tasks.fetch_past_activities.delay(
+                target_id=actor.pk, actor_id=request_actor.pk
+            )
 
 
 @outbox.register({"type": "Create", "object.type": "Playlist"})

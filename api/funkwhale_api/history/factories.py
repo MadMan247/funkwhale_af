@@ -27,3 +27,12 @@ class ListeningFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
         ]
         self.fid = f"https://{domain}/federation/music/favorite/{self.uuid}"
         self.save(update_fields=["fid"])
+
+
+@registry.register
+class ListeningsScanFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
+    actor = factory.SubFactory(ActorFactory)
+    target = factory.SubFactory(ActorFactory)
+
+    class Meta:
+        model = "history.ListeningsScan"

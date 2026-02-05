@@ -433,6 +433,7 @@ class Fetch(models.Model):
             ],
             contexts.FW.Library: [serializers.LibrarySerializer],
             contexts.FW.Playlist: [serializers.PlaylistSerializer],
+            contexts.AS.Like: [serializers.TrackFavoriteSerializer],
             contexts.AS.Group: [serializers.ActorSerializer],
             contexts.AS.Person: [serializers.ActorSerializer],
             contexts.AS.Organization: [serializers.ActorSerializer],
@@ -727,7 +728,6 @@ def update_denormalization_follow_deleted(sender, instance, **kwargs):
             ).delete()
 
 
-# to do reverse relation :
 @receiver(post_save, sender=BlockedActor)
 def update_denormalization_blocks(sender, instance, created, **kwargs):
     from funkwhale_api.music import models as music_models

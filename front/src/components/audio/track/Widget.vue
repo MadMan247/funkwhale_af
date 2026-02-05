@@ -131,7 +131,7 @@ watch(() => props.websocketHandlers.includes('Listen'), (to) => {
     <!-- TODO: Use activity.vue -->
     <div
       v-for="object in (count > 0 ? objects : [])"
-      :key="object.id"
+      :key="object.fid"
       class="funkwhale activity"
       :class="['item', itemClasses]"
     >

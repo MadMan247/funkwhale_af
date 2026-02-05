@@ -2259,6 +2259,7 @@ class TrackFavoriteSerializer(jsonld.JsonLdSerializer):
     audience = serializers.CharField(max_length=500)
 
     class Meta:
+        model = favorites_models.TrackFavorite
         jsonld_mapping = {
             "object": jsonld.first_id(contexts.AS.object),
             "actor": jsonld.first_id(contexts.AS.actor),
@@ -2320,19 +2321,24 @@ class ListeningSerializer(jsonld.JsonLdSerializer):
         return payload
 
     def create(self, validated_data):
-        actor = actors.get_actor(validated_data["actor"])
+        actor = (
+            actors.get_actor(validated_data["actor"])
+            if isinstance(validated_data["actor"], str)
+            else validated_data["actor"]
+        )
         track = utils.retrieve_ap_object(
             validated_data["object"],
             actor=actors.get_service_actor(),
             serializer_class=TrackSerializer,
         )
-        return history_models.Listening.objects.create(
+        listening, created = history_models.Listening.objects.get_or_create(
             fid=validated_data.get("id"),
             uuid=validated_data["id"].rstrip("/").split("/")[-1],
             actor=actor,
             track=track,
-            privacy_level=validated_data["audience"],
+            defaults={"privacy_level": validated_data["audience"]},
         )
+        return listening
 
 
 class PlaylistTrackSerializer(jsonld.JsonLdSerializer):
@@ -2521,6 +2527,7 @@ class PlaylistCollectionSerializer(PaginatedCollectionSerializer):
             "type": "Playlist",
             "library": playlist.library.fid,
             "published": playlist.creation_date.isoformat(),
+            "audience": playlist.privacy_level,
         }
         r = super().to_representation(conf)
         return r

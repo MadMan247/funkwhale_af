@@ -84,6 +84,6 @@ class TrackFavorite(federation_models.FederationMixin):
     def save(self, **kwargs):
         if not self.pk and not self.fid:
             self.fid = self.get_federation_id()
-        if not self.privacy_level:
+        if hasattr(self.actor, "user"):
             self.privacy_level = self.actor.user.privacy_level
         return super().save(**kwargs)

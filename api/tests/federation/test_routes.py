@@ -1373,7 +1373,7 @@ def test_inbox_delete_audiocollection(factories):
     assert music_models.Upload.objects.filter(fid=upload.fid).exists() is False
 
 
-def test_inbox_update_actor(factories):
+def test_inbox_update_actor(factories, mocker):
     actor = factories["federation.Actor"]()
     setattr(actor, "audience", "me")
     factories["history.Listening"](actor=actor)
@@ -1387,3 +1387,15 @@ def test_inbox_update_actor(factories):
         },
     )
     assert history_models.Listening.objects.filter(actor=actor).exists() is False
+
+    setattr(actor, "audience", "followers")
+    data = serializers.ActorSerializer(actor).data
+    mock_tasks = mocker.patch("funkwhale_api.federation.routes.tasks")
+    routes.inbox_update_actor(
+        {"object": data},
+        context={
+            "actor": actor,
+            "raise_exception": True,
+        },
+    )
+    mock_tasks.fetch_past_activities.delay.assert_called_once()

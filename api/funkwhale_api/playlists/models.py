@@ -289,7 +289,12 @@ class Playlist(federation_models.FederationMixin):
 
 @receiver(post_delete, sender=Playlist)
 def delete_playlist_library(sender, instance, **kwargs):
-    if instance.library:
+    try:
+        library = instance.library
+    except music_models.Library.DoesNotExist:
+        library = None
+
+    if library:
         instance.library.delete()
 
 
