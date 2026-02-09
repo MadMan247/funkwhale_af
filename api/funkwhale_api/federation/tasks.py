@@ -319,7 +319,9 @@ def rotate_actor_key(actor):
 
 
 @celery.app.task(name="federation.parse_actor_collection")
-def parse_actor_collection(target, actor, object_type):
+@celery.require_instance(models.Actor.objects.local(include=False), "target")
+@celery.require_instance(models.Actor.objects.local(), "actor")
+def parse_remote_collections(target, actor, object_type):
     from . import api_serializers
 
     auth = signing.get_auth(actor.private_key, actor.private_key_id)
@@ -355,9 +357,16 @@ def parse_actor_collection(target, actor, object_type):
 @celery.require_instance(models.Actor.objects.local(), "actor")
 def fetch_past_activities(target, actor):
     # fetch_objects_collection_from_actor(target, actor, "channels")
-    parse_actor_collection.delay(target, actor, "libraries")
-    parse_actor_collection.delay(target, actor, "playlists")
-    parse_actor_collection.delay(target, actor, "favorites:tracks")
+    # to do : can we make a task wait for the previous one to complete ?
+    parse_remote_collections.delay(
+        target_id=target.pk, actor_id=actor.pk, object_type="libraries"
+    )
+    parse_remote_collections.delay(
+        target_id=target.pk, actor_id=actor.pk, object_type="playlists"
+    )
+    parse_remote_collections.delay(
+        target_id=target.pk, actor_id=actor.pk, object_type="favorites:tracks"
+    )
     # This is (way) more efficient than parse_actor_collection since it only use one query
     # per page (but it still need to fetch tracks on by one).
     # Could implement the same for TrackFavorites

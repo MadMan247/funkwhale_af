@@ -2285,13 +2285,18 @@ class TrackFavoriteSerializer(jsonld.JsonLdSerializer):
             actor=actors.get_service_actor(),
             serializer_class=TrackSerializer,
         )
-        return favorites_models.TrackFavorite.objects.create(
-            fid=validated_data.get("id"),
-            uuid=uuid.uuid4(),
+        # in case remote deleted the track favorite but we didn't received the activity
+        # the fid/uuid changed, we update them to avoid unique onstrain in the local db.
+        fav, create = favorites_models.TrackFavorite.objects.update_or_create(
             actor=actor,
             track=track,
-            privacy_level=validated_data["audience"],
+            defaults={
+                "fid": validated_data.get("id"),
+                "uuid": validated_data["id"].rstrip("/").split("/")[-1],
+                "privacy_level": validated_data["audience"],
+            },
         )
+        return fav
 
 
 class ListeningSerializer(jsonld.JsonLdSerializer):
