@@ -103,3 +103,30 @@ services:
     command: --data-dir /data --enable-cors
     profiles:
       - typesense
+
+  # Optional, see https://docs.funkwhale.audio/administrator/configuration/bot-protection.html
+  # anubis:
+  #   image: ghcr.io/techarohq/anubis:latest
+  #   environment:
+  #     # SLOG_LEVEL: 'DEBUG'
+  #     BIND: ':80'
+  #     DIFFICULTY: '4'
+  #     METRICS_BIND: ':9090'
+  #     SERVE_ROBOTS_TXT: 'true'
+  #     TARGET: 'http://front:80'
+  #     POLICY_FNAME: '/data/cfg/botPolicy.yaml'
+  #     OG_PASSTHROUGH: 'true'
+  #     OG_EXPIRY_TIME: '24h'
+  #     # see https://anubis.techaro.lol/docs/admin/configuration/redirect-domains
+  #     REDIRECT_DOMAINS: ${FUNKWHALE_HOSTNAME}
+  #     USE_REMOTE_ADDRESS: 'true'
+  #   healthcheck:
+  #     test: ['CMD', 'anubis', '--healthcheck']
+  #     interval: 5s
+  #     timeout: 30s
+  #     retries: 5
+  #     start_period: 500ms
+  #   volumes:
+  #     - './botPolicy.yaml:/data/cfg/botPolicy.yaml:ro'
+  #   ports:
+  #     - '${FUNKWHALE_API_IP}:${FUNKWHALE_API_PORT}:80'

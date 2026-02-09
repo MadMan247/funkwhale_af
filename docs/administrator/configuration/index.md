@@ -17,5 +17,6 @@ ldap
 change-url
 mrf
 rate-limiting
+bot-protection
 
 ```
