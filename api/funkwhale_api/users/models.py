@@ -15,7 +15,6 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django_auth_ldap.backend import populate_user as ldap_populate_user
 from oauth2_provider import models as oauth2_models
-from oauth2_provider import validators as oauth2_validators
 from versatileimagefield.fields import VersatileImageField
 
 from funkwhale_api.common import fields, preferences
@@ -377,22 +376,6 @@ class Application(oauth2_models.AbstractApplication):
 
         raw_scopes = set(self.scope.split(" ") if self.scope else [])
         return permissions.normalize(*raw_scopes)
-
-
-# oob schemes are not supported yet in oauth toolkit
-# (https://github.com/jazzband/django-oauth-toolkit/issues/235)
-# so in the meantime, we override their validation to add support
-OOB_SCHEMES = ["urn:ietf:wg:oauth:2.0:oob", "urn:ietf:wg:oauth:2.0:oob:auto"]
-
-
-class CustomRedirectURIValidator(oauth2_validators.AllowedURIValidator):
-    def __call__(self, value):
-        if value in OOB_SCHEMES:
-            return value
-        return super().__call__(value)
-
-
-oauth2_models.AllowedURIValidator = CustomRedirectURIValidator
 
 
 class Grant(oauth2_models.AbstractGrant):

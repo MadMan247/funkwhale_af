@@ -3668,7 +3668,7 @@ export interface components {
             /** Format: date-time */
             creation_date?: string;
             summary?: string | null;
-            preferred_username: string | null;
+            preferred_username?: string | null;
             name?: string | null;
             /** Format: date-time */
             last_fetch_date?: string;
@@ -3686,7 +3686,7 @@ export interface components {
             /** Format: date-time */
             creation_date?: string;
             summary?: string | null;
-            preferred_username: string | null;
+            preferred_username?: string | null;
             name?: string | null;
             /** Format: date-time */
             last_fetch_date?: string;
@@ -4539,7 +4539,7 @@ export interface components {
             url?: string | null;
             /** Format: uri */
             fid: string;
-            preferred_username: string | null;
+            preferred_username?: string | null;
             readonly full_username: string;
             domain: string;
             name?: string | null;
@@ -4566,7 +4566,7 @@ export interface components {
             url?: string | null;
             /** Format: uri */
             fid: string;
-            preferred_username: string | null;
+            preferred_username?: string | null;
             domain: string;
             name?: string | null;
             summary?: string | null;
@@ -4654,7 +4654,7 @@ export interface components {
             url?: string | null;
             /** Format: uri */
             fid: string;
-            preferred_username: string | null;
+            preferred_username?: string | null;
             readonly full_username: string;
             domain: string;
             name?: string | null;
@@ -4678,7 +4678,7 @@ export interface components {
             url?: string | null;
             /** Format: uri */
             fid: string;
-            preferred_username: string | null;
+            preferred_username?: string | null;
             domain: string;
             name?: string | null;
             summary?: string | null;

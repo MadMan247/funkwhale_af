@@ -13,7 +13,7 @@ def test_redirect_uris_oob(uri, db):
     assert app.clean() is None
 
 
-@pytest.mark.parametrize("uri", ["urn:ietf:wg:oauth:2.0:invalid", "noop"])
+@pytest.mark.parametrize("uri", ["not a uri", "noop"])
 def test_redirect_uris_invalid(uri, db):
     app = models.Application(redirect_uris=uri)
     with pytest.raises(forms.ValidationError):

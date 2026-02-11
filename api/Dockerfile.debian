@@ -50,6 +50,8 @@ ENV PATH="/venv/bin:$PATH"
 RUN --mount=type=cache,target=/var/lib/apt/lists \
       apt update; \
       apt install -y \
+        build-essential \
+        libffi-dev \
         ffmpeg \
         gettext \
         libjpeg-dev \

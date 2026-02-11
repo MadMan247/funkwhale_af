@@ -1,7 +1,9 @@
 import json
 
 from allauth.account.adapter import get_adapter
-from allauth.account.utils import send_email_confirmation
+from allauth.account.internal.flows.email_verification import (
+    send_verification_email_for_user,
+)
 from dj_rest_auth import views as rest_auth_views
 from dj_rest_auth.registration import views as registration_views
 from django import http
@@ -39,7 +41,7 @@ class RegisterView(registration_views.RegisterView):
         user = super().perform_create(serializer)
         if not user.is_active:
             # manual approval, we need to send the confirmation e-mail by hand
-            send_email_confirmation(self.request, user)
+            send_verification_email_for_user(self.request, user)
         if user.invitation:
             user.invitation.set_invited_user(user)
 

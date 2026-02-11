@@ -11141,7 +11141,6 @@ components:
       - fid
       - full_username
       - is_local
-      - preferred_username
     APIActorRequest:
       type: object
       properties:
@@ -11184,7 +11183,6 @@ components:
       required:
       - domain
       - fid
-      - preferred_username
     APIMutation:
       type: object
       properties:
@@ -13484,7 +13482,6 @@ components:
       - id
       - instance_policy
       - is_local
-      - preferred_username
       - uploads_count
       - user
     ManageActorRequest:
@@ -13545,7 +13542,6 @@ components:
       required:
       - domain
       - fid
-      - preferred_username
       - user
     ManageAlbum:
       type: object
@@ -13804,7 +13800,6 @@ components:
       - full_username
       - id
       - is_local
-      - preferred_username
     ManageBaseActorRequest:
       type: object
       properties:
@@ -13859,7 +13854,6 @@ components:
       required:
       - domain
       - fid
-      - preferred_username
     ManageBaseNote:
       type: object
       properties:
