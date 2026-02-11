@@ -13,7 +13,7 @@ You can fetch remote content locally in various ways :
 
 ### Instance level following
 
-If you want to get all public activities from an instance you can follow it. You can find a Follow button in the domain detail page. A list of domain can be accessed in admin area, in the moderation menu.
+If you want to get all public activities from an instance you can follow it. You can find a Follow button in the domain detail page. A list of domains can be accessed in admin area, in the moderation menu.
 
 You can also automatically follow all known Funkwhale instances. This feature can be enabled in the admin settings. The pod will automatically follow the domain it finds. Domain discovery task is triggered at the beginning of each month. If you are in a hury you can manually trigger the task using the django shell :
 
@@ -33,5 +33,5 @@ tasks.follow_all_domains.delay()
 When fetching remote data the server will parse various ActivityPub collections. They can be very big. You can increase or decrease the `FEDERATION_COLLECTION_MAX_PAGES` in the admin settings if you wish more of less content to be fetch.
 
 ```{note}
-This only affect fetching/scanning remote collections for past activities. New Activities should reach you pod anyways so this is useful when you discover a new domain or when you just setup your pod.
+This only affect fetching/scanning remote collections for past activities. New Activities should reach your pod anyways so this is useful when you discover a new domain or when you just setup your pod.
 ```
