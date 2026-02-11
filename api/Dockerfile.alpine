@@ -5,6 +5,7 @@ RUN set -eux; \
   pipx \
   py3-cryptography \
   py3-pip \
+  build-base \
   python3 && pipx install poetry
 ENV PATH="/root/.local/bin:$PATH"
 
