@@ -70,7 +70,7 @@ const isLoading = ref(false)
 const object = ref<Domain | null>(null)
 const externalUrl = computed(() => `https://${object.value?.name}`)
 const nodeinfo = computed(() => object.value?.nodeinfo as NodeInfoResponse | undefined)
-const nodeinfoPaylod = computed(() => (nodeinfo.value?.status === 'ok' ? nodeinfo.value?.payload : undefined) as NodeInfo21 | undefined)
+const nodeinfoPayload = computed(() => (nodeinfo.value?.status === 'ok' ? nodeinfo.value?.payload : undefined) as NodeInfo21 | undefined)
 const fetchData = async () => {
   isLoading.value = true
 
@@ -139,7 +139,7 @@ const setAllowList = async (value: boolean) => {
 
 const isFollowingPod = ref(false)
 const followPod = async () => {
-  if (!nodeinfoPaylod.value) return
+  if (!nodeinfoPayload.value) return
 
   isFollowingPod.value = true
 
@@ -156,7 +156,7 @@ const followPod = async () => {
 }
 
 const unfollowPod = async () => {
-  if (!nodeinfoPaylod.value) return
+  if (!nodeinfoPayload.value) return
 
   isFollowingPod.value = true
 
@@ -215,7 +215,7 @@ const unfollowPod = async () => {
         style="display: inline-block"
       >
         <Button
-          v-if="nodeinfoPaylod?.software?.name === 'funkwhale'"
+          v-if="nodeinfoPayload?.software?.name === 'funkwhale'"
           :disabled="isFollowingPod"
           solid
           secondary
@@ -363,9 +363,9 @@ const unfollowPod = async () => {
         />
         <span class="value">
           {{ t('views.admin.moderation.DomainsDetail.table.instanceData.software.value', {
-            name: get(nodeinfoPaylod,
+            name: get(nodeinfoPayload,
                       'software.name', t('views.admin.moderation.DomainsDetail.notApplicable')), version:
-                        get(nodeinfoPaylod,
+                        get(nodeinfoPayload,
                             'software.version', t('views.admin.moderation.DomainsDetail.notApplicable'))}) }}
         </span>
       </Layout>
@@ -383,9 +383,9 @@ const unfollowPod = async () => {
         />
         <span class="value">
           {{ t('views.admin.moderation.DomainsDetail.table.instanceData.nodeInfoStatus.value', {
-            name: get(nodeinfoPaylod,
+            name: get(nodeinfoPayload,
                       'software.name', t('views.admin.moderation.DomainsDetail.notApplicable')), version:
-                        get(nodeinfoPaylod,
+                        get(nodeinfoPayload,
                             'software.version', t('views.admin.moderation.DomainsDetail.notApplicable'))}) }}
         </span>
         <span :data-tooltip="nodeinfo?.error"><i class="bi bi-question-circle" /></span>
