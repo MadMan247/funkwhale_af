@@ -229,7 +229,7 @@ test_scripts:
     - key: scripts-pip
       paths: [$PIP_CACHE_DIR]
     - key:
-        prefix: scripts-venv
+        prefix: scripts-venv-${PYTHON_VERSION}
         files: [scripts/poetry.lock]
       paths: [scripts/.venv]
   before_script:
