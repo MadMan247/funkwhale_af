@@ -571,28 +571,28 @@ def test_inbox_delete_library_impostor(factories):
 
 def test_outbox_delete_library(factories):
     library = factories["music.Library"]()
-    activity = list(routes.outbox_delete_library({"library": library}))[0]
+    activity_obj = list(routes.outbox_delete_library({"library": library}))[0]
     expected = serializers.ActivitySerializer(
         {"type": "Delete", "object": {"type": "Library", "id": library.fid}}
     ).data
 
-    expected["to"] = [{"type": "followers", "target": library}]
+    expected["to"] = [activity.PUBLIC_ADDRESS, {"type": "instances_with_followers"}]
 
-    assert dict(activity["payload"]) == dict(expected)
-    assert activity["actor"] == library.actor
+    assert dict(activity_obj["payload"]) == dict(expected)
+    assert activity_obj["actor"] == library.actor
 
 
 def test_outbox_update_library(factories):
     library = factories["music.Library"]()
-    activity = list(routes.outbox_update_library({"library": library}))[0]
+    activity_obj = list(routes.outbox_update_library({"library": library}))[0]
     expected = serializers.ActivitySerializer(
         {"type": "Update", "object": serializers.LibrarySerializer(library).data}
     ).data
 
-    expected["to"] = [{"type": "followers", "target": library}]
+    expected["to"] = [activity.PUBLIC_ADDRESS, {"type": "instances_with_followers"}]
 
-    assert dict(activity["payload"]) == dict(expected)
-    assert activity["actor"] == library.actor
+    assert dict(activity_obj["payload"]) == dict(expected)
+    assert activity_obj["actor"] == library.actor
 
 
 def test_inbox_update_library(factories):
@@ -692,29 +692,32 @@ def test_inbox_delete_audio_impostor(factories):
 
 def test_outbox_delete_audio(factories):
     upload = factories["music.Upload"]()
-    activity = list(routes.outbox_delete_audio({"uploads": [upload]}))[0]
+    activity_obj = list(routes.outbox_delete_audio({"uploads": [upload]}))[0]
     expected = serializers.ActivitySerializer(
         {"type": "Delete", "object": {"type": "Audio", "id": [upload.fid]}}
     ).data
 
-    expected["to"] = [{"type": "followers", "target": upload.library.actor}]
+    expected["to"] = [activity.PUBLIC_ADDRESS, {"type": "instances_with_followers"}]
 
-    assert dict(activity["payload"]) == dict(expected)
-    assert activity["actor"] == upload.library.actor
+    assert dict(activity_obj["payload"]) == dict(expected)
+    assert activity_obj["actor"] == upload.library.actor
 
 
 def test_outbox_delete_audio_channel(factories):
-    channel = factories["audio.Channel"]()
+    user = factories["users.User"]()
+    channel = factories["audio.Channel"](actor__user=user)
+    channel.actor.user = user
+    channel.actor.save()
     upload = factories["music.Upload"](library=channel.library)
-    activity = list(routes.outbox_delete_audio({"uploads": [upload]}))[0]
+    activity_obj = list(routes.outbox_delete_audio({"uploads": [upload]}))[0]
     expected = serializers.ActivitySerializer(
         {"type": "Delete", "object": {"type": "Audio", "id": [upload.fid]}}
     ).data
 
-    expected["to"] = [{"type": "followers", "target": channel.actor}]
+    expected["to"] = [activity.PUBLIC_ADDRESS, {"type": "instances_with_followers"}]
 
-    assert dict(activity["payload"]) == dict(expected)
-    assert activity["actor"] == channel.actor
+    assert dict(activity_obj["payload"]) == dict(expected)
+    assert activity_obj["actor"] == channel.actor
 
 
 def test_inbox_delete_follow_library(factories):
@@ -1075,8 +1078,10 @@ def test_outbox_flag(factory_name, factory_kwargs, factories, mocker):
 
 
 def test_outbox_create_track_favorite(factories, mocker):
-    user = factories["users.User"](with_actor=True)
-    favorite = factories["favorites.TrackFavorite"](actor=user.actor)
+    user = factories["users.User"](with_actor=True, privacy_level="followers")
+    favorite = factories["favorites.TrackFavorite"](
+        actor=user.actor, privacy_level="followers"
+    )
 
     activity = list(
         routes.outbox_create_track_favorite(
@@ -1126,7 +1131,7 @@ def test_inbox_create_track_favorite(factories, mocker):
 
 
 def test_outbox_create_listening(factories, mocker):
-    user = factories["users.User"](with_actor=True)
+    user = factories["users.User"](with_actor=True, privacy_level="followers")
     listening = factories["history.Listening"](actor=user.actor)
 
     activity = list(
@@ -1177,7 +1182,7 @@ def test_inbox_create_listening(factories, mocker):
 
 
 def test_outbox_create_playlist(factories, mocker):
-    user = factories["users.User"](with_actor=True)
+    user = factories["users.User"](with_actor=True, privacy_level="followers")
     playlist = factories["playlists.Playlist"](actor=user.actor)
 
     activity = list(

@@ -147,6 +147,7 @@ class ManageInvitationActionSerializer(common_serializers.ActionSerializer):
 class ManageDomainSerializer(serializers.ModelSerializer):
     actors_count = serializers.SerializerMethodField()
     outbox_activities_count = serializers.SerializerMethodField()
+    followed = serializers.SerializerMethodField()
 
     class Meta:
         model = federation_models.Domain
@@ -159,6 +160,7 @@ class ManageDomainSerializer(serializers.ModelSerializer):
             "nodeinfo_fetch_date",
             "instance_policy",
             "allowed",
+            "followed",
         ]
         read_only_fields = [
             "creation_date",
@@ -172,6 +174,9 @@ class ManageDomainSerializer(serializers.ModelSerializer):
 
     def get_outbox_activities_count(self, o) -> int:
         return getattr(o, "outbox_activities_count", 0)
+
+    def get_followed(self, o) -> bool:
+        return getattr(o, "followed", False)
 
 
 class ManageDomainUpdateSerializer(ManageDomainSerializer):

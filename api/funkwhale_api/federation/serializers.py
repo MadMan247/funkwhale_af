@@ -2298,6 +2298,9 @@ class TrackFavoriteSerializer(jsonld.JsonLdSerializer):
         )
         return fav
 
+    def update(self, instance, validated_data):
+        return self.create(validated_data)
+
 
 class ListeningSerializer(jsonld.JsonLdSerializer):
     type = serializers.ChoiceField(choices=[contexts.AS.Listen])

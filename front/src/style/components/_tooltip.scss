@@ -1,12 +1,32 @@
 
-[data-tooltip]::after {
-  white-space: normal;
-  width: 500px;
-  max-width: 500px;
-  z-index: 999;
+[data-tooltip] {
+  position: relative;
+  cursor: help;
+}
 
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1rem;
+  border-radius: 6px;
+  white-space: normal;
+  width: 200px;
+  max-width: 200px;
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out;
   background-color: var(--tooltip-background);
   color: var(--tooltip-color);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+[data-tooltip]:hover::after {
+  opacity: 1;
 }
 
 label .tooltip {

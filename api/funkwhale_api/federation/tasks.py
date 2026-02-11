@@ -5,6 +5,7 @@ import os
 from urllib.parse import urlparse
 
 import requests
+from celery import chain
 from django.conf import settings
 from django.core.cache import cache
 from django.db import transaction
@@ -242,7 +243,9 @@ def update_domain_nodeinfo(domain):
         )
     domain.nodeinfo_fetch_date = now
     domain.nodeinfo = nodeinfo
-    domain.save(update_fields=["nodeinfo", "nodeinfo_fetch_date", "service_actor"])
+    return domain.save(
+        update_fields=["nodeinfo", "nodeinfo_fetch_date", "service_actor"]
+    )
 
 
 @celery.app.task(name="federation.refresh_nodeinfo_known_nodes")
@@ -318,35 +321,53 @@ def rotate_actor_key(actor):
     actor.save(update_fields=["private_key", "public_key"])
 
 
+def iter_remote_pages(target, actor, object_type):
+    if target == target.domain.service_actor:
+        # we want to parse all the content
+        params = {}
+    else:
+        params = ({"scope": f"actor:{target.full_username}"},)
+
+    auth = signing.get_auth(actor.private_key, actor.private_key_id)
+    url = (
+        "https://"
+        + target.domain.name
+        + reverse(
+            f"api:v2:{object_type}-list",
+        )
+    )
+
+    page = 0
+    while url:
+        page += 1
+        if page > settings.FEDERATION_COLLECTION_MAX_PAGES:
+            break
+        response = session.get_session().get(
+            url=url,
+            params=params,
+            auth=auth,
+            headers={"Accept": "application/json"},
+        )
+        data = response.json()
+        logger.debug(f"Remote answered with {data}")
+        yield from data["results"]
+        url = data["next"]
+        # params = None  # next already includes params
+
+
 @celery.app.task(name="federation.parse_actor_collection")
 @celery.require_instance(models.Actor.objects.local(include=False), "target")
 @celery.require_instance(models.Actor.objects.local(), "actor")
 def parse_remote_collections(target, actor, object_type):
     from . import api_serializers
 
-    auth = signing.get_auth(actor.private_key, actor.private_key_id)
-    response = session.get_session().get(
-        "https://"
-        + target.domain.name
-        + reverse(
-            f"api:v2:{object_type}-list",
-        ),
-        params={"scope": f"actor:{target.full_username}"},
-        auth=auth,
-        headers={"Accept": "application/json"},
-    )
-
-    logger.debug(f"Remote answered with {response.json()}")
-
-    for obj in response.json()["results"]:
-        if object_type == "channels":
-            fid = obj["actor"]["fid"]
-        else:
-            fid = obj["fid"]
+    for obj in iter_remote_pages(target, actor, object_type):
+        fid = obj["actor"]["fid"] if object_type == "channels" else obj["fid"]
 
         fetch_serializer = api_serializers.FetchSerializer(data={"object_uri": fid})
-        fetch_serializer.is_valid()
+        fetch_serializer.is_valid(raise_exception=True)
         fetch_obj = fetch_serializer.save(actor=actor)
+
         if fetch_obj.status != "finished":
             # no duplicate was returned, we can fetch again
             fetch.delay(fetch_id=fetch_obj.pk)
@@ -356,25 +377,27 @@ def parse_remote_collections(target, actor, object_type):
 @celery.require_instance(models.Actor.objects.local(include=False), "target")
 @celery.require_instance(models.Actor.objects.local(), "actor")
 def fetch_past_activities(target, actor):
-    # fetch_objects_collection_from_actor(target, actor, "channels")
-    # to do : can we make a task wait for the previous one to complete ?
-    parse_remote_collections.delay(
-        target_id=target.pk, actor_id=actor.pk, object_type="libraries"
-    )
-    parse_remote_collections.delay(
-        target_id=target.pk, actor_id=actor.pk, object_type="playlists"
-    )
-    parse_remote_collections.delay(
-        target_id=target.pk, actor_id=actor.pk, object_type="favorites:tracks"
-    )
-    # This is (way) more efficient than parse_actor_collection since it only use one query
-    # per page (but it still need to fetch tracks on by one).
-    # Could implement the same for TrackFavorites
-    # (not needed for libraries and playlists since they are collections)
-    listenings_scan = history_models.ListeningsScan.objects.create(
-        actor=actor, target=target
-    )
-    history_tasks.start_listenings_scan.delay(listenings_scan_id=listenings_scan.pk)
+    chain(
+        parse_remote_collections.si(
+            target_id=target.pk, actor_id=actor.pk, object_type="libraries"
+        ),
+        parse_remote_collections.si(
+            target_id=target.pk, actor_id=actor.pk, object_type="playlists"
+        ),
+        parse_remote_collections.si(
+            target_id=target.pk, actor_id=actor.pk, object_type="favorites:tracks"
+        ),
+    ).apply_async()
+
+    if not target == target.domain.service_actor:
+        listenings_scan = history_models.ListeningsScan.objects.create(
+            actor=actor, target=target
+        )
+        # This is (way) more efficient than parse_actor_collection since it only use one query
+        # per page (but it still need to fetch tracks on by one).
+        # Could implement the same for TrackFavorites
+        # (not needed for libraries and playlists since they are collections)
+        history_tasks.start_listenings_scan.si(listenings_scan_id=listenings_scan.pk),
 
 
 @celery.app.task(name="federation.fetch")

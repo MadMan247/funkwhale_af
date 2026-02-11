@@ -860,6 +860,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v2/federation/follows/domain/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["create_federation_follow_domain"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v2/federation/follows/domain/delete/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["create_federation_follow_domain_delete"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v2/federation/follows/library/": {
         parameters: {
             query?: never;
@@ -4160,6 +4192,9 @@ export interface components {
         Domain: {
             name: string;
         };
+        DomainFollowRequest: {
+            target: string;
+        };
         Endpoints: {
             /** Format: uri */
             knownNodes?: string;
@@ -4730,6 +4765,7 @@ export interface components {
             readonly nodeinfo_fetch_date: string | null;
             readonly instance_policy: number;
             allowed?: boolean | null;
+            readonly followed: boolean;
         };
         ManageDomainRequest: {
             /** Format: uri */
@@ -4747,6 +4783,7 @@ export interface components {
             readonly nodeinfo_fetch_date: string | null;
             readonly instance_policy: number;
             allowed?: boolean | null;
+            readonly followed: boolean;
         };
         ManageDomainUpdateRequest: {
             allowed?: boolean | null;
@@ -5382,6 +5419,7 @@ export interface components {
             readonly openRegistrations: boolean;
             readonly usage: components["schemas"]["Usage"];
             readonly metadata: components["schemas"]["Metadata21"];
+            readonly podFollow: boolean;
         };
         NodeInfoLibrary: {
             federationEnabled: boolean;
@@ -8743,6 +8781,58 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Fetch"];
+                };
+            };
+        };
+    };
+    create_federation_follow_domain: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DomainFollowRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["DomainFollowRequest"];
+                "multipart/form-data": components["schemas"]["DomainFollowRequest"];
+                "application/activity+json": components["schemas"]["DomainFollowRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Follow"];
+                };
+            };
+        };
+    };
+    create_federation_follow_domain_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DomainFollowRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["DomainFollowRequest"];
+                "multipart/form-data": components["schemas"]["DomainFollowRequest"];
+                "application/activity+json": components["schemas"]["DomainFollowRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Follow"];
                 };
             };
         };

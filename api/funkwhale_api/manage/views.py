@@ -13,6 +13,7 @@ from funkwhale_api.common import preferences
 from funkwhale_api.common import utils as common_utils
 from funkwhale_api.common.mixins import MultipleLookupDetailMixin
 from funkwhale_api.favorites import models as favorites_models
+from funkwhale_api.federation import actors
 from funkwhale_api.federation import models as federation_models
 from funkwhale_api.federation import tasks as federation_tasks
 from funkwhale_api.federation import utils as federation_utils
@@ -411,7 +412,10 @@ class ManageDomainViewSet(
     ]
 
     def get_queryset(self, **kwargs):
+        actor = actors.get_service_actor()
         queryset = super().get_queryset(**kwargs)
+        queryset = queryset.with_followed(actor)
+
         return queryset.external()
 
     def get_serializer_class(self):

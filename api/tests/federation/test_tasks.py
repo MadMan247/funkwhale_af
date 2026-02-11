@@ -207,6 +207,8 @@ def test_fetch_nodeinfo(factories, r_mock, now):
 
 def test_update_domain_nodeinfo(factories, mocker, now, service_actor):
     domain = factories["federation.Domain"](nodeinfo_fetch_date=None)
+    domain.nodeinfo = {}
+    domain.save()
     actor = factories["federation.Actor"](fid="https://actor.id")
     retrieve_ap_object = mocker.spy(utils, "retrieve_ap_object")
 

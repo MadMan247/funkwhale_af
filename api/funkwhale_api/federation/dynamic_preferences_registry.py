@@ -31,6 +31,16 @@ class Enabled(types.BooleanPreference):
 
 
 @global_preferences_registry.register
+class EnabledPodFollow(types.BooleanPreference):
+    section = federation
+    name = "pod_follow"
+    default = True
+    verbose_name = "Pod level following enabled"
+    help_text = "This allows remote instance to follow your service actor. "
+    "All public activities will be sent to the following instances."
+
+
+@global_preferences_registry.register
 class CollectionPageSize(types.IntPreference):
     section = federation
     name = "collection_page_size"

@@ -256,6 +256,10 @@ class NodeInfo21Serializer(NodeInfo20Serializer):
     protocols = serializers.SerializerMethodField()
     services = ServicesSerializer(default={})
     openRegistrations = serializers.SerializerMethodField()
+    podFollow = serializers.SerializerMethodField()
+
+    def get_podFollow(self, obj) -> bool:
+        return obj["preferences"]["federation__pod_follow"]
 
     def get_version(self, obj) -> str:
         return "2.1"

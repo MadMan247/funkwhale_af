@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { InstancePolicy } from '~/types'
+import type { components } from '~/generated/types.ts'
 
 import { humanSize } from '~/utils/filters'
 import { useI18n } from 'vue-i18n'
@@ -26,6 +27,15 @@ import Alert from '~/components/ui/Alert.vue'
 import OptionsButton from '~/components/ui/button/Options.vue'
 import Popover from '~/components/ui/Popover.vue'
 import PopoverItem from '~/components/ui/popover/PopoverItem.vue'
+
+type NodeInfo21 = components['schemas']['NodeInfo21']
+type Domain = components['schemas']['ManageDomain']
+
+interface NodeInfoResponse {
+  status: 'ok' | 'error'
+  payload?: NodeInfo21
+  error?: string
+}
 
 interface Props {
   id: number
@@ -57,14 +67,16 @@ const fetchPolicy = async (id: number) => {
 }
 
 const isLoading = ref(false)
-const object = ref()
+const object = ref<Domain | null>(null)
 const externalUrl = computed(() => `https://${object.value?.name}`)
+const nodeinfo = computed(() => object.value?.nodeinfo as NodeInfoResponse | undefined)
+const nodeinfoPaylod = computed(() => (nodeinfo.value?.status === 'ok' ? nodeinfo.value?.payload : undefined) as NodeInfo21 | undefined)
 const fetchData = async () => {
   isLoading.value = true
 
   try {
     const response = await axios.get(`manage/federation/domains/${props.id}/`)
-    object.value = response.data
+    object.value = response.data as Domain
     if (response.data.instance_policy) {
       fetchPolicy(response.data.instance_policy)
     }
@@ -93,9 +105,14 @@ const fetchStats = async () => {
 fetchStats()
 fetchData()
 
-const refreshNodeInfo = (data: any) => {
-  object.value.nodeinfo = data
-  object.value.nodeinfo_fetch_date = new Date()
+const refreshNodeInfo = (data: NodeInfo21) => {
+  if (object.value) {
+    object.value = {
+      ...object.value,
+      nodeinfo: data,
+      nodeinfo_fetch_date: new Date().toISOString()
+    } as Domain
+  }
 }
 
 const getQuery = (field: string, value: string) => `${field}:"${value}"`
@@ -118,6 +135,41 @@ const setAllowList = async (value: boolean) => {
   }
 
   isLoadingAllowList.value = false
+}
+
+const isFollowingPod = ref(false)
+const followPod = async () => {
+  if (!nodeinfoPaylod.value) return
+
+  isFollowingPod.value = true
+
+  try {
+    await axios.post('federation/follows/domain/', {
+      target: object.value!.name
+    })
+    await fetchData()
+  } catch (error) {
+    useErrorHandler(error as Error)
+  }
+
+  isFollowingPod.value = false
+}
+
+const unfollowPod = async () => {
+  if (!nodeinfoPaylod.value) return
+
+  isFollowingPod.value = true
+
+  try {
+    await axios.post('federation/follows/domain/delete/', {
+      target: object.value!.name
+    })
+    await fetchData()
+  } catch (error) {
+    useErrorHandler(error as Error)
+  }
+
+  isFollowingPod.value = false
 }
 </script>
 
@@ -153,11 +205,27 @@ const setAllowList = async (value: boolean) => {
         primary
         low-height
         icon="bi-wrench"
-        :to="store.getters['instance/absoluteUrl'](`/api/admin/federation/domain/${object.name}`)"
+        :to="store.getters['instance/absoluteUrl'](`/api/admin/federation/domain/${object?.name}`)"
         target="_blank"
       >
         {{ t('views.admin.moderation.DomainsDetail.link.django') }}
       </Link>
+      <span
+        :data-tooltip="t('views.admin.moderation.DomainsDetail.button.followTooltip')"
+        style="display: inline-block"
+      >
+        <Button
+          v-if="nodeinfoPaylod?.software?.name === 'funkwhale'"
+          :disabled="isFollowingPod"
+          solid
+          secondary
+          low-height
+          :icon="object?.followed ? 'bi-cloud-check-fill' : 'bi-cloud-download-fill'"
+          @click="object?.followed ? unfollowPod() : followPod()"
+        >
+          {{ object?.followed ? t('views.admin.moderation.DomainsDetail.button.unfollowPod') : t('views.admin.moderation.DomainsDetail.button.followPod') }}
+        </Button>
+      </span>
       <Spacer grow />
       <Popover v-if="allowListEnabled">
         <template #default="{ toggleOpen }">
@@ -223,7 +291,7 @@ const setAllowList = async (value: boolean) => {
       v-else-if="showPolicyForm"
       :object="policy"
       type="domain"
-      :target="object.name"
+      :target="object?.name ?? ''"
       @cancel="showPolicyForm = false"
       @save="updatePolicy"
       @delete="policy = null; showPolicyForm = false"
@@ -282,7 +350,7 @@ const setAllowList = async (value: boolean) => {
         </span>
       </Layout>
       <Layout
-        v-if="object?.nodeinfo && object?.nodeinfo.status === 'ok'"
+        v-if="nodeinfo?.status === 'ok'"
         flex
         class="details"
       >
@@ -295,14 +363,14 @@ const setAllowList = async (value: boolean) => {
         />
         <span class="value">
           {{ t('views.admin.moderation.DomainsDetail.table.instanceData.software.value', {
-            name: get(object,
-                      'nodeinfo.payload.software.name', t('views.admin.moderation.DomainsDetail.notApplicable')), version:
-                        get(object,
-                            'nodeinfo.payload.software.version', t('views.admin.moderation.DomainsDetail.notApplicable'))}) }}
+            name: get(nodeinfoPaylod,
+                      'software.name', t('views.admin.moderation.DomainsDetail.notApplicable')), version:
+                        get(nodeinfoPaylod,
+                            'software.version', t('views.admin.moderation.DomainsDetail.notApplicable'))}) }}
         </span>
       </Layout>
       <Layout
-        v-if="object?.nodeinfo && object?.nodeinfo.status === 'error'"
+        v-if="nodeinfo?.status === 'error'"
         flex
         class="details"
       >
@@ -315,12 +383,12 @@ const setAllowList = async (value: boolean) => {
         />
         <span class="value">
           {{ t('views.admin.moderation.DomainsDetail.table.instanceData.nodeInfoStatus.value', {
-            name: get(object,
-                      'nodeinfo.payload.software.name', t('views.admin.moderation.DomainsDetail.notApplicable')), version:
-                        get(object,
-                            'nodeinfo.payload.software.version', t('views.admin.moderation.DomainsDetail.notApplicable'))}) }}
+            name: get(nodeinfoPaylod,
+                      'software.name', t('views.admin.moderation.DomainsDetail.notApplicable')), version:
+                        get(nodeinfoPaylod,
+                            'software.version', t('views.admin.moderation.DomainsDetail.notApplicable'))}) }}
         </span>
-        <span :data-tooltip="object.nodeinfo.error"><i class="bi bi-question-circle" /></span>
+        <span :data-tooltip="nodeinfo?.error"><i class="bi bi-question-circle" /></span>
       </Layout>
       <ajax-button
         method="get"
@@ -356,7 +424,7 @@ const setAllowList = async (value: boolean) => {
           h
           grow
         />
-        <HumanDate :date="object?.creation_date" />
+        <HumanDate :date="object?.creation_date ?? ''" />
       </Layout>
       <Layout
         flex
@@ -364,7 +432,7 @@ const setAllowList = async (value: boolean) => {
       >
         <Link
           class="label"
-          :to="{ name: 'manage.moderation.accounts.list', query: { q: 'domain:' + object?.name } }"
+          :to="{ name: 'manage.moderation.accounts.list', query: { q: 'domain:' + (object?.name ?? '') } }"
         >
           {{ t('views.admin.moderation.DomainsDetail.link.knownAccounts') }}
         </Link>
@@ -421,7 +489,7 @@ const setAllowList = async (value: boolean) => {
         class="details"
       >
         <span class="label">
-          <router-link :to="{ name: 'manage.channels', query: { q: getQuery('domain', object.name) } }">
+          <router-link :to="{ name: 'manage.channels', query: { q: getQuery('domain', object?.name ?? '') } }">
             {{ t('views.admin.moderation.DomainsDetail.link.channels') }}
           </router-link>
         </span>
@@ -436,7 +504,7 @@ const setAllowList = async (value: boolean) => {
         class="details"
       >
         <span class="label">
-          <router-link :to="{ name: 'manage.library.libraries', query: { q: getQuery('domain', object.name) } }">
+          <router-link :to="{ name: 'manage.library.libraries', query: { q: getQuery('domain', object?.name ?? '') } }">
             {{ t('views.admin.moderation.DomainsDetail.link.libraries') }}
           </router-link>
         </span>
@@ -451,7 +519,7 @@ const setAllowList = async (value: boolean) => {
         class="details"
       >
         <span class="label">
-          <router-link :to="{ name: 'manage.library.uploads', query: { q: getQuery('domain', object.name) } }">
+          <router-link :to="{ name: 'manage.library.uploads', query: { q: getQuery('domain', object?.name ?? '') } }">
             {{ t('views.admin.moderation.DomainsDetail.link.uploads') }}
           </router-link>
         </span>
@@ -466,7 +534,7 @@ const setAllowList = async (value: boolean) => {
         class="details"
       >
         <span class="label">
-          <router-link :to="{ name: 'manage.library.artists', query: { q: getQuery('domain', object.name) } }">
+          <router-link :to="{ name: 'manage.library.artists', query: { q: getQuery('domain', object?.name ?? '') } }">
             {{ t('views.admin.moderation.DomainsDetail.link.artists') }}
           </router-link>
         </span>
@@ -481,7 +549,7 @@ const setAllowList = async (value: boolean) => {
         class="details"
       >
         <span class="label">
-          <router-link :to="{ name: 'manage.library.albums', query: { q: getQuery('domain', object.name) } }">
+          <router-link :to="{ name: 'manage.library.albums', query: { q: getQuery('domain', object?.name ?? '') } }">
             {{ t('views.admin.moderation.DomainsDetail.link.albums') }}
           </router-link>
         </span>
@@ -496,7 +564,7 @@ const setAllowList = async (value: boolean) => {
         class="details"
       >
         <span class="label">
-          <router-link :to="{ name: 'manage.library.tracks', query: { q: getQuery('domain', object.name) } }">
+          <router-link :to="{ name: 'manage.library.tracks', query: { q: getQuery('domain', object?.name ?? '') } }">
             {{ t('views.admin.moderation.DomainsDetail.link.tracks') }}
           </router-link>
         </span>

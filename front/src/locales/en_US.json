@@ -3958,7 +3958,10 @@
             "addPolicy": "Add a moderation policy",
             "addToAllowList": "Add to allow-list",
             "refreshNodeInfo": "Refresh node info",
-            "removeFromAllowList": "Remove from allow-list"
+            "removeFromAllowList": "Remove from allow-list",
+            "followPod": "Follow this domain",
+            "unfollowPod": "Unfollow this domain",
+            "followTooltip": "Following a pod enables automatic fetching of new content and activities from it"
           },
           "description": {
             "policy": "Moderation policies help you control how your instance interact with a given domain or account"

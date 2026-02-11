@@ -10,6 +10,7 @@ maxdepth: 1
 
 Environment file <env-file>
 Instance settings <instance-settings>
+Federation tips <federation-settings>
 object-storage
 Frontend customization <frontend>
 optimize

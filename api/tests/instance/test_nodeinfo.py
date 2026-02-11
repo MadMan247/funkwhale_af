@@ -108,6 +108,7 @@ def test_nodeinfo_21(api_client):
         "protocols": ["activitypub"],
         "services": OrderedDict([("inbound", ["atom1.0"]), ("outbound", ["atom1.0"])]),
         "openRegistrations": False,
+        "podFollow": True,
         "usage": {
             "users": OrderedDict(
                 [("total", 0), ("activeHalfyear", 0), ("activeMonth", 0)]

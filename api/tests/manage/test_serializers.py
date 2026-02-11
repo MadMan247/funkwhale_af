@@ -42,6 +42,8 @@ def test_user_update_permission(factories):
 
 def test_manage_domain_serializer(factories, now, to_api_date):
     domain = factories["federation.Domain"](nodeinfo_fetch_date=None)
+    domain.nodeinfo = {}
+    domain.save()
     setattr(domain, "actors_count", 42)
     setattr(domain, "outbox_activities_count", 23)
     expected = {
@@ -53,6 +55,7 @@ def test_manage_domain_serializer(factories, now, to_api_date):
         "nodeinfo_fetch_date": None,
         "instance_policy": None,
         "allowed": None,
+        "followed": False,
     }
     s = serializers.ManageDomainSerializer(domain)
 

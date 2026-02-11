@@ -73,6 +73,70 @@ class DomainFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
     allowed = None
     reachable = True
     last_successful_contact = None
+    nodeinfo = {
+        "version": "2.1",
+        "software": {
+            "name": "funkwhale",
+            "version": "2.0.0a2",
+            "repository": "https://dev.funkwhale.audio/funkwhale/funkwhale",
+            "homepage": "https://funkwhale.audio",
+        },
+        "protocols": ["activitypub"],
+        "services": {"inbound": ["atom1.0"], "outbound": ["atom1.0"]},
+        "openRegistrations": True,
+        "usage": {
+            "users": {"total": 1052, "activeHalfyear": 2, "activeMonth": 2},
+            "localPosts": 0,
+            "localComments": 0,
+        },
+        "metadata": {
+            "actorId": "https://node1.funkwhale.test/federation/actors/service",
+            "private": False,
+            "shortDescription": "",
+            "longDescription": "",
+            "contactEmail": "",
+            "nodeName": "",
+            "defaultUploadQuota": 1000,
+            "supportedUploadExtensions": [
+                "aac",
+                "aif",
+                "aiff",
+                "flac",
+                "m4a",
+                "mp3",
+                "ogg",
+                "opus",
+            ],
+            "allowList": {"enabled": True, "domains": None},
+            "funkwhaleSupportMessageEnabled": True,
+            "instanceSupportMessage": "",
+            "usage": {
+                "favorites": {"tracks": {"total": 3}},
+                "listenings": {"total": 10},
+                "downloads": {"total": 224},
+            },
+            "languages": ["en"],
+            "location": "",
+            "content": {
+                "local": {
+                    "artists": 93,
+                    "releases": 82,
+                    "recordings": 93,
+                    "hoursOfContent": 56,
+                },
+                "topMusicCategories": [
+                    {"name": "Alternative", "count": 1},
+                    {"name": "Alternative And Punk", "count": 1},
+                    {"name": "Alternatif", "count": 1},
+                ],
+                "topPodcastCategories": [],
+            },
+            "features": ["channels", "podcasts", "anonymousCanListen", "federation"],
+            "rules": "",
+            "terms": "",
+        },
+        "podFollow": True,
+    }
 
     class Meta:
         model = "federation.Domain"

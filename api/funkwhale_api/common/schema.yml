@@ -3107,6 +3107,66 @@ paths:
               schema:
                 $ref: '#/components/schemas/Fetch'
           description: ''
+  /api/v2/federation/follows/domain/:
+    post:
+      operationId: create_federation_follow_domain
+      tags:
+      - federation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DomainFollowRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DomainFollowRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DomainFollowRequest'
+          application/activity+json:
+            schema:
+              $ref: '#/components/schemas/DomainFollowRequest'
+        required: true
+      security:
+      - oauth2: []
+      - ApplicationToken: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Follow'
+          description: ''
+  /api/v2/federation/follows/domain/delete/:
+    post:
+      operationId: create_federation_follow_domain_delete
+      tags:
+      - federation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DomainFollowRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DomainFollowRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DomainFollowRequest'
+          application/activity+json:
+            schema:
+              $ref: '#/components/schemas/DomainFollowRequest'
+        required: true
+      security:
+      - oauth2: []
+      - ApplicationToken: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Follow'
+          description: ''
   /api/v2/federation/follows/library/:
     get:
       operationId: get_federation_library_follows
@@ -12440,6 +12500,13 @@ components:
           type: string
       required:
       - name
+    DomainFollowRequest:
+      type: object
+      properties:
+        target:
+          type: string
+      required:
+      - target
     Endpoints:
       type: object
       properties:
@@ -13956,9 +14023,13 @@ components:
         allowed:
           type: boolean
           nullable: true
+        followed:
+          type: boolean
+          readOnly: true
       required:
       - actors_count
       - creation_date
+      - followed
       - instance_policy
       - name
       - nodeinfo
@@ -14006,9 +14077,13 @@ components:
         allowed:
           type: boolean
           nullable: true
+        followed:
+          type: boolean
+          readOnly: true
       required:
       - actors_count
       - creation_date
+      - followed
       - instance_policy
       - name
       - nodeinfo
@@ -15589,9 +15664,13 @@ components:
           allOf:
           - $ref: '#/components/schemas/Metadata21'
           readOnly: true
+        podFollow:
+          type: boolean
+          readOnly: true
       required:
       - metadata
       - openRegistrations
+      - podFollow
       - protocols
       - software
       - usage

@@ -15,6 +15,16 @@ inbox = activity.InboxRouter()
 outbox = activity.OutboxRouter()
 
 
+def to_followers_or_service_actor(privacy_level_field, followers_target):
+    if privacy_level_field == "everyone":
+        # to do : make sure actor allow indexable data ?
+        # see https://socialhub.activitypub.rocks/t/instance-federation-visibility-of-remote-events/3850
+        to = [activity.PUBLIC_ADDRESS, {"type": "instances_with_followers"}]
+    else:
+        to = [{"type": "followers", "target": followers_target}]
+    return to
+
+
 def with_recipients(payload, to=[], cc=[]):
     if to:
         payload["to"] = to
@@ -179,11 +189,15 @@ def outbox_create_audio(context):
                 "object": upload_serializer(upload).data,
             }
         )
+
     yield {
         "type": "Create",
         "actor": actor,
         "payload": with_recipients(
-            serializer.data, to=[{"type": "followers", "target": followers_target}]
+            serializer.data,
+            to=to_followers_or_service_actor(
+                upload.library.privacy_level, followers_target
+            ),
         ),
         "object": upload,
         "target": None if channel else upload.library,
@@ -242,7 +256,8 @@ def outbox_delete_library(context):
         "type": "Delete",
         "actor": library.actor,
         "payload": with_recipients(
-            serializer.data, to=[{"type": "followers", "target": library}]
+            serializer.data,
+            to=[activity.PUBLIC_ADDRESS, {"type": "instances_with_followers"}],
         ),
     }
 
@@ -258,7 +273,8 @@ def outbox_update_library(context):
         "type": "Update",
         "actor": library.actor,
         "payload": with_recipients(
-            serializer.data, to=[{"type": "followers", "target": library}]
+            serializer.data,
+            to=[activity.PUBLIC_ADDRESS, {"type": "instances_with_followers"}],
         ),
     }
 
@@ -322,7 +338,10 @@ def outbox_delete_audio(context):
         "type": "Delete",
         "actor": actor,
         "payload": with_recipients(
-            serializer.data, to=[{"type": "followers", "target": followers_target}]
+            serializer.data,
+            to=to_followers_or_service_actor(
+                followers_target.user.privacy_level, followers_target
+            ),
         ),
     }
 
@@ -629,12 +648,13 @@ def outbox_create_track_favorite(context):
             "audience": actor.user.privacy_level,
         }
     )
+
     yield {
         "type": "Like",
         "actor": actor,
         "payload": with_recipients(
             serializer.data,
-            to=[{"type": "followers", "target": actor}],
+            to=to_followers_or_service_actor(actor.user.privacy_level, actor),
         ),
     }
 
@@ -651,7 +671,7 @@ def outbox_delete_favorite(context):
         "actor": actor,
         "payload": with_recipients(
             serializer.data,
-            to=[{"type": "followers", "target": actor}],
+            to=to_followers_or_service_actor(actor.user.privacy_level, actor),
         ),
     }
 
@@ -698,7 +718,7 @@ def outbox_create_listening(context):
         "actor": actor,
         "payload": with_recipients(
             serializer.data,
-            to=[{"type": "followers", "target": actor}],
+            to=to_followers_or_service_actor(actor.user.privacy_level, actor),
         ),
     }
 
@@ -715,7 +735,7 @@ def outbox_delete_listening(context):
         "actor": actor,
         "payload": with_recipients(
             serializer.data,
-            to=[{"type": "followers", "target": actor}],
+            to=to_followers_or_service_actor(actor.user.privacy_level, actor),
         ),
     }
 
@@ -804,7 +824,7 @@ def outbox_create_playlist(context):
         "actor": playlist.actor,
         "payload": with_recipients(
             serializer.data,
-            to=[{"type": "followers", "target": playlist.actor}],
+            to=to_followers_or_service_actor(playlist.privacy_level, playlist.actor),
         ),
     }
 
@@ -879,12 +899,13 @@ def outbox_update_playlist(context):
     serializer = serializers.ActivitySerializer(
         {"type": "Update", "object": serializers.PlaylistSerializer(playlist).data}
     )
+
     yield {
         "type": "Update",
         "actor": playlist.actor,
         "payload": with_recipients(
             serializer.data,
-            to=[{"type": "followers", "target": playlist.actor}],
+            to=to_followers_or_service_actor(playlist.privacy_level, playlist.actor),
         ),
     }
 

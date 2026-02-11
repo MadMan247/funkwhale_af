@@ -19,6 +19,7 @@ from funkwhale_api.users.oauth import permissions as oauth_permissions
 
 from . import (
     activity,
+    actors,
     api_serializers,
     exceptions,
     filters,
@@ -510,3 +511,62 @@ class UserFollowViewSet(
             "count": len(follows),
         }
         return response.Response(payload, status=200)
+
+
+class DomainFollowViewSet(
+    viewsets.GenericViewSet,
+):
+    lookup_field = "uuid"
+    queryset = (
+        models.Follow.objects.all()
+        .select_related("actor", "target")
+        .filter(actor__managed_domains__isnull=False)
+    )
+    serializer_class = api_serializers.FollowSerializer
+    permission_classes = [oauth_permissions.ScopePermission]
+    required_scope = "instance:settings"
+    ordering_fields = "creation_date"
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["actor"] = self.request.user.actor
+        return context
+
+    @extend_schema(request=api_serializers.DomainFollowSerializer)
+    @decorators.action(detail=False, methods=["post"])
+    def delete(self, instance):
+        domain = models.Domain.objects.filter(name=self.request.data.get("target"))
+        if domain.exists():
+            follow = models.Follow.objects.filter(
+                target=domain.first().service_actor,
+                actor=actors.get_service_actor(),
+            )
+            if follow.exists():
+                routes.outbox.dispatch(
+                    {"type": "Undo", "object": {"type": "Follow"}},
+                    context={"follow": follow.first()},
+                )
+                follow.first().delete()
+
+                return response.Response(status=204)
+        return response.Response(status=400)
+
+    @extend_schema(request=api_serializers.DomainFollowSerializer)
+    def create(self, request):
+        serializer = api_serializers.DomainFollowSerializer(
+            data=request.data, context=self.get_serializer_context()
+        )
+        if serializer.is_valid():
+            follow_serializer = self.serializer_class(
+                data=serializer.validated_data, context=self.get_serializer_context()
+            )
+            if follow_serializer.is_valid():
+                follow = follow_serializer.save(actor=actors.get_service_actor())
+                routes.outbox.dispatch({"type": "Follow"}, context={"follow": follow})
+                tasks.fetch_past_activities.delay(
+                    target_id=follow.target.pk, actor_id=actors.get_service_actor().pk
+                )
+                return response.Response(status=201)
+
+            return response.Response(follow_serializer.errors, status=400)
+        return response.Response(serializer.errors, status=400)

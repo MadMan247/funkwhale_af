@@ -13,12 +13,14 @@ from funkwhale_api.audio import models as audio_models
 from funkwhale_api.audio import serializers as audio_serializers
 from funkwhale_api.common import serializers as common_serializers
 from funkwhale_api.favorites import models as favorites_models
+from funkwhale_api.moderation import mrf
 from funkwhale_api.music import models as music_models
 from funkwhale_api.playlists import models as playlists_models
 from funkwhale_api.users import serializers as users_serializers
 
-from . import filters, models
+from . import actors, filters, models
 from . import serializers as federation_serializers
+from . import tasks
 
 
 class NestedLibraryFollowSerializer(serializers.ModelSerializer):
@@ -42,6 +44,9 @@ class LibraryScanSerializer(serializers.ModelSerializer):
 
 class DomainSerializer(serializers.Serializer):
     name = serializers.CharField()
+
+    class Meta:
+        model = models.Domain
 
 
 class LibrarySerializer(serializers.ModelSerializer):
@@ -121,6 +126,43 @@ class FollowSerializer(serializers.ModelSerializer):
     @extend_schema_field(federation_serializers.APIActorSerializer)
     def get_actor(self, o):
         return federation_serializers.APIActorSerializer(o.actor).data
+
+
+class DomainFollowSerializer(FollowSerializer):
+    target = common_serializers.RelatedField("name", DomainSerializer, required=True)
+
+    def validate_target(self, v):
+        if not v.service_actor:
+            v = tasks.update_domain_nodeinfo(domain_name=v.name)
+        remote_service_actor = v.service_actor
+
+        if actors.get_service_actor() == remote_service_actor:
+            raise serializers.ValidationError("You cannot follow your own pod")
+        if remote_service_actor.received_follows.filter(
+            actor=actors.get_service_actor()
+        ).exists():
+            raise serializers.ValidationError("You are already following this pod")
+
+        payload, updated = mrf.inbox.apply({"id": v.name})
+        if not payload:
+            raise serializers.ValidationError("Blocked by MRF")
+
+        if not v.nodeinfo and (
+            not v.nodeinfo.get("payload", {}).get("software", {}).get("name", {})
+            == "Funkwhale"
+            or not v.nodeinfo.get("payload", {})
+            .get("software", {})
+            .get("version", {})
+            .startswith("2.")
+        ):
+            raise serializers.ValidationError("Wrong software or software version")
+
+        return remote_service_actor.fid
+
+    def create(self, validated_data):
+        return models.Follow(
+            target=validated_data["target"], actor=validated_data["actor"]
+        ).save()
 
 
 def serialize_generic_relation(activity, obj):

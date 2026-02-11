@@ -8,13 +8,13 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
-from django.db.models import JSONField
+from django.db.models import Exists, JSONField, OuterRef
 from django.db.models.signals import post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import timezone
 
-from funkwhale_api.common import session
+from funkwhale_api.common import preferences, session
 from funkwhale_api.common import utils as common_utils
 from funkwhale_api.common import validators as common_validators
 from funkwhale_api.music import utils as music_utils
@@ -111,6 +111,16 @@ class DomainQuerySet(models.QuerySet):
         return self.annotate(
             outbox_activities_count=models.Count(
                 "actors__outbox_activities", distinct=True
+            )
+        )
+
+    def with_followed(self, actor):
+        return self.annotate(
+            followed=Exists(
+                Follow.objects.filter(
+                    actor=actor,
+                    target=OuterRef("service_actor"),
+                )
             )
         )
 
@@ -270,9 +280,15 @@ class Actor(models.Model):
         return Actor.objects.filter(pk__in=follows.values_list("target", flat=True))
 
     def should_autoapprove_follow(self, actor):
+        from . import actors
+
         if self.get_channel():
             return True
-        if self.user.privacy_level == "public":
+        if hasattr(self, "user") and self.user.privacy_level == "public":
+            return True
+        if self == actors.get_service_actor() and preferences.get(
+            "federation__pod_follow"
+        ):
             return True
         return False
 
@@ -686,7 +702,11 @@ def update_denormalization_follow_approved(sender, instance, created, **kwargs):
                 actor_ids=[instance.actor.pk],
                 delete_existing=not instance.approved,
             )
-        elif isinstance(instance, Follow) and not instance.target.get_channel():
+        elif (
+            isinstance(instance, Follow)
+            and not instance.target.get_channel()
+            and not instance.target.type == "Service"
+        ):
             # we fetch the remote actor's libraries to make the uploads available locally
             builtin_lib = federation_utils.get_or_create_builtin_actor_library(
                 instance.target, privacy_level="everyone"

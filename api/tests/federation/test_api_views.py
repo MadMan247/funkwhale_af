@@ -2,9 +2,17 @@ import datetime
 from unittest.mock import Mock
 
 import pytest
+from django.db.models import signals
 from django.urls import reverse
 
-from funkwhale_api.federation import api_serializers, serializers, tasks, views
+from funkwhale_api.federation import (
+    actors,
+    api_serializers,
+    models,
+    serializers,
+    tasks,
+    views,
+)
 
 
 def test_user_can_list_their_library_follows(factories, logged_in_api_client):
@@ -519,3 +527,47 @@ def test_user_cannot_get_blocked_users(factories, api_client):
 
     response = api_client.get(url)
     assert response.status_code == 401
+
+
+def test_domain_follow_post(factories, logged_in_api_client, mocker):
+    actor = logged_in_api_client.user.create_actor()
+    target_domain = factories["federation.Domain"](with_service_actor=True)
+    original_receivers = signals.post_save.receivers.copy()
+    signals.post_save.receivers = []
+
+    url = reverse("api:v2:federation:domain-follows-list")
+    response = logged_in_api_client.post(url, {"target": target_domain.name})
+    assert response.status_code == 403
+
+    actor.user.permission_settings = True
+    actor.user.save()
+    response = logged_in_api_client.post(url, {"target": target_domain.name})
+    assert response.status_code == 201
+    assert models.Follow.objects.filter(
+        target=target_domain.service_actor, actor=actors.get_service_actor()
+    ).exists()
+
+    response = logged_in_api_client.post(url, {"target": target_domain.name})
+    assert response.status_code == 400
+    signals.post_save.receivers = original_receivers
+
+
+def test_domain_follow_delete(factories, logged_in_api_client, mocker):
+    logged_in_api_client.user.create_actor()
+    target_domain = factories["federation.Domain"](with_service_actor=True)
+    factories["federation.Follow"](
+        target=target_domain.service_actor, actor=actors.get_service_actor()
+    )
+    user = logged_in_api_client.user
+    user.permission_settings = True
+    user.superuser = True
+    user.save()
+    original_receivers = signals.post_save.receivers.copy()
+    signals.post_save.receivers = []
+    url = reverse("api:v2:federation:domain-follows-list")
+    response = logged_in_api_client.delete(url, {"target": target_domain.name})
+    assert response.status_code == 204
+    assert not models.Follow.objects.filter(
+        target=target_domain.service_actor, actor=actors.get_service_actor()
+    ).exists()
+    signals.post_save.receivers = original_receivers
