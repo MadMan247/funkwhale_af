@@ -253,6 +253,7 @@
         "add": "افزودن محتوا",
         "administration": "مدیریت",
         "edits": "ویرایش‌های در انتظار بررسی",
+        "follows": "هنوز پی‌گیری وجود ندارد",
         "language": "زبان",
         "main": "منوی اصلی",
         "play": "پخش این اثر",
@@ -997,6 +998,14 @@
             }
           }
         }
+      },
+      "FollowWidget": {
+        "empty": {
+          "private": "دسترسی رد شد"
+        }
+      },
+      "RevokeFollowerButton": {
+        "label": "لغو پی‌گیر"
       }
     },
     "forms": {
@@ -1217,6 +1226,7 @@
       },
       "Home": {
         "header": {
+          "followers": "پی‌گیرها",
           "newChannels": "کانال‌های جدید",
           "playlists": "سیاهه‌پخش",
           "recentlyAdded": "در این اواخر اضافه شده است",
@@ -1293,6 +1303,9 @@
         },
         "placeholder": {
           "search": "جست‌و‌جو…"
+        },
+        "tabs": {
+          "subscribed": "پادپخش‌هایی که پی‌میگیرم"
         },
         "title": "پادپخش‌ها"
       },
