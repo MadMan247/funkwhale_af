@@ -90,7 +90,10 @@ class PlaylistSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(OpenApiTypes.BOOL)
     def get_is_playable(self, obj):
-        return getattr(obj, "is_playable_by_actor", False)
+        if hasattr(obj, "playable_plts") and obj.playable_plts:
+            return True
+        else:
+            return False
 
     def get_tracks_count(self, obj) -> int:
         return getattr(obj, "tracks_count", obj.playlist_tracks.count())

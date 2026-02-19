@@ -6,7 +6,7 @@ RUN set -eux; \
   python3-dev \
   libffi-dev \
   openssl-dev \
-  cargo; \
+  cargo \
   py3-cryptography \
   py3-pip \
   build-base \
