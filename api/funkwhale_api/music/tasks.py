@@ -290,6 +290,13 @@ def process_upload(upload, update_denormalization=True):
     upload.track = track
 
     if owned_duplicates:
+        tags = (
+            forced_values["tags"]
+            if "tags" in forced_values
+            else final_metadata.get("tags", [])
+        )
+        tags_models.add_tags(track, *tags)
+        logger.info(f"taggin with tag {tags}")
         upload.import_status = "skipped"
         upload.import_details = {
             "code": "already_imported_in_owned_libraries",
@@ -674,9 +681,8 @@ def _get_track(data, attributed_to=None, query_mb=True, **forced_values):
                 models.Album, query, defaults=defaults, sort_fields=["mbid", "fid"]
             )
             album.artist_credit.set(album_artists_credits)
-
+            tags_models.add_tags(album, *album_data.get("tags", []))
             if created:
-                tags_models.add_tags(album, *album_data.get("tags", []))
                 common_utils.attach_content(
                     album, "description", album_data.get("description")
                 )
@@ -754,11 +760,10 @@ def _get_track(data, attributed_to=None, query_mb=True, **forced_values):
         models.Track, query, defaults=defaults, sort_fields=["mbid", "fid"]
     )
 
+    tags = forced_values["tags"] if "tags" in forced_values else data.get("tags", [])
+    tags_models.add_tags(track, *tags)
+
     if created:
-        tags = (
-            forced_values["tags"] if "tags" in forced_values else data.get("tags", [])
-        )
-        tags_models.add_tags(track, *tags)
         common_utils.attach_content(track, "description", description)
         common_utils.attach_file(track, "attachment_cover", cover_data)
 
@@ -801,8 +806,8 @@ def get_or_create_artist_from_ac(ac_data, attributed_to, from_activity_id):
     artist, created = get_best_candidate_or_create(
         models.Artist, query, defaults=defaults, sort_fields=["mbid", "fid"]
     )
+    tags_models.add_tags(artist, *tags)
     if created:
-        tags_models.add_tags(artist, *tags)
         common_utils.attach_content(artist, "description", description)
         common_utils.attach_file(artist, "attachment_cover", cover)
     if sync_mb_tag and mbid:
