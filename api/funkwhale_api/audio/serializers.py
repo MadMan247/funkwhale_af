@@ -3,6 +3,7 @@ import logging
 import sys
 import time
 import uuid
+from urllib.parse import urlparse
 
 import feedparser
 import requests
@@ -398,7 +399,12 @@ def get_channel_from_rss_url(url, raise_exception=False):
     if not is_valid:
         logger.warn("Feed fetch for url %s dropped by MRF", url)
         raise BlockedFeedException("This feed or domain is blocked")
-
+    domain = federation_models.Domain.objects.filter(name=urlparse(url).netloc)
+    if domain and not domain.reachable:
+        logger.debug(
+            f"Discarding feed request because domain  {domain.name}is not reachable"
+        )
+        raise
     # retrieve the XML payload at the given URL
     response = retrieve_feed(url)
 
