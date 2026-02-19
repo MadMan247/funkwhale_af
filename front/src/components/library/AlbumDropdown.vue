@@ -43,7 +43,7 @@ const labels = computed(() => ({
 // TODO: What is the condition for an album to be embeddable?
 // (a) props.publicLibraries.length
 // (b) I am the channel's artist: props.isChannel && props.artistCredit[0].artist?.channel?.actor)
-const isEmbedable = computed(() => (props.publicLibraries.length))
+const isEmbedable = computed(() => (props.object.is_playable))
 const musicbrainzUrl = computed(() => props.object?.mbid ? `https://musicbrainz.org/release/${props.object.mbid}` : null)
 const discogsUrl = computed(() => `https://discogs.com/search/?type=release&title=${encodeURI(props.object?.title)}&artist=${encodeURI(props.object.artist_credit[0]!.artist.name)}`)
 

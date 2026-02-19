@@ -66,7 +66,7 @@ const domain = computed(() => getDomain(track.value?.fid ?? ''))
 // TODO: Make it make sense:
 // const isEmbedable = computed(() => artist.value?.channel?.actor || publicLibraries.value.length)
 
-const isEmbedable = computed(() => false)
+const isEmbedable = computed(() => track.value?.is_playable )
 
 const upload = computed(() => track.value?.uploads?.[0] ?? null)
 const wikipediaUrl = computed(() => `https://en.wikipedia.org/w/index.php?search=${encodeURI(`${track.value?.title ?? ''} ${track.value?.artist_credit[0]?.artist.name ?? ''}`)}`)
