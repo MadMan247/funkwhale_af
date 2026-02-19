@@ -3,6 +3,10 @@ FROM alpine:3.23 AS requirements
 RUN set -eux; \
   apk add --no-cache \
   pipx \
+  python3-dev \
+  libffi-dev \
+  openssl-dev \
+  cargo; \
   py3-cryptography \
   py3-pip \
   build-base \
