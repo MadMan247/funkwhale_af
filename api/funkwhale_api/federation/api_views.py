@@ -269,6 +269,7 @@ class DomainViewSet(
     queryset = models.Domain.objects.order_by("name").external()
     permission_classes = [ConditionalAuthentication]
     serializer_class = api_serializers.DomainSerializer
+    filterset_class = filters.DomainFilter
     ordering_fields = ("creation_date", "name")
     max_page_size = 100
 

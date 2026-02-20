@@ -8692,6 +8692,7 @@ export interface operations {
     get_federation_domains: {
         parameters: {
             query?: {
+                is_funkwhale_instance?: boolean;
                 /** @description Which field to use when ordering the results. */
                 ordering?: string;
                 /** @description A page number within the paginated result set. */

@@ -5,7 +5,7 @@ import os
 from urllib.parse import urlparse
 
 import requests
-from celery import chain
+from celery import chain, group
 from django.conf import settings
 from django.core.cache import cache
 from django.db import transaction
@@ -199,6 +199,8 @@ def fetch_nodeinfo(domain_name):
         if link["rel"] == "https://docs.funkwhale.audio/swagger/schema.yml":
             nodeinfo_url = link["href"]
             break
+    if not nodeinfo_url:
+        logger.info("Not supported nodeinfo schema")
     response = s.get(url=nodeinfo_url)
     response.raise_for_status()
     return response.json()
@@ -243,8 +245,15 @@ def update_domain_nodeinfo(domain):
         )
     domain.nodeinfo_fetch_date = now
     domain.nodeinfo = nodeinfo
+    if nodeinfo.get("payload", {}).get("software", {}).get("name", "") == "funkwhale":
+        domain.is_funkwhale_instance = True
     return domain.save(
-        update_fields=["nodeinfo", "nodeinfo_fetch_date", "service_actor"]
+        update_fields=[
+            "nodeinfo",
+            "nodeinfo_fetch_date",
+            "service_actor",
+            "is_funkwhale_instance",
+        ]
     )
 
 
@@ -326,7 +335,7 @@ def iter_remote_pages(target, actor, object_type):
         # we want to parse all the content
         params = {}
     else:
-        params = ({"scope": f"actor:{target.full_username}"},)
+        params = {"scope": f"actor:{target.full_username}"}
 
     auth = signing.get_auth(actor.private_key, actor.private_key_id)
     url = (
@@ -373,10 +382,14 @@ def parse_remote_collections(target, actor, object_type):
             fetch.delay(fetch_id=fetch_obj.pk)
 
 
-@celery.app.task(name="federation.fetch_past_activities")
+@celery.app.task(name="federation.fetch_past_activities", bind=True)
 @celery.require_instance(models.Actor.objects.local(include=False), "target")
 @celery.require_instance(models.Actor.objects.local(), "actor")
-def fetch_past_activities(target, actor):
+def fetch_past_activities(self, target, actor):
+    logger.info(
+        "Heavy task, if you want to abort you need to kill all the children "
+        f"tasks sharing this group_id :  {self.request.root_id}"
+    )
     chain(
         parse_remote_collections.si(
             target_id=target.pk, actor_id=actor.pk, object_type="libraries"
@@ -398,6 +411,23 @@ def fetch_past_activities(target, actor):
         # Could implement the same for TrackFavorites
         # (not needed for libraries and playlists since they are collections)
         history_tasks.start_listenings_scan.si(listenings_scan_id=listenings_scan.pk),
+
+
+@celery.app.task(name="federation.bulk_fetch_past_activities", bind=True)
+@celery.require_instance(models.Actor.objects.local(), "actor")
+def bulk_fetch_past_activities(self, target_ids, actor):
+    logger.info(
+        "Heavy task, if you want to abort you need to kill all the children "
+        f"tasks sharing this group_id :  {self.request.root_id}"
+    )
+    tasks = []
+
+    for target_id in target_ids:
+        task = fetch_past_activities.si(target_id=target_id, actor_id=actor.pk)
+        tasks.append(task)
+
+    job = group(tasks)
+    job.apply_async()
 
 
 @celery.app.task(name="federation.fetch")
@@ -811,3 +841,133 @@ def trigger_playlist_ap_update(playlist):
                 "playlist": playlists_models.Playlist.objects.get(uuid=playlist_uuid)
             },
         )
+
+
+def create_domains(data, local_domains):
+    from . import api_serializers
+
+    for remote_domain in data["results"]:
+        if remote_domain["name"] in local_domains:
+            logger.info("Domain already in db. Skipping")
+            continue
+
+        else:
+            logger.info(f"Adding discovered domain {remote_domain} to db")
+            data = {"name": remote_domain["name"], "creation_date": timezone.now}
+            serializer = api_serializers.DomainSerializer(data=data)
+            serializer.is_valid(raise_exception=True)
+            domain = serializer.save()
+            update_domain_nodeinfo(domain_name=domain.name)
+
+
+@celery.app.task(name="federation.discover_domains")
+def discover_domains_from_known_ones():
+    if preferences.get("federation__auto_federation") is False:
+        logger.info("Automatic federation is disabled. Skipping task.")
+        return
+
+    local_fw_domains = (
+        models.Domain.objects.all()
+        .exclude(is_funkwhale_instance=False)
+        .exclude(name=settings.FEDERATION_HOSTNAME)
+        .exclude(reachable=False)
+    )
+
+    # loaded into memory to avoid networks requests by checking if we already know them.
+    local_domains = (
+        models.Domain.objects.all()
+        .exclude(name=settings.FEDERATION_HOSTNAME)
+        .values_list("name", flat=True)
+    )
+
+    for local_fw_domain in local_fw_domains:
+        url = utils.get_remote_url(
+            local_fw_domain,
+            reverse("api:v2:federation:domains-list"),
+            {"is_funkwhale_instance": True},
+        )
+
+        try:
+            response = session.get_session().get(url)
+        except Exception as e:
+            local_fw_domain.reachable = False
+            local_fw_domain.reachable_retries += 1
+            local_fw_domain.save()
+            logger.info(
+                f"Domain {local_fw_domain.name} is not reachable at the moment. Setting domain as unreachable. "
+                f"Exception was {e}"
+            )
+            return
+
+        if response.status_code != 200:
+            logger.info(
+                f"No domain found from {url}, status code: {response.status_code}"
+            )
+            return
+
+        create_domains(response.json(), local_domains)
+
+
+@celery.app.task(name="federation.discover_domains_from_funkwhale_audio")
+def discover_domains_from_funkwhale_audio():
+    if preferences.get("federation__auto_federation") is False:
+        logger.info("Automatic federation is disabled. Skipping task.")
+        return
+    url = "https://network.funkwhale.audio/api/domains"
+    local_domains = (
+        models.Domain.objects.all()
+        .exclude(name=settings.FEDERATION_HOSTNAME)
+        .values_list("name", flat=True)
+    )
+    try:
+        response = session.get_session().get(url)
+    except Exception as e:
+        logger.info("Network.funkwhale.audio is not reachable at the moment.")
+        raise e
+
+    if response.status_code != 200:
+        logger.info(f"No domains found, status code: {response.status_code}")
+        return
+
+    create_domains(response.json(), local_domains)
+
+
+@celery.app.task(name="federation.follow_all_domains")
+def follow_all_domains():
+    from . import api_serializers
+
+    if preferences.get("federation__auto_federation") is False:
+        logger.info("Automatic federation is disabled. Skipping task.")
+        return
+
+    actor = actors.get_service_actor()
+    domains = (
+        models.Domain.objects.all()
+        .exclude(name=settings.FEDERATION_HOSTNAME)
+        .exclude(is_funkwhale_instance=False)
+        .exclude(reachable=False)
+        .exclude(service_actor__following=actor)
+    )
+    target_ids = []
+    for domain in domains:
+        try:
+            data = {"target": domain.name}
+            serializer = api_serializers.DomainFollowSerializer(
+                data=data, context={"actor": actor}
+            )
+            if serializer.is_valid():
+                follow_serializer = api_serializers.FollowSerializer(
+                    data=serializer.validated_data, context={"actor": actor}
+                )
+                if follow_serializer.is_valid():
+                    follow = follow_serializer.save(actor=actors.get_service_actor())
+                    routes.outbox.dispatch(
+                        {"type": "Follow"}, context={"follow": follow}
+                    )
+                target_ids.append(follow.target.pk)
+        except Exception as e:
+            logger.error(f"Unhandled error while creating domain follow : {e} ")
+    bulk_fetch_past_activities.delay(
+        target_ids=target_ids,
+        actor_id=actors.get_service_actor().pk,
+    )

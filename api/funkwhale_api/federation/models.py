@@ -146,6 +146,7 @@ class Domain(models.Model):
     reachable = models.BooleanField(default=True)
     last_successful_contact = models.DateTimeField(default=None, null=True)
     reachable_retries = models.PositiveIntegerField(default=0)
+    is_funkwhale_instance = models.BooleanField(default=False, null=True)
     objects = DomainQuerySet.as_manager()
 
     def __str__(self):

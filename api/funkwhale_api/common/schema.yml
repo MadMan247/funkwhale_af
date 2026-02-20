@@ -3003,6 +3003,10 @@ paths:
     get:
       operationId: get_federation_domains
       parameters:
+      - in: query
+        name: is_funkwhale_instance
+        schema:
+          type: boolean
       - name: ordering
         required: false
         in: query

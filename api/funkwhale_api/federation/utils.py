@@ -3,6 +3,7 @@ import logging
 import re
 import unicodedata
 import urllib.parse
+from urllib.parse import urlencode
 
 from django.apps import apps
 from django.conf import settings
@@ -370,3 +371,7 @@ def get_or_create_builtin_actor_library(actor, privacy_level):
         )
         lib.schedule_scan(actor=service_actor)
         return lib
+
+
+def get_remote_url(hostname, reverse, params={}):
+    return f"https://{hostname}{reverse}?{urlencode(params)}"

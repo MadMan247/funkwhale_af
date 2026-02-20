@@ -3,6 +3,7 @@ import os
 import pathlib
 
 import pytest
+from django.urls import reverse
 from django.utils import timezone
 
 from funkwhale_api.federation import jsonld, models, serializers, tasks, utils
@@ -765,3 +766,91 @@ def test_fetch_webfinger_create_actor(factories, r_mock, mocker):
     assert init.call_args[0][1] == actor
     assert init.call_args[1]["data"] == payload
     assert save.call_count == 1
+
+
+def test_follow_all_domains(factories, settings, preferences, mocker, r_mock):
+    preferences["federation__auto_federation"] = True
+    factories["federation.Domain"].create_batch(
+        size=5, is_funkwhale_instance=True, reachable=True
+    )
+    settings.CELERY_TASK_ALWAYS_EAGER = True
+    settings.CELERY_TASK_EAGER_PROPAGATES = True
+    tasks.follow_all_domains.delay()
+
+    actor = factories["federation.Actor"](local=True)
+    target = factories["federation.Actor"]()
+    payload = serializers.ActorSerializer(target).data
+    r_mock.get(target.fid, json=payload)
+
+    for object_type in ["libraries", "playlists", "favorites:tracks"]:
+        url = (
+            "https://"
+            + target.domain.name
+            + reverse(
+                f"api:v2:{object_type}-list",
+            )
+        )
+        r_mock.get(url, json={"results": [], "next": ""})
+
+    tasks.bulk_fetch_past_activities.delay(target_ids=[target.pk], actor_id=actor.pk)
+
+
+def test_discover_domains_creates_new_domain(
+    factories, settings, preferences, mocker, r_mock
+):
+    preferences["federation__auto_federation"] = True
+    settings.CELERY_TASK_ALWAYS_EAGER = True
+    settings.CELERY_TASK_EAGER_PROPAGATES = True
+
+    # Existing local domain (Funkwhale instance and reachable)
+    local_fw_domain = factories["federation.Domain"](
+        name="remote.instance",
+        is_funkwhale_instance=True,
+        reachable=True,
+    )
+
+    # Already known domain in DB (should not be recreated)
+    existing_domain = factories["federation.Domain"](
+        name="known.instance",
+    )
+
+    # Remote API returns one new domain + one already known
+    remote_payload = {
+        "results": [
+            {"name": "new.instance"},
+            {"name": existing_domain.name},
+        ]
+    }
+
+    url = (
+        f"https://{local_fw_domain.name}"
+        + reverse("api:v2:federation:domains-list")
+        + "?is_funkwhale_instance=True"
+    )
+
+    r_mock.get(url, json=remote_payload)
+
+    url = (
+        "https://new.instance"
+        + reverse("api:v2:federation:domains-list")
+        + "?is_funkwhale_instance=True"
+    )
+    r_mock.get(url, json=remote_payload)
+
+    # Spy on serializer and nodeinfo update
+    from funkwhale_api.federation import api_serializers
+
+    serializer_spy = mocker.spy(api_serializers.DomainSerializer, "__init__")
+    save_spy = mocker.spy(api_serializers.DomainSerializer, "save")
+
+    update_mock = mocker.patch("funkwhale_api.federation.tasks.update_domain_nodeinfo")
+
+    tasks.discover_domains_from_known_ones()
+
+    assert serializer_spy.call_count == 1
+    assert save_spy.call_count == 1
+
+    assert serializer_spy.call_args[1]["data"]["name"] == "new.instance"
+
+    update_mock.assert_called_once_with(domain_name="new.instance")
+    assert models.Domain.objects.filter(name="new.instance").exists()

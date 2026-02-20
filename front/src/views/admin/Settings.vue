@@ -111,6 +111,7 @@ const groups = computed(() => [
     settings: [
       { name: 'federation__enabled' },
       { name: 'federation__pod_follow' },
+      { name: 'federation__auto_federation' },
       { name: 'federation__public_index' },
       { name: 'federation__collection_page_size' },
       { name: 'federation__music_cache_duration' },

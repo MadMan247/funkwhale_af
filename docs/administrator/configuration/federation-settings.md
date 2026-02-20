@@ -35,3 +35,45 @@ When fetching remote data the server will parse various ActivityPub collections.
 ```{note}
 This only affect fetching/scanning remote collections for past activities. New Activities should reach your pod anyways so this is useful when you discover a new domain or when you just setup your pod.
 ```
+
+#### Blocked Worker
+
+If you've set a too high `FEDERATION_COLLECTION_MAX_PAGES`, your worker might get blocked while parsing the network. You should avoid revoking all tasks at once, since you might loose ActivityPub activities. Instead you can kill all the child tasks triggered by the `fetch_past_activities` task by following this tutorial :
+
+1. Open a python shell in the celerywork container
+
+```
+docker compose run --rm celeryworker bash
+python manage.py shell
+```
+
+2. Find all the tasks and revoke them
+
+```
+from celery import current_app
+
+group_id = "YOUR_GROUP_ID"
+i = current_app.control.inspect()
+
+for tasks in (i.active() or {}).values():
+    for task in tasks:
+        if task.get("group") == group_id:
+            current_app.control.revoke(task["id"], terminate=True)
+            print("Revoked:", task["id"])
+
+for tasks in (i.reserved() or {}).values():
+    for task in tasks:
+        if task.get("group") == group_id:
+            current_app.control.revoke(task["id"], terminate=True)
+            print("Revoked:", task["id"])
+
+```
+
+#### Extra steps
+
+You can also use celery cli see https://docs.celeryq.dev/en/stable/userguide/canvas.html
+
+```
+celery -A funkwhale_api.taskapp inspect ping # fails if echo $CELERY_BROKER_URL None -> pass it to the container CELERY_BROKER_URL="redis://redis:6379/0"
+celery -A funkwhale_api.taskapp inspect scheduled
+```

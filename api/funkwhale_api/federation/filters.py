@@ -57,3 +57,7 @@ class FetchFilter(django_filters.FilterSet):
     class Meta:
         model = models.Fetch
         fields = ["status", "object_id", "url"]
+
+
+class DomainFilter(django_filters.FilterSet):
+    is_funkwhale_instance = django_filters.BooleanFilter("is_funkwhale_instance")

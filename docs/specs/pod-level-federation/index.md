@@ -32,7 +32,7 @@ This content appears on the requesting user's pod for their users to interact wi
 
 2. We already have a variable used to route activities to the service actor (see`instances_with_followers`).
 
-- [ ] make sure `followers` privacy level activities are only send once per pod
+- [x] make sure `followers` privacy level activities are only send once per pod
 
 This need to be implemented for this public activities :
 
@@ -69,8 +69,7 @@ For **public upload** this should be a fetch on public libraries : `/api/v2/libr
 
 ### Frontend
 
-- [ ] manage/moderation/domains : add an action to follow the pod
-- [ ] manage/moderation/domains : add a follow filter
+- [x] manage/moderation/domains/domain_url : add a follow button
 - [x] Provide a setting to disable Follow on the service actor (`Pod level following enabled`)
 
 ## Open questions

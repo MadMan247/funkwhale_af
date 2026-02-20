@@ -48,6 +48,9 @@ class DomainSerializer(serializers.Serializer):
     class Meta:
         model = models.Domain
 
+    def create(self, validated_data):
+        return models.Domain.objects.create(name=validated_data["name"])
+
 
 class LibrarySerializer(serializers.ModelSerializer):
     actor = federation_serializers.APIActorSerializer()

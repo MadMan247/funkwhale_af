@@ -36,8 +36,22 @@ class EnabledPodFollow(types.BooleanPreference):
     name = "pod_follow"
     default = True
     verbose_name = "Pod level following enabled"
-    help_text = "This allows remote instance to follow your service actor. "
-    "All public activities will be sent to the following instances."
+    help_text = (
+        "This allows remote instance to follow your service actor. "
+        "All public activities will be sent to the following instances."
+    )
+
+
+@global_preferences_registry.register
+class AutoFederation(types.BooleanPreference):
+    section = federation
+    name = "auto_federation"
+    default = False
+    verbose_name = "Automatic pod level federation"
+    help_text = (
+        "This will find and follow remote pod automatically if they allow it. "
+        "⚠️ Heavy load ! Check documentation. Helpful to get content flowing into your pod."
+    )
 
 
 @global_preferences_registry.register

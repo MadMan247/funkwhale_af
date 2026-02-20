@@ -284,7 +284,7 @@ LOCAL_APPS = (
     "funkwhale_api.music",
     "funkwhale_api.requests",
     "funkwhale_api.favorites",
-    "funkwhale_api.federation",
+    "funkwhale_api.federation.apps.FederationConfig",
     "funkwhale_api.moderation.apps.ModerationConfig",
     "funkwhale_api.radios",
     "funkwhale_api.history",
@@ -722,8 +722,8 @@ SESSION_COOKIE_HTTPONLY = False
 SESSION_COOKIE_AGE = env.int("SESSION_COOKIE_AGE", default=3600 * 25 * 60)
 
 # Some really nice defaults
-ACCOUNT_AUTHENTICATION_METHOD = "username_email"
-ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_LOGIN_METHODS = {"email", "username"}
+ACCOUNT_SIGNUP_FIELDS = ["email*", "username*", "password1*", "password2*"]
 ACCOUNT_EMAIL_VERIFICATION_ENFORCE = env.bool(
     "ACCOUNT_EMAIL_VERIFICATION_ENFORCE", default=False
 )
@@ -989,6 +989,11 @@ CELERY_BEAT_SCHEDULE = {
     "tags.update_musicbrainz_genre": {
         "task": "tags.update_musicbrainz_genre",
         "schedule": crontab(day_of_month="2", minute="30", hour="3"),
+        "options": {"expires": 60 * 60 * 24},
+    },
+    "federation.follow_all_domains": {
+        "task": "federation.follow_all_domains",
+        "schedule": crontab(minute="30", hour="2", day_of_week="1"),
         "options": {"expires": 60 * 60 * 24},
     },
 }
