@@ -55,7 +55,7 @@ const scope = computed(() =>
       :title="t('components.library.Home.header.recentlyFavorited')"
     />
     <album-widget
-      :filters="{ scope: scope, playable: true, ordering: '-creation_date', ...qualityFilters}"
+      :filters="{ scope: scope, ordering: '-creation_date', ...qualityFilters}"
       :limit="8"
       :title="t('components.library.Home.header.recentlyAdded')"
     />

@@ -95,12 +95,12 @@ const createForm = ref()
 
     <playlist-widget
       :url="'playlists/'"
-      :filters="{ scope: scope, playable: true, ...qualityFilters, limit: 4 }"
+      :filters="{ scope: scope, ...qualityFilters, limit: 4 }"
       :title="t('views.auth.ProfileContent.header.playlists')"
     />
 
     <album-widget
-      :filters="{ scope: scope, playable: true, ...qualityFilters }"
+      :filters="{ scope: scope, ...qualityFilters }"
       :limit="8"
       :title="t('views.auth.ProfileContent.header.albums')"
     />
