@@ -1037,7 +1037,6 @@ class LibrarySerializer(PaginatedCollectionSerializer):
             raise serializers.ValidationError(
                 "You need to provide at least actor or attributedTo"
             )
-
         d["attributedTo"] = attributed_to or actor
         return d
 
@@ -2294,6 +2293,7 @@ class TrackFavoriteSerializer(jsonld.JsonLdSerializer):
                 "fid": validated_data.get("id"),
                 "uuid": validated_data["id"].rstrip("/").split("/")[-1],
                 "privacy_level": validated_data["audience"],
+                "creation_date": validated_data.get("published", timezone.now()),
             },
         )
         return fav
@@ -2399,7 +2399,7 @@ class PlaylistTrackSerializer(jsonld.JsonLdSerializer):
         defaults = {
             "track": track,
             "index": validated_data["index"],
-            "creation_date": validated_data["creation_date"],
+            "creation_date": validated_data.get("published", timezone.now()),
             "playlist": playlist,
         }
         if existing_plt := playlists_models.PlaylistTrack.objects.filter(
@@ -2477,7 +2477,7 @@ class PlaylistSerializer(jsonld.JsonLdSerializer):
         ap_to_fw_data = {
             "actor": actor,
             "name": validated_data["name"],
-            "creation_date": validated_data["published"],
+            "creation_date": validated_data.get("published", timezone.now()),
             "privacy_level": validated_data["audience"],
         }
 

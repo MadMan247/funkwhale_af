@@ -782,7 +782,7 @@ def test_follow_all_domains(factories, settings, preferences, mocker, r_mock):
     payload = serializers.ActorSerializer(target).data
     r_mock.get(target.fid, json=payload)
 
-    for object_type in ["libraries", "playlists", "favorites:tracks"]:
+    for object_type in ["libraries", "channels", "playlists", "favorites:tracks"]:
         url = (
             "https://"
             + target.domain.name

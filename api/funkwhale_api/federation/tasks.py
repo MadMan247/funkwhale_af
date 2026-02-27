@@ -395,6 +395,9 @@ def fetch_past_activities(self, target, actor):
             target_id=target.pk, actor_id=actor.pk, object_type="libraries"
         ),
         parse_remote_collections.si(
+            target_id=target.pk, actor_id=actor.pk, object_type="channels"
+        ),
+        parse_remote_collections.si(
             target_id=target.pk, actor_id=actor.pk, object_type="playlists"
         ),
         parse_remote_collections.si(
