@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="TOption extends string|number">
-import { nextTick, onMounted, onUnmounted, ref, computed, type Ref } from 'vue'
+import { nextTick, onMounted, onUnmounted, ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { type ColorProps, type VariantProps, type DefaultProps, type RaisedProps, type PastelProps, color } from '~/composables/color.ts'
 
@@ -10,13 +10,15 @@ import Layout from '@ui/Layout.vue'
 
 // TODO: Add machine-readable semantics with `type` and `autocomplete` attributes (https://www.w3.org/WAI/WCAG21/Understanding/identify-input-purpose)
 const props = defineProps<{
-    icon?: string;
-    placeholder?: string;
-    label?: string;
-    autofocus?: boolean;
-  } & (ColorProps | DefaultProps | PastelProps)
-    & VariantProps
-    & RaisedProps>()
+  options: Record<TOption, string>
+  placeholder?: string
+  initial?: TOption
+  icon?: string
+  label?: string
+  autofocus?: boolean
+} & (ColorProps | DefaultProps | PastelProps) & VariantProps & RaisedProps>()
+
+const current = defineModel<TOption | string>()
 
 const { t } = useI18n()
 
@@ -28,29 +30,26 @@ onMounted(() => props.autofocus && nextTick(() => {
   previouslyFocusedElement.value = document.activeElement
   previouslyFocusedElement.value?.blur()
   select.value.focus()
-  // Use initial value if current is undefined
-  current.value = current.value ?? initial.value
 }))
+
+current.value = current.value ?? props.initial
 
 onUnmounted(() =>
   previouslyFocusedElement.value?.focus()
 )
 
-const current = defineModel<TOption | string>('current')
-const options = defineModel<Record<TOption, string> | Ref<Record<TOption, string> >>('options', { required: true })
-const initial = defineModel<TOption>('initial')
-
-// const selected =computed(()=> current.value ?? props.placeholder ?? initial.value ?? '')
 const selected = computed<TOption | string>({
   get():TOption | string{
-    return current.value ?? initial.value ?? props.placeholder ?? ''
+    return current.value ?? props.initial ?? props.placeholder ?? ''
   },
   set(newValue: TOption | string) {
     current.value = newValue
   }
 })
 
-const reset = () => { current.value = initial.value }
+const reset = () => {
+  current.value = props.initial ?? ''
+}
 </script>
 
 <template>

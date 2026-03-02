@@ -6,7 +6,7 @@ import Layout from '@ui/Layout.vue'
 import Toggle from '@ui/Toggle.vue'
 
 // #region model
-const tabs = ref([{
+const tabs = [{
   title: "Tab A",
   badge: "secondary.raised.primary 1"
 }, {
@@ -15,7 +15,7 @@ const tabs = ref([{
   title: "Tab C",
   badge: 3,
   name: "final ö $%&/()=?"
-}])
+}]
 // #endregion model
 
 const isOn=ref<boolean[]>([false, true, false])
@@ -29,7 +29,7 @@ const isOn=ref<boolean[]>([false, true, false])
     <!-- #region snippet -->
     <Nav
       v-slot="{ tabpanels }"
-      v-model="tabs"
+      :model-value="tabs"
       tab-query-field="tab"
     >
       <div

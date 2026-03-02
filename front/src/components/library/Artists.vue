@@ -1,304 +1,213 @@
 <script setup lang="ts">
-import type { OrderingProps } from '~/composables/navigation/useOrdering'
-import type { Artist, BackendResponse } from '~/types'
-import type { RouteRecordName } from 'vue-router'
-import type { OrderingField } from '~/store/ui'
-
-import { computed, ref, watch } from 'vue'
-import { useRouteQuery } from '@vueuse/router'
-import { useRoute, useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
 import { syncRef } from '@vueuse/core'
+import { useRouteQuery } from '@vueuse/router'
 import { sortedUniq } from 'lodash-es'
-import { useStore } from '~/store'
-import { useDataStore } from '~/ui/stores/data'
-import { useModal } from '~/ui/composables/useModal.ts'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-import axios from 'axios'
+import useSharedLabels from '~/composables/locale/useSharedLabels'
+import type { OrderingProps } from '~/composables/navigation/useOrdering'
+import useOrdering from '~/composables/navigation/useOrdering'
+import usePage from '~/composables/navigation/usePage'
+import { useStore } from '~/store'
+import type { OrderingField } from '~/store/ui'
+import { useModal } from '~/ui/composables/useModal.ts'
+import { useDataStore } from '~/ui/stores/data'
+import { useUrlParamStore } from '~/ui/stores/urlParam.ts'
 
 import ArtistCard from '~/components/artist/Card.vue'
-import Pagination from '~/components/ui/Pagination.vue'
+
+import Alert from '~/components/ui/Alert.vue'
 import Card from '~/components/ui/Card.vue'
-import Layout from '~/components/ui/Layout.vue'
 import Header from '~/components/ui/Header.vue'
 import Input from '~/components/ui/Input.vue'
-import Toggle from '~/components/ui/Toggle.vue'
-import Nav from '~/components/ui/Nav.vue'
-import Alert from '~/components/ui/Alert.vue'
-import Spacer from '~/components/ui/Spacer.vue'
-import Pills from '~/components/ui/Pills.vue'
-import Section from '~/components/ui/Section.vue'
+import Layout from '~/components/ui/Layout.vue'
 import Loader from '~/components/ui/Loader.vue'
+import Nav from '~/components/ui/Nav.vue'
+import Pagination from '~/components/ui/Pagination.vue'
+import Pills from '~/components/ui/Pills.vue'
+import Select from '~/components/ui/Select.vue'
+import Spacer from '~/components/ui/Spacer.vue'
+import Toggle from '~/components/ui/Toggle.vue'
 
-import useUrlParamCache from '~/ui/composables/useUrlParamCache.ts'
-import useSharedLabels from '~/composables/locale/useSharedLabels'
-import useOrdering from '~/composables/navigation/useOrdering'
-import useErrorHandler from '~/composables/useErrorHandler'
-import usePage from '~/composables/navigation/usePage'
-import useLogger from '~/composables/useLogger'
+const props = defineProps<OrderingProps>()
 
-interface Props extends OrderingProps {
-  scope?: 'me' | 'from_subscribed' | 'domain' | 'all'
+const { t } = useI18n()
+const store = useStore()
 
-  // TODO(wvffle): Remove after https://github.com/vuejs/core/pull/4512 is merged
-  orderingConfigName?: RouteRecordName
-}
+// Query
 
-const props = withDefaults(defineProps<Props>(), {
-  scope: 'me',
-  orderingConfigName: undefined
+const tabs = [
+  { title: t("components.library.Artists.tabs.me"), name: 'me' },
+  { title: t("components.library.Artists.tabs.subscribed"), name: 'from_subscribed' },
+  { title: t("components.library.Artists.tabs.domain"), name: `domain:${store.getters['instance/domain']}` },
+  { title: t("components.library.Artists.tabs.all"), name: 'all' }
+]
+const scope = useUrlParamStore('scope', {
+  allowedValues: [undefined, 'subscribed', ...tabs.map(t => t.name)] as const
 })
+if (scope.value === 'subscribed')
+  scope.value = 'from_subscribed'
+else if (!scope.value)
+  scope.value = 'all'
 
-const page = usePage()
-
-const tags = useRouteQuery<string[]>('tag', [])
+const tags = useUrlParamStore('tag', { scope: 'route', allowedValues: 'array' })
 
 const q = useRouteQuery('query', '')
 const query = ref(q.value)
 syncRef(q, query, { direction: 'ltr' })
 
-const result = ref<BackendResponse<Artist>>()
-const excludeCompilation = ref(true)
-
-const { t } = useI18n()
-
-const orderingOptions: [OrderingField, keyof typeof sharedLabels.filters][] = [
-  ['creation_date', 'creation_date'],
-  ['name', 'name']
-]
-
-const logger = useLogger()
-const sharedLabels = useSharedLabels()
-
-const { onOrderingUpdate, orderingString, paginateBy, ordering, orderingDirection } = useOrdering(props)
-
-const scope = useUrlParamCache('scope', { fallback: props.scope })
-const route = useRoute()
-const router = useRouter()
-
-watch(() => route.query.scope, async (newScope) => {
-  const scopeQuery = Array.isArray(newScope) ? newScope[0] : newScope
-  if (!scopeQuery) {
-    await router.replace({
-      ...route,
-      query: { ...route.query, scope: scope.value }
-    })
-  } else if (scopeQuery === 'subscribed') {
-    await router.replace({
-      ...route,
-      query: { ...route.query, scope: 'from_subscribed' }
-    })
-  }
-}, { immediate: true })
-
-const isLoading = ref(false)
-const fetchData = async () => {
-  isLoading.value = true
-  const params = {
-    scope: scope.value,
-    page: page.value,
-    page_size: paginateBy.value,
-    q: query.value,
-    ordering: orderingString.value,
-    playable: 'true',
-    tag: tags.value,
-    include_channels: 'true',
-    content_category: 'music',
-    has_albums: excludeCompilation.value
-  }
-
-  const measureLoading = logger.time('Fetching artists')
-  try {
-    const response = await axios.get('artists/', {
-      params,
-      paramsSerializer: {
-        indexes: null
-      }
-    })
-
-    result.value = response.data
-  } catch (error) {
-    useErrorHandler(error as Error)
-    result.value = undefined
-    setTimeout(() => page.value = 1, 1000)
-  } finally {
-    measureLoading()
-    isLoading.value = false
-  }
-}
-
-const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value].sort((a, b) => a - b)))
-
-const store = useStore()
-const dataStore = useDataStore()
-
-const tabs = ref([
-  { title: t("components.library.Artists.tabs.me"), name: 'me' },
-  { title: t("components.library.Artists.tabs.subscribed"), name: 'from_subscribed' },
-  { title: t("components.library.Artists.tabs.domain"), name: 'domain:' + store.getters['instance/domain'] },
-  { title: t("components.library.Artists.tabs.all"), name: 'all' }
-])
-
-watch([() => store.state.moderation.lastUpdate, excludeCompilation], fetchData)
-watch([page, tags, q, ordering, orderingDirection, scope], () => {
-  fetchData()
-})
-fetchData()
-
-const search = () => {
-  page.value = 1
-  q.value = query.value
-}
-
-onOrderingUpdate(() => {
-  page.value = 1
-  fetchData()
+const has_albums = useUrlParamStore('has_albums', { allowedValues: [undefined, 'true', 'false'] as const })
+if (!has_albums.value)
+  has_albums.value='true'
+const isCompilationExcluded = computed({
+  get: () => has_albums.value === 'true',
+  set: v => has_albums.value = v ? 'true' : 'false'
 })
 
-const labels = computed(() => ({
-  searchPlaceholder: t('components.library.Artists.placeholder.search'),
-  title: t('components.library.Artists.title')
-}))
+// Pagination
+
+const page = usePage()
+
+const orderingOptions = {
+  creation_date: useSharedLabels().filters.creation_date,
+  name: useSharedLabels().filters.name
+} satisfies Partial<Record<OrderingField, string>>
+
+const directionOptions = {
+  '+':  t('components.library.Artists.ordering.direction.ascending'),
+  '-': t('components.library.Artists.ordering.direction.descending')
+}
+
+const { orderingString, paginateBy, ordering, orderingDirection } = useOrdering(props)
+
+const paginateOptions = computed<Record<number, string>>(() => Object.fromEntries(sortedUniq([
+  12,
+  30,
+  50,
+  paginateBy.value
+].toSorted((a, b) => a - b)).map(v => [v, String(v)])))
+
+watch([q, tags, ordering, has_albums, scope], () => {
+  // Reset page when params have changed
+  page.value = 1
+})
+
+// Search result
+
+const artists = computed(() => useDataStore().artists({
+  scope: scope.value,
+  page: page.value,
+  page_size: paginateBy.value,
+  q: query.value,
+  // @ts-expect-error `useOrdering` types are too loose, need strict type
+  ordering: orderingString.value,
+  playable: true,
+  tag: tags.value,
+  include_channels: true,
+  content_category: 'music',
+  has_albums: isCompilationExcluded.value
+}, {
+  refetchSignal: store.state.moderation.lastUpdate
+}).value)
 </script>
 
 <template>
   <Layout
-    v-title="labels.title"
+    v-title="t('components.library.Artists.title')"
     main
     stack
   >
     <Header
-      :h1="t('components.library.Artists.header.browse')"
       page-heading
+      :h1="t('components.library.Artists.header.browse')"
     />
-    <Section>
-      <Layout
-        form
-        flex
-        :class="['ui', { 'loading': isLoading }, 'form']"
-        @submit.prevent="search"
+    <Spacer />
+
+    <!-- Filters -->
+
+    <Layout
+      flex
+      form
+      @submit.prevent="artists.refetch"
+    >
+      <Input
+        id="artist-search"
+        v-model="query"
+        search
+        name="search"
+        :label="t('components.library.Artists.label.search')"
+        autofocus
+        :placeholder="t('components.library.Artists.placeholder.search')"
+      />
+      <Pills
+        v-if="typeof tags === 'object'"
+        :get="model => { tags = model.currents.map(({ label }) => label) }"
+        :set="_ => ({
+          currents: tags.map(tag => ({ type: 'custom' as const, label: tag })),
+          others: useDataStore().tags().value
+            .filter(({ name }) => artists.data?.results?.some(object => object.tags.includes(name)) && !tags.includes(name))
+            .map(({ name }) => ({ type: 'preset' as const, label: name })),
+        })"
+        :label="t('components.library.Artists.label.tags')"
+        style="max-width: 350px;"
+      />
+      <Select
+        v-model="ordering"
+        :options="orderingOptions"
+        :label="t('components.library.Artists.ordering.label')"
+        style="flex-grow: 0"
+      />
+      <Select
+        v-model="orderingDirection"
+        :options="directionOptions"
+        :label="t('components.library.Artists.ordering.direction.label')"
+        style="flex-grow: 0"
+      />
+      <Select
+        v-model="paginateBy"
+        :options="paginateOptions"
+        :label="t('components.library.Artists.pagination.results')"
+        style="flex-grow: 0"
+      />
+    </Layout>
+    <Toggle
+      v-model="isCompilationExcluded"
+      :label="t('components.library.Artists.label.excludeCompilation')"
+    />
+
+    <!-- Results -->
+
+    <Nav
+      :model-value="tabs"
+      tab-query-field="scope"
+    >
+      <Loader v-if="artists.status === 'loading'" />
+      <Alert
+        v-else-if="artists.status === 'error'"
+        red
       >
-        <Input
-          id="artist-search"
-          v-model="query"
-          search
-          name="search"
-          :label="t('components.library.Artists.label.search')"
-          autofocus
-          :placeholder="labels.searchPlaceholder"
-        />
-        <Pills
-          v-if="typeof tags === 'object'"
-          :get="model => { tags = model.currents.map(({ label }) => label) }"
-          :set="model => ({
-            currents: tags.map(tag => ({ type: 'custom' as const, label: tag })),
-            others: dataStore.tags().value
-              .filter(({ name }) => result?.results?.some((object) => object.tags?.includes(name)) && !tags.includes(name))
-              .map(({ name }) => ({ type: 'preset' as const, label: name })),
-          })"
-          :label="t('components.library.Artists.label.tags')"
-          style="max-width: 350px;"
-        />
-        <Layout
-          stack
-          no-gap
-          label
-          for="artist-ordering"
-        >
-          <span class="label">
-            {{ t('components.library.Artists.ordering.label') }}
-          </span>
-          <select
-            id="artist-ordering"
-            v-model="ordering"
-            class="dropdown"
-          >
-            <option
-              v-for="(option, key) in orderingOptions"
-              :key="key"
-              :value="option[0]"
-            >
-              {{ sharedLabels.filters[option[1]] }}
-            </option>
-          </select>
-        </Layout>
-        <Layout
-          stack
-          no-gap
-          label
-          for="artist-ordering-direction"
-        >
-          <span class="label">
-            {{ t('components.library.Artists.ordering.direction.label') }}
-          </span>
-          <select
-            id="artist-ordering-direction"
-            v-model="orderingDirection"
-            class="dropdown"
-          >
-            <option value="+">
-              {{ t('components.library.Artists.ordering.direction.ascending') }}
-            </option>
-            <option value="-">
-              {{ t('components.library.Artists.ordering.direction.descending') }}
-            </option>
-          </select>
-        </Layout>
-        <Layout
-          stack
-          no-gap
-          label
-          for="artist-results"
-        >
-          <span class="label">
-            {{ t('components.library.Artists.pagination.results') }}
-          </span>
-          <select
-            id="artist-results"
-            v-model="paginateBy"
-            class="dropdown"
-          >
-            <option
-              v-for="opt in paginateOptions"
-              :key="opt"
-              :value="opt"
-            >
-              {{ opt }}
-            </option>
-          </select>
-        </Layout>
-        <Toggle
-          id="exclude-compilation"
-          v-model="excludeCompilation"
-          :label="t('components.library.Artists.label.excludeCompilation')"
-          true-value="true"
-          false-value="null"
-          type="checkbox"
-        />
-      </Layout>
-      <Nav
-        v-model="tabs"
-        tab-query-field="scope"
-      >
-        <Loader v-if="isLoading" />
+        <i class="exclamation triangle icon" />
+        {{ artists.error }}
+      </Alert>
+      <template v-if="artists.data">
         <Pagination
-          v-if="page && result && result.count > paginateBy"
+          v-if="page && artists.data.count > paginateBy"
           v-model:page="page"
-          :pages="Math.ceil(result.count / paginateBy)"
+          :pages="Math.ceil(artists.data.count / paginateBy)"
         />
         <Layout
-          v-if="result && result.results.length > 0"
-          grid
-          style="display:flex; flex-wrap:wrap; gap: 32px; margin-top:32px;"
+          v-if="artists.data?.count > 0"
+          flex
         >
           <ArtistCard
-            v-for="artist in result.results"
+            v-for="artist in artists.data.results"
             :key="artist.id"
-            :artist="artist"
+            :artist
           />
         </Layout>
         <Layout
-          v-else-if="result && result.results.length === 0"
+          v-else-if="artists.data?.count === 0"
           stack
         >
           <Alert yellow>
@@ -324,19 +233,11 @@ const labels = computed(() => ({
         </Layout>
         <Spacer grow />
         <Pagination
-          v-if="page && result && result.count > paginateBy"
+          v-if="page && artists.data && artists.data.count > paginateBy"
           v-model:page="page"
-          :pages="Math.ceil(result.count / paginateBy)"
+          :pages="Math.ceil(artists.data.count / paginateBy)"
         />
-      </Nav>
-    </Section>
+      </template>
+    </Nav>
   </Layout>
 </template>
-
-<style scoped>
-.label {
-  margin-top: -18px;
-  font-size: 14px;
-  font-weight: 600;
-}
-</style>

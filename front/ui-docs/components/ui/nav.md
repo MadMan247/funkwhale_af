@@ -68,6 +68,8 @@ Add `name: 'a'` to the first tab to represent it with a unique name (`?tab=a`). 
 
 <<<@/examples/Nav.a11y.vue#model{ts}
 
+_Note that we are using `:model-value` instead of `v-model` to assign the immutable (`const`) tabs model._
+
 <<<@/examples/Nav.a11y.vue#snippet{vue-html}
 
 [Test this component in isolation against WCAG2 criteria](/maintaining-accessibility#nav)

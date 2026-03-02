@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import type { Playlist } from '~/types'
-
-import { ref, reactive, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { useStore } from '~/store'
 import { useI18n } from 'vue-i18n'
 
-import axios from 'axios'
-
-import useErrorHandler from '~/composables/useErrorHandler'
+import type { operations } from '~/generated/types'
 
 import PlaylistCard from '~/components/playlists/Card.vue'
 import Button from '~/components/ui/Button.vue'
@@ -16,54 +12,26 @@ import Alert from '~/components/ui/Alert.vue'
 import Spacer from '~/components/ui/Spacer.vue'
 import Loader from '~/components/ui/Loader.vue'
 import Pagination from '~/components/ui/Pagination.vue'
-
-interface Props {
-  filters: Record<string, unknown>
-  url: string
-  title?: string
-}
+import { useDataStore } from '~/ui/stores/data'
 
 const { t } = useI18n()
-
-const props = defineProps<Props>()
-
 const store = useStore()
 
-const objects = reactive([] as Playlist[])
+const { title, query } = defineProps<{
+  title?: string
+  query: Required<operations['get_playlists']['parameters']>['query']
+}>()
+
 const page = ref(1)
-const nextPage = ref('')
-const count = ref(0)
+const page_size_fallback = 4
 
-const isLoading = ref(false)
-
-const fetchData = async (url = props.url) => {
-  isLoading.value = true
-
-  try {
-    const params = {
-      ...props.filters,
-      page: page.value,
-      page_size: props.filters.limit ?? 4
-    }
-
-    const response = await axios.get(url, { params })
-    nextPage.value = response.data.next
-    count.value = response.data.count
-    objects.splice(0, objects.length, ...response.data.results)
-  } catch (error) {
-    useErrorHandler(error as Error)
-  }
-
-  isLoading.value = false
-}
-
-fetchData()
-
-watch(
-  () => [store.state.moderation.lastUpdate, props.filters, page.value],
-  () => fetchData(),
-  { immediate: true }
-)
+const playlists = computed(() => useDataStore().playlists({
+  page_size: page_size_fallback,
+  page: page.value,
+  ...query
+}, {
+  refetchSignal: store.state.moderation.lastUpdate
+}).value)
 </script>
 
 <template>
@@ -73,11 +41,11 @@ watch(
     :h2="title"
   >
     <Loader
-      v-if="isLoading"
+      v-if="playlists.status === 'loading'"
       style="grid-column: 1 / -1;"
     />
     <Alert
-      v-if="!isLoading && objects.length === 0"
+      v-else-if="playlists.data?.count === 0"
       style="grid-column: 1 / -1;"
       blue
       align-items="center"
@@ -97,15 +65,17 @@ watch(
         {{ t('components.playlists.Widget.button.create') }}
       </Button>
     </Alert>
-    <PlaylistCard
-      v-for="playlist in objects"
-      :key="playlist.uuid"
-      :playlist="playlist"
-    />
+    <template v-if="playlists.data">
+      <PlaylistCard
+        v-for="playlist in playlists.data.results"
+        :key="playlist.uuid"
+        :playlist
+      />
+      <Pagination
+        v-if="playlists.data.count > (query.page_size ?? page_size_fallback)"
+        v-model:page="page"
+        :pages="Math.ceil((playlists.data.count || 0) / (query.page_size ?? page_size_fallback))"
+      />
+    </template>
   </Section>
-  <Pagination
-    v-if="page && objects && count > (props.filters.limit as number)"
-    v-model:page="page"
-    :pages="Math.ceil((count || 0) / (props.filters.limit as number))"
-  />
 </template>

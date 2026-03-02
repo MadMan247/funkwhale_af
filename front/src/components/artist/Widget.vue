@@ -1,78 +1,34 @@
 <script setup lang="ts">
-import type { Artist } from '~/types'
-
-import { reactive, ref, watch, onMounted } from 'vue'
+import { ref,computed } from 'vue'
 import { useStore } from '~/store'
-
-import axios from 'axios'
-
-import useErrorHandler from '~/composables/useErrorHandler'
 
 import ArtistCard from '~/components/artist/Card.vue'
 import Section from '~/components/ui/Section.vue'
 import Pagination from '~/components/ui/Pagination.vue'
 import Loader from '~/components/ui/Loader.vue'
-
-interface Props {
-  filters: Record<string, string | boolean>
-  search?: boolean
-  header?: boolean
-  limit?: number
-  title?: string
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  search: false,
-  header: true,
-  limit: 12,
-  title: undefined
-})
+import type { operations } from '~/generated/types'
+import { useDataStore } from '~/ui/stores/data'
 
 const store = useStore()
 
-const query = ref('')
-const artists = reactive([] as Artist[])
-const count = ref(0)
+ const { title, hasSearch, query } = defineProps<{
+  title?: string
+  hasSearch?: boolean
+  query: Required<operations['get_artists']['parameters']>['query']
+}>()
+
 const page = ref(1)
-const nextPage = ref()
+const q = ref('')
+const page_size_fallback = 12
 
-const isLoading = ref(false)
-const fetchData = async (url = 'artists/') => {
-  isLoading.value = true
-
-  try {
-    const params = {
-      q: query.value,
-      ...props.filters,
-      page: page.value,
-      page_size: props.limit
-    }
-
-    const response = await axios.get(url, { params })
-    nextPage.value = response.data.next
-    count.value = response.data.count
-    artists.splice(0, artists.length, ...response.data.results)
-  } catch (error) {
-    useErrorHandler(error as Error)
-  }
-
-  isLoading.value = false
-}
-
-onMounted(() => {
-  setTimeout(fetchData, 1000)
-})
-
-const performSearch = () => {
-  artists.length = 0
-  fetchData()
-}
-
-watch(
-  [() => store.state.moderation.lastUpdate, page],
-  () => fetchData(),
-  { immediate: true }
-)
+const artists = computed(() => useDataStore().artists({
+  page_size: page_size_fallback,
+  page: page.value,
+    q: q.value,
+  ...query
+}, {
+  refetchSignal: store.state.moderation.lastUpdate
+}).value)
 </script>
 
 <template>
@@ -82,35 +38,37 @@ watch(
     :h2="title"
   >
     <Loader
-      v-if="isLoading"
+      v-if="artists.status === 'loading'"
       style="grid-column: 1 / -1;"
     />
     <slot
-      v-if="!isLoading && artists.length === 0"
+      v-else-if="artists.data?.count === 0"
       name="empty-state"
     >
       <empty-state
         style="grid-column: 1 / -1;"
         :refresh="true"
-        @refresh="fetchData"
+        @refresh="artists.refetch"
       />
     </slot>
     <inline-search-bar
-      v-if="!isLoading && search"
-      v-model="query"
+      v-if="artists.status !== 'loading' && hasSearch"
+      v-model="q"
       style="grid-column: 1 / -1;"
-      @search="performSearch"
+      @search="artists.refetch"
     />
-    <artist-card
-      v-for="artist in artists"
-      :key="artist.id"
-      :artist="artist"
-    />
-    <Pagination
-      v-if="page && artists && count > limit"
-      v-model:page="page"
-      style="grid-column: 1 / -1;"
-      :pages="Math.ceil((count || 0) / limit)"
-    />
+    <template v-if="artists.data">
+      <artist-card
+        v-for="artist in artists.data.results"
+        :key="artist.id"
+        :artist
+      />
+      <Pagination
+        v-if="artists.data.count > (query.page_size ?? page_size_fallback)"
+        v-model:page="page"
+        style="grid-column: 1 / -1;"
+        :pages="Math.ceil(artists.data.count / (query.page_size ?? page_size_fallback))"
+      />
+    </template>
   </Section>
 </template>

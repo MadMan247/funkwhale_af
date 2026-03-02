@@ -18,6 +18,34 @@ Reload the page with `Ctrl+Shift+R` (Mac: `Cmd+Shift+R`)
 
 Make sure you have no add-ons in your browser that mess with the DOM. The best way to check is to open a private window/tab with `Ctrl/Cmd+Shift+P` (Firefox)
 
+## Data requests
+
+Use the Vue DevTools in your browser to inspect the Rate limiter and the Data cache live and to change options such as rate limit or cached resources' maximum age.
+
+See the comments in the store modules for a complete feature documentation.
+
+### Cache
+
+**[`data.ts` store - Cache and deduplicate Funkwhale objects](https://dev.funkwhale.audio/funkwhale/funkwhale/-/blob/develop/front/src/ui/stores/data.ts?ref_type=heads)**
+
+![alt text](image-1.png)
+
+It is currently not possible to completely disable the cache, but you can force cache invalidation by lowering the `maxAge`. Whenever a frontend component requests a data object, and the cached result is older, this will force a re-fetch.
+
+![Pinia DevTools shows numberOfCachedResources and other live readonly metrics under `getters`.](image-2.png)
+
+To observe the changes in the cache live, [slow down the rate limiter](rate-limiter) and then switch to the `pinia/data/getters` view in the DevTools.
+
+### Rate limiter
+
+**[`rateLimiter.ts` store - Limit the frequency of API calls; prioritize and cancel requests](https://dev.funkwhale.audio/funkwhale/funkwhale/-/blob/158e80cb69e443751b5378743188e6649e87e79c/front/src/ui/stores/rateLimiter.ts)**
+
+![In the inia tab of VueDevTools, you find a `config` object you can edit directly.](image.png)
+
+Disable the rate limiter to make the frontend fetch all resources the moment they are requested by any frontend component.
+
+Increase the cooldown time to observe how requests enter and exit the queue.
+
 ## Styles
 
 <--! TODO: Mermaid diagrams -->

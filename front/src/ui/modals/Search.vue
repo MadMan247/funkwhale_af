@@ -1,63 +1,54 @@
 <script setup lang="ts">
-import type { paths, components } from '~/generated/types.ts'
-// import type { RadioConfig } from '~/store/radios'
-
-import axios from 'axios'
-import { ref, computed, type ShallowRef, useTemplateRef, onMounted, onUnmounted, nextTick, watch } from 'vue'
-import { refDebounced, watchDebounced } from '@vueuse/core'
-import { trim } from 'lodash-es'
 import { vElementBounding } from '@vueuse/components'
+import { refDebounced, watchDebounced } from '@vueuse/core'
+import axios from 'axios'
+import { trim } from 'lodash-es'
+import { computed, ref, type ShallowRef, useTemplateRef } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 
-import useErrorHandler from '~/composables/useErrorHandler'
-import { useI18n } from 'vue-i18n'
-import { useModal } from '~/ui/composables/useModal.ts'
-import { useStore } from '~/store'
-import { useDataStore, getKey } from '~/ui/stores/data'
-
-import ArtistCard from '~/components/artist/Card.vue'
-import PlaylistCard from '~/components/playlists/Card.vue'
-import ChannelCard from '~/components/audio/ChannelCard.vue'
-import ActorCard from '~/components/federation/ActorCard.vue'
-import TrackTable from '~/components/audio/track/Table.vue'
-import AlbumCard from '~/components/album/Card.vue'
-import RadioCard from '~/components/radios/Card.vue'
-import Button from '~/components/ui/Button.vue'
-// import RadioButton from '~/components/radios/Button.vue'
 import onKeyboardShortcut from '~/composables/onKeyboardShortcut'
+import useErrorHandler from '~/composables/useErrorHandler'
+import { useStore } from '~/store'
+import { useModal } from '~/ui/composables/useModal.ts'
+import { getKey, useDataStore } from '~/ui/stores/data'
 
-import TagsList from '~/components/tags/List.vue'
+import type { components, paths } from '~/generated/types.ts'
+// import type { RadioConfig } from '~/store/radios'
+import AlbumCard from '~/components/album/Card.vue'
+import ArtistCard from '~/components/artist/Card.vue'
+import ChannelCard from '~/components/audio/ChannelCard.vue'
+import TrackTable from '~/components/audio/track/Table.vue'
 import EmptyState from '~/components/common/EmptyState.vue'
+import ActorCard from '~/components/federation/ActorCard.vue'
+import PlaylistCard from '~/components/playlists/Card.vue'
+// import RadioButton from '~/components/radios/Button.vue'
+import RadioCard from '~/components/radios/Card.vue'
+import TagsList from '~/components/tags/List.vue'
 
-import Modal from '~/components/ui/Modal.vue'
-import Spacer from '~/components/ui/Spacer.vue'
-import Input from '~/components/ui/Input.vue'
-import Card from '~/components/ui/Card.vue'
-import Section from '~/components/ui/Section.vue'
-import Loader from '~/components/ui/Loader.vue'
 import Alert from '~/components/ui/Alert.vue'
+import Button from '~/components/ui/Button.vue'
+import Card from '~/components/ui/Card.vue'
+import Input from '~/components/ui/Input.vue'
+import Loader from '~/components/ui/Loader.vue'
+import Modal from '~/components/ui/Modal.vue'
 import Pagination from '~/components/ui/Pagination.vue'
+import Section from '~/components/ui/Section.vue'
+import Spacer from '~/components/ui/Spacer.vue'
 
 const { t } = useI18n()
 
 const router = useRouter()
 
-/*
-  Future:
-    - For now, we will use fetch-then-cache, and not support features such as search in
-      offline-first. Later, we can add a UI indication for stale params, with the timestamp being old,
-        and an automatic trigger: while user is still browsing the app, refresh content periodically.
-        When tab gets focus, try to re-fetch.
-*/
 const dataStore = useDataStore()
 
 // Search input sizing
+
 const style = ref<{ inner: string, outer: string }>({ inner: '', outer: '' })
 
 const setBoundingBox = (placeholder: 'inner' | 'outer') => ({ left, width, top }: { left: ShallowRef<number>, width: ShallowRef<number>, top: ShallowRef<number> }) => {
   style.value[placeholder] = `left: ${left.value}px; top: ${top.value}px; width: ${width.value}px;`
-  }
-
+}
 
 const globalSearchInput = useTemplateRef('globalSearchInput')
 
@@ -93,12 +84,11 @@ type Response = {
   federation: paths['/api/v2/federation/fetches/']['post']['responses']['201']['content']['application/json']
 }
 
-/** Note that `federation` is a singleton list so that each result is a list */
 type Results = {
   rss: [Response['rss']],
   federation: [Response['federation']],
   type: Category
-}
+} // Note that `federation` is a singleton list so that each result is a list
 
 const responses = ref<Partial<Response>>({})
 const results = ref<Partial<Results>>({})
@@ -132,9 +122,11 @@ const categories = computed(() => [
   endpoint: `/${string}`
 }[])
 
-// Limit the available categories based on the search query
-// Show fetch if the query is a URL; show RSS if the query is an email address; show all other cateories otherwise
-const availableCategories = computed(() =>
+/**
+ * Limit the available categories based on the search query
+ * Show fetch if the query is a URL; show RSS if the query is an email address; show all other cateories otherwise
+ */
+ const availableCategories = computed(() =>
   categories.value.filter(({ type }) =>
     isFetch.value ? type === 'federation'
       : isRss.value ? type === 'rss'
@@ -237,42 +229,9 @@ const search = async () => {
   isLoading.value = false
 }
 
-// Global loading that includes federated/rss search and store-level fetches
-const globalLoading = computed(() => {
-  const storeLoading = (dataStore as any).isLoading?.value ?? (dataStore as any).isLoading
-  const activeFetches = (dataStore as any).activeFetches?.value ?? (dataStore as any).activeFetches
-  return isLoading.value || Boolean(storeLoading) || Boolean(activeFetches?.length > 0)
-})
+// Global force-refresh signal
 
-// Count visible sections by observing rendered DOM nodes with the `search-section` class.
-const visibleSections = ref(0)
-let sectionObserver: MutationObserver | null = null
-
-const updateVisibleSections = async () => {
-  await nextTick()
-  try {
-    const nodes = Array.from(document.querySelectorAll('.search-section')) as HTMLElement[]
-    const visible = nodes.filter(n => n.offsetParent !== null || n.getClientRects().length > 0).length
-    visibleSections.value = visible
-  } catch (e) {
-    // ignore
-  }
-}
-
-onMounted(() => {
-  updateVisibleSections()
-  sectionObserver = new MutationObserver(() => updateVisibleSections())
-  sectionObserver.observe(document.body, { childList: true, subtree: true })
-})
-
-onUnmounted(() => {
-  sectionObserver?.disconnect()
-  sectionObserver = null
-})
-
-// also update when the search query or global loading changes
-watch([queryDebounced], () => updateVisibleSections())
-watch([() => globalLoading.value], () => updateVisibleSections())
+const generation = ref(0)
 
 // Configure the radio
 
@@ -298,7 +257,7 @@ watch([() => globalLoading.value], () => updateVisibleSections())
 //         : null
 // )
 
-// Start the search
+// Start the rss and federation search
 
 watchDebounced(queryDebounced, search, {
   debounce: 1000, maxWait: 10000, immediate: true
@@ -354,6 +313,8 @@ watchDebounced(trimmedQuery, () => {
         :radio-config="radioConfig"
       /> -->
     </template>
+
+    <!-- Federation (Fetch) -->
 
     <template
       v-if="isFetch"
@@ -415,6 +376,9 @@ watchDebounced(trimmedQuery, () => {
         </template>
       </Section>
     </template>
+
+    <!-- RSS -->
+
     <template
       v-else-if="isRss"
       #default
@@ -435,18 +399,14 @@ watchDebounced(trimmedQuery, () => {
         </template>
       </Card>
     </template>
+
+    <!-- No RSS or Fetch -->
+
     <template
       v-else
       #default="{ columns, cardsPerRow }"
     >
       <Spacer size-32 />
-
-      <!-- DEBUG: CACHE -->
-
-      <!-- <pre :key="allCaches.map(m=>Array.from(m).join('')).join('')">
-      {{ allCaches[0] }}
-      </pre> -->
-
 
       <!-- Artists -->
 
@@ -455,7 +415,7 @@ watchDebounced(trimmedQuery, () => {
           q: query,
           page: 1,
           page_size: cardsPerRow() * 2 - 2,
-        })]"
+        }, { deduplicationKey: `search.${generation}.artists` })]"
         :key
       >
         <Section
@@ -513,7 +473,7 @@ watchDebounced(trimmedQuery, () => {
           page: 1,
           page_size: cardsPerRow() * 2 - 2,
           include_tracks: false
-        })]"
+        }, { deduplicationKey: `search.${generation}.albums` })]"
         :key
       >
         <Section
@@ -569,7 +529,7 @@ watchDebounced(trimmedQuery, () => {
           q: query,
           page: 1,
           page_size: cardsPerRow() * 2 - 2,
-        })]"
+        }, { deduplicationKey: `search.${generation}.tracks` })]"
         :key
       >
         <Section
@@ -618,7 +578,7 @@ watchDebounced(trimmedQuery, () => {
           q: query,
           page: 1,
           page_size: 20,
-        })]"
+        }, { deduplicationKey: `search.${generation}.tags` })]"
         :key
       >
         <Section
@@ -673,7 +633,7 @@ watchDebounced(trimmedQuery, () => {
           q: query,
           page: 1,
           page_size: cardsPerRow() * 2 - 2,
-        })]"
+        }, { deduplicationKey: `search.${generation}.playlists` })]"
         :key
       >
         <Section
@@ -726,7 +686,7 @@ watchDebounced(trimmedQuery, () => {
           q: query,
           page: 1,
           page_size: cardsPerRow() * 2 - 2,
-        })]"
+        }, { deduplicationKey: `search.${generation}.radios` })]"
         :key
       >
         <Section
@@ -783,7 +743,7 @@ watchDebounced(trimmedQuery, () => {
           include_channels: true,
           page: 1,
           page_size: cardsPerRow() * 2 - 2,
-        })]"
+        }, { deduplicationKey: `search.${generation}.podcasts` })]"
         :key
       >
         <Section
@@ -838,8 +798,8 @@ watchDebounced(trimmedQuery, () => {
           content_category: 'podcast',
           include_channels: true,
           page: 1,
-          page_size: cardsPerRow() * 2 - 2,
-        })]"
+          page_size: cardsPerRow() * 2 - 1,
+        }, { deduplicationKey: `search.${generation}.series` })]"
         :key
       >
         <Section
@@ -877,16 +837,16 @@ watchDebounced(trimmedQuery, () => {
           size-64
         />
       </template>
-      <template v-if="globalLoading">
+      <template v-if="dataStore.numberOfLoadingResources > 0 || dataStore.numberOfQueuedResources > 0 || isLoading">
         <Spacer size-64 />
         <Loader :container="false" />
       </template>
-      <template v-if="visibleSections === 0">
-        <EmptyState
-          :refresh="true"
-          @refresh="search"
-        />
-      </template>
+      <EmptyState
+        v-else
+        :class="$style.hideIfAfterSection"
+        :refresh="true"
+        @refresh="() => { search(); generation++ }"
+      />
     </template>
   </Modal>
 
@@ -910,6 +870,9 @@ watchDebounced(trimmedQuery, () => {
 </template>
 
 <style module>
+  :global(.search-section)~.hideIfAfterSection {
+    display: none;
+  }
 .placeholder {
     position: relative;
     top: 0;

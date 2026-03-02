@@ -2,6 +2,7 @@
 import Layout from '@ui/Layout.vue'
 import Section from '@ui/Section.vue'
 import Card from '@ui/Card.vue'
+import Link from '@ui/Link.vue'
 </script>
 
 <template>
@@ -16,11 +17,12 @@ import Card from '@ui/Card.vue'
       :columns-per-item="3"
       large-section-heading
       h3="Section heading (h3)"
-      :action="{
-        text:'Link',
-        to:'https://funkwhale.audio'
-      }"
     >
+      <template #action>
+        <Link to="https://funkwhale.audio">
+          Link
+        </Link>
+      </template>
       <Card
         small
         default

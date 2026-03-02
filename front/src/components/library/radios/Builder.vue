@@ -1,29 +1,25 @@
 <script setup lang="ts">
-import { computed, ref, reactive, watch } from 'vue'
-import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
-
 import axios from 'axios'
-
-import useErrorHandler from '~/composables/useErrorHandler'
-
-import { useDataStore } from '~/ui/stores/data'
+import { computed, reactive, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 import TrackTable from '~/components/audio/track/Table.vue'
 import RadioButton from '~/components/radios/Button.vue'
-import BuilderFilter from './Filter.vue'
-import Button from '~/components/ui/Button.vue'
-import Layout from '~/components/ui/Layout.vue'
-import Input from '~/components/ui/Input.vue'
-import Toggle from '~/components/ui/Toggle.vue'
-import Textarea from '~/components/ui/Textarea.vue'
+import useErrorHandler from '~/composables/useErrorHandler'
+import { invalidate, useDataStore } from '~/ui/stores/data'
+
 import Alert from '~/components/ui/Alert.vue'
+import Button from '~/components/ui/Button.vue'
 import Header from '~/components/ui/Header.vue'
+import Heading from '~/components/ui/Heading.vue'
+import Input from '~/components/ui/Input.vue'
+import Layout from '~/components/ui/Layout.vue'
+import Pills from '~/components/ui/Pills.vue'
 import Section from '~/components/ui/Section.vue'
 import Spacer from '~/components/ui/Spacer.vue'
-import Heading from '~/components/ui/Heading.vue'
-
-import Pills from '~/components/ui/Pills.vue'
+import Textarea from '~/components/ui/Textarea.vue'
+import Toggle from '~/components/ui/Toggle.vue'
 
 export interface BuilderFilter {
   type: string
@@ -189,6 +185,12 @@ const save = async () => {
       : await axios.post('radios/radios/', data)
 
     success.value = true
+
+    // Invalidate all radios in the cache
+    dataStore.cachedResources.forEach(res => {
+      if (res.name === 'radios/radios') invalidate(res)
+    })
+
     if (!props.id) {
       router.push({
         name: 'library.radios.detail',

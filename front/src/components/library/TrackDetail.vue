@@ -156,12 +156,17 @@ const trackDetails: {
         <Section
           align-left
           h2="Release Details"
-          :action="musicbrainzUrl ? {
-            text: 'View on MusicBrainz',
-            to: musicbrainzUrl
-          } : undefined"
           icon="bi-box-arrow-up-right"
-        />
+        >
+          <template
+            v-if="musicbrainzUrl"
+            #action
+          >
+            <Link :to="musicbrainzUrl">
+              {{ t('components.library.TrackDetail.link.musicbrainz') }}
+            </Link>
+          </template>
+        </Section>
         <Layout
           v-for="item in releaseDetails"
           :key="item.label"
@@ -226,9 +231,12 @@ const trackDetails: {
     </Layout>
 
     <h2>{{ t('components.library.TrackDetail.header.playlists') }}</h2>
-    <playlist-widget
-      :url="'playlists/'"
-      :filters="{track: track.id, playable: true, ordering: '-modification_date'}"
+    <PlaylistWidget
+      :query="{
+        track: track.id,
+        playable: true,
+        ordering: '-modification_date'
+      }"
     />
 
     <h2>{{ t('components.library.TrackDetail.header.library') }}</h2>

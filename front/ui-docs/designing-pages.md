@@ -5,9 +5,11 @@ layout: page
 <script setup lang="ts">
 import { ref } from 'vue'
 
-import Card from '~/components/ui/Card.vue'
-import Spacer from '~/components/ui/Spacer.vue'
-import Section from '~/components/ui/Section.vue'
+import Card from '@ui/Card.vue'
+import Spacer from '@ui/Spacer.vue'
+import Section from '@ui/Section.vue'
+import Link from '@ui/Link.vue'
+import Button from '@ui/Button.vue'
 
 const alignLeft = ref(false)
 </script>
@@ -29,11 +31,12 @@ Use the [Layout Section component](/components/ui/layout/section) to structure t
     :alignLeft="alignLeft"
     :columns-per-item="3"
     h2="My albums"
-    :action="{
-        text:'Go to library',
-        to:'/'
-    }"
 >
+    <template #action>
+      <Link :to="/" >
+        Go to Library
+      </Link>
+    </template>
     <Card small solid yellow title="Album 1" />
     <Card small solid green title="Album 2" />
     <Card small solid blue title="Album 3" />
@@ -46,11 +49,12 @@ Use the [Layout Section component](/components/ui/layout/section) to structure t
     :alignLeft="alignLeft"
     :columns-per-item="3"
     h2="My albums"
-    :action="{
-        text:'Go to library',
-        to:'/'
-    }"
 >
+    <template #action>
+      <Link to="/" >
+        Go to Library
+      </Link>
+    </template>
     <Card small solid yellow title="Album 1" />
     <Card small solid green title="Album 2" />
     <Card small solid blue title="Album 3" />

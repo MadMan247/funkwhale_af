@@ -14,6 +14,7 @@ import Spacer from '@ui/Spacer.vue'
 import Pill from '@ui/Pill.vue'
 import Activity from '@ui/Activity.vue'
 import Section from '@ui/Section.vue'
+import Button from '@ui/Button.vue'
 
 import SectionA11y from "@/examples/Section.a11y.vue"
 
@@ -112,6 +113,8 @@ const sections = ref<boolean[]>([false, false, false])
 
 ```ts
 import Section from '@ui/Section.vue'
+import Link from '@ui/Link.vue'
+import Button from '@ui/Button.vue'
 ```
 
 # Layout section
@@ -216,52 +219,9 @@ Place individual items to the edge of their current cell or cells
 
 ## Provide an action
 
-The link or button will be shown on the right side of the header. Use `action.text` to set the label (required).
-You can use all [`Link` props](../link.md) or [`Button` props](../button.md) inside the `action` prop! Note that the button or link label will be in line with the heading.
+Place [`Links`](../link.md) or [`Buttons`](../button.md) in the `#action` slot. Note that on slim screens, the action may wrap around, so keep the total width of items under ca. 100px.
 
-```vue-html
-<Section
-    h2="With a link"
-    :action="{
-      text: 'My library',
-      to: '/',
-      icon: 'bi-star'
-    }"
-/>
-<Section
-  h2="With a button"
-  :action="{
-      text: 'Say hello!',
-      onClick: ()=>console.log('Hello'),
-      primary: true,
-      solid: true,
-      icon: 'bi-save'
-  }"
-/>
-```
-
-<Layout article stack gap-64>
-  <Section
-    h2="With a link"
-    :action="{
-      text: 'My library',
-      to: '/',
-      icon: 'bi-star'
-    }"
-  />
-  <Section
-    h2="With a button"
-    :action="{
-        text: 'Say hello!',
-        onClick: ()=>console.log('Hello'),
-        primary: true,
-        solid: true,
-        icon: 'bi-save'
-    }"
-  />
-</Layout>
-
-## Add icons and slots
+## Add icons and custom decoration
 
 ```vue-html
 <Section
@@ -276,15 +236,13 @@ You can use all [`Link` props](../link.md) or [`Button` props](../button.md) ins
 ```
 
 <Layout article>
-<Section
-  icon="bi-heart"
->
-  <template #topleft>
-    <Pill>#Audiology</Pill>
-    <Spacer size-12 />
-    <Pill>#Phonologics</Pill>
-  </template>
-</Section>
+  <Section icon="bi-heart">
+    <template #topleft>
+      <Pill>#Audiology</Pill>
+      <Spacer size-12 />
+      <Pill>#Phonologics</Pill>
+    </template>
+  </Section>
 </Layout>
 
 ## Set gaps between consecutive sections
@@ -303,16 +261,15 @@ Note the spacer above the layout. By default, sections begin at the baseline of 
 <Spacer />
 
 <Layout stack gap-64>
-
   <Section
     :alignLeft="alignLeft"
     :columns-per-item="2"
     h2="Cards (2-wide items)"
-    :action="{
-      text:'Documentation on Cards',
-      to:'../card'
-    }"
-  >
+    <template #action>
+      <Link to="../card" >
+        Documentation on Cards
+      </Link>
+    </template>
     <Card small default solid raised title="Relatively Long Album Name">
         Artist Name
     </Card>
@@ -328,16 +285,16 @@ Note the spacer above the layout. By default, sections begin at the baseline of 
     :alignLeft="alignLeft"
     :columns-per-item="3"
     h2="Activities (3-wide items)"
-    :action="{
-      text:'Delete selected items',
-      onClick:()=>console.log('Deleted :-)')
-    }"
   >
+    <template #action>
+      <Button @click="()=>console.log('Deleted :-)')">
+        Delete selected items
+      </Button>
+    </template>
     <Activity :track="track" :user="user" />
     <Activity :track="track" :user="user" />
     <Activity :track="track" :user="user" />
   </Section>
-
 </Layout>
 ```
 
@@ -355,11 +312,12 @@ Note the spacer above the layout. By default, sections begin at the baseline of 
     :alignLeft="alignLeft"
     :columns-per-item="3"
     h2="Cards (2-wide items)"
-    :action="{
-      text:'Documentation on Cards',
-      to:'../card'
-    }"
   >
+    <template #action>
+      <Link to="../card" >
+        Documentation on Cards
+      </Link>
+    </template>
     <Card small default solid raised title="Relatively Long Album Name">
         Artist Name
     </Card>
@@ -375,11 +333,12 @@ Note the spacer above the layout. By default, sections begin at the baseline of 
     :alignLeft="alignLeft"
     :columns-per-item="4"
     h2="Activities (3-wide items)"
-    :action="{
-      text:'Delete selected items',
-      onClick:()=>console.log('Deleted :-)')
-    }"
   >
+    <template #action>
+      <Button @click="()=>console.log('Deleted :-)')">
+        Delete selected items
+      </Button>
+    </template>
     <Activity :track="track" :user="user" />
     <Activity :track="track" :user="user" />
     <Activity :track="track" :user="user" />
@@ -434,12 +393,12 @@ const sections = ref([false, false, false])
 ## Add a badge
 
 - Add `badge="loading"` to show a spinner after the heading
-- Add `badge="1" to show an encircled number after the heading
+- Add `badge="1"` to show an encircled number after the heading
 
 <Layout article class="default">
 <Section
   h1="Heading"
-  :badge=1
+  :badge="1"
 />
 </Layout>
 

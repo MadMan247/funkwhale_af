@@ -414,8 +414,8 @@ fetchData()
       v-for="[id, filter] in Object.entries(searchFilters)"
       :id="`uploads-${id}`"
       :key="id"
-      v-model:current="filter.current"
-      v-model:options="filter.options"
+      v-model="filter.current"
+      :options="filter.options"
       :label="filter.label"
     />
   </Layout>

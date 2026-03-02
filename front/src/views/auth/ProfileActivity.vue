@@ -5,7 +5,7 @@ import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useStore } from '~/store'
 
-import TrackWidget from '~/components/audio/track/Widget.vue'
+import ListeningWidget from '~/components/audio/listening/Widget.vue'
 import AlbumWidget from '~/components/album/Widget.vue'
 import Layout from '~/components/ui/Layout.vue'
 import Header from '~/components/ui/Header.vue'
@@ -42,22 +42,35 @@ const scope = computed(() =>
       page-heading
     />
 
-    <track-widget
-      :url="'history/listenings/'"
-      :filters="{ scope: scope, ordering: '-creation_date', playable: true, ...qualityFilters}"
-      :websocket-handlers="['Listen']"
+    <ListeningWidget
+      :query="{
+        playable: true,
+        ordering: '-creation_date',
+        scope,
+        ...qualityFilters
+      }"
       :title="t('components.library.Home.header.recentlyListened')"
+      url="history/listenings"
+      :websocket-handlers="['Listen']"
       @count="recentActivity = $event"
     />
-    <track-widget
-      :url="'favorites/tracks/'"
-      :filters="{ scope: scope, playable: true, ordering: '-creation_date'}"
+    <ListeningWidget
       :title="t('components.library.Home.header.recentlyFavorited')"
+      url="favorites/tracks"
+      :query="{
+        //playable: true, /*TODO: according to schema, `playable` is not available for this endpoint. Investigate! */
+        ordering: '-creation_date',
+        scope
+      }"
     />
-    <album-widget
-      :filters="{ scope: scope, ordering: '-creation_date', ...qualityFilters}"
-      :limit="8"
+    <AlbumWidget
       :title="t('components.library.Home.header.recentlyAdded')"
+      :query="{
+        scope,
+        ordering: ['-creation_date'],
+        page_size: 8,
+        ...qualityFilters
+      }"
     />
   </Layout>
 </template>

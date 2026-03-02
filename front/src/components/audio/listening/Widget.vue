@@ -1,24 +1,22 @@
 <script setup lang="ts">
-import type { Listening } from '~/types'
+import { computed, ref, watch } from 'vue'
 
-import { ref, watch, computed } from 'vue'
-import { useStore } from '~/store'
 import { useI18n } from 'vue-i18n'
-import { getArtistCoverUrl } from '~/utils/utils'
-
-import useWebSocketHandler from '~/composables/useWebSocketHandler'
-
 import PlayButton from '~/components/audio/PlayButton.vue'
 import TagsList from '~/components/tags/List.vue'
-import Section from '~/components/ui/Section.vue'
-import Alert from '~/components/ui/Alert.vue'
-import Spacer from '~/components/ui/Spacer.vue'
-import Loader from '~/components/ui/Loader.vue'
-import Heading from '~/components/ui/Heading.vue'
-import Pagination from '~/components/ui/Pagination.vue'
-
+import useWebSocketHandler from '~/composables/useWebSocketHandler'
 import type { operations } from '~/generated/types'
+import { useStore } from '~/store'
+import type { Listening } from '~/types'
 import { useDataStore } from '~/ui/stores/data'
+import { getArtistCoverUrl } from '~/utils/utils'
+
+import Alert from '~/components/ui/Alert.vue'
+import Heading from '~/components/ui/Heading.vue'
+import Loader from '~/components/ui/Loader.vue'
+import Pagination from '~/components/ui/Pagination.vue'
+import Section from '~/components/ui/Section.vue'
+import Spacer from '~/components/ui/Spacer.vue'
 
 const store = useStore()
 const { t } = useI18n()
@@ -29,17 +27,16 @@ const emit = defineEmits<{
 }>()
 
 // TODO: Make type stricter (exclusive over TUrl) once Vue supports full typing of props
-const { title, isActivity, url, websocketHandlers = [], itemClasses, query } = defineProps<{
+const { title, isActivity=true, url, websocketHandlers = [], itemClasses, query } = defineProps<{
   isActivity?: boolean,
   itemClasses?: string,
   websocketHandlers?: string[]
-  url: 'tracks'
+  url: 'favorites/tracks' | 'history/listenings'
   title?: string
-  query: Required<operations['get_tracks']['parameters']>['query']
-}>()
+  query: Required<(operations['get_history_listenings' | 'get_favorite_tracks']['parameters'])>['query']
+} >()
 
 const page = ref(1)
-const page_size_fallback = 9
 
 const listenings = ref<Listening[]>([]);
 
@@ -70,13 +67,7 @@ watch(() => websocketHandlers.includes('Listen'), isIncluded => {
 const objects = computed(() => [
   ...listenings.value,
   ...(tracks.value.data?.results ?? [])
-    .map(track => ({
-      track,
-      id: track.id,
-      actor: null,
-      creation_date: track.creation_date
-    }))
-].slice(0, query.page_size ?? page_size_fallback))
+].slice(0, query.page_size ?? 9))
 </script>
 
 <template>
@@ -105,9 +96,10 @@ const objects = computed(() => [
     <!-- TODO: Use Activity.vue -->
     <template v-if="objects">
       <div
-        v-for="{ track, creation_date, actor, ...object } in objects"
-        :key="'fid' in object ? object.fid : object.id"
-        :class="['funkwhale activity item', itemClasses]"
+        v-for="{ fid, track, creation_date, actor } in objects"
+        :key="fid"
+        class="funkwhale activity"
+        :class="['item', itemClasses]"
       >
         <div class="activity-image">
           <img
@@ -175,7 +167,7 @@ const objects = computed(() => [
             <router-link
               v-if="actor"
               class="funkwhale link user"
-              :to="{ name: 'profile.content', params: { username: actor.preferred_username, domain: actor.domain } }"
+              :to="{ name: 'profile.content', params: { username: actor.name } }"
             >
               <span class="at symbol" />{{ actor.name }}
             </router-link>
@@ -191,9 +183,9 @@ const objects = computed(() => [
       </div>
       <template v-if="tracks.data">
         <Pagination
-          v-if="tracks.data.count > (query.page_size ?? page_size_fallback)"
+          v-if="tracks.data.count > (query.page_size ?? 9)"
           v-model:page="page"
-          :pages="Math.ceil(tracks.data.count / (query.page_size ?? page_size_fallback))"
+          :pages="Math.ceil(tracks.data.count / (query.page_size ?? 9))"
           style="grid-column: 1 / -1;"
         />
       </template>

@@ -12,7 +12,7 @@ import Modal from "@ui/Modal.vue";
 import Heading from "@ui/Heading.vue";
 
 const current = ref(2);
-const options = ref({1: 'One', 2: 'Two', 3: 'Three'});
+const options = ref({ 1: 'One', 2: 'Two', 3: 'Three' });
 
 const nullable = ref(undefined);
 
@@ -29,9 +29,7 @@ import Select from "@ui/Select.vue"
 
 Select a value from a list of labeled options.
 
-Uses two v-model bindings: `v-model:current` for the selected value and `v-model:options` for the available options. Each option is a `value: label` field where value is `string | number`.
-
-_Note that this component currently extends the native HTML `<select>` element and inherits its frustrating shortcomings, especially when it comes to styleing. For future paths, see [this excellent article on css-tricks](https://css-tricks.com/striking-a-balance-between-native-and-custom-select-elements/)_.
+Uses two v-model bindings: `v-model` for the selected value and `:options` for the available options. Each option is a `value: label` field where value is `string | number`. You can use a `const` object for the options, or a `ref` in case the options change during runtime.
 
 <!-- prettier-ignore-start -->
 
@@ -41,19 +39,19 @@ _Note that this component currently extends the native HTML `<select>` element a
 
 ```ts
 const current = ref(2);
-const options = ref({
+const options = {
   1: 'One',
   2: 'Two',
   3: 'Three'
-});
+};
 
 ```
 
 ```vue-html
 <Select
   label="Select an option"
-  v-model:current="current"
-  v-model:options="options"
+  v-model="current"
+  :options
 />
 ```
 
@@ -62,8 +60,8 @@ const options = ref({
 <div class="preview">
 <Select
   label="Select an option"
-  v-model:current="current"
-  v-model:options="options"
+  v-model="current"
+  :options
 />
 </div>
 
@@ -82,8 +80,8 @@ The select supports a `label` slot for custom label content if the text-only `la
 
 ```vue-html
 <Select
-  v-model:current="current"
-  v-model:options="options"
+  v-model="current"
+  :options
 >
   <template #label>
     <strong>Custom Label</strong>
@@ -94,8 +92,8 @@ The select supports a `label` slot for custom label content if the text-only `la
 <div class="preview">
 
 <Select
-  v-model:current="current"
-  v-model:options="options"
+  v-model="current"
+  :options
 >
   <template #label>
     <i class="bi bi-star"/> Custom Label
@@ -115,8 +113,8 @@ Use the `icon` prop to add a Bootstrap icon before the select input.
 <Select
   label="Navigation"
   icon="bi-house"
-  v-model:current="current"
-  v-model:options="options"
+  v-model="current"
+  :options
 />
 ```
 
@@ -124,8 +122,8 @@ Use the `icon` prop to add a Bootstrap icon before the select input.
 <Select
   label="Navigation"
   icon="bi-house"
-  v-model:current="current"
-  v-model:options="options"
+  v-model="current"
+  :options="options"
 />
 </div>
 
@@ -148,8 +146,8 @@ const nullable = ref(undefined)
 <Select
   label="Choose an option"
   placeholder="Select one..."
-  v-model:current="nullable"
-  v-model:options="options"
+  v-model="nullable"
+  :options
 />
 ```
 </Layout>
@@ -158,8 +156,8 @@ const nullable = ref(undefined)
 <Select
   label="Choose an option"
   placeholder="Select one..."
-  v-model:current="nullable"
-  v-model:options="options"
+  v-model="nullable"
+  :options
 />
 {{ nullable ?? "No option selected" }}
 </div>
@@ -180,9 +178,9 @@ const initial = ref(1)
 ```vue-html
 <Select
   label="Resettable selection"
-  v-model:current="current"
-  v-model:options="options"
-  v-model:initial="initial"
+  v-model="current"
+  :options
+  :initial
 />
 ```
 
@@ -190,9 +188,9 @@ const initial = ref(1)
 <div class="preview">
 <Select
   label="Resettable selection"
-  v-model:current="current"
-  v-model:options="options"
-  v-model:initial="initial"
+  v-model="current"
+  :options
+  :initial
 />
 </div>
 
@@ -221,8 +219,8 @@ Try it out: Click the `Open modal` button, then use the arrow keys to select an 
 <Modal v-model="isOpen">
 <Select
   autofocus
-  v-model:current="current"
-  v-model:options="options"
+  v-model="current"
+  :options
 />
 </Modal>
 </div>
@@ -244,17 +242,17 @@ The Select component supports standard color and variant props from [the color c
   'destructive',
   'raised'
   ]"
-  v-bind="{[color]: true}"
-  v-model:current="current"
-  v-model:options="options"
+  :[color]="true"
+  v-model="current"
+  :options
 />
 ```
 
 <Layout stack gap-8 class="preview">
 <Select v-for = "color in ['primary', 'ghost', 'outline', 'green', 'destructive', 'raised']"
-  v-bind="{[color]: true}"
-  v-model:current="current"
-  v-model:options="options"
+  :[color]="true"
+  v-model="current"
+  :options
 />
 </Layout>
 

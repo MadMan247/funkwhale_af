@@ -52,10 +52,11 @@ export default <T extends string = string>(props: OrderingProps) => {
       ? ''
       : '-'
 
-  const queryOrdering = useRouteQuery(
+  /* TODO: Has to conform to `"-artist_credit__artist__modification_date" | "-creation_date" | "-random" | "-related" | "-release_date" | "-title" | "artist_credit__artist__modification_date" | "creation_date" | "random" | "related" | "release_date" | "title"` if Album; `"-creation_date" | "-id" | "-modification_date" | "-name" | "-random" | "-related" | "creation_date" | "id" | "modification_date" | "name" | "random" | "related"` if Artist; etc. See generated/types.ts */
+  const queryOrdering = useRouteQuery<string | undefined>(
     'ordering',
     normalizeDirection(prefOrderingDirection.value) + prefOrdering.value,
-    { transform: (value) => value.trim() }
+    { transform: (value) => value?.trim() }
   )
 
   const queryPaginateBy = useRouteQuery('paginateBy', prefPaginateBy.value, {
@@ -74,8 +75,8 @@ export default <T extends string = string>(props: OrderingProps) => {
 
   // NOTE: Sync ordering from query string to preferences
   watch(queryOrdering, (ordering) => {
-    prefOrderingDirection.value = ordering[0] === '-' ? '-' : '+'
-    prefOrdering.value = ordering.replace(/^[+-]/, '')
+    prefOrderingDirection.value = ordering?.[0] === '-' ? '-' : '+'
+    prefOrdering.value = ordering?.replace(/^[+-]/, '')
   }, { immediate: true })
 
 /**

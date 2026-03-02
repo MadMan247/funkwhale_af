@@ -266,26 +266,32 @@ whenever(() => store.state.auth.authenticated, () => {
     </Section>
     <Section v-if="anonymousCanListen">
       <!-- TODO: Update design here. Cannot do it right now because `anonymousCanListen` is `undefined`-->
-      <album-widget
-        :filters="{playable: true, ordering: '-creation_date'}"
-        :limit="10"
+      <AlbumWidget
+        :title="t('components.Home.header.newAlbums')"
+        :query="{
+          playable: true,
+          ordering: ['-creation_date'],
+          page_size: 10
+        }"
       >
-        <template #title>
-          {{ t('components.Home.header.newAlbums') }}
-        </template>
+        <!-- TODO: Consider using Link component or Section action -->
         <router-link to="/library">
           {{ t('components.Home.link.viewMore') }}
           <div class="ui hidden divider" />
         </router-link>
-      </album-widget>
+      </AlbumWidget>
       <div class="ui hidden section divider" />
       <h3 class="ui header">
         {{ t('components.Home.header.newChannels') }}
       </h3>
-      <channels-widget
-        :show-modification-date="true"
-        :limit="10"
-        :filters="{ordering: '-creation_date', external: 'false', content_category:'music'}"
+      <ChannelsWidget
+        :query="{
+          content_category: 'music',
+          ordering: ['-creation_date'],
+          external: false,
+          page_size: 10
+        }"
+        show-modification-date
       />
     </Section>
     <Spacer />

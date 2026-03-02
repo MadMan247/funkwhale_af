@@ -190,11 +190,9 @@ class TrackFilter(
             ("tag_matches", "related"),
         )
     )
-    format = filters.CharFilter(
-        field_name="_",
-        method="filter_format",
+    audio_format = django_filters.BaseInFilter(
+        field_name="uploads__mimetype", lookup_expr="in"
     )
-
     has_mbid = filters.BooleanFilter(
         field_name="_",
         method="filter_has_mbid",
@@ -229,10 +227,6 @@ class TrackFilter(
         return queryset.filter(
             Q(artist_credit__artist=value) | Q(album__artist_credit__artist=value)
         )
-
-    def filter_format(self, queryset, name, value):
-        mimetypes = [utils.get_type_from_ext(e) for e in value.split(",")]
-        return queryset.filter(uploads__mimetype__in=mimetypes)
 
     def filter_has_mbid(self, queryset, name, value):
         return queryset.filter(mbid__isnull=(not value))

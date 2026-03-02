@@ -48,6 +48,7 @@ const createForm = ref()
 </script>
 
 <template>
+  <!-- TODO: Remove this heading (username is page title) and instead promite `channels` and `podcasts` heading -->
   <Header
     page-heading
     :h1="t('views.auth.ProfileContent.header.content')"
@@ -85,24 +86,41 @@ const createForm = ref()
           </Link>
         </div>
       </h3>
-      <channels-widget :filters="{scope: scope, content_category: 'music', ...qualityFilters }" />
+      <ChannelsWidget
+        :query="{
+          content_category: 'music',
+          scope,
+          ...qualityFilters
+        }"
+      />
     </section>
 
-    <channels-widget
-      :filters="{ scope: scope, include_channels: true, content_category: 'podcast', ...qualityFilters }"
+    <ChannelsWidget
       :title="t('views.auth.ProfileContent.header.podcasts')"
+      :query="{
+        content_category: 'podcast',
+        include_channels: true,
+        scope,
+        ...qualityFilters
+      }"
     />
 
-    <playlist-widget
-      :url="'playlists/'"
-      :filters="{ scope: scope, ...qualityFilters, limit: 4 }"
+    <PlaylistWidget
       :title="t('views.auth.ProfileContent.header.playlists')"
+      :query="{
+        scope,
+        page_size: 4,
+        ...qualityFilters
+      }"
     />
 
-    <album-widget
-      :filters="{ scope: scope, ...qualityFilters }"
-      :limit="8"
+    <AlbumWidget
       :title="t('views.auth.ProfileContent.header.albums')"
+      :query="{
+        scope,
+        page_size: 8,
+        ...qualityFilters
+      }"
     />
 
     <Modal

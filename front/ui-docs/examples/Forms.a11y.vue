@@ -24,13 +24,13 @@ const options = {
 
 const option = ref<keyof typeof options>('required')
 
-const roles = ref({
+const roles = {
   1: 'Maintainer',
   2: 'Contributor',
   3: 'User'
-} as const)
+} as const
 
-const role = ref<keyof typeof roles.value>(2)
+const role = ref<keyof typeof roles>(2)
 
   const pills = ref < {
     currents: { type: 'custom' | 'preset', label: string }[],
@@ -97,8 +97,8 @@ const errors = computed(()=>
 
       <!-- #region select -->
       <Select
-        v-model:current="role"
-        v-model:options="roles"
+        v-model="role"
+        :options="roles"
         label="Select a role"
       />
       <!-- #endregion select -->

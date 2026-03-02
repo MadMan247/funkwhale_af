@@ -17,14 +17,18 @@ defineProps<Props>()
 
 <template>
   <section>
-    <artist-widget
+    <ArtistWidget
       v-if="object.uuid"
-      :key="object.uploads_count"
       ref="artists"
-      :header="false"
-      :search="true"
-      :controls="false"
-      :filters="{ playable: true, ordering: '-creation_date', library: object.uuid }"
+      :key="object.uploads_count"
+      :query="{
+        playable: true,
+        ordering: ['-creation_date'],
+        library: object.uuid
+      }"
+      has-search
+      :header="false /* TODO: Remove non-existent prop? */"
+      :controls="false /* TODO: Remove non-existent prop? */"
     >
       <template #empty-state>
         <empty-state>
@@ -42,6 +46,6 @@ defineProps<Props>()
           </p>
         </empty-state>
       </template>
-    </artist-widget>
+    </ArtistWidget>
   </section>
 </template>

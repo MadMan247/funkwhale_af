@@ -13389,8 +13389,9 @@ export interface operations {
             query?: {
                 album?: number;
                 artist?: string;
+                /** @description Multiple values may be separated by commas. */
+                audio_format?: (string | null)[];
                 channel?: string;
-                format?: string;
                 has_mbid?: boolean;
                 hidden?: boolean;
                 id?: number[];
@@ -13510,8 +13511,9 @@ export interface operations {
             query?: {
                 album?: number;
                 artist?: string;
+                /** @description Multiple values may be separated by commas. */
+                audio_format?: (string | null)[];
                 channel?: string;
-                format?: string;
                 has_mbid?: boolean;
                 hidden?: boolean;
                 include_channels?: boolean;
@@ -13590,8 +13592,9 @@ export interface operations {
             query?: {
                 album?: number;
                 artist?: string;
+                /** @description Multiple values may be separated by commas. */
+                audio_format?: (string | null)[];
                 channel?: string;
-                format?: string;
                 has_mbid?: boolean;
                 hidden?: boolean;
                 include_channels?: boolean;
@@ -13699,8 +13702,9 @@ export interface operations {
             query?: {
                 album?: number;
                 artist?: string;
+                /** @description Multiple values may be separated by commas. */
+                audio_format?: (string | null)[];
                 channel?: string;
-                format?: string;
                 has_mbid?: boolean;
                 hidden?: boolean;
                 include_channels?: boolean;
@@ -13779,8 +13783,9 @@ export interface operations {
             query?: {
                 album?: number;
                 artist?: string;
+                /** @description Multiple values may be separated by commas. */
+                audio_format?: (string | null)[];
                 channel?: string;
-                format?: string;
                 has_mbid?: boolean;
                 hidden?: boolean;
                 include_channels?: boolean;

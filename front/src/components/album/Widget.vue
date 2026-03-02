@@ -1,78 +1,48 @@
 <script setup lang="ts">
-import type { Album } from '~/types'
+import { computed, ref } from 'vue'
 
-import { reactive, ref, watch } from 'vue'
+import type { operations } from '~/generated/types'
 import { useStore } from '~/store'
-
-import axios from 'axios'
-
-import useErrorHandler from '~/composables/useErrorHandler'
+import { useDataStore } from '~/ui/stores/data'
 
 import AlbumCard from '~/components/album/Card.vue'
-import Section from '~/components/ui/Section.vue'
+import InlineSearchBar from '~/components/common/InlineSearchBar.vue'
+
 import Loader from '~/components/ui/Loader.vue'
-import Spacer from '~/components/ui/Spacer.vue'
 import Pagination from '~/components/ui/Pagination.vue'
+import Section from '~/components/ui/Section.vue'
+import Spacer from '~/components/ui/Spacer.vue'
 
-interface Props {
-  filters: Record<string, string | boolean>
-  showCount?: boolean
-  search?: boolean
-  limit?: number
+/* TODO: Simplify Link and Button props #2500; then explicitly route `action` prop to Section
+ Alt.: Re-implement action as slot (better!)
+ ```ts
+ import type { ComponentProps } from 'vue-component-type-helpers'
+ ...
+ action?: ComponentProps<typeof Section>['action']
+ ```
+ - Not possible right now because component props of Link and Button are too complex to represent
+*/
+const { title, hasSearch, query } = defineProps<{
   title?: string
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  showCount: false,
-  search: false,
-  limit: 12,
-  title: undefined
-})
+  hasSearch?: boolean
+  query: Required<operations['get_albums']['parameters']>['query']
+}>()
 
 const store = useStore()
 
-const query = ref('')
-const albums = reactive([] as Album[])
-const count = ref(0)
 const page = ref(1)
-const nextPage = ref()
+const q = ref('')
+const page_size_fallback = 12
 
-const isLoading = ref(false)
-const fetchData = async (url = 'albums/') => {
-  isLoading.value = true
-
-  try {
-    const params = {
-      q: query.value,
-      ...props.filters,
-      page: page.value,
-      page_size: props.limit,
-      include_tracks: false
-    }
-
-    const response = await axios.get(url, { params })
-    nextPage.value = response.data.next
-    count.value = response.data.count
-    albums.splice(0, albums.length, ...response.data.results)
-  } catch (error) {
-    useErrorHandler(error as Error)
-  }
-
-  isLoading.value = false
-}
-
-setTimeout(fetchData, 1000)
-
-const performSearch = () => {
-  albums.length = 0
-  fetchData()
-}
-
-watch(
-  () => [store.state.moderation.lastUpdate, props.filters, page.value],
-  () => fetchData(),
-  { immediate: true }
-)
+const albums = computed(() => useDataStore().albums({
+  include_tracks: false,
+  page: page.value,
+  page_size: page_size_fallback,
+  q: q.value,
+  ...query
+}, {
+  refetchSignal: store.state.moderation.lastUpdate
+}).value)
 </script>
 
 <template>
@@ -81,39 +51,39 @@ watch(
     :h2="title"
     :columns-per-item="1"
   >
-    <inline-search-bar
-      v-if="search"
-      v-model="query"
+    <InlineSearchBar
+      v-if="hasSearch"
+      v-model="q"
       style="grid-column: 1 / -1;"
-      @search="performSearch"
+      @search="albums.refetch"
     />
     <Loader
-      v-if="isLoading"
+      v-if="albums.status === 'loading'"
       style="grid-column: 1 / -1;"
     />
-    <template v-if="!isLoading && albums.length > 0">
+    <template v-if="albums.data">
       <album-card
-        v-for="album in albums"
+        v-for="album in albums.data.results"
         :key="album.id"
-        :album="album"
+        :album
+      />
+      <slot
+        v-if="albums.status !== 'loading' && albums.data.count === 0"
+        name="empty-state"
+      >
+        <empty-state
+          :refresh="true"
+          style="grid-column: 1 / -1;"
+          @refresh="albums.refetch"
+        />
+      </slot>
+      <Spacer grow />
+      <Pagination
+        v-if="albums.data.count > (query.page_size ?? page_size_fallback)"
+        v-model:page="page"
+        :pages="Math.ceil(albums.data.count / (query.page_size ?? page_size_fallback))"
+        style="grid-column: 1 / -1;"
       />
     </template>
-    <slot
-      v-if="!isLoading && albums.length === 0"
-      name="empty-state"
-    >
-      <empty-state
-        :refresh="true"
-        style="grid-column: 1 / -1;"
-        @refresh="fetchData"
-      />
-    </slot>
-    <Spacer grow />
-    <Pagination
-      v-if="page && albums && count > props.limit"
-      v-model:page="page"
-      :pages="Math.ceil((count || 0) / props.limit)"
-      style="grid-column: 1 / -1;"
-    />
   </Section>
 </template>

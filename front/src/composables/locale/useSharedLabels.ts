@@ -49,7 +49,7 @@ export default () => ({
           label: t('composables.locale.useSharedLabels.fields.importStatus.choices.finished.label'),
           help: t('composables.locale.useSharedLabels.fields.importStatus.choices.finished.help')
         }
-      } as Record<ImportStatus, { label: string, help: string }>
+      } satisfies Record<ImportStatus, { label: string, help: string }>
     },
     report_type: {
       label: t('composables.locale.useSharedLabels.fields.reportType.label'),
@@ -151,5 +151,5 @@ export default () => ({
       label: t('composables.locale.useSharedLabels.scopes.reports.label'),
       description: t('composables.locale.useSharedLabels.scopes.reports.description')
     }
-  } as Record<ScopeId, { label: string, description: string }>
-})
+  } satisfies Record<ScopeId, { label: string, description: string }>
+} as const)

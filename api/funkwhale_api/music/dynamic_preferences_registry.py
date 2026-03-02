@@ -117,7 +117,7 @@ class HasMbid(types.BooleanPreference):
 class Format(types.MultipleChoicePreference):
     show_in_api = True
     section = quality_filters
-    name = "format"
+    name = "audio_format"
     verbose_name = "Allowed Audio Format"
     default = (["aac", "aif", "aiff", "flac", "mp3", "ogg", "opus"],)
     choices = [

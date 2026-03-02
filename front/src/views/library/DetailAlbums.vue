@@ -16,31 +16,28 @@ defineProps<Props>()
 </script>
 
 <template>
+  <!-- TODO: Consider adding a semantic role (preferably through the Section component) -->
   <section>
-    <album-widget
+    <AlbumWidget
       v-if="object.uuid"
       :key="String(object.uploads_count)"
-      :header="false"
-      :search="true"
-      :controls="false"
-      :filters="{playable: true, ordering: '-creation_date', library: object.uuid}"
+      has-search
+      :query="{
+        playable: true,
+        ordering: ['-creation_date'],
+        library: object.uuid
+      }"
+      :header="false /* TODO: Remove non-existent prop? */"
+      :controls="false /* TODO: Remove non-existent prop? */"
     >
-      <template #empty-state>
-        <empty-state>
-          <p>
-            <span
-              v-if="isOwner"
-            >
-              {{ t('views.library.DetailAlbums.empty.upload') }}
-            </span>
-            <span
-              v-else
-            >
-              {{ t('views.library.DetailAlbums.empty.follow') }}
-            </span>
-          </p>
-        </empty-state>
-      </template>
-    </album-widget>
+      <empty-state>
+        <p>
+          {{ isOwner
+            ? t('views.library.DetailAlbums.empty.upload')
+            : t('views.library.DetailAlbums.empty.follow')
+          }}
+        </p>
+      </empty-state>
+    </AlbumWidget>
   </section>
 </template>

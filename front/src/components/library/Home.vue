@@ -1,32 +1,22 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ref, computed, watch } from 'vue'
+
 import { useStore } from '~/store'
-import { useRoute, useRouter } from 'vue-router'
+import { useUrlParamStore } from '~/ui/stores/urlParam.ts'
 
-import useUrlParamCache from '~/ui/composables/useUrlParamCache.ts'
-
-import ChannelsWidget from '~/components/audio/ChannelsWidget.vue'
-import PlaylistWidget from '~/components/playlists/Widget.vue'
-import TrackWidget from '~/components/audio/track/Widget.vue'
 import AlbumWidget from '~/components/album/Widget.vue'
+import ChannelsWidget from '~/components/audio/ChannelsWidget.vue'
+import ListeningWidget from '~/components/audio/listening/Widget.vue'
 import FollowWidget from '~/components/federation/FollowWidget.vue'
+import PlaylistWidget from '~/components/playlists/Widget.vue'
+
 import Header from '~/components/ui/Header.vue'
 import Layout from '~/components/ui/Layout.vue'
-import Spacer from '~/components/ui/Spacer.vue'
 import Nav from "~/components/ui/Nav.vue"
-
-
-interface Props {
-  scope?: 'me' | 'from_subscribed' | 'domain' | 'all'
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  scope: 'all'
-})
+import Spacer from '~/components/ui/Spacer.vue'
 
 const store = useStore()
-const route = useRoute()
 const qualityFilters = computed(() => store.getters['instance/qualityFilters'])
 
 const { t } = useI18n()
@@ -34,36 +24,23 @@ const labels = computed(() => ({
   title: t('components.library.Home.title')
 }))
 
-const tabs = ref([
-  { title: t("components.library.Home.tabs.me"), name: 'me'},
-  { title: t("components.library.Home.tabs.subscribed"), name: 'from_subscribed'},
-  { title: t("components.library.Home.tabs.domain"), name: 'domain:' + store.getters['instance/domain']},
-  { title: t("components.library.Home.tabs.all"), name: 'all'}
-])
-
-const scope = useUrlParamCache('scope', { fallback: props.scope })
-
-const router = useRouter()
-watch(() => route.query.scope, async (newScope) => {
-  const scopeQuery = Array.isArray(newScope) ? newScope[0] : newScope
-  if (!scopeQuery) {
-    await router.replace({
-      ...route,
-      query: { ...route.query, scope: scope.value }
-    })
-  } else if (scopeQuery === 'subscribed') {
-    await router.replace({
-      ...route,
-      query: { ...route.query, scope: 'from_subscribed' }
-    })
-  }
-}, { immediate: true })
-
+const tabs = [
+  { title: t("components.library.Home.tabs.me"), name: 'me' },
+  { title: t("components.library.Home.tabs.subscribed"), name: 'from_subscribed' },
+  { title: t("components.library.Home.tabs.domain"), name: `domain:${store.getters['instance/domain']}` },
+  { title: t("components.library.Home.tabs.all"), name: 'all' }
+]
+const scope = useUrlParamStore('scope', {
+  allowedValues: [undefined, 'subscribed', ...tabs.map(t => t.name)] as const
+})
+if (scope.value === 'subscribed')
+  scope.value = 'from_subscribed'
+else if (!scope.value)
+  scope.value = 'all'
 </script>
 
 <template>
   <Layout
-    :key="route?.name ?? undefined"
     v-title="labels.title"
     main
     stack
@@ -72,49 +49,80 @@ watch(() => route.query.scope, async (newScope) => {
       page-heading
       :h1="labels.title"
     />
+    <Spacer />
+
+    <!-- Results -->
+
     <Nav
-      v-model="tabs"
+      :model-value="tabs"
       tab-query-field="scope"
     />
     <Spacer />
-    <track-widget
+    <ListeningWidget
       :title="t('components.library.Home.header.recentlyListened')"
-      :url="'history/listenings/'"
-      :filters="{ scope: scope, ordering: '-creation_date', ...qualityFilters }"
+      url="history/listenings"
+      :query="{
+        scope,
+        ordering: '-creation_date',
+        ...qualityFilters
+      }"
       :websocket-handlers="['Listen']"
     />
     <Spacer />
-    <track-widget
+    <ListeningWidget
       :title="t('components.library.Home.header.recentlyFavorited')"
-      :url="'favorites/tracks/'"
-      :filters="{ scope: scope ?? '', ordering: '-creation_date' }"
+      url="favorites/tracks"
+      :query="{
+        scope,
+        ordering: '-creation_date'
+      }"
     />
     <Spacer />
-    <album-widget
-      :filters="{ scope: scope ?? '', include_channels: true, playable: true, ordering: '-creation_date', ...qualityFilters }"
-      :limit="4"
+    <AlbumWidget
       :title="t('components.library.Home.header.recentlyAdded')"
+      :query="{
+        include_channels: true,
+        playable: true,
+        scope,
+        page_size: 4,
+        ordering: ['-creation_date'],
+        ...qualityFilters
+      }"
     />
     <Spacer />
-    <playlist-widget
-      :url="'playlists/'"
-      :filters="{ scope: scope ?? '', playable: true, ordering: '-modification_date', limit: 4 }"
+    <PlaylistWidget
       :title="t('components.library.Home.header.playlists')"
+      :query="{
+        playable: true,
+        scope,
+        ordering:'-modification_date',
+        page_size: 4
+      }"
     />
     <Spacer />
-    <channels-widget
-      :limit="4"
-      :filters="{ scope: scope ?? '', ordering: '-creation_date', content_category: 'music' }"
+    <ChannelsWidget
       :title="t('components.library.Home.header.newChannels')"
-      :show-modification-date="true"
+      :query="{
+        content_category: 'music',
+        scope,
+        ordering: ['-creation_date'],
+        page_size: 4
+      }"
+      show-modification-date
     />
     <Spacer />
-    <channels-widget
-      :limit="4"
-      :filters="{ scope: scope ?? '', playable: true, ordering: '-creation_date', content_category: 'podcast' }"
+    <ChannelsWidget
       :title="t('components.library.Home.header.podcasts')"
+      :query="{
+        content_category: 'podcast',
+        // playable: true, // Not a valid param!
+        scope,
+        page_size: 4,
+        ordering: ['-creation_date']
+      }"
     />
     <Spacer />
+    <!-- TODO: Refactor follow-widget to use data store (for deduplication, rate-limiting, caching etc.) -->
     <follow-widget
       v-if="scope === 'me'"
       :title="t('components.library.Home.header.following')"

@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { useId } from 'vue'
-import type { ComponentProps } from 'vue-component-type-helpers'
 
 import { computed } from 'vue'
 
 import Layout from '@ui/Layout.vue'
 import Spacer from '@ui/Spacer.vue'
 import Button from '@ui/Button.vue'
-import Link from '@ui/Link.vue'
 import Heading from '@ui/Heading.vue'
 import Loader from '@ui/Loader.vue'
 
@@ -15,7 +13,6 @@ import Loader from '@ui/Loader.vue'
 const props = defineProps<{
   columnsPerItem?: 1 | 2 | 3 | 4
   alignLeft?: boolean
-  action?: { text: string, id?: string } & (ComponentProps<typeof Link> | ComponentProps<typeof Button>)
   icon?: string
   badge?: 'loading' | number
 } & {
@@ -28,11 +25,6 @@ const props = defineProps<{
 // #endregion props
 
 const id = useId()
-
-const hasContent = computed(() => {
-  // @ts-expect-error too complex type thingy
-  return Object.keys(props).some(key => (key === 'expand' || key === 'collapse' || key === 'action' || key.startsWith('h')) && props[key])
-})
 
 // TODO: (flupsi) Have to tidy this up...
 const headingProps = computed(() =>
@@ -61,14 +53,7 @@ const headingProps = computed(() =>
       <Layout
         flex
         no-gap
-        :style="`
-          grid-column: 1 / -1;
-          align-self: baseline;
-          align-items: baseline;
-          position: relative;
-          flex-grow: 1;
-          ${ hasContent ? '' : 'pointer-events: none;'}
-        `"
+        :class="$style.headerLayout"
       >
         <!-- Accordion? -->
 
@@ -79,13 +64,11 @@ const headingProps = computed(() =>
             align-self="end"
             :class="$style.summary"
             :aria-pressed="!!collapse"
-            v-bind="action"
             raised
             @click="() => expand ? expand() : collapse ? collapse() : (() => { return })()"
           >
             <slot name="topleft" />
 
-            <!-- @vue-ignore -->
             <Heading
               v-bind="headingProps"
               :id
@@ -145,26 +128,15 @@ const headingProps = computed(() =>
 
         <!-- Action! You can either specify `to` or `onClick`. -->
         <!-- Note: We cannot simplify with  `<component is="action && 'to' in action ? Link : Button"` due to a Vue bug -->
-        <!-- TODO: Refactor to a `topright` slot (for simplicity and composability) and make sure to pay extra attention to layout edge cases. -->
-        <template v-if="action">
-          <Link
-            v-if="'to' in action"
-            :class="$style.action"
-            v-bind="action"
-          >
-            {{ action.text }}
-          </Link>
-          <Button
-            v-else
-            thin-font
-            min-content
-            align-self="baseline"
-            :class="$style.action"
-            v-bind="action"
-          >
-            {{ action.text }}
-          </Button>
-        </template>
+        <!-- TODO: Refactor to a `#action` slot (for simplicity and composability) and make sure to pay extra attention to layout edge cases. -->
+
+
+        <span
+          v-if="$slots.action"
+          :class="$style.action"
+        >
+          <slot name="action" />
+        </span>
       </Layout>
     </Layout>
 
@@ -199,7 +171,19 @@ const headingProps = computed(() =>
   </section>
 </template>
 
-<style module lang="scss">
+<style module>
+.headerLayout {
+  grid-column: 1 / -1;
+  align-self: baseline;
+  align-items: baseline;
+  position: relative;
+  flex-grow: 1;
+  pointer-events: none;
+  &>*{
+    pointer-events: auto;
+  }
+}
+
 .badge.badge.badge.badge {
     font-weight: 1000;
     border-radius: 100%;
@@ -217,13 +201,17 @@ const headingProps = computed(() =>
 }
 
 
-// Thank you, css, for offering this weird alternative to !important
+/* Thank you, css, for offering this weird alternative to !important */
 header.left.left {
   justify-content: start;
 }
 
 .uncollapsible {
   margin-top: -64px;
+  pointer-events: none;
+  &>*{
+    pointer-events: auto;
+  }
 }
 
 .summary {
@@ -233,8 +221,11 @@ header.left.left {
   --fw-border-radius: 32px;
 }
 
-// Visually push ghost link and non-solid button to the edge
-.action:global(.interactive:not(:is(.primary, .solid, .destructive, .secondary)):is(button, a.ghost)) {
-  margin-right: -16px;
+/* Visually push ghost link and non-solid button to the edge */
+.action {
+  display: contents;
+  & > :global(.interactive:not(:is(.primary, .solid, .destructive, .secondary)):is(button, a.ghost)) {
+    margin-right: -16px;
+  }
 }
 </style>

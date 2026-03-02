@@ -57,9 +57,8 @@ const labels = computed(() => ({
       </Link>
     </Layout>
     <Spacer :size="64" />
-    <artist-widget
+    <ArtistWidget
       :key="'artist' + id"
-      :controls="false"
       :title="t('components.library.TagDetail.header.artists')"
       :action="{
         text: t('components.library.TagDetail.link.artists'),
@@ -67,28 +66,34 @@ const labels = computed(() => ({
         // secondary: true,
         // solid: true
       }"
-      :filters="{playable: true, ordering: '-creation_date', tag: id, include_channels: 'false'}"
+      :query="{
+        playable: true,
+        tag: [id],
+        ordering: ['-creation_date'],
+        include_channels: false
+      }"
+      :controls="false /*TODO: Check where this is coming from - it's not part of any API I see*/"
     />
-    <Spacer :size="64" />
-    <channels-widget
+    <Spacer size-64 />
+    <ChannelsWidget
       :key="'channels' + id"
-      :show-modification-date="true"
-      :limit="12"
       :title="t('components.library.TagDetail.header.channels')"
       :action="{
         text: t('components.library.TagDetail.link.channels'),
-        to: {name: 'library.channels.browse', query: {tag: id}},
+        to: { name: 'library.channels.browse', query: { tag: id } },
         // secondary: true,
         // solid: true
       }"
-      :filters="{tag: id, ordering: '-creation_date'}"
+      :query="{
+        page_size: 12,
+        tag: [id],
+        ordering: ['-creation_date']
+      }"
+      show-modification-date
     />
-    <Spacer :size="64" />
-    <album-widget
-      :key="'album' + id"
-      :show-count="true"
-      :controls="false"
-      :filters="{playable: true, ordering: '-creation_date', tag: id}"
+    <Spacer size-64 />
+    <AlbumWidget
+      :key="`album${id}`"
       :title="t('components.library.TagDetail.header.albums')"
       :action="{
         text: t('components.library.TagDetail.link.albums'),
@@ -96,22 +101,35 @@ const labels = computed(() => ({
         // secondary: true,
         // solid: true
       }"
+      :query="{
+        playable: true,
+        tag: [id],
+        ordering: ['-creation_date']
+      }"
+      show-count
+      :controls="false /*TODO: Check where this is coming from - it's not part of any API I see*/"
     />
     <Spacer :size="64" />
-    <track-widget
-      :key="'track' + id"
-      :show-count="true"
-      :limit="12"
-      item-classes="track-item inline"
-      :url="'/tracks/'"
-      :is-activity="false"
-      :filters="{playable: true, ordering: '-creation_date', tag: id}"
+    <!-- TODO: What was show-count doing? -->
+    <TrackWidget
+      :key="`track${id}`"
       :title="t('components.library.TagDetail.header.tracks')"
+      url="tracks"
+      :query="{
+        playable: true,
+        tag: [id],
+        ordering: ['-creation_date'],
+        page_size: 12
+      }"
+      item-classes="track-item inline"
+      :is-activity="false"
+      show-count
     />
   </Layout>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
+/* TODO: Add this variant into the props/classes accepted by pill */
 h1 > .pill {
   border-radius: 100vh;
   display: inline-block;

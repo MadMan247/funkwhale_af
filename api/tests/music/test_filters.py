@@ -1,6 +1,7 @@
 import os
 
 import pytest
+from django.http import QueryDict
 
 from funkwhale_api.music import filters, models
 
@@ -294,10 +295,10 @@ def test_track_filter_format(extension, mimetype, factories, mocker, anonymous_u
         track=track_unexpected,
         mimetype="audio/x-m4a",
     )
-
+    data = QueryDict("audio_format=audio/ogg,audio/mpeg")
     qs = models.Track.objects.all()
     filterset = filters.TrackFilter(
-        {"format": "ogg,mp3"},
+        data,
         request=mocker.Mock(user=anonymous_user),
         queryset=qs,
     )

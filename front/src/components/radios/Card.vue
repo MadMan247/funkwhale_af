@@ -9,7 +9,7 @@ import UserLink from '~/components/common/UserLink.vue'
 
 import RadioButton from './Button.vue'
 import Card from '~/components/ui/Card.vue'
-import Button from '~/components/ui/Button.vue'
+import Link from '~/components/ui/Link.vue'
 import Spacer from '~/components/ui/Spacer.vue'
 
 interface Props {
@@ -71,15 +71,16 @@ const customRadioId = computed(() => props.customRadio?.id ?? null)
     </template>
 
     <template #action>
-      <Button
+      <Link
         v-if="store.state.auth.authenticated && type === 'custom' && radio.user.id === store.state.auth.profile?.id"
         primary
+        solid
         full
         grow
         :to="{name: 'library.radios.edit', params: {id: customRadioId }}"
       >
         {{ t('components.radios.Card.button.edit') }}
-      </Button>
+      </Link>
     </template>
   </Card>
   <Card
@@ -113,13 +114,13 @@ const customRadioId = computed(() => props.customRadio?.id ?? null)
         :object-id="objectId"
         grow
       />
-      <Button
+      <Link
         v-if="store.state.auth.authenticated && type === 'custom' && radio.user.id === store.state.auth.profile?.id"
         secondary
         :to="{name: 'library.radios.edit', params: {id: customRadioId }}"
       >
         {{ t('components.radios.Card.button.edit') }}
-      </Button>
+      </Link>
     </template>
   </Card>
 </template>

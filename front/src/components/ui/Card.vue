@@ -333,7 +333,6 @@ const attributes = computed(() =>
       margin: 0;
       border-top-left-radius: 0;
       border-top-right-radius: 0;
-      border: 8px solid transparent;
       &:not(:first-child) {
         border-bottom-left-radius: 0;
       }

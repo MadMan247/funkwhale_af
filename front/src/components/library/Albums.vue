@@ -1,175 +1,113 @@
 <script setup lang="ts">
-import type { OrderingProps } from '~/composables/navigation/useOrdering'
-import type { PaginatedAlbumList } from '~/types'
-import type { operations } from '~/generated/types.ts'
-import type { RouteRecordName } from 'vue-router'
-import type { OrderingField } from '~/store/ui'
-
-import { computed, ref, watch } from 'vue'
-import { useRouteQuery } from '@vueuse/router'
-import { useRoute, useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
 import { syncRef } from '@vueuse/core'
+import { useRouteQuery } from '@vueuse/router'
 import { sortedUniq } from 'lodash-es'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import useSharedLabels from '~/composables/locale/useSharedLabels'
+import type { OrderingProps } from '~/composables/navigation/useOrdering'
+import useOrdering from '~/composables/navigation/useOrdering'
+import usePage from '~/composables/navigation/usePage'
 import { useStore } from '~/store'
-import { useDataStore } from '~/ui/stores/data'
+import type { OrderingField } from '~/store/ui'
 import { useModal } from '~/ui/composables/useModal.ts'
+import { useDataStore } from '~/ui/stores/data'
+import { useUrlParamStore } from '~/ui/stores/urlParam'
 
-import axios from 'axios'
-
-import Pagination from '~/components/ui/Pagination.vue'
-import Card from '~/components/ui/Card.vue'
 import AlbumCard from '~/components/album/Card.vue'
-import Layout from '~/components/ui/Layout.vue'
+
+import Alert from '~/components/ui/Alert.vue'
+import Card from '~/components/ui/Card.vue'
 import Header from '~/components/ui/Header.vue'
 import Input from '~/components/ui/Input.vue'
-import Alert from '~/components/ui/Alert.vue'
-import Spacer from '~/components/ui/Spacer.vue'
-import Pills from '~/components/ui/Pills.vue'
+import Layout from '~/components/ui/Layout.vue'
 import Loader from '~/components/ui/Loader.vue'
 import Nav from '~/components/ui/Nav.vue'
+import Pagination from '~/components/ui/Pagination.vue'
+import Pills from '~/components/ui/Pills.vue'
+import Select from '~/components/ui/Select.vue'
+import Spacer from '~/components/ui/Spacer.vue'
 
-import useUrlParamCache from '~/ui/composables/useUrlParamCache.ts'
-import useSharedLabels from '~/composables/locale/useSharedLabels'
-import useOrdering from '~/composables/navigation/useOrdering'
-import useErrorHandler from '~/composables/useErrorHandler'
-import usePage from '~/composables/navigation/usePage'
-import useLogger from '~/composables/useLogger'
-
-interface Props extends OrderingProps {
-  scope?: 'me' | 'from_subscribed' | 'domain' | 'all'
-
-  // TODO(wvffle): Remove after https://github.com/vuejs/core/pull/4512 is merged
-  orderingConfigName?: RouteRecordName
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  scope: 'me',
-  orderingConfigName: undefined
-})
-
-const page = usePage()
-
-const tags = useRouteQuery<string[]>('tag', [], { transform: (param: string[]) => param.filter(p => p.trim() !== '') })
-
-const q = useRouteQuery('query', '')
-const query = ref(q.value ?? '')
-syncRef(q, query, { direction: 'ltr' })
-
-const result = ref<PaginatedAlbumList>()
+const props = defineProps<OrderingProps>()
 
 const { t } = useI18n()
-
-const orderingOptions: [OrderingField, keyof typeof sharedLabels.filters][] = [
-  ['creation_date', 'creation_date'],
-  ['title', 'album_title'],
-  ['release_date', 'release_date']
-]
-
-const logger = useLogger()
-const sharedLabels = useSharedLabels()
-
-const { onOrderingUpdate, orderingString, paginateBy, ordering, orderingDirection } = useOrdering(props)
-
 const store = useStore()
-const dataStore = useDataStore()
 
-const tabs = ref([
+// Query
+
+const tabs = [
   { title: t("components.library.Albums.tabs.me"), name: 'me' },
   { title: t("components.library.Albums.tabs.subscribed"), name: 'from_subscribed' },
   { title: t("components.library.Albums.tabs.domain"), name: 'domain:' + store.getters['instance/domain'] },
   { title: t("components.library.Albums.tabs.all"), name: 'all' }
-])
-const scope = useUrlParamCache('scope', { fallback: props.scope })
+]
+const scope = useUrlParamStore('scope', {
+  allowedValues: [undefined, 'subscribed', ...tabs.map(t => t.name)] as const
+})
+if (scope.value === 'subscribed')
+ scope.value = 'from_subscribed'
+else if (!scope.value)
+  scope.value = 'me'
 
-const isLoading = ref(false)
-const fetchData = async () => {
-  isLoading.value = true
-  const params : operations['get_album_fetches']['parameters']['query'] = {
-    scope: scope.value,
-    page: page.value,
-    page_size: paginateBy.value,
-    q: query.value,
-    // @ts-expect-error TODO: add strict types to useOrdering
-    ordering: orderingString.value,
-    playable: true,
-    tag: tags.value,
-    include_channels: true,
-    include_tracks: false,
-    content_category: 'music'
-  }
+const tags = useUrlParamStore('tag', { scope: 'route', allowedValues: 'array' })
 
-  const measureLoading = logger.time('Fetching albums')
-  try {
-    const response = await axios.get<PaginatedAlbumList>('albums/', {
-      params,
-      paramsSerializer: {
-        indexes: null
-      }
-    })
+const q = useRouteQuery('query', '')
+const query = ref(q.value)
+syncRef(q, query, { direction: 'ltr' })
 
-    result.value = response.data
-  } catch (error) {
-    useErrorHandler(error as Error)
-    result.value = undefined
-    setTimeout(()=> page.value = 1, 1000)
-  } finally {
-    measureLoading()
-    isLoading.value = false
-  }
+// Pagination
+
+const page = usePage()
+
+const orderingOptions = {
+  creation_date: useSharedLabels().filters.creation_date,
+  title: useSharedLabels().filters.album_title,
+  release_date: useSharedLabels().filters.release_date
+} satisfies Partial<Record<OrderingField, string>>
+
+const directionOptions = {
+  '+': t('components.library.Albums.ordering.direction.ascending'),
+  '-': t('components.library.Albums.ordering.direction.descending')
 }
 
-watch(() => store.state.moderation.lastUpdate, fetchData)
+const { orderingString, paginateBy, ordering, orderingDirection } = useOrdering(props)
 
-watch([page, tags, q, ordering, orderingDirection, scope], () => {
-  fetchData()
-})
+const paginateOptions = computed<Record<number, string>>(() => Object.fromEntries(sortedUniq([
+  12,
+  30,
+  50,
+  paginateBy.value
+].toSorted((a, b) => a - b)).map(v => [v, String(v)])))
 
-watch(scope, () => {
+watch([q, tags, ordering, scope], () => {
+  // Reset page when params have changed
   page.value = 1
 })
 
-const route = useRoute()
-const router = useRouter()
+// Search result
 
-watch(() => route.query.scope, async (newScope) => {
-  const scopeQuery = Array.isArray(newScope) ? newScope[0] : newScope
-  if (!scopeQuery) {
-    await router.replace({
-      ...route,
-      query: { ...route.query, scope: scope.value }
-    })
-  } else if (scopeQuery === 'subscribed') {
-    await router.replace({
-      ...route,
-      query: { ...route.query, scope: 'from_subscribed' }
-    })
-  }
-}, { immediate: true })
-
-fetchData()
-
-const search = () => {
-  page.value = 1
-  q.value = query.value
-}
-
-onOrderingUpdate(() => {
-  page.value = 1
-  fetchData()
-})
-
-const labels = computed(() => ({
-  searchPlaceholder: t('components.library.Albums.placeholder.search'),
-  title: t('components.library.Albums.title')
-}))
-
-const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value].sort((a, b) => a - b)))
+const albums = computed(() => useDataStore().albums({
+  scope: scope.value,
+  page: page.value,
+  page_size: paginateBy.value,
+  q: query.value,
+  // @ts-expect-error TODO: add strict types to useOrdering
+  ordering: orderingString.value,
+  playable: true,
+  tag: tags.value,
+  include_channels: true,
+  include_tracks: false,
+  content_category: 'music'
+}, {
+  refetchSignal: store.state.moderation.lastUpdate
+}).value)
 </script>
 
 <template>
+  <!-- TODO: Consider using the URL params directly here - so that users can specify params not exposed in the UI -->
   <Layout
-    v-title="labels.title"
+    v-title="t('components.library.Albums.title')"
     stack
     main
   >
@@ -177,11 +115,14 @@ const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value]
       page-heading
       :h1="t('components.library.Albums.header.browse')"
     />
+    <Spacer />
+
+    <!-- Filters -->
+
     <Layout
-      form
       flex
-      :class="['ui', {'loading': isLoading}, 'form']"
-      @submit.prevent="search"
+      form
+      @submit.prevent="albums.refetch"
     >
       <Input
         id="album-search"
@@ -190,142 +131,101 @@ const paginateOptions = computed(() => sortedUniq([12, 30, 50, paginateBy.value]
         name="search"
         :label="t('components.library.Albums.label.search')"
         autofocus
-        :placeholder="labels.searchPlaceholder"
+        :placeholder="t('components.library.Albums.placeholder.search')"
       />
       <Pills
-        v-if="typeof tags === 'object'"
         :get="model => { tags = model.currents.map(({ label }) => label) }"
-        :set="model => ({
+        :set="_ => ({
           currents: tags.map(tag => ({ type: 'preset' as const, label: tag })),
-          others: dataStore.tags().value
-            .filter(({ name }) => result?.results?.some((object) => object.tags?.includes(name)) && !tags.includes(name))
+          others: useDataStore().tags().value
+            .filter(({ name }) => albums.data?.results?.some((object) => object.tags.includes(name)) && !tags.includes(name))
             .map(({ name }) => ({ type: 'preset' as const, label: name })),
         })"
         :label="t('components.library.Albums.label.tags')"
         style="max-width: 350px;"
       />
-      <Layout
-        stack
-        no-gap
-        label
-        for="album-ordering"
-      >
-        <span class="label">
-          {{ t('components.library.Albums.ordering.label') }}
-        </span>
-        <select
-          id="album-ordering"
-          v-model="ordering"
-          class="dropdown"
-        >
-          <option
-            v-for="(option, key) in orderingOptions"
-            :key="key"
-            :value="option[0]"
-          >
-            {{ sharedLabels.filters[option[1]] }}
-          </option>
-        </select>
-      </Layout>
-      <Layout
-        stack
-        no-gap
-        label
-        for="album-ordering-direction"
-      >
-        <span class="label">
-          {{ t('components.library.Albums.ordering.direction.label') }}
-        </span>
-        <select
-          id="album-ordering-direction"
-          v-model="orderingDirection"
-          class="dropdown"
-        >
-          <option value="+">
-            {{ t('components.library.Albums.ordering.direction.ascending') }}
-          </option>
-          <option value="-">
-            {{ t('components.library.Albums.ordering.direction.descending') }}
-          </option>
-        </select>
-      </Layout>
-      <Layout
-        stack
-        no-gap
-        label
-        for="album-results"
-      >
-        <span class="label">
-          {{ t('components.library.Albums.pagination.results') }}
-        </span>
-        <select
-          id="album-results"
-          v-model="paginateBy"
-          class="dropdown"
-        >
-          <option
-            v-for="opt in paginateOptions"
-            :key="opt"
-            :value="opt"
-          >
-            {{ opt }}
-          </option>
-        </select>
-      </Layout>
+      <Select
+        v-model="ordering"
+        :options="orderingOptions"
+        :label="t('components.library.Albums.ordering.label')"
+        style="flex-grow: 0"
+      />
+      <Select
+        v-model="orderingDirection"
+        :options="directionOptions"
+        :label="t('components.library.Albums.ordering.direction.label')"
+        style="flex-grow: 0"
+      />
+      <Select
+        v-model="paginateBy"
+        :options="paginateOptions"
+        :label="t('components.library.Albums.pagination.results')"
+        style="flex-grow: 0"
+      />
     </Layout>
 
+    <!-- Results -->
+
     <Nav
-      v-model="tabs"
+      :model-value="tabs"
       tab-query-field="scope"
     >
-      <Loader v-if="isLoading" />
-      <Pagination
-        v-if="page && result && result.count > paginateBy"
-        v-model:page="page"
-        :pages="Math.ceil((result.count || 0)/paginateBy)"
-      />
-      <Layout
-        v-if="result && result.results.length > 0"
-        grid
-        style="display:flex; flex-wrap:wrap; gap: 32px; margin-top:32px;"
+      <Loader v-if="albums.status === 'loading'" />
+      <Alert
+        v-else-if="albums.status === 'error'"
+        red
       >
-        <AlbumCard
-          v-for="album in result.results"
-          :key="album.id"
-          :album="album"
+        <i class="exclamation triangle icon" />
+        {{ albums.error }}
+      </Alert>
+      <template v-if="albums.data">
+        <Pagination
+          v-if="page && albums.data.count > paginateBy"
+          v-model:page="page"
+          :pages="Math.ceil((albums.data.count || 0)/paginateBy)"
         />
-      </Layout>
-      <Layout
-        v-else-if="result && result.results.length === 0"
-        stack
-      >
-        <Alert blue>
-          <i class="bi bi-disc" />
-          {{ t('components.library.Albums.empty.noResults') }}
-        </Alert>
-        <Layout flex>
-          <Card
-            v-if="store.state.auth.authenticated"
-            :title="t('components.library.Albums.link.addMusic')"
-            primary
-            style="text-align: center;"
-            :to="useModal('upload').to"
-          >
-            <template #image>
-              <i
-                class="bi bi-upload"
-                style="font-size: 100px; position: relative; top: 50px;"
-              />
-            </template>
-          </Card>
+        <Layout
+          v-if="albums.data.count > 0"
+          flex
+        >
+          <AlbumCard
+            v-for="album in albums.data.results"
+            :key="album.id"
+            :album
+          />
         </Layout>
-      </Layout>
-      <Spacer grow />
-      <Pagination
-        v-if="page && result && result.count > paginateBy"
-        v-model:page="page"
-        :pages="Math.ceil((result.count || 0)/paginateBy)"
-      />
+        <Layout
+          v-else-if="albums.data.count === 0"
+          stack
+        >
+          <Alert blue>
+            <i class="bi bi-disc" />
+            {{ t('components.library.Albums.empty.noResults') }}
+          </Alert>
+          <Layout flex>
+            <Card
+              v-if="store.state.auth.authenticated"
+              :title="t('components.library.Albums.link.addMusic')"
+              primary
+              style="text-align: center;"
+              :to="useModal('upload').to"
+            >
+              <template #image>
+                <i
+                  class="bi bi-upload"
+                  style="font-size: 100px; position: relative; top: 50px;"
+                />
+              </template>
+            </Card>
+          </Layout>
+        </Layout>
+        <Spacer grow />
+        <Pagination
+          v-if="page && albums.data.count > paginateBy"
+          v-model:page="page"
+          :pages="Math.ceil((albums.data.count || 0)/paginateBy)"
+        />
+      </template>
     </Nav>
   </Layout>
 </template>

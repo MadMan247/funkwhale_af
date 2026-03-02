@@ -1,36 +1,37 @@
-import { expect, test } from 'vitest'
-import { useRateLimiter, type RateLimiterError, isRateLimiterError } from './useRateLimiter'
+import { beforeEach, expect, test } from 'vitest'
+import { createPinia, setActivePinia } from 'pinia'
+import { useRateLimiterStore, type RateLimiterError, isRateLimiterError } from './rateLimiter'
 
 const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
-const config = {
-  cooldown: 10,
-  supersedeWhen: (newTask: string, oldTask: string) => newTask.startsWith(oldTask),
-  equalWhen: (newTask: string, oldTask: string) => newTask === oldTask
-}
+beforeEach(()=> setActivePinia(createPinia()))
 
 test('If not currently in cooldown, new task starts immediately', async () => {
-  const { greenlight } = useRateLimiter<string>(config)
+  const rateLimiter = useRateLimiterStore()
+  rateLimiter.config.cooldown = 10
+
   let count = 0
   const operation = () => count = 1
 
-  await greenlight('1')
+  await rateLimiter.greenlight('1')
   operation()
 
   expect(count).toBe(1)
 })
 
 test('If currently in cooldown, new, non-superseding task are deferred', async () => {
-  const { greenlight } = useRateLimiter<string>(config);
+const rateLimiter = useRateLimiterStore()
+rateLimiter.config.cooldown = 10
+
   let count = 0;
 
   (async () => {
-    await greenlight('A')
+    await rateLimiter.greenlight('A')
     count++
   })();
 
   (async () => {
-    await greenlight('B')
+    await rateLimiter.greenlight('B')
     count++
   })()
 
@@ -42,12 +43,15 @@ test('If currently in cooldown, new, non-superseding task are deferred', async (
   expect(count).toBe(1)
 
   // After the cooldown period, task B is expected to have finished
-  await wait(config.cooldown)
+  await wait(rateLimiter.config.cooldown)
   expect(count).toBe(2)
 })
 
 test('Superseded tasks are rejected', async () => {
-  const { greenlight } = useRateLimiter<string>(config);
+const rateLimiter = useRateLimiterStore()
+rateLimiter.config.cooldown = 10
+
+  const { greenlight } = useRateLimiterStore();
   const executedTasks: string[] = []
 
   // Tasks started outside of cooldown cannot be superseded
@@ -59,10 +63,10 @@ test('Superseded tasks are rejected', async () => {
     = greenlight('B').then(() => executedTasks.push('B (should not run)'))
 
   const promiseB1_superseding
-    = greenlight('B1').then(() => executedTasks.push('B1'))
+    = greenlight('B').then(() => executedTasks.push('B1'))
 
   const promiseB11_superseding
-    = greenlight('B11').then(() => executedTasks.push('B11'))
+    = greenlight('B').then(() => executedTasks.push('B11'))
 
   // Non-superseding tasks are added to the end of the queue
   const promiseC
@@ -70,7 +74,7 @@ test('Superseded tasks are rejected', async () => {
 
   // Tasks can only supersede other tasks that were started during cooldown
   const promiseA1
-    = greenlight('A1').then(() => executedTasks.push('A1'))
+    = greenlight('A').then(() => executedTasks.push('A1'))
 
   const [resultA, resultB, resultB1, resultB11, resultC, resultA1] = await Promise.allSettled([
     promiseA,

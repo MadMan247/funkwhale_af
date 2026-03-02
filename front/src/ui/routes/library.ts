@@ -14,7 +14,7 @@ export default [
         path: 'me',
         component: () => import('~/components/library/Home.vue'),
         name: 'library.me',
-        props: () => ({ scope: 'me' })
+        redirect: 'library/?scope=me'
       },
       {
         path: 'artists/',
@@ -27,11 +27,7 @@ export default [
       {
         path: 'me/artists',
         name: 'library.artists.me',
-        component: () => import('~/components/library/Artists.vue'),
-        props: { scope: 'me' },
-        meta: {
-          paginateBy: 30
-        }
+        redirect: 'library/artists/?scope=me'
       },
       {
         path: 'albums/',
@@ -44,11 +40,7 @@ export default [
       {
         path: 'me/albums',
         name: 'library.albums.me',
-        component: () => import('~/components/library/Albums.vue'),
-        props: { scope: 'me' },
-        meta: {
-          paginateBy: 30
-        }
+        redirect: 'library/albums/?scope=me'
       },
       {
         path: 'podcasts/',
@@ -77,11 +69,7 @@ export default [
       {
         path: 'me/radios/',
         name: 'library.radios.me',
-        component: () => import('~/components/library/Radios.vue'),
-        props: { scope: 'me' },
-        meta: {
-          paginateBy: 12
-        }
+        redirect: 'library/radios/?scope=me'
       },
       {
         path: 'radios/build',
@@ -112,11 +100,7 @@ export default [
       {
         path: 'me/playlists/',
         name: 'library.playlists.me',
-        component: () => import('~/views/playlists/List.vue'),
-        props: { scope: 'me' },
-        meta: {
-          paginateBy: 25
-        }
+        redirect: 'library/playlists/?scope=me'
       },
       {
         path: 'playlists/:id',

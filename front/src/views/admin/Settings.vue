@@ -73,7 +73,7 @@ const groups = computed(() => [
       { name: 'quality_filters__has_cover' },
       { name: 'quality_filters__has_tags' },
       { name: 'quality_filters__has_mbid' },
-      { name: 'quality_filters__format' },
+      { name: 'quality_filters__audio_format' },
       { name: 'quality_filters__bitrate_filter' },
       { name: 'quality_filters__has_release_date' },
       { name: 'music__join_phrases' }
