@@ -330,12 +330,12 @@ def rotate_actor_key(actor):
     actor.save(update_fields=["private_key", "public_key"])
 
 
-def iter_remote_pages(target, actor, object_type):
+def iter_remote_pages(target, actor, object_type, params):
     if target == target.domain.service_actor:
         # we want to parse all the content
-        params = {}
+        params = params
     else:
-        params = {"scope": f"actor:{target.full_username}"}
+        params["scope"] = f"actor:{target.full_username}"
 
     auth = signing.get_auth(actor.private_key, actor.private_key_id)
     url = (
@@ -367,10 +367,10 @@ def iter_remote_pages(target, actor, object_type):
 @celery.app.task(name="federation.parse_actor_collection")
 @celery.require_instance(models.Actor.objects.local(include=False), "target")
 @celery.require_instance(models.Actor.objects.local(), "actor")
-def parse_remote_collections(target, actor, object_type):
+def parse_remote_collections(target, actor, object_type, params={}):
     from . import api_serializers
 
-    for obj in iter_remote_pages(target, actor, object_type):
+    for obj in iter_remote_pages(target, actor, object_type, params):
         fid = obj["actor"]["fid"] if object_type == "channels" else obj["fid"]
 
         fetch_serializer = api_serializers.FetchSerializer(data={"object_uri": fid})
@@ -392,7 +392,10 @@ def fetch_past_activities(self, target, actor):
     )
     chain(
         parse_remote_collections.si(
-            target_id=target.pk, actor_id=actor.pk, object_type="libraries"
+            target_id=target.pk,
+            actor_id=actor.pk,
+            object_type="libraries",
+            params={"ordering": "uploads_count"},
         ),
         parse_remote_collections.si(
             target_id=target.pk, actor_id=actor.pk, object_type="channels"

@@ -383,6 +383,10 @@ class LibraryFilter(filters.FilterSet):
     )
     actor = filters.CharFilter(method="filter_actor")
 
+    ordering = django_filters.OrderingFilter(
+        fields={("_uploads_count", "uploads_count"), ("name", "name")}
+    )
+
     class Meta:
         model = models.Library
         fields = ["privacy_level"]
