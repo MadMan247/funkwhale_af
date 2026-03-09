@@ -20,6 +20,7 @@ def save_artist_credit(obj, ArtistCredit):
         artist=obj.artist,
         joinphrase="",
         credit=obj.artist.name,
+        index=0,
         defaults={
             "uuid": new_uuid,
             "fid": federation_utils.full_url(
