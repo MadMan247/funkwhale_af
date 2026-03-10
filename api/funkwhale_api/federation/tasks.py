@@ -395,7 +395,7 @@ def fetch_past_activities(self, target, actor):
             target_id=target.pk,
             actor_id=actor.pk,
             object_type="libraries",
-            params={"ordering": "uploads_count"},
+            params={"ordering": "-uploads_count"},
         ),
         parse_remote_collections.si(
             target_id=target.pk, actor_id=actor.pk, object_type="channels"
