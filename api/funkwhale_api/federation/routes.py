@@ -72,6 +72,8 @@ def inbox_accept(payload, context):
 
     serializer.save()
     obj = serializer.validated_data["follow"]
+    # now we might have access to more content so we refetch past activities
+    tasks.fetch_past_activities.delay(target_id=obj.target.pk, actor_id=obj.actor.pk)
     return {"object": obj, "related_object": obj.target}
 
 

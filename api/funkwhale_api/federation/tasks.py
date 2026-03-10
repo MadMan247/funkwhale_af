@@ -433,6 +433,7 @@ def bulk_fetch_past_activities(self, target_ids, actor):
         tasks.append(task)
 
     job = group(tasks)
+    # this trigger the job async but the tasks within the job are run one after the other
     job.apply_async()
 
 
