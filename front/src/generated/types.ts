@@ -9665,8 +9665,15 @@ export interface operations {
         parameters: {
             query?: {
                 actor?: string;
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
+                /**
+                 * @description Ordering
+                 *
+                 *     * `uploads_count` - Uploads count
+                 *     * `-uploads_count` - Uploads count (descending)
+                 *     * `name` - Name
+                 *     * `-name` - Name (descending)
+                 */
+                ordering?: ("-name" | "-uploads_count" | "name" | "uploads_count")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
                 /** @description Number of results to return per page. */
@@ -14711,8 +14718,15 @@ export interface operations {
         parameters: {
             query?: {
                 actor?: string;
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
+                /**
+                 * @description Ordering
+                 *
+                 *     * `uploads_count` - Uploads count
+                 *     * `-uploads_count` - Uploads count (descending)
+                 *     * `name` - Name
+                 *     * `-name` - Name (descending)
+                 */
+                ordering?: ("-name" | "-uploads_count" | "name" | "uploads_count")[];
                 /** @description A page number within the paginated result set. */
                 page?: number;
                 /** @description Number of results to return per page. */

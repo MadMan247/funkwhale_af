@@ -4151,12 +4151,26 @@ paths:
         name: actor
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
+      - in: query
+        name: ordering
         schema:
-          type: string
+          type: array
+          items:
+            type: string
+            enum:
+            - -name
+            - -uploads_count
+            - name
+            - uploads_count
+        description: |-
+          Ordering
+
+          * `uploads_count` - Uploads count
+          * `-uploads_count` - Uploads count (descending)
+          * `name` - Name
+          * `-name` - Name (descending)
+        explode: false
+        style: form
       - name: page
         required: false
         in: query
@@ -10906,12 +10920,26 @@ paths:
         name: actor
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
+      - in: query
+        name: ordering
         schema:
-          type: string
+          type: array
+          items:
+            type: string
+            enum:
+            - -name
+            - -uploads_count
+            - name
+            - uploads_count
+        description: |-
+          Ordering
+
+          * `uploads_count` - Uploads count
+          * `-uploads_count` - Uploads count (descending)
+          * `name` - Name
+          * `-name` - Name (descending)
+        explode: false
+        style: form
       - name: page
         required: false
         in: query

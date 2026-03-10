@@ -1407,7 +1407,7 @@ class ArtistCreditSerializer(jsonld.JsonLdSerializer):
                 "artist": artist,
                 "joinphrase": validated_data["joinphrase"],
                 "credit": validated_data["credit"],
-                "index": validated_data["index"],
+                "index": validated_data.get("index", 0),
             },
         )
         return ac
