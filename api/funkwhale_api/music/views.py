@@ -258,21 +258,19 @@ class AlbumViewSet(
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.action in ["destroy"]:
-            queryset = queryset.exclude(artist_credit__artist__channel=None).filter(
-                artist_credit__artist__attributed_to=self.request.user.actor
-            )
+            queryset = queryset.filter(
+                artist_credit__artist__channel__isnull=False
+            ).filter(artist_credit__artist__attributed_to=self.request.user.actor)
 
         serializer = self.get_serializer()
 
         if "tracks" in serializer.fields:
-            tracks = models.Track.objects.all().prefetch_related("album")
-            tracks = tracks.annotate_playable_by_actor(
+            tracks = models.Track.objects.annotate_playable_by_actor(
                 utils.get_actor_from_request(self.request)
             )
             queryset = queryset.prefetch_related(
                 Prefetch("tracks", queryset=tracks), TAG_PREFETCH
             )
-
         return queryset
 
     libraries = get_libraries(lambda o, uploads: uploads.filter(track__album=o))

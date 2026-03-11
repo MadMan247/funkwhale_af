@@ -18,7 +18,7 @@ from django.core.files.base import ContentFile
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models, transaction
 from django.db.models import Count, JSONField, Prefetch
-from django.db.models.expressions import OuterRef, Subquery
+from django.db.models.expressions import Exists, OuterRef, Subquery
 from django.db.models.query_utils import Q
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
@@ -499,14 +499,16 @@ class TrackQuerySet(common_models.LocalFromFidQuerySet, models.QuerySet):
         )
 
     def annotate_playable_by_actor(self, actor):
-        files = (
-            Upload.objects.playable_by(actor)
-            .filter(track=models.OuterRef("id"))
-            .order_by("id")
-            .values("id")[:1]
-        )
-        subquery = models.Subquery(files)
-        return self.annotate(is_playable_by_actor=subquery)
+        # files = (
+        #     Upload.objects.playable_by(actor)
+        #     .filter(track=models.OuterRef("id"))
+        #     .order_by("id")
+        #     .values("id")[:1]
+        # )
+        # subquery = models.Subquery(files)
+        # return self.annotate(is_playable_by_actor=subquery)
+        uploads = Upload.objects.playable_by(actor).filter(track=OuterRef("pk"))
+        return self.annotate(is_playable_by_actor=Exists(uploads))
 
     def playable_by(self, actor, include=True):
         if settings.MUSIC_USE_DENORMALIZATION:
@@ -804,7 +806,12 @@ class Upload(models.Model):
     fid = models.URLField(unique=True, max_length=500, null=True, blank=True)
     uuid = models.UUIDField(unique=True, db_index=True, default=uuid.uuid4)
     track = models.ForeignKey(
-        Track, related_name="uploads", on_delete=models.CASCADE, null=True, blank=True
+        Track,
+        related_name="uploads",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        db_index=True,
     )
     audio_file = models.FileField(upload_to=get_file_path, max_length=255)
     source = models.CharField(
@@ -827,6 +834,7 @@ class Upload(models.Model):
         blank=True,
         related_name="uploads",
         on_delete=models.CASCADE,
+        db_index=True,
     )
     playlist_libraries = models.ManyToManyField(
         "library",
