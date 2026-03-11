@@ -271,6 +271,7 @@ class AlbumViewSet(
             queryset = queryset.prefetch_related(
                 Prefetch("tracks", queryset=tracks), TAG_PREFETCH
             )
+        logger.info(f"QS is {queryset.query}")
         return queryset
 
     libraries = get_libraries(lambda o, uploads: uploads.filter(track__album=o))
