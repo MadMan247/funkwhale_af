@@ -35,7 +35,6 @@ const q = ref('')
 const page_size_fallback = 12
 
 const albums = computed(() => useDataStore().albums({
-  include_tracks: false,
   page: page.value,
   page_size: page_size_fallback,
   q: q.value,

@@ -3,7 +3,7 @@ import type { Track, Artist, Album, Playlist, Library, Channel, Actor } from '~/
 import type { components } from '~/generated/types'
 import type { PlayOptionsProps } from '~/composables/audio/usePlayOptions'
 
-import { computed, reactive, ref, toRefs } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import usePlayOptions from '~/composables/audio/usePlayOptions'
 import useReport from '~/composables/moderation/useReport'
@@ -41,6 +41,7 @@ interface Props extends PlayOptionsProps {
 
 const props = withDefaults(defineProps<Props>(), {
   split: false,
+  tracks: () => [],
   track: null,
   artist: null,
   playlist: null,
@@ -63,8 +64,6 @@ const props = withDefaults(defineProps<Props>(), {
 //     Some of the props are meant for `usePlayOptions`!
 //     UsePlayOptions accepts the props from this component and returns the following things:
 
-const isOpen = ref(false)
-
 const {
   playable,
   filterableArtist,
@@ -74,7 +73,7 @@ const {
   replacePlay,
   isLoading,
   requestPlaylistUploadsAccess
-} = usePlayOptions(reactive({ ...toRefs(props), isOpen }))
+} = usePlayOptions(props)
 
 const { report, getReportableObjects } = useReport()
 
@@ -105,6 +104,8 @@ const labels = computed(() => ({
   PlaylistUploadNotRequest: t('components.audio.PlayButton.button.PlaylistUploadNotRequest'),
   PlaylistUploadTooltip: t('components.audio.PlayButton.button.PlaylistUploadTooltip')
   }))
+
+const isOpen = ref(false)
 
 const playlistLibraryFollowInfo = computed(() => {
   const playlist = props.playlist;
@@ -139,6 +140,8 @@ const playlistLibraryFollowInfo = computed(() => {
     action: requestPlaylistUploadsAccess
   }
 });
+
+
 </script>
 
 <template>

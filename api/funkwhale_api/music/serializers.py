@@ -5,7 +5,6 @@ import urllib.parse
 from django import urls
 from django.conf import settings
 from django.db import transaction
-from django.http import HttpRequest
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
@@ -330,13 +329,6 @@ class AlbumSerializer(OptionalDescriptionMixin, serializers.Serializer):
         except AttributeError:
             # no annotation?
             return 0
-
-    def get_fields(self):
-        fields = super().get_fields()
-        request: HttpRequest | None = self.context.get("request")
-        if request is not None and request.GET.get("include_tracks") == "false":
-            fields.pop("tracks")
-        return fields
 
 
 @common_serializers.track_fields_for_update("name", "description", "privacy_level")

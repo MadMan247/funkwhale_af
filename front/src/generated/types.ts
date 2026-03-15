@@ -7009,8 +7009,6 @@ export interface operations {
                 has_tags?: boolean;
                 hidden?: boolean;
                 include_channels?: boolean;
-                /** @description Include each albums's tracks in the output. */
-                include_tracks?: boolean;
                 library?: string;
                 mbid?: string;
                 /**

@@ -111,7 +111,7 @@ const fetchData = async () => {
 
   const [tracksResponse, albumsResponse] = await Promise.all([
     axios.get('tracks/', { params: { artist: props.id, hidden: '', ordering: '-creation_date' } }),
-    axios.get('albums/', { params: { artist: props.id, hidden: '', ordering: '-release_date', include_tracks: false } })
+    axios.get('albums/', { params: { artist: props.id, hidden: '', ordering: '-release_date' } })
   ])
 
   tracks.value = tracksResponse.data.results

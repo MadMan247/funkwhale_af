@@ -472,7 +472,6 @@ watchDebounced(trimmedQuery, () => {
           q: query,
           page: 1,
           page_size: cardsPerRow() * 2 - 2,
-          include_tracks: false
         }, { deduplicationKey: `search.${generation}.albums` })]"
         :key
       >

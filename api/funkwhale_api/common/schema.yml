@@ -330,12 +330,6 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: include_tracks
-        schema:
-          type: boolean
-          default: true
-        description: Include each albums's tracks in the output.
-      - in: query
         name: library
         schema:
           type: string

@@ -143,7 +143,6 @@ def test_album_view_filter_playable(param, expected, factories, api_request):
 
     request = api_request.get("/", {"playable": param})
     view = views.AlbumViewSet()
-    view.format_kwarg = None  # TODO: Why is this needed?
     view.action_map = {"get": "list"}
     expected = [artists[expected]]
     view.request = view.initialize_request(request)
@@ -164,7 +163,6 @@ def test_album_view_filter_query(param, factories, api_request):
 
     request = api_request.get("/", {"q": param})
     view = views.AlbumViewSet()
-    view.format_kwarg = None  # TODO: why is this needed?
     view.action_map = {"get": "list"}
     view.request = view.initialize_request(request)
     queryset = view.filter_queryset(view.get_queryset())

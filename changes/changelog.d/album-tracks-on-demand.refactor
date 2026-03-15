@@ -1,1 +1,0 @@
-refactor(api): make the album list API include track details only on demand to reduce bandwidth and CPU usage

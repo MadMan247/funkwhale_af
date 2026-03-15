@@ -167,15 +167,9 @@ def test_manage_actor_action_purge(factories, mocker):
     on_commit = mocker.patch("funkwhale_api.common.utils.on_commit")
 
     s.handle_purge(actors[0].__class__.objects.all())
-
-    args, kwargs = on_commit.call_args
-    assert set(kwargs["ids"]) == {a.pk for a in actors}
-
-    # aioresponses is sensitive to order but this test should not be
-    # https://github.com/pnuckowski/aioresponses/issues/275
-    # on_commit.assert_called_once_with(
-    #     federation_tasks.purge_actors.delay, ids={a.pk for a in actors}
-    # )
+    on_commit.assert_called_once_with(
+        federation_tasks.purge_actors.delay, ids=[a.pk for a in actors]
+    )
 
 
 def test_manage_domain_action_purge(factories, mocker):
