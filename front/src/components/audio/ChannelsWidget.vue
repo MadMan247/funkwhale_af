@@ -36,8 +36,7 @@ const channels = computed(() => useDataStore().channels({
 
 <template>
   <Section
-    align-left
-    :columns-per-item="1"
+    :columns-per-item="3 /* Each normal card stretches 3 columns, so width is multiple of 3 columns */"
     :h2="title"
   >
     <Loader

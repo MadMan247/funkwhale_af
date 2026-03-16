@@ -173,11 +173,14 @@ const headingProps = computed(() =>
 
 <style module>
 .headerLayout {
-  grid-column: 1 / -1;
+  /* Stretch the header of the section over all grid columns */
+  --grid-column: 1 / -1;
+
   align-self: baseline;
   align-items: baseline;
   position: relative;
-  flex-grow: 1;
+
+  /* When header is overlapping previous interactive elements, allow clicks to go through: */
   pointer-events: none;
   &>*{
     pointer-events: auto;
