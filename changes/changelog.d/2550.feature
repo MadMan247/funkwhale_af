@@ -1,1 +1,0 @@
-feat(front): Add federation filters to all content types, add followers and following widgets to explore page and as a tab in user profiles, restructure profile tabs: Content, activity and follows, add federated actor card to use in widgets and remote actor search (#2550)

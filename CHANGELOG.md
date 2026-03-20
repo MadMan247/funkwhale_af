@@ -9,46 +9,36 @@ This changelog is viewable on the web at https://docs.funkwhale.audio/changelog.
 
 <!-- towncrier -->
 
-## 2.0.0-alpha.2 (2025-06-10)
+## 2.0.0 (2026-03-20)
 
-Upgrade instructions are available at https://docs.funkwhale.audio/administrator/upgrade/index.html
-
-Enhancements:
-
-- Make playlist detail page reactive to plugin upload updates (#2464)
-- Only refresh_nodeinfo_known_nodes for Funkwhale instances (#2442)
-
-Bugfixes:
-
-- Fixed database migrations for trackfavorite, playlist and playlisttrack
-
-## 2.0.0-alpha.1 (2025-05-23)
-
-Carefully read [this blog post](https://blog.funkwhale.audio/2025-funkwhale-2-news.html) before upgrading. This alpha release might break your db.
-
-Upgrade instructions are available at https://docs.funkwhale.audio/administrator/upgrade/index.html
+Carefully read [this blog post](https://blog.funkwhale.audio/funkwhale-200-release.html) before upgrading. This release might break your db if the migration is interrupted.
 
 Features:
 
+- BREAKING CHANGE: drop api v1 in favor of v2. v2 will not be stable until further notice to allow development of planned new features. But most of the endpoints should not change.
+- Drop libraries in favor of playlist (#2366)
+- Support multiples artists for tracks and albums (#1568)
+- Use playlists to privately share audio files (#2417)
+- User follow with listening and track favorite activities (#1810)
+- Improve mobile design (#2090)
+- Improve visuals & layout (#2091)
+- Playlist federation (#1458)
+- Quality filter for content frontend (#1469)
+- Quality filters backend (#2275)
 - Add a command to create playlists from folder structure (#2223)
 - Add Musicbrainz genres to funkwhale tag table and allow Musicbrainz tag sync (#2143)
 - Add support for deprecated COVERART fields in ogg files.
 - Add support for Python 3.12
 - Allow specifying more parameters on fs-import API endpoint
 - Build desktop app with Tauri
-- Drop libraries in favor of playlist (#2366)
 - Entering an input in the global search in the sidebar opens up a modal that show all possible results at once with collapseable sections for each category, including federated searches for other users, channels and rss feeds. (#2910)
 - Extend Subsonic API with OpenSubsonic support (#2270)
 - Generate mock test server from openapi schema
 - Implement Subsonic getArtistInfo2 response
-- Improve mobile design (#2090)
-- Improve visuals & layout (#2091)
-- Playlist federation (#1458)
-- Quality filter for content frontend (#1469)
-- Quality filters backend (#2275)
-- Support multiples artists for tracks and albums (#1568)
-- Use playlists to privately share audio files (#2417)
-- User follow with listening and track favorite activities (#1810)
+- Allow importing single files using fs-import API endpoint
+- feat(front): Add federation filters to all content types, add followers and following widgets to explore page and as a tab in user profiles, restructure profile tabs: Content, activity and follows, add federated actor card to use in widgets and remote actor search (#2550)
+- Support privacy level for listenings and favorites (#2362)
+- Update style and font for RTL languages
 
 Enhancements:
 
@@ -63,15 +53,24 @@ Enhancements:
 - Publish releases from CI job
 - Subsonic getAlbumInfo, getAlbumInfo2 and getTopSongs endpoints (#2392)
 - Support setting CELERY_TASK_TIME_LIMIT from environment
-- Update dj-rest-auth to 5.0.2 and django-allauth to 0.55.2
-- Update django to version 4.2
+- Update dependencies
+- Update django to version 5.2
+- enhancement(backend):back off strategy for domain reachability (#2494)
+- feat(back):trigger public library follow on user follow (#2422)
+- feat(backend):Drop unmaintained musicbrainzngs in favor of a local implementation (#2317)
+- fix(federation):only deliver activities to reachable domains (#2492)
+- Make playlist detail page reactive to plugin upload updates (#2464)
+- Only refresh_nodeinfo_known_nodes for Funkwhale instances (#2442)
 
 Refactoring:
 
+- Use a shallow ref to add interactivity to the sound cache instead of a manually incremented number.
 - Add compatibility for lru-cache v10
 
 Bugfixes:
 
+- Send delete activity instead of update in privacy level is me or instance (#2466)
+- Fixed database migrations for trackfavorite, playlist and playlisttrack
 - ActivityStreams compliance: duration (#1566)
 - Docker mac compatibility, dynamic DNS + Debian image (#2337)
 - Federation API returns a 404 response when an actor is not found
@@ -85,6 +84,7 @@ Bugfixes:
 
 Documentation:
 
+- Added an installation manual for Gentoo Linux.
 - Add API v2 overview.
 - Add genre tags spec.
 - Add import group details to content upload spec (#2268)
@@ -104,6 +104,83 @@ Deprecation:
 
 - The "funkwhaleVersion" field in Subsonic responses is deprecated. Clients
   should use the OpenSubsonic field "serverVersion" instead.
+
+Contributors to our Issues:
+
+- Arne Bollinger
+- Flupsi (they)
+- Georg Krause
+- Kasper Seweryn
+- Mathieu Jourdan
+- Nafeon the Bear
+- Nicgeon
+- RenovateBot
+- jon r
+- jooola
+- petitminion
+
+Contributors to our Merge Requests:
+
+- Alexandra Parker
+- Arne Bollinger
+- Ciarán Ainsworth
+- Flupsi (they)
+- Kasper Seweryn
+- jon r
+- petitminion
+
+Committers:
+
+- Adrià
+- Alessandro Molina
+- Alexandra Parker
+- anonymous
+- appzer0
+- ArneBo
+- Arne Bollinger
+- Baudouin Feildel
+- Bruno-Van-den-Bosch
+- Ciarán Ainsworth
+- Eric Lemesre
+- Eugeniusz
+- Flupsi
+- Flupsi (they)
+- FunTranslater
+- Gato Grande
+- Georg Krause
+- jo
+- jon r
+- José Daniel Angulo Plata
+- josé m
+- josé m.
+- JS Moore
+- JuniorJPDJ
+- Karl Sickendick
+- Kasper Seweryn
+- koldoH
+- Lilou
+- Maksim Kliazovich
+- Marie
+- Matteo Piovanelli
+- mittwerk
+- mocasin
+- ooosssay
+- petitminion
+- Philipp Wolfer
+- Raul Magdalena Català
+- Renovate Bot
+- RenovateBot
+- RoOhi
+- Sergej Jaskiewicz
+- Simó Albert i Beltran
+- Thomas
+- Tron
+- Umut Solmaz
+- Vaclovas Intas
+- vincent carter
+- Weblate Admin
+- wvffle
+- نادکارو
 
 ## 1.4.0 (2023-12-12)
 

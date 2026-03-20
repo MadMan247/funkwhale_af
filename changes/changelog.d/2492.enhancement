@@ -1,1 +1,0 @@
-fix(federation):only deliver activities to reachable domains (#2492)
