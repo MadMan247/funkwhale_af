@@ -9666,10 +9666,10 @@ export interface operations {
                 /**
                  * @description Ordering
                  *
-                 *     * `uploads_count` - Uploads count
-                 *     * `-uploads_count` - Uploads count (descending)
                  *     * `name` - Name
                  *     * `-name` - Name (descending)
+                 *     * `uploads_count` - Uploads count
+                 *     * `-uploads_count` - Uploads count (descending)
                  */
                 ordering?: ("-name" | "-uploads_count" | "name" | "uploads_count")[];
                 /** @description A page number within the paginated result set. */
@@ -14719,10 +14719,10 @@ export interface operations {
                 /**
                  * @description Ordering
                  *
-                 *     * `uploads_count` - Uploads count
-                 *     * `-uploads_count` - Uploads count (descending)
                  *     * `name` - Name
                  *     * `-name` - Name (descending)
+                 *     * `uploads_count` - Uploads count
+                 *     * `-uploads_count` - Uploads count (descending)
                  */
                 ordering?: ("-name" | "-uploads_count" | "name" | "uploads_count")[];
                 /** @description A page number within the paginated result set. */

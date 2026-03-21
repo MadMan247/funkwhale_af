@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Funkwhale API
-  version: 2.0.0
+  version: 2.0.0a2
   description: |
     # Funkwhale API
 
@@ -4159,10 +4159,10 @@ paths:
         description: |-
           Ordering
 
-          * `uploads_count` - Uploads count
-          * `-uploads_count` - Uploads count (descending)
           * `name` - Name
           * `-name` - Name (descending)
+          * `uploads_count` - Uploads count
+          * `-uploads_count` - Uploads count (descending)
         explode: false
         style: form
       - name: page
@@ -10928,10 +10928,10 @@ paths:
         description: |-
           Ordering
 
-          * `uploads_count` - Uploads count
-          * `-uploads_count` - Uploads count (descending)
           * `name` - Name
           * `-name` - Name (descending)
+          * `uploads_count` - Uploads count
+          * `-uploads_count` - Uploads count (descending)
         explode: false
         style: form
       - name: page

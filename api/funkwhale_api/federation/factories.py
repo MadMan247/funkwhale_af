@@ -77,7 +77,7 @@ class DomainFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
         "version": "2.1",
         "software": {
             "name": "funkwhale",
-            "version": "2.0.0a2",
+            "version": "2.0.0",
             "repository": "https://dev.funkwhale.audio/funkwhale/funkwhale",
             "homepage": "https://funkwhale.audio",
         },
