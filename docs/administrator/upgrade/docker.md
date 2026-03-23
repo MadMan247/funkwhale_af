@@ -17,44 +17,42 @@ If you installed Funkwhale following the [Docker guide](../installation/docker.m
    cd /srv/funkwhale
    ```
 
-4. Export the Funkwhale version you want to update to. You'll use this in the rest of the commands in this guide.
-
-   ```{parsed-literal}
-   export FUNKWHALE_VERSION={sub-ref}`version`
-   ```
-
-5. Change the version number in your `.env` file. Update this to the same version number you exported in step 4.
+4. Change the version number in your `.env` file.
 
    ```{code-block} sh
    nano .env
    ```
 
-6. Log in as `su` to load the configuration from your `.env` file.
+   ```{parsed-literal}
+   FUNKWHALE_VERSION={sub-ref}`version`
+   ```
+
+5. Log in as `su` to load the configuration from your `.env` file.
 
    ```{code-block} sh
    sudo su
    source .env
    ```
 
-7. Pull the updated containers.
+6. Pull the updated containers.
 
    ```{code-block} sh
    docker compose pull
    ```
 
-8. Apply the database migrations.
+7. Apply the database migrations.
 
    ```{code-block} sh
    docker compose run --rm api funkwhale-manage migrate
    ```
 
-9. Relaunch your containers.
+8. Relaunch your containers.
 
    ```{code-block} sh
    docker compose up -d
    ```
 
-10. Exit the root shell.
+9. Exit the root shell.
 
 ```{code-block} sh
 exit
@@ -98,19 +96,19 @@ To update your Postgres container, follow these steps:
 3. Move the {file}`data/postgres` directory to another location to back it up
 
    ```console
-   $ mv data/postgres data/postgres.bak
+   mv data/postgres data/postgres.bak
    ```
 
 4. Create a new {file}`data/postgres` directory to house your data
 
    ```console
-   $ mkdir data/postgres
+   mkdir data/postgres
    ```
 
 5. Edit the {file}`docker-compose.yml` file in an editor of your choice.
 
    ```console
-   $ nano docker-compose.yml
+   nano docker-compose.yml
    ```
 
 6. Update the version number in the `image` section of the `postgres` service to the major version you want to use. In this example, Postgres version `15` is used.
