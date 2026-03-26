@@ -809,6 +809,8 @@ def _mb_request(
                 auth=auth,
                 timeout=30,
             )
+            response.raise_for_status()
+            return response.json()
         except (
             requests.exceptions.ConnectionError,
             requests.exceptions.ConnectTimeout,
