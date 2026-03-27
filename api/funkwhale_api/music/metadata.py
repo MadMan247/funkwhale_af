@@ -601,7 +601,16 @@ class ArtistField(serializers.Field):
             child=ArtistSerializer(strict=self.context.get("strict", True)),
             min_length=1,
         )
-        return field.to_internal_value(final_artist_credits)
+        try:
+            return field.to_internal_value(final_artist_credits)
+        except serializers.ValidationError as e:
+            if mbids:
+                logger.debug(
+                    "Ignoring validation error on artist_credit since we have mbids"
+                )
+                return []
+            else:
+                raise e
 
 
 class AlbumField(serializers.Field):

@@ -756,26 +756,51 @@ def test_serializer_strict_mode_true():
         assert serializer.is_valid(raise_exception=True)
 
 
-def test_artist_field_featuring():
-    data = {
-        "artist": "Santana feat. Chris Cornell",
-        # here is the tricky bit, note the slash
-        "musicbrainz_artistid": "9a3bf45c-347d-4630-894d-7cf3e8e0b632/cbf9738d-8f81-4a92-bc64-ede09341652d",
-    }
-
-    expected = [
-        {
-            "credit": "Santana",
-            "mbid": uuid.UUID("9a3bf45c-347d-4630-894d-7cf3e8e0b632"),
-            "joinphrase": " feat. ",
-        },
-        {
-            "credit": "Chris Cornell",
-            "mbid": uuid.UUID("cbf9738d-8f81-4a92-bc64-ede09341652d"),
-            "joinphrase": "",
-        },
-    ]
-
+@pytest.mark.parametrize(
+    "data,expected",
+    [
+        (
+            {
+                "artist": "Santana feat. Chris Cornell",
+                # here is the tricky bit, note the slash
+                "musicbrainz_artistid": "9a3bf45c-347d-4630-894d-7cf3e8e0b632/cbf9738d-8f81-4a92-bc64-ede09341652d",
+            },
+            [
+                {
+                    "credit": "Santana",
+                    "mbid": uuid.UUID("9a3bf45c-347d-4630-894d-7cf3e8e0b632"),
+                    "joinphrase": " feat. ",
+                },
+                {
+                    "credit": "Chris Cornell",
+                    "mbid": uuid.UUID("cbf9738d-8f81-4a92-bc64-ede09341652d"),
+                    "joinphrase": "",
+                },
+            ],
+        ),
+        # to do : handle this case
+        # (
+        #     {
+        #         "artist": "Santana(Singer), Chris Cornell(singerB)",
+        #         # here is the tricky bit, note the slash
+        #         "musicbrainz_artistid": "9a3bf45c-347d-4630-894d-7cf3e8e0b632/cbf9738d-8f81-4a92-bc64-ede09341652d",
+        #     },
+        #     [
+        #         {
+        #             "credit": "Santana",
+        #             "mbid": uuid.UUID("9a3bf45c-347d-4630-894d-7cf3e8e0b632"),
+        #             "joinphrase": " feat. ",
+        #         },
+        #         {
+        #             "credit": "Chris Cornell",
+        #             "mbid": uuid.UUID("cbf9738d-8f81-4a92-bc64-ede09341652d"),
+        #             "joinphrase": "",
+        #         },
+        #     ],
+        # ),
+    ],
+)
+def test_artist_field_featuring(data, expected):
     field = metadata.ArtistField()
     value = field.get_value(data)
     assert field.to_internal_value(value) == expected
