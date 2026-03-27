@@ -20,6 +20,12 @@ class ArtistAdmin(admin.ModelAdmin):
     search_fields = ["name", "mbid"]
 
 
+@admin.register(models.Link)
+class LinkAdmin(admin.ModelAdmin):
+    list_display = ["label", "creation_date"]
+    search_fields = ["name"]
+
+
 @admin.register(models.Album)
 class AlbumAdmin(admin.ModelAdmin):
     list_display = ["title", "mbid", "release_date", "creation_date"]

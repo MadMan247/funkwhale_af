@@ -43,3 +43,14 @@ class PluginConfiguration(NoUpdateOnCreate, factory.django.DjangoModelFactory):
 
     class Meta:
         model = "common.PluginConfiguration"
+
+
+@registry.register
+class LinkFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
+    label = factory.Faker("word")
+    url = factory.Faker("url")
+    index = factory.Sequence(lambda n: n)
+    artist = None
+
+    class Meta:
+        model = "music.Link"

@@ -204,6 +204,22 @@ class ArtistQuerySet(common_models.LocalFromFidQuerySet, models.QuerySet):
             return self.exclude(pk__in=matches)
 
 
+def import_artist_links_proxy(instance, cleaned_data, raw_data):
+    # This prevents the Registry/Circular error because the import
+    # only happens when an artist is actually being imported.
+    from dynamic_preferences.registries import global_preferences_registry
+
+    preferences = global_preferences_registry.manager()
+
+    # Check the dynamic preference before triggering the task
+    if not preferences["music__import_external_links"]:
+        return
+
+    from .tasks import import_artist_links
+
+    return import_artist_links(instance, raw_data, cleaned_data)
+
+
 class Artist(APIModelMixin):
     name = models.TextField()
     federation_namespace = "artists"
@@ -212,6 +228,7 @@ class Artist(APIModelMixin):
         "mbid": {"musicbrainz_field_name": "id"},
         "name": {"musicbrainz_field_name": "name"},
     }
+    api_includes = ["url-rels"]
     # Music entities are attributed to actors, to validate that updates occur
     # from an authorized account. On top of that, we consider the instance actor
     # can update anything under it's own domain
@@ -247,6 +264,7 @@ class Artist(APIModelMixin):
     )
     modification_date = models.DateTimeField(default=timezone.now, db_index=True)
     api = musicbrainz.api.artists
+    import_hooks = [import_artist_links_proxy]
     objects = ArtistQuerySet.as_manager()
 
     def __str__(self):
@@ -1626,3 +1644,41 @@ def update_request_status(sender, instance, created, **kwargs):
         # let's mark the request as imported since the import is over
         instance.import_request.status = "imported"
         return instance.import_request.save(update_fields=["status"])
+
+
+class Link(models.Model):
+    label = models.CharField(max_length=255)
+    url = models.URLField(max_length=500)
+    type = models.CharField(max_length=50, blank=True)
+    index = models.PositiveIntegerField(default=0)
+    artist = models.ForeignKey(
+        "music.Artist",
+        on_delete=models.CASCADE,
+        related_name="links",
+        null=False,
+        blank=False,
+    )
+    creation_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["index", "id"]
+
+    def __str__(self):
+        return f"{self.label} -> {self.url}"
+
+    @classmethod
+    def replace(cls, *, artist=None, links=None):
+        links = links or []
+        if not links:
+            return
+        cls.objects.filter(artist=artist).delete()
+        objs = [
+            cls(
+                artist=artist,
+                label=link["label"],
+                url=link["url"],
+                index=index,
+            )
+            for index, link in enumerate(links)
+        ]
+        cls.objects.bulk_create(objs)

@@ -13,6 +13,7 @@ Manage users <users>
 Prune library <library>
 Clean database <database>
 Add album and artist tags <tags>
+Update artist links <update-artist-links>
 thumbnails
 fix-uploads
 update-s3-links

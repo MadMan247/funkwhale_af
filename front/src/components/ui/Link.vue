@@ -35,7 +35,8 @@ const isNoMatchingQueryFlags = computed(() =>
   fromProps(props, notUndefined)?.every(({ isOpen }) => !isOpen.value)
 )
 
-const [fontWeight, activeFontWeight] = 'solid' in props || props.thickWhenActive ? [600, 900] : [400, 400]
+// TODO: Remove this dirty prop hack in #2500
+const [fontWeight, activeFontWeight] = 'solid' in props && props.solid || props.thickWhenActive ? [600, 900] : [400, 400]
 
 const isIconOnly = computed(() =>
   !!props.icon && (

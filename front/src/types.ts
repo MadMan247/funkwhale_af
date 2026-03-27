@@ -88,8 +88,10 @@ export type ImportStatus = components['schemas']['ImportStatusEnum']
 // }
 
 // API stuff
-// eslint-disable-next-line
-export interface APIErrorResponse extends Record<string, APIErrorResponse | string | string[] | { code: string }[]> {}
+
+export interface APIErrorResponse {
+  [key: string]: APIErrorResponse | string | string[] | APIErrorResponse[]
+}
 
 export interface BackendError extends AxiosError {
   isHandled: boolean

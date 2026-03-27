@@ -138,7 +138,7 @@ def test_nodeinfo_21(api_client):
             ),
             "location": "",
             "languages": ["en"],
-            "features": ["channels", "podcasts", "federation"],
+            "features": ["channels", "podcasts", "federation", "externalLinks"],
             "content": OrderedDict(
                 [
                     (

@@ -1260,6 +1260,30 @@
           "success": "Text copied to clipboard!"
         }
       },
+      "ExternalLinksBuilder": {
+        "button": {
+          "add": "Add Link"
+        },
+        "help": {
+          "externalLinks": "Add external links (e.g., Bandcamp, SoundCloud, YouTube, etc.)"
+        },
+        "label": {
+          "delete": "Delete link",
+          "externalLinks": "External Links",
+          "newLink": "Link {linkNumber}"
+        },
+        "placeholder": {
+          "label": "Link label",
+          "url": "https://example.com"
+        },
+        "table": {
+          "header": {
+            "actions": "Actions",
+            "label": "Label",
+            "url": "URL"
+          }
+        }
+      },
       "DangerousButton": {
         "button": {
           "cancel": "Cancel",

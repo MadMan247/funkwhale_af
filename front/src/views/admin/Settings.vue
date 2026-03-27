@@ -63,7 +63,9 @@ const groups = computed(() => [
       { name: 'music__transcoding_cache_duration' },
       { name: 'music__only_allow_musicbrainz_tagged_files' },
       { name: 'music__sync_musicbrainz_tags' },
-      { name: 'music__musicbrainz_genre_update' }
+      { name: 'music__musicbrainz_genre_update' },
+      { name: 'music__import_external_links' },
+      { name: 'music__display_external_links' }
     ]
   },
   {

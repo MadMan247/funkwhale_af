@@ -77,6 +77,8 @@ def test_artist_with_albums_serializer(factories, to_api_date):
         "tracks_count": 42,
         "cover": common_serializers.AttachmentSerializer(artist.attachment_cover).data,
         "channel": None,
+        "description": None,
+        "links": [],
     }
     serializer = serializers.ArtistWithAlbumsSerializer(artist)
     assert serializer.data == expected
@@ -115,6 +117,8 @@ def test_artist_with_albums_serializer_channel(factories, to_api_date):
                 "domain": channel.actor.domain_id,
             },
         },
+        "description": None,
+        "links": [],
     }
     serializer = serializers.ArtistWithAlbumsSerializer(artist)
     if not serializer.data == expected:
@@ -653,3 +657,24 @@ def test_album_serializer_includes_duration(tmpfile, factories):
 
     serializer = serializers.AlbumSerializer(qs.get())
     assert serializer.data["duration"] == 42
+
+
+def test_artist_serializer_respects_display_external_links_preference(
+    factories, preferences
+):
+    # 1. Setup an artist with some links
+    artist = factories["music.Artist"]()
+    factories["music.Link"](url="https://example.com", artist=artist)
+
+    # 2. Case A: Preference is ON (Default)
+    preferences["music__display_external_links"] = True
+    serializer = serializers.ArtistWithAlbumsSerializer(artist)
+    assert len(serializer.data["links"]) == 1
+    assert serializer.data["links"][0]["url"] == "https://example.com"
+
+    # 3. Case B: Preference is OFF
+    preferences["music__display_external_links"] = False
+    serializer = serializers.ArtistWithAlbumsSerializer(artist)
+
+    # The links should be stripped out completely
+    assert serializer.data["links"] == [None]

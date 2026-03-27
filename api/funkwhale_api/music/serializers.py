@@ -118,6 +118,7 @@ class ArtistWithAlbumsInlineChannelSerializer(serializers.Serializer):
 class ArtistWithAlbumsSerializer(OptionalDescriptionMixin, serializers.Serializer):
     albums = serializers.SerializerMethodField()
     tags = serializers.SerializerMethodField()
+    description = common_serializers.ContentSerializer(allow_null=True, required=False)
     attributed_to = APIActorSerializer(allow_null=True)
     channel = ArtistWithAlbumsInlineChannelSerializer(allow_null=True)
     tracks_count = serializers.SerializerMethodField()
@@ -129,6 +130,7 @@ class ArtistWithAlbumsSerializer(OptionalDescriptionMixin, serializers.Serialize
     creation_date = serializers.DateTimeField()
     is_local = serializers.BooleanField()
     cover = CoverField(allow_null=True)
+    links = common_serializers.LinkSerializer(many=True)
 
     def get_albums(self, artist):
         albums = artist.artist_credit.albums()
@@ -150,6 +152,7 @@ class ArtistSerializer(serializers.ModelSerializer):
     description = common_serializers.ContentSerializer(allow_null=True, required=False)
     channel = serializers.UUIDField(allow_null=True, required=False)
     tags = serializers.SerializerMethodField()
+    links = common_serializers.LinkSerializer(many=True)
 
     class Meta:
         model = models.Artist
@@ -167,6 +170,7 @@ class ArtistSerializer(serializers.ModelSerializer):
             "channel",
             "attributed_to",
             "tags",
+            "links",
         )
 
     @extend_schema_field({"type": "array", "items": {"type": "string"}})

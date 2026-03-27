@@ -111,7 +111,8 @@ def scan_playlist_page(playlist_scan, page_url):
             if not upload_qs:
                 logger.debug(
                     f"Could not find a upload for the playlist track {plt.track.title}. Probably the \
-                    playlist.library library_scan failed or was not launched by inbox_update_playlist ?"
+                    playlist.library library_scan failed or was not launched by inbox_update_playlist ? \
+                        retrying playlist.library scan"
                 )
             else:
                 upload_qs[0].playlist_libraries.add(playlist_scan.playlist.library)

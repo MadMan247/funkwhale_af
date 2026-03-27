@@ -21,6 +21,7 @@ import PlayButton from '~/components/audio/PlayButton.vue'
 import TagsList from '~/components/tags/List.vue'
 import RadioButton from '~/components/radios/Button.vue'
 import RenderedDescription from '~/components/common/RenderedDescription.vue'
+import ExternalLinks from '~/components/channels/ExternalLinks.vue'
 
 import Loader from '~/components/ui/Loader.vue'
 import Layout from '~/components/ui/Layout.vue'
@@ -274,6 +275,11 @@ const renderedDescription = computed(() => {
         :update-url="`channels/${object.uuid}/`"
         :can-update="false"
       />
+      <ExternalLinks
+        v-if="object.artist.links && object.artist.links.length > 0"
+        :links="object.artist.links"
+      />
+      <Spacer />
       <Layout
         flex
         class="header-buttons"
@@ -436,16 +442,6 @@ const renderedDescription = computed(() => {
             >
               {{ t('views.channels.DetailBase.button.updateChannel') }}
             </Button>
-            <!-- <Button
-              primary
-              autofocus
-              low-height
-              :is-loading="edit.loading"
-              :disabled="!edit.submittable"
-              @click.stop="editForm?.submit"
-            >
-              {{ t('views.channels.DetailBase.button.updateChannel') }}
-            </Button> -->
           </template>
         </Modal>
         <Button
@@ -531,5 +527,11 @@ const renderedDescription = computed(() => {
   @include funkwhale.dark-theme {
     color: var(--fw-gray-500);
   }
+}
+</style>
+
+<style>
+:has(>.meta) {
+  flex: 1 1 0;
 }
 </style>

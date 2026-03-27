@@ -37,6 +37,7 @@ def insert_tracks_to_playlist(apps, playlist, uploads):
 
 @transaction.atomic
 def migrate_libraries_to_playlist(apps, schema_editor):
+    Channel = apps.get_model("audio", "Channel")
     Playlist = apps.get_model("playlists", "Playlist")
     Library = apps.get_model("music", "Library")
     Actor = apps.get_model("federation", "Actor")

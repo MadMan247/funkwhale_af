@@ -63,7 +63,7 @@ class ArtistFactory(
 ):
     name = factory.Faker("name")
     mbid = factory.Faker("uuid4")
-    fid = factory.Faker("federation_url")
+    fid = factory.Faker("federation_url", prefix="federation/music/artists")
     playable = playable_factory("track__album__artist_credit__artist")
 
     class Meta:

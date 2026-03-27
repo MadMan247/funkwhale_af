@@ -171,7 +171,7 @@ class ActorFactory(NoUpdateOnCreate, factory.django.DjangoModelFactory):
     summary = factory.Faker("paragraph")
     domain = factory.SubFactory(DomainFactory)
     fid = factory.LazyAttribute(
-        lambda o: f"https://{o.domain.name}/users/{o.preferred_username}"
+        lambda o: f"https://{o.domain.name}/federation/actors/{o.preferred_username}"
     )
     followers_url = factory.LazyAttribute(
         lambda o: "https://{}/users/{}followers".format(

@@ -24,6 +24,7 @@ from funkwhale_api.common import session
 from funkwhale_api.common import utils as common_utils
 from funkwhale_api.federation import actors
 from funkwhale_api.federation import models as federation_models
+from funkwhale_api.federation import routes
 from funkwhale_api.federation import serializers as federation_serializers
 from funkwhale_api.federation import utils as federation_utils
 from funkwhale_api.moderation import mrf
@@ -142,6 +143,8 @@ class ChannelCreateSerializer(serializers.Serializer):
             validated_data["username"],
             name=validated_data["name"],
         )
+        artist.fid = channel.actor.fid
+        artist.save()
 
         channel.library = music_models.Library.objects.create(
             name=channel.actor.preferred_username,
@@ -168,6 +171,8 @@ class ChannelUpdateSerializer(serializers.Serializer):
     )
     metadata = serializers.DictField(required=False)
     cover = COVER_WRITE_FIELD
+    # dirty : we allow the front send this attribute but it doesn't exist on the channel model
+    links = common_serializers.LinkSerializer(many=True, required=False)
 
     def validate(self, validated_data):
         validated_data = super().validate(validated_data)
@@ -196,6 +201,7 @@ class ChannelUpdateSerializer(serializers.Serializer):
 
     @transaction.atomic
     def update(self, obj, validated_data):
+        links = validated_data.pop("links", None)
         if validated_data.get("tags") is not None:
             tags_models.set_tags(obj.artist, *validated_data["tags"])
         actor_update_fields = []
@@ -204,6 +210,8 @@ class ChannelUpdateSerializer(serializers.Serializer):
         obj.metadata = validated_data["metadata"]
         obj.save(update_fields=["metadata"])
 
+        if links:
+            music_models.Link.replace(artist=obj.artist, links=links)
         if "description" in validated_data:
             common_utils.attach_content(
                 obj.artist, "description", validated_data["description"]
@@ -231,6 +239,11 @@ class ChannelUpdateSerializer(serializers.Serializer):
                 setattr(obj.artist, field, value)
             obj.artist.save(update_fields=[f for f, _ in artist_update_fields])
 
+        routes.outbox.dispatch(
+            {"type": "Update", "object": {"type": "Person"}},
+            context={"actor": obj.actor},
+        )
+
         return obj
 
     def to_representation(self, obj):
@@ -253,6 +266,7 @@ class SimpleChannelArtistSerializer(serializers.Serializer):
     tags = serializers.ListField(
         child=serializers.CharField(), source="_prefetched_tagged_items", required=False
     )
+    links = common_serializers.LinkSerializer(many=True, required=False)
 
     def get_tracks_count(self, o) -> int:
         return getattr(o, "_tracks_count", 0)
@@ -312,6 +326,7 @@ class ChannelSerializer(serializers.ModelSerializer):
         data = super().to_representation(obj)
         if self.context.get("subscriptions_count"):
             data["subscriptions_count"] = self.get_subscriptions_count(obj)
+
         return data
 
     @extend_schema_field(OpenApiTypes.INT)

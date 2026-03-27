@@ -828,9 +828,13 @@ def get_or_create_artists_credits_from_musicbrainz(
 
     try:
         if mb_obj_type == "release":
-            mb_obj = musicbrainz.api.releases.get(mbid, includes=["artists"])
+            mb_obj = musicbrainz.api.releases.get(
+                mbid, includes=["artists", "url-rels"]
+            )
         elif mb_obj_type == "recording":
-            mb_obj = musicbrainz.api.recordings.get(mbid, includes=["artists"])
+            mb_obj = musicbrainz.api.recordings.get(
+                mbid, includes=["artists", "url-rels"]
+            )
     except HTTPError as e:
         logger.warning(
             f"Couldn't get Musicbrainz information for {mb_obj_type} with {mbid} mbid  \
@@ -929,6 +933,10 @@ def parse_credits(artist_string, forced_joinphrase, forced_index, forced_artist=
             )
         )
     return artists_credits_tuple
+
+
+def sync_external_links_from_mb_data(artist, mb_artist_data):
+    import_artist_links(instance=artist, raw_data=mb_artist_data, cleaned_data=None)
 
 
 def get_or_create_artists_credits_from_artist_credit_metadata(
@@ -1250,3 +1258,45 @@ def fs_import(
         "broadcast": broadcast,
     }
     command.handle(**options)
+
+
+def import_artist_links(instance, raw_data, cleaned_data=None):
+    """
+    Extract external links from MusicBrainz artist URL relationships.
+    """
+    from funkwhale_api.music.models import Link
+
+    if hasattr(instance, "channel"):
+        # to do : allow channel owners to import links from mb
+        logger.info("Can't add artist link for an artist channel yet")
+        return
+
+    links = []
+    relations = raw_data.get("relations", [])
+
+    for relation in relations:
+        url_data = relation.get("url", {})
+        resource = url_data.get("resource")
+
+        if not resource:
+            continue
+
+        label = None
+        if relation.get("attribute-list"):
+            label = relation["attribute-list"][0]
+        elif relation.get("type"):
+            label = relation["type"]
+
+        if not label:
+            try:
+                from urllib.parse import urlparse
+
+                domain = urlparse(resource).netloc.replace("www.", "")
+                label = domain
+            except Exception:
+                label = "External Link"
+
+        links.append({"label": label, "url": resource})
+
+    if links:
+        Link.replace(artist=instance, links=links)

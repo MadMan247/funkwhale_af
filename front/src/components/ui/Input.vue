@@ -265,7 +265,7 @@ const model = defineModel<string | number>({ required: true })
     color: var(--color);
 
     & > i {
-      font-size:18px;
+      font-size: 18px;
       margin: auto;
     }
   }

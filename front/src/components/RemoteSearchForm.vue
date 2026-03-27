@@ -63,8 +63,9 @@ const redirectRoute = computed(() => {
   if (!objInfo.value) {
     return null
   }
+  const type = objInfo.value.type || obj.value.type
 
-  switch (objInfo.value.type) {
+  switch (type) {
     case 'account': {
       const [username, domain] = objInfo.value.full_username.split('@')
       return { name: 'profile.full', params: { username, domain } }

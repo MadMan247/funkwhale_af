@@ -180,6 +180,9 @@ class NodeInfo21(NodeInfo20):
         if pref.get("music__only_allow_musicbrainz_tagged_files"):
             data["features"].append("onlyMbidTaggedContent")
 
+        if pref.get("music__display_external_links"):
+            data["features"].append("externalLinks")
+
         serializer = self.serializer_class(data)
         return Response(
             serializer.data, status=200, content_type=NODEINFO_2_CONTENT_TYPE

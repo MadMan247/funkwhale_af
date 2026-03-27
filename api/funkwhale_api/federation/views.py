@@ -113,7 +113,11 @@ class ActorViewSet(FederationMixin, mixins.RetrieveModelMixin, viewsets.GenericV
     queryset = (
         models.Actor.objects.local()
         .select_related("user", "channel__artist", "channel__attributed_to")
-        .prefetch_related("channel__artist__tagged_items__tag", "blocks", "blocked_by")
+        .prefetch_related(
+            "channel__artist__tagged_items__tag",
+            "blocks",
+            "blocked_by",
+        )
     )
     serializer_class = serializers.ActorSerializer
 
@@ -133,7 +137,9 @@ class ActorViewSet(FederationMixin, mixins.RetrieveModelMixin, viewsets.GenericV
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.exclude(channel__attributed_to=actors.get_service_actor())
+        return queryset.prefetch_related(
+            "channel__artist__tagged_items__tag",
+        ).exclude(channel__attributed_to=actors.get_service_actor())
 
     def get_permissions(self):
         # cf #1999 it must be possible to fetch actors without being authenticated

@@ -482,7 +482,9 @@ def fetch(fetch_obj):
             url=url,
             headers={"Accept": "application/activity+json"},
         )
-        logger.debug("Remote answered with %s: %s", response.status_code, response.text)
+        logger.debug(
+            f"Remote  url {url} answered  with {response.status_code}: {response.text}"
+        )
         response.raise_for_status()
     except requests.exceptions.HTTPError as e:
         return error(

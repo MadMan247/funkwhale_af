@@ -1299,8 +1299,8 @@ def test_search_get(logged_in_api_client, factories):
     track = factories["music.Track"](title="Foo Baz")
     tag = factories["tags.Tag"](name="Foo")
 
-    factories["music.Track"]()
-    factories["tags.Tag"]()
+    factories["music.Track"](title="Xyz Track")
+    factories["tags.Tag"](name="Xyz")
 
     url = reverse("api:v2:search")
     expected = serializers.SearchResultSerializer(

@@ -769,7 +769,12 @@ def outbox_update_actor(context):
     actor = context["actor"]
     # this is a bit hacky, but we want to send the privacy level of the user as audience
     # to delete or fetch all user activities inheriting user.privacy_level
-    setattr(actor, "audience", actor.user.privacy_level)
+    if hasattr(actor, "user"):
+        setattr(actor, "audience", actor.user.privacy_level)
+    else:
+        # probably a channel
+        setattr(actor, "audience", "everyone")
+
     serializer = serializers.ActivitySerializer(
         {"type": "Update", "object": serializers.ActorSerializer(actor).data}
     )
@@ -787,6 +792,8 @@ def outbox_update_actor(context):
 def inbox_update_actor(payload, context):
     actor = context["actor"]
     serializer = serializers.ActorSerializer(data=payload["object"])
+    serializer.is_valid()
+    serializer.save()
     if serializer.is_valid() and "audience" in serializer.validated_data:
         privacy_level = serializer.validated_data["audience"]
         if privacy_level in [
@@ -796,7 +803,9 @@ def inbox_update_actor(payload, context):
             # we delete all activities inheriting user.privacy_level
             history_models.Listening.objects.filter(actor=actor).delete()
             favorites_models.TrackFavorite.objects.filter(actor=actor).delete()
-        elif privacy_level in ["followers", "everyone"]:
+        elif privacy_level in ["followers", "everyone"] and not hasattr(
+            actor, "channel"
+        ):
             # we scan actor activities
             not_blocked_follower_actor = actor.followers.not_blocked_or_blocking(
                 actor

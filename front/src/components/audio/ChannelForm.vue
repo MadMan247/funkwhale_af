@@ -1,24 +1,35 @@
 <script setup lang="ts">
 import type { ContentCategory, Channel, BackendError } from '~/types'
-import type { paths } from '~/generated/types'
+import type { paths, components } from '~/generated/types'
 
 import { slugify } from 'transliteration'
 import { reactive, computed, ref, watchEffect, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDataStore } from '~/ui/stores/data'
+import { useStore } from '~/store'
 
 import axios from 'axios'
 import AttachmentInput from '~/components/common/AttachmentInput.vue'
+import ExternalLinksBuilder from '~/components/common/ExternalLinksBuilder.vue'
 
 import Layout from '~/components/ui/Layout.vue'
 import Alert from '~/components/ui/Alert.vue'
 import Input from '~/components/ui/Input.vue'
 import Textarea from '~/components/ui/Textarea.vue'
 import Pills from '~/components/ui/Pills.vue'
+import Loader from '../ui/Loader.vue'
 
 interface Props {
   object?: Channel | null
   step?: number
+}
+
+interface ChannelMetadata {
+  language?: string
+  itunes_category?: string
+  itunes_subcategory?: string | null
+  owner_email?: string
+  owner_name?: string
 }
 
 const emit = defineEmits<{
@@ -36,6 +47,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { t } = useI18n()
 const dataStore = useDataStore()
+const store = useStore()
 
 const newValues = reactive({
   name: props.object?.artist?.name ?? '',
@@ -44,7 +56,14 @@ const newValues = reactive({
   description: props.object?.artist?.description?.text ?? '',
   cover: props.object?.artist?.cover?.uuid ?? null,
   content_category: props.object?.artist?.content_category ?? 'podcast',
-  metadata: { ...(props.object?.metadata ?? {}) } as Channel['metadata'] as unknown as { language: string, itunes_category: string, itunes_subcategory: string | null }
+  metadata: {
+    language: (props.object?.metadata as ChannelMetadata)?.language ?? '',
+    itunes_category: (props.object?.metadata as ChannelMetadata)?.itunes_category ?? '',
+    itunes_subcategory: (props.object?.metadata as ChannelMetadata)?.itunes_subcategory ?? null,
+    owner_email: (props.object?.metadata as ChannelMetadata)?.owner_email ?? '',
+    owner_name: (props.object?.metadata as ChannelMetadata)?.owner_name ?? ''
+  },
+  links: props.object?.artist.links ?? [] as components['schemas']['Link'][]
 })
 
 // If props has an object, then this form edits, else it creates
@@ -112,6 +131,11 @@ watch(() => newValues.metadata.itunes_category, () => {
 
 const isLoading = ref(false)
 const errors = ref([] as string[])
+const externalLinksBuilderRef = ref()
+
+const showExternalLinks = computed(() => {
+  return store.state.instance.settings.music?.display_external_links?.value ?? true
+})
 
 // @ts-expect-error Re-check emits
 watchEffect(() => emit('category', newValues.content_category))
@@ -141,9 +165,9 @@ const submit = async () => {
           content_type: 'text/markdown',
           text: newValues.description
         }
-      : null
+      : null,
+    links: externalLinksBuilderRef.value?.getLinks() ?? []
   }
-
   try {
     const request = () => creating.value
       ? axios.post('channels/', payload)
@@ -172,7 +196,7 @@ defineExpose({
     @submit.prevent.stop="submit"
   >
     <Alert
-      v-if="errors.length > 0"
+      v-if="errors?.length > 0"
       red
     >
       <h4 class="header">
@@ -290,6 +314,15 @@ defineExpose({
             initial-lines="3"
           />
         </div>
+        <div
+          v-if="showExternalLinks"
+          class="ui field"
+        >
+          <ExternalLinksBuilder
+            ref="externalLinksBuilderRef"
+            :links="newValues.links"
+          />
+        </div>
         <template v-if="newValues.content_category === 'podcast'">
           <div class="ui required field">
             <label for="channel-itunes-category">
@@ -364,13 +397,6 @@ defineExpose({
         </template>
       </template>
     </template>
-    <div
-      v-else
-      class="ui active inverted dimmer"
-    >
-      <div class="ui text loader">
-        {{ t('components.audio.ChannelForm.loader.loading') }}
-      </div>
-    </div>
+    <Loader v-else />
   </Layout>
 </template>

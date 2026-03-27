@@ -124,6 +124,10 @@ interface UISettings {
   custom_css: { value: string }
 }
 
+interface MusicSettings {
+  display_external_links: { value: boolean }
+}
+
 interface Settings {
   instance: InstanceSettings
   users: UsersSettings
@@ -131,6 +135,7 @@ interface Settings {
   quality_filters: QualityFiltersSettings
   subsonic: SubsonicSettings
   ui: UISettings
+  music: MusicSettings
 }
 
 const logger = useLogger()
@@ -213,6 +218,11 @@ const store: Module<State, RootState> = {
       ui: {
         custom_css: {
           value: ''
+        }
+      },
+      music: {
+        display_external_links: {
+          value: true
         }
       }
     }

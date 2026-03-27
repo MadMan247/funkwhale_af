@@ -214,6 +214,40 @@ def test_channel_serializer_update_podcast(factories):
     assert channel.metadata == data["metadata"]
 
 
+def test_channel_serializer_update_with_links(factories, mocker):
+    channel = factories["audio.Channel"](
+        artist__set_tags=["rock"], attributed_to__local=True
+    )
+    attributed_to = channel.attributed_to
+    attachment = factories["common.Attachment"](actor=attributed_to)
+    request = mocker.Mock(user=mocker.Mock(actor=attributed_to))
+    links = [
+        {"label": "Twitter", "url": "https://twitter.com/mychannel"},
+        {"label": "Mastodon", "url": "https://mastodon.social/@mychannel"},
+    ]
+    data = {
+        "name": "My channel",
+        "description": {"text": "This is my channel", "content_type": "text/markdown"},
+        "tags": ["hello", "world"],
+        "content_category": "other",
+        "cover": attachment.uuid,
+        "links": links,
+    }
+
+    serializer = serializers.ChannelUpdateSerializer(
+        channel, data=data, context={"request": request}
+    )
+    assert serializer.is_valid(raise_exception=True) is True
+
+    serializer.save()
+    channel.refresh_from_db()
+
+    actual_links = list(channel.artist.links.values("label", "url"))
+    assert actual_links == links
+    assert channel.artist.links.count() == 2
+    assert actual_links[1]["label"] == "Mastodon"
+
+
 def test_channel_serializer_representation(factories, to_api_date):
     content = factories["common.Content"]()
     channel = factories["audio.Channel"](artist__description=content)

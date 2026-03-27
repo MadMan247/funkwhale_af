@@ -378,3 +378,17 @@ class ErrorDetailSerializer(serializers.Serializer):
 class TextPreviewSerializer(serializers.Serializer):
     rendered = serializers.CharField(read_only=True, source="*")
     text = serializers.CharField(write_only=True)
+
+
+class LinkSerializer(serializers.Serializer):
+    label = serializers.CharField(max_length=255)
+    url = serializers.URLField(max_length=500)
+
+    def to_representation(self, v):
+        from dynamic_preferences.registries import global_preferences_registry
+
+        preferences = global_preferences_registry.manager()
+        if preferences["music__display_external_links"]:
+            return super().to_representation(v)
+        else:
+            return

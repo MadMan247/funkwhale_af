@@ -34,6 +34,7 @@ from funkwhale_api.playlists import models as playlists_models
             {"type": "Update", "object": {"type": "Library"}},
             routes.inbox_update_library,
         ),
+        ({"type": "Update", "object": {"type": "Artist"}}, routes.inbox_update_artist),
         (
             {"type": "Delete", "object": {"type": "Library"}},
             routes.inbox_delete_library,
@@ -101,6 +102,7 @@ def test_inbox_routes(route, handler):
         ({"type": "Update", "object": {"type": "Track"}}, routes.outbox_update_track),
         ({"type": "Update", "object": {"type": "Audio"}}, routes.outbox_update_audio),
         ({"type": "Update", "object": {"type": "Person"}}, routes.outbox_update_actor),
+        ({"type": "Update", "object": {"type": "Artist"}}, routes.outbox_update_artist),
         (
             {"type": "Update", "object": {"type": "Playlist"}},
             routes.outbox_update_playlist,

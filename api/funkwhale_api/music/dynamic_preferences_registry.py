@@ -1,6 +1,7 @@
 from django.forms import widgets
 from dynamic_preferences import types
 from dynamic_preferences.registries import global_preferences_registry
+from dynamic_preferences.types import BooleanPreference
 
 music = types.Section("music")
 quality_filters = types.Section("quality_filters")
@@ -202,3 +203,22 @@ class DefaultJoinPhrases(types.StringPreference):
     default = ", "
     widget = widgets.Textarea
     field_kwargs = {"required": False}
+
+
+@global_preferences_registry.register
+class ImportExternalLinks(BooleanPreference):
+    section = "music"
+    name = "import_external_links"
+    default = True
+    verbose_name = "Enable external links import"
+    help_text = "If enabled, Funkwhale will fetch artists links from MusicBrainz during track upload/import."
+
+
+@global_preferences_registry.register
+class DisplayExternalLinks(BooleanPreference):
+    section = "music"
+    name = "display_external_links"
+    default = True
+    show_in_api = True
+    help_text = "Show and manage external links in artist and channel profiles and API responses."
+    verbose_name = "Display external links"

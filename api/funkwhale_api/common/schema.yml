@@ -11252,7 +11252,11 @@ components:
         is_local:
           type: boolean
           readOnly: true
+        attachment:
+          type: string
+          readOnly: true
       required:
+      - attachment
       - domain
       - fid
       - full_username
@@ -11510,6 +11514,14 @@ components:
           oneOf:
           - $ref: '#/components/schemas/PrivacyLevelEnum'
           - $ref: '#/components/schemas/NullEnum'
+        attachment:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachment'
+        artist:
+          type: string
+          format: uri
+          maxLength: 500
         category:
           type: string
       required:
@@ -11640,6 +11652,15 @@ components:
           oneOf:
           - $ref: '#/components/schemas/PrivacyLevelEnum'
           - $ref: '#/components/schemas/NullEnum'
+        attachment:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttachmentRequest'
+        artist:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 500
         category:
           type: string
           minLength: 1
@@ -11969,9 +11990,14 @@ components:
           items:
             type: string
           readOnly: true
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
       required:
       - id
       - is_local
+      - links
       - name
       - tags
     ArtistCredit:
@@ -12053,7 +12079,12 @@ components:
         attributed_to:
           type: integer
           nullable: true
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkRequest'
       required:
+      - links
       - name
     ArtistWithAlbums:
       type: object
@@ -12066,6 +12097,10 @@ components:
           items:
             type: string
           readOnly: true
+        description:
+          allOf:
+          - $ref: '#/components/schemas/Content'
+          nullable: true
         attributed_to:
           allOf:
           - $ref: '#/components/schemas/APIActor'
@@ -12098,6 +12133,10 @@ components:
           allOf:
           - $ref: '#/components/schemas/CoverField'
           nullable: true
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
       required:
       - albums
       - attributed_to
@@ -12108,6 +12147,7 @@ components:
       - fid
       - id
       - is_local
+      - links
       - mbid
       - name
       - tags
@@ -12136,6 +12176,10 @@ components:
     ArtistWithAlbumsRequest:
       type: object
       properties:
+        description:
+          allOf:
+          - $ref: '#/components/schemas/ContentRequest'
+          nullable: true
         attributed_to:
           allOf:
           - $ref: '#/components/schemas/APIActorRequest'
@@ -12168,6 +12212,10 @@ components:
           allOf:
           - $ref: '#/components/schemas/CoverFieldRequest'
           nullable: true
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkRequest'
       required:
       - attributed_to
       - channel
@@ -12177,6 +12225,7 @@ components:
       - fid
       - id
       - is_local
+      - links
       - mbid
       - name
     Attachment:
@@ -12369,6 +12418,10 @@ components:
         metadata:
           type: object
           additionalProperties: {}
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
       required:
       - content_category
       - description
@@ -12400,6 +12453,10 @@ components:
         metadata:
           type: object
           additionalProperties: {}
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkRequest'
       required:
       - content_category
       - description
@@ -13419,6 +13476,34 @@ components:
       - partOf
       - totalItems
       - type
+    Link:
+      type: object
+      properties:
+        label:
+          type: string
+          maxLength: 255
+        url:
+          type: string
+          format: uri
+          maxLength: 500
+      required:
+      - label
+      - url
+    LinkRequest:
+      type: object
+      properties:
+        label:
+          type: string
+          minLength: 1
+          maxLength: 255
+        url:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 500
+      required:
+      - label
+      - url
     Listening:
       type: object
       properties:
@@ -15482,9 +15567,8 @@ components:
         content:
           $ref: '#/components/schemas/MetadataContent'
         features:
-          type: array
-          items:
-            type: string
+          type: string
+          readOnly: true
         rules:
           type: string
           readOnly: true
@@ -16802,6 +16886,10 @@ components:
         metadata:
           type: object
           additionalProperties: {}
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkRequest'
     PatchedGlobalPreferenceRequest:
       type: object
       properties:
@@ -17559,6 +17647,10 @@ components:
           type: array
           items:
             type: string
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
       required:
       - content_category
       - creation_date
@@ -17612,6 +17704,10 @@ components:
           items:
             type: string
             minLength: 1
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkRequest'
       required:
       - content_category
       - creation_date

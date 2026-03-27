@@ -261,3 +261,104 @@ def test_migrate_libraries_to_playlist(migrator):
     #     name="This should not becane a library name"
     # )
     # assert not playlist_not_local.library
+
+
+@pytest.mark.django_db
+def test_migrate_artist_fid(migrator):
+    music_initial_migration = [
+        ("audio", "0004_alter_channel_metadata"),
+        ("federation", "0031_domain_is_funkwhale_instance_alter_actor_blocks_and_more"),
+        ("music", "0063_upload_third_party_provider"),
+    ]
+    music_final_migration = ("music", "0064_link")
+
+    # Apply initial migration
+    migrator.migrate(music_initial_migration)
+    apps = migrator.loader.project_state(music_initial_migration).apps
+
+    Artist = apps.get_model("music", "Artist")
+    Channel = apps.get_model("audio", "Channel")
+    Actor = apps.get_model("federation", "Actor")
+    Domain = apps.get_model("federation", "Domain")
+    Library = apps.get_model("music", "Library")
+
+    d = settings.FEDERATION_HOSTNAME
+
+    domain = Domain.objects.create(
+        name="test.com",
+        reachable=True,
+    )
+    local_domain = Domain.objects.create(
+        name=settings.FEDERATION_HOSTNAME,
+        reachable=True,
+    )
+    actor = Actor.objects.create(
+        name="test actor",
+        domain=domain,
+        fid="http://notlocal.lol/actor/test",
+    )
+    local_actor = Actor.objects.create(
+        name="test actor",
+        domain=local_domain,
+        fid=f"http://{d}/actor/local",
+    )
+    # Artist that should NOT be migrated (remote channel)
+    artist_remote = Artist.objects.create(
+        name="Remote artist",
+        fid="None",
+    )
+
+    artist_local = Artist.objects.create(
+        name="local artist",
+        fid="shouldnotbethisfid",
+    )
+
+    # Artist without channel (should not change)
+    artist_no_channel = Artist.objects.create(
+        name="No channel artist",
+        fid="None2",
+    )
+    library = Library.objects.create(actor=actor, fid="lollo")
+    library2 = Library.objects.create(actor=actor)
+
+    # Local channel
+    local_channel = Channel.objects.create(
+        actor=local_actor,
+        uuid=uuid4(),
+        creation_date=now(),
+        artist=artist_local,
+        attributed_to=local_actor,
+        library=library,
+    )
+
+    # Remote channel
+    Channel.objects.create(
+        actor=actor,
+        artist=artist_remote,
+        uuid=uuid4(),
+        creation_date=now(),
+        attributed_to=actor,
+        library=library2,
+    )
+
+    # Run migration
+    migrator.loader.build_graph()
+    migrator.migrate([music_final_migration])
+
+    new_apps = migrator.loader.project_state([music_final_migration]).apps
+    Artist = new_apps.get_model("music", "Artist")
+
+    artist_local = Artist.objects.get(pk=artist_local.pk)
+    artist_remote = Artist.objects.get(pk=artist_remote.pk)
+    artist_no_channel = Artist.objects.get(pk=artist_no_channel.pk)
+
+    # Assertions
+
+    # Local artist should receive actor fid
+    assert artist_local.fid == local_channel.actor.fid
+
+    # Remote channel artist should not be updated
+    assert artist_remote.fid == "None"
+
+    # Artist without channel should remain unchanged
+    assert artist_no_channel.fid == "None2"

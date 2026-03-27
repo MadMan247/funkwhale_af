@@ -222,6 +222,26 @@ def get_by_media_type(urls, media_type):
             return url
 
 
+class AttachmentSerializer(jsonld.JsonLdSerializer):
+    type = serializers.ReadOnlyField(default="PropertyValue")
+    name = serializers.CharField(source="label")
+    value = serializers.URLField(source="url")
+
+    class Meta:
+        jsonld_mapping = {
+            "name": jsonld.first_val(contexts.AS.name),
+            "value": jsonld.first_val(
+                contexts.LITEPUB.value,
+                aliases=[
+                    jsonld.first_val("value"),
+                    # dirty, this shouldn't be need if the jsonld serializer properly expand
+                    jsonld.first_val("_:value"),
+                    "http://schema.org/value",
+                ],
+            ),
+        }
+
+
 class BasicActorSerializer(jsonld.JsonLdSerializer):
     id = serializers.URLField(max_length=500)
     type = serializers.ChoiceField(
@@ -271,6 +291,9 @@ class ActorSerializer(jsonld.JsonLdSerializer):
     audience = serializers.ChoiceField(
         fields.PRIVACY_LEVEL_CHOICES, required=False, allow_null=True
     )
+    attachment = AttachmentSerializer(many=True, required=False)
+    # used for channel's actors
+    artist = serializers.URLField(max_length=500, required=False)
 
     def validate_tags(self, tags):
         valid_tags = []
@@ -307,10 +330,12 @@ class ActorSerializer(jsonld.JsonLdSerializer):
             "icon": jsonld.first_obj(contexts.AS.icon),
             "url": jsonld.raw(contexts.AS.url),
             "attributedTo": jsonld.first_id(contexts.AS.attributedTo),
+            "attachment": jsonld.raw(contexts.AS.attachment),
             "tags": jsonld.raw(contexts.AS.tag),
             "category": jsonld.first_val(contexts.SC.category),
             "audience": jsonld.first_id(contexts.AS.audience),
             # "language": jsonld.first_val(contexts.SC.inLanguage),
+            "artist": jsonld.first_id(contexts.FW.artist),
         }
 
     def validate_category(self, v):
@@ -346,6 +371,7 @@ class ActorSerializer(jsonld.JsonLdSerializer):
             )
         if hasattr(instance, "audience"):
             ret["audience"] = instance.audience
+        attachments = []
         channel = instance.get_channel()
         if channel:
             ret["url"] = [
@@ -370,6 +396,14 @@ class ActorSerializer(jsonld.JsonLdSerializer):
             ret["attributedTo"] = channel.attributed_to.fid
             ret["category"] = channel.artist.content_category
             ret["tag"] = tag_list(channel.artist.tagged_items.all())
+            for link in channel.artist.links.all():
+                attachments.append(
+                    {
+                        "type": "PropertyValue",
+                        "name": link.label,
+                        "value": link.url,
+                    }
+                )
         else:
             ret["url"] = [
                 {
@@ -391,6 +425,10 @@ class ActorSerializer(jsonld.JsonLdSerializer):
 
         if instance.shared_inbox_url:
             ret["endpoints"]["sharedInbox"] = instance.shared_inbox_url
+
+        if attachments:
+            ret["attachment"] = attachments
+
         return ret
 
     def prepare_missing_fields(self):
@@ -444,6 +482,8 @@ class ActorSerializer(jsonld.JsonLdSerializer):
         common_utils.attach_content(
             actor, "summary_obj", self.validated_data["summary"]
         )
+        attachments = self.validated_data.get("attachment", [])
+        logger.info(f"attachments {attachments}")
         if "icon" in self.validated_data:
             new_value = self.validated_data["icon"]
             common_utils.attach_file(
@@ -471,6 +511,9 @@ class ActorSerializer(jsonld.JsonLdSerializer):
                 attributed_to_fid=attributed_to,
                 **self.validated_data,
             )
+        if hasattr(actor, "channel") and actor.channel.artist and attachments:
+            logger.info("liiiink")
+            music_models.Link.replace(artist=actor.channel.artist, links=attachments)
         return actor
 
     def validate(self, data):
@@ -514,19 +557,22 @@ def create_or_update_channel(actor, rss_url, attributed_to_fid, **validated_data
         )
     tags = [t["name"] for t in validated_data.get("tags", []) or []]
     tags_models.set_tags(artist, *tags)
-    if created:
+
+    if hasattr(artist, "channel"):
+        library = artist.channel.library
+    else:
+        assert created is True
         uid = uuid.uuid4()
         fid = utils.full_url(
             reverse("federation:music:libraries-detail", kwargs={"uuid": uid})
         )
         library = attributed_to.libraries.create(
             privacy_level="everyone",
-            name=artist_defaults["name"],
+            name=artist.name,
             fid=fid,
             uuid=uid,
         )
-    else:
-        library = artist.channel.library
+
     channel_defaults = {
         "actor": actor,
         "attributed_to": attributed_to,
@@ -543,6 +589,8 @@ def create_or_update_channel(actor, rss_url, attributed_to_fid, **validated_data
 
 
 class APIActorSerializer(serializers.ModelSerializer):
+    attachment = serializers.SerializerMethodField()
+
     class Meta:
         model = models.Actor
         fields = [
@@ -558,6 +606,25 @@ class APIActorSerializer(serializers.ModelSerializer):
             "manually_approves_followers",
             "full_username",
             "is_local",
+            "attachment",
+        ]
+
+    def get_attachment(self, obj):
+        links = []
+        if hasattr(obj, "artist") and obj.artist:
+            links = obj.artist.links.all()
+
+        if not links:
+            return []
+
+        # Map to ActivityPub PropertyValue format
+        return [
+            {
+                "type": "PropertyValue",
+                "name": link.label,
+                "value": link.url,
+            }
+            for link in links
         ]
 
 
@@ -1320,6 +1387,7 @@ class ArtistSerializer(MusicEntitySerializer):
             {
                 "released": jsonld.first_val(contexts.FW.released),
                 "image": jsonld.first_obj(contexts.AS.image),
+                "attachment": jsonld.raw(contexts.AS.attachment),
             },
         )
 

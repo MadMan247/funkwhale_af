@@ -21,10 +21,15 @@ export function parseAPIErrors (responseData: APIErrorResponse, parentField?: st
     }
 
     if (Array.isArray(value)) {
-      errors.push(...value.map(err => typeof err === 'string'
-        ? getErrorMessage(err, fieldName)
-        : startCase(err.code.replace(/_/g, ' '))
-      ))
+      value.forEach((item, index) => {
+        if (typeof item === 'string') {
+          errors.push(getErrorMessage(item, fieldName))
+        } else if (typeof item === 'object' && item !== null) {
+          // Item is a nested error object, recursively parse it
+          const itemFieldName = `${fieldName} [${index}]`
+          errors.push(...parseAPIErrors(item, itemFieldName))
+        }
+      })
 
       continue
     }

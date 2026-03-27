@@ -3709,6 +3709,7 @@ export interface components {
             manually_approves_followers?: boolean | null;
             readonly full_username: string;
             readonly is_local: boolean;
+            readonly attachment: string;
         };
         APIActorRequest: {
             /** Format: uri */
@@ -3810,6 +3811,9 @@ export interface components {
             attributedTo?: string;
             tags?: unknown[] | null;
             audience?: (components["schemas"]["PrivacyLevelEnum"] | components["schemas"]["NullEnum"]) | null;
+            attachment?: components["schemas"]["Attachment"][];
+            /** Format: uri */
+            artist?: string;
             category?: string;
         };
         ActorCollectionPage: {
@@ -3857,6 +3861,9 @@ export interface components {
             attributedTo?: string;
             tags?: unknown[] | null;
             audience?: (components["schemas"]["PrivacyLevelEnum"] | components["schemas"]["NullEnum"]) | null;
+            attachment?: components["schemas"]["AttachmentRequest"][];
+            /** Format: uri */
+            artist?: string;
             category?: string;
         };
         /**
@@ -3971,6 +3978,7 @@ export interface components {
             channel?: string | null;
             attributed_to?: number | null;
             readonly tags: string[];
+            links: components["schemas"]["Link"][];
         };
         ArtistCredit: {
             artist: components["schemas"]["Artist"];
@@ -4000,10 +4008,12 @@ export interface components {
             /** Format: uuid */
             channel?: string | null;
             attributed_to?: number | null;
+            links: components["schemas"]["LinkRequest"][];
         };
         ArtistWithAlbums: {
             readonly albums: string;
             readonly tags: string[];
+            description?: components["schemas"]["Content"] | null;
             attributed_to: components["schemas"]["APIActor"] | null;
             channel: components["schemas"]["ArtistWithAlbumsInlineChannel"] | null;
             readonly tracks_count: number;
@@ -4018,6 +4028,7 @@ export interface components {
             creation_date: string;
             is_local: boolean;
             cover: components["schemas"]["CoverField"] | null;
+            links: components["schemas"]["Link"][];
         };
         ArtistWithAlbumsInlineChannel: {
             uuid: string;
@@ -4028,6 +4039,7 @@ export interface components {
             actor: components["schemas"]["InlineActorRequest"];
         };
         ArtistWithAlbumsRequest: {
+            description?: components["schemas"]["ContentRequest"] | null;
             attributed_to: components["schemas"]["APIActorRequest"] | null;
             channel: components["schemas"]["ArtistWithAlbumsInlineChannelRequest"] | null;
             id: number;
@@ -4041,6 +4053,7 @@ export interface components {
             creation_date: string;
             is_local: boolean;
             cover: components["schemas"]["CoverFieldRequest"] | null;
+            links: components["schemas"]["LinkRequest"][];
         };
         Attachment: {
             /** Format: uuid */
@@ -4114,6 +4127,7 @@ export interface components {
             metadata?: {
                 [key: string]: unknown;
             };
+            links?: components["schemas"]["Link"][];
         };
         ChannelUpdateRequest: {
             cover?: string | null;
@@ -4124,6 +4138,7 @@ export interface components {
             metadata?: {
                 [key: string]: unknown;
             };
+            links?: components["schemas"]["LinkRequest"][];
         };
         Content: {
             text: string | null;
@@ -4526,6 +4541,16 @@ export interface components {
             /** Format: uri */
             partOf: string;
             items: components["schemas"]["TrackFavorite"][];
+        };
+        Link: {
+            label: string;
+            /** Format: uri */
+            url: string;
+        };
+        LinkRequest: {
+            label: string;
+            /** Format: uri */
+            url: string;
         };
         Listening: {
             /** Format: uri */
@@ -5326,7 +5351,7 @@ export interface components {
             languages: string[];
             location: string;
             content: components["schemas"]["MetadataContent"];
-            features: string[];
+            readonly features: string;
             readonly rules: string;
             readonly terms: string;
         };
@@ -6089,6 +6114,7 @@ export interface components {
             metadata?: {
                 [key: string]: unknown;
             };
+            links?: components["schemas"]["LinkRequest"][];
         };
         PatchedGlobalPreferenceRequest: {
             value?: string;
@@ -6405,6 +6431,7 @@ export interface components {
             channel?: string | null;
             readonly tracks_count: number;
             tags?: string[];
+            links?: components["schemas"]["Link"][];
         };
         SimpleChannelArtistRequest: {
             id: number;
@@ -6423,6 +6450,7 @@ export interface components {
             /** Format: uuid */
             channel?: string | null;
             tags?: string[];
+            links?: components["schemas"]["LinkRequest"][];
         };
         SimpleFavorite: {
             id: number;

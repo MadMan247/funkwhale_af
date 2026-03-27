@@ -44,6 +44,8 @@ const FILETYPE_COLOR: Record<string, string> = {
   default: '#000'
 }
 
+const captureStacks = !import.meta.env.PROD && import.meta.env.VITE_LOG_STACKS === 'true'
+
 // NOTE: We're pushing all logs to the end of the event loop
 const createLoggerFn = (level: LogLevel) => {
   // NOTE: Use console in test environment
@@ -56,6 +58,12 @@ const createLoggerFn = (level: LogLevel) => {
   }
 
   return async (...args: any[]) => {
+    if (!captureStacks) {
+      // eslint-disable-next-line no-console
+      console[level === 'time' ? 'debug' : level](...args)
+      return
+    }
+
     const timestamp = new Date().toUTCString()
     const stacktrace = await Stacktrace.get()
 

@@ -187,7 +187,9 @@ class ArtistViewSet(
             utils.get_actor_from_request(self.request)
         )
         return queryset.prefetch_related(
-            Prefetch("artist_credit__albums", queryset=albums), TAG_PREFETCH
+            Prefetch("artist_credit__albums", queryset=albums),
+            TAG_PREFETCH,
+            "links",
         )
 
     libraries = get_libraries(

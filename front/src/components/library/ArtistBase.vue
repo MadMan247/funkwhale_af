@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import type { Track, Album, Artist, Library, Cover } from '~/types'
+import type { Track, Album, Library, Cover } from '~/types'
+import type { components } from '~/generated/types'
+
+type ArtistWithAlbums = components['schemas']['ArtistWithAlbums'] & {
+  description?: components['schemas']['Content'] | null
+}
 
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -28,6 +33,7 @@ import Layout from '~/components/ui/Layout.vue'
 import Modal from '~/components/ui/Modal.vue'
 import Spacer from '~/components/ui/Spacer.vue'
 import RenderedDescription from '../common/RenderedDescription.vue'
+import ExternalLinks from '~/components/channels/ExternalLinks.vue'
 
 interface Props {
   id: number | string
@@ -36,7 +42,7 @@ interface Props {
 const props = defineProps<Props>()
 const { report, getReportableObjects } = useReport()
 
-const object = ref<Artist | null>(null)
+const object = ref<ArtistWithAlbums | null>(null)
 const libraries = ref([] as Library[])
 const albums = ref([] as Album[])
 const tracks = ref([] as Track[])
@@ -128,6 +134,10 @@ const fetchData = async () => {
 
 const totalDuration = computed(() => sum((tracks.value ?? []).map(track => track.uploads[0]?.duration ?? 0)))
 
+const filteredLinks = computed(() =>
+  (object.value?.links ?? []).filter(link => link.label && link.url) as Array<{ label: string; url: string }>
+)
+
 const filterArtist = async () => store.dispatch('moderation/hide', { type: 'artist', target: object.value })
 
 watch(() => props.id, fetchData, { immediate: true })
@@ -193,6 +203,14 @@ const isOpen = useModal('artist-description').isOpen
         >
           {{ t('components.common.RenderedDescription.button.more') }}
         </Link>
+        <ExternalLinks
+          v-if="object.links && filteredLinks.length > 0"
+          :links="filteredLinks"
+        />
+        <Spacer
+          v-if="(object.links && filteredLinks.length > 0)"
+          size="16"
+        />
       </Layout>
       <Modal
         v-if="object.description"

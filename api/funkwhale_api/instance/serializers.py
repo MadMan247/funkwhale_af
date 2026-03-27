@@ -204,7 +204,7 @@ class Metadata21Serializer(MetadataSerializer):
     languages = serializers.ListField(child=serializers.CharField())
     location = serializers.CharField()
     content = MetadataContentSerializer()
-    features = serializers.ListField(child=serializers.CharField())
+    features = serializers.SerializerMethodField()
     rules = serializers.SerializerMethodField()
     terms = serializers.SerializerMethodField()
 
@@ -213,6 +213,19 @@ class Metadata21Serializer(MetadataSerializer):
 
     def get_terms(self, obj) -> str:
         return obj["preferences"].get("instance__terms")
+
+    def get_features(self, obj):
+        features = [
+            "channels",
+            "podcasts",
+        ]
+        if obj["preferences"]["federation__enabled"]:
+            features.append("federation")
+
+        if obj["preferences"]["music__display_external_links"]:
+            features.append("externalLinks")
+
+        return features
 
 
 class NodeInfo20Serializer(serializers.Serializer):

@@ -1703,7 +1703,16 @@ def test_channel_actor_serializer_from_ap_update(mocker, factories):
             {"type": "Hashtag", "name": "#Punk"},
             {"type": "Hashtag", "name": "#Rock"},
         ],
+        "artist": channel.artist.fid,
+        "attachment": [
+            {
+                "type": "PropertyValue",
+                "name": "linkname",
+                "value": "https://lol.lol",
+            }
+        ],
     }
+    # factories["music.Link"](artist=channel.artist)
 
     serializer = serializers.ActorSerializer(data=actor_data)
     assert serializer.is_valid(raise_exception=True) is True
@@ -1724,6 +1733,7 @@ def test_channel_actor_serializer_from_ap_update(mocker, factories):
     assert channel.library.actor == attributed_to
     assert channel.library.privacy_level == library.privacy_level
     assert channel.library.name == library.name
+    assert channel.artist.links.all()[0].label == "linkname"
 
 
 def test_channel_actor_outbox_serializer(factories):
