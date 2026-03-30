@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { QueueItemSource } from '~/types'
 
+import { isWebAudioRequested, getAudioContext } from '~/composables/audio/audio-api'
 import { whenever, watchDebounced, useCurrentElement, useScrollLock, useFullscreen, useIdle, refAutoReset, useStorage } from '@vueuse/core'
-import { nextTick, ref, computed, watchEffect, defineAsyncComponent } from 'vue'
+import { nextTick, ref, computed, watchEffect, defineAsyncComponent, onUnmounted } from 'vue'
 import { useFocusTrap } from '@vueuse/integrations/useFocusTrap'
 import { useRouter } from 'vue-router'
 import { useStore } from '~/store'
@@ -10,6 +11,8 @@ import { useStore } from '~/store'
 import { usePlayer } from '~/composables/audio/player'
 import { useTracks } from '~/composables/audio/tracks'
 import { useQueue } from '~/composables/audio/queue'
+import useErrorHandler from '~/composables/useErrorHandler'
+import { resetHandlers, refreshMetadata } from '~/init/mediaSession'
 
 import time from '~/utils/time'
 
@@ -17,7 +20,6 @@ import { useI18n } from 'vue-i18n'
 
 import TrackFavoriteIcon from '~/components/favorites/TrackFavoriteIcon.vue'
 import TrackPlaylistIcon from '~/components/playlists/TrackPlaylistIcon.vue'
-import PlayerControls from '~/components/audio/PlayerControls.vue'
 
 import VirtualList from '~/components/vui/list/VirtualList.vue'
 import QueueItem from '~/components/QueueItem.vue'
@@ -110,15 +112,68 @@ whenever(
 const router = useRouter()
 router.beforeEach(() => store.commit('ui/queueFocused', null))
 
-const progressBar = ref()
-const touchProgress = (event: MouseEvent) => {
-  const time = ((event.clientX - ((event.target as Element).closest('.progress')?.getBoundingClientRect().left ?? 0)) / progressBar.value.offsetWidth) * duration.value
-  seekTo(time)
+const isDragging = ref(false)
+const dragPosition = ref(0)
+const progressBar = ref<HTMLElement | null>(null)
+
+const handleProgressUpdate = (event: MouseEvent | TouchEvent) => {
+  if (!progressBar.value) return
+
+  let clientX: number
+
+  // 1. Properly differentiate between Touch and Mouse
+  if ('targetTouches' in event) {
+    // TouchEvent: Get the clientX from the first touch point
+    const touch = event.targetTouches[0]
+    if (!touch) return
+    clientX = touch.clientX
+  } else {
+    // MouseEvent
+    clientX = event.clientX
+  }
+
+  const rect = progressBar.value.getBoundingClientRect()
+
+  // 2. Standardize the math
+  const percentage = Math.max(0, Math.min((clientX - rect.left) / rect.width, 1))
+
+  dragPosition.value = percentage * 100
+  seekTo(percentage * (duration.value || 0))
 }
 
+const onMouseDown = (event: MouseEvent) => {
+  event.stopPropagation()
+  isDragging.value = true
+  handleProgressUpdate(event)
+  window.addEventListener('mousemove', onMouseMove)
+  window.addEventListener('mouseup', onMouseUp)
+}
+
+const onMouseMove = (event: MouseEvent) => { if (isDragging.value) handleProgressUpdate(event) }
+
+const onMouseUp = () => {
+  isDragging.value = false
+  window.removeEventListener('mousemove', onMouseMove)
+  window.removeEventListener('mouseup', onMouseUp)
+}
+
+const onTouchStart = (event: TouchEvent) => { event.stopPropagation(); isDragging.value = true; handleProgressUpdate(event) }
+const onTouchMove = (event: TouchEvent) => { event.stopPropagation(); isDragging.value = true; handleProgressUpdate(event) }
+const onTouchEnd = (event: TouchEvent) => { isDragging.value = false; handleProgressUpdate(event) }
+
+onUnmounted(() => {
+  window.removeEventListener('mousemove', onMouseMove)
+  window.removeEventListener('mouseup', onMouseUp)
+})
+
 const play = async (index: number) => {
-  isPlaying.value = true
-  return playTrack(index)
+  try {
+    isPlaying.value = true
+    await playTrack(index)
+  } catch (error: any) {
+    isPlaying.value = false
+    await useErrorHandler(error)
+  }
 }
 
 const queueItems = computed(() => queue.value.map((track, index) => ({
@@ -209,6 +264,44 @@ const coverType = useStorage('queue:cover-type', CoverType.COVER_ART)
 if (!isWebGLSupported) {
   coverType.value = CoverType.COVER_ART
 }
+
+const setCoverType = async (type: CoverType) => {
+  const isMilkDrop = type === CoverType.MILK_DROP
+  coverType.value = type
+
+  if (isMilkDrop) {
+    if (getAudioContext().state === 'suspended') {
+      await getAudioContext().resume()
+    }
+    isWebAudioRequested.value = true
+  } else {
+    const { currentTime } = usePlayer()
+    const { createTrack, clearCache } = useTracks()
+    const { currentIndex } = useQueue()
+    const wasPlaying = isPlaying.value
+    const savedTime = currentTime.value
+
+    // 1. Pause
+    isPlaying.value = false
+
+    // 2. Switch mode before recreating so new HTMLSound skips createMediaElementSource
+    isWebAudioRequested.value = false
+    // reset MediaSession so iOS establishes a new session
+    resetHandlers()
+    // 3. Dispose current sound and clear cache so createTrack creates a fresh HTMLSound
+    await currentSound.value?.dispose()
+    clearCache()
+
+    // 4. Recreate, seek, resume
+    await createTrack(currentIndex.value)
+    await nextTick() // wait for Vue to update currentSound reactive ref
+    await currentSound.value?.seekTo(savedTime)
+    if (wasPlaying) isPlaying.value = true
+
+    // Restore metadata since resetHandlers cleared it and track didn't change
+    refreshMetadata()
+  }
+}
 </script>
 
 <template>
@@ -259,7 +352,7 @@ if (!isWebGLSupported) {
                       :title="labels.showVisualizer"
                       :disabled="!isWebGLSupported"
                       icon="bi-display"
-                      @click="coverType = CoverType.MILK_DROP"
+                      @click="setCoverType(CoverType.MILK_DROP)"
                     />
                     <Button
                       v-else-if="coverType === CoverType.MILK_DROP"
@@ -267,7 +360,7 @@ if (!isWebGLSupported) {
                       :title="labels.showCoverArt"
                       :disabled="!isWebGLSupported"
                       icon="bi-image-fill"
-                      @click="coverType = CoverType.COVER_ART"
+                      @click="setCoverType(CoverType.COVER_ART)"
                     />
                   </tooltip>
 
@@ -395,14 +488,34 @@ if (!isWebGLSupported) {
               <div
                 ref="progressBar"
                 :class="['ui', 'small', 'vibrant', {'indicating': isLoadingAudio && !errored}, 'progress']"
-                @click="touchProgress"
+                :style="{
+                  '--fw-track-progress': isDragging
+                    ? `${dragPosition}%`
+                    : `${(currentTime / duration) * 100}%`
+                }"
+                @mousedown="onMouseDown"
+                @touchstart.passive="onTouchStart"
+                @touchmove.prevent="onTouchMove"
+                @touchend.prevent="onTouchEnd"
+                @click.stop
               >
                 <div
                   class="buffer bar"
                   :style="{ 'transform': `translate3d(${bufferProgress - 100}%, 0, 0)` }"
                 />
-                <div class="position bar" />
+                <div
+                  class="position bar"
+                />
               </div>
+
+              <Teleport to="body">
+                <div
+                  v-if="isDragging"
+                  style="position:fixed;inset:0;z-index:99999;cursor:grabbing"
+                  @mousemove="onMouseMove"
+                  @mouseup="onMouseUp"
+                />
+              </Teleport>
             </div>
             <div class="progress">
               <template v-if="!isLoadingAudio">
@@ -422,17 +535,19 @@ if (!isWebGLSupported) {
               </template>
             </div>
           </div>
-          <player-controls class="desktop-and-below queue-controls" />
         </template>
       </div>
       <div id="queue">
         <div class="ui basic clearing segment">
-          <h2 class="ui header">
+          <h2
+            class="ui header"
+            :style="store.state.ui.queueFocused === 'queue' ? 'padding-left: 16px;' : ''"
+          >
             <div class="content">
               <Button
                 ghost
                 icon="bi-chevron-down"
-                style="float: right; margin-right: 24px;"
+                style="float: right;"
                 @click="store.commit('ui/queueFocused', null)"
               />
               <Button
@@ -457,9 +572,10 @@ if (!isWebGLSupported) {
                   </i18n-t>
                   <span class="middle pipe symbol" />
                   <span
-                    t="'components.Queue.meta.end'"
                     style="margin-right: 8px;"
-                  />
+                  >
+                    {{ t('components.Queue.meta.end') }}
+                  </span>
                   <span :title="labels.duration">
                     {{ endsIn }}
                   </span>

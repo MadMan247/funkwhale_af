@@ -142,7 +142,7 @@ const filterArtist = async () => store.dispatch('moderation/hide', { type: 'arti
 
 watch(() => props.id, fetchData, { immediate: true })
 
-const isOpen = useModal('artist-description').isOpen
+const { isOpen } = useModal('artist-description')
 </script>
 
 <template>
@@ -189,7 +189,6 @@ const isOpen = useModal('artist-description').isOpen
       >
         <RenderedDescription
           v-if="object.description"
-          class="description"
           :content="{ ...object.description, text: object.description.text ?? undefined }"
           :truncate-length="100"
         />
@@ -226,6 +225,10 @@ const isOpen = useModal('artist-description').isOpen
         <sanitized-html
           v-if="object.description"
           :html="object.description.html"
+        />
+        <ExternalLinks
+          v-if="object.links && filteredLinks.length > 0"
+          :links="filteredLinks"
         />
       </Modal>
 
@@ -396,15 +399,5 @@ const isOpen = useModal('artist-description').isOpen
     @include funkwhale.dark-theme {
       color: var(--fw-gray-500);
     }
-  }
-
-  .description {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    white-space: normal;
-    -webkit-line-clamp: 1; /* Number of lines to show */
-    line-clamp: 1;
   }
 </style>

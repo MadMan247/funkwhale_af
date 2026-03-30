@@ -50,12 +50,6 @@ const channels = computed(() => useDataStore().channels({
       @refresh="channels.refetch"
     />
     <template v-if="channels.data">
-      <Pagination
-        v-if="channels.data.count > (query.page_size ?? page_size_fallback)"
-        v-model:page="page"
-        :pages="Math.ceil((channels.data.count || 0) / (query.page_size ?? page_size_fallback))"
-        style="grid-column: 1 / -1;"
-      />
       <channel-card
         v-for="channel in channels.data.results"
         :key="channel.uuid"

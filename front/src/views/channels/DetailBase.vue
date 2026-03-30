@@ -34,6 +34,7 @@ import Popover from '~/components/ui/Popover.vue'
 import PopoverItem from '~/components/ui/popover/PopoverItem.vue'
 import Spacer from '~/components/ui/Spacer.vue'
 import Modal from '~/components/ui/Modal.vue'
+import CopyInput from '~/components/common/CopyInput.vue'
 
 interface Events {
   (e: 'deleted'): void
@@ -169,6 +170,8 @@ const renderedDescription = computed(() => {
   return description && ({ text: description.text || undefined, html: description.html })
 }
 )
+
+const { isOpen } = useModal('artist-description')
 </script>
 
 <template>
@@ -270,11 +273,49 @@ const renderedDescription = computed(() => {
           />
         </Layout>
       </Layout>
-      <RenderedDescription
-        :content="renderedDescription"
-        :update-url="`channels/${object.uuid}/`"
-        :can-update="false"
-      />
+      <Layout
+        flex
+        gap-4
+      >
+        <RenderedDescription
+          v-if="renderedDescription"
+          class="description"
+          :content="renderedDescription"
+          :update-url="`channels/${object.uuid}/`"
+          :can-update="false"
+        />
+        <Spacer grow />
+        <Link
+          v-if="renderedDescription"
+          :to="useModal('artist-description').to"
+          style="color: var(--fw-primary); text-decoration: underline;"
+          thin-font
+          force-underline
+        >
+          {{ t('components.common.RenderedDescription.button.more') }}
+        </Link>
+      </Layout>
+      <Modal
+        v-if="renderedDescription"
+        v-model="isOpen"
+        :title="object.artist?.name"
+      >
+        <img
+          v-if="object.artist?.cover"
+          v-lazy="store.getters['instance/absoluteUrl'](object.artist.cover.urls.original)"
+          :alt="object.artist?.name"
+          style="object-fit: cover; width: 100%; height: 100%;"
+        >
+        <Spacer />
+        <sanitized-html
+          v-if="renderedDescription"
+          :html="renderedDescription.html"
+        />
+        <ExternalLinks
+          v-if="object.artist.links && object.artist.links.length > 0"
+          :links="object.artist.links"
+        />
+      </Modal>
       <ExternalLinks
         v-if="object.artist.links && object.artist.links.length > 0"
         :links="object.artist.links"
@@ -400,19 +441,10 @@ const renderedDescription = computed(() => {
           :title="t('views.channels.DetailBase.modal.embed.header')"
           :cancel="t('views.channels.DetailBase.button.cancel')"
         >
-          <div class="scrolling content">
-            <div class="description">
-              <embed-wizard
-                :id="object.artist!.id"
-                type="artist"
-              />
-            </div>
-          </div>
-          <template #actions>
-            <button class="ui basic deny button">
-              {{ t('views.channels.DetailBase.button.cancel') }}
-            </button>
-          </template>
+          <embed-wizard
+            :id="object.artist!.id"
+            type="artist"
+          />
         </Modal>
         <Modal
           v-if="isOwner"
@@ -442,6 +474,16 @@ const renderedDescription = computed(() => {
             >
               {{ t('views.channels.DetailBase.button.updateChannel') }}
             </Button>
+            <!-- <Button
+              primary
+              autofocus
+              low-height
+              :is-loading="edit.loading"
+              :disabled="!edit.submittable"
+              @click.stop="editForm?.submit"
+            >
+              {{ t('views.channels.DetailBase.button.updateChannel') }}
+            </Button> -->
           </template>
         </Modal>
         <Button
@@ -458,10 +500,10 @@ const renderedDescription = computed(() => {
           :cancel="t('views.channels.DetailBase.button.cancel')"
         >
           <div class="scrollable content">
-            <Layout class="description">
+            <Layout>
               <template v-if="object.rss_url">
                 <h3>
-                  <i class="feed icon" />
+                  <i class="bi bi-rss" />
                   {{ t('views.channels.DetailBase.modal.subscribe.rss.header') }}
                 </h3>
                 <copy-input

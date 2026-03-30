@@ -1,8 +1,8 @@
-import type { IAudioContext, IAudioNode } from 'standardized-audio-context'
+import type { IAudioContext, IMediaElementAudioSourceNode } from 'standardized-audio-context'
+import { isWebAudioRequested, currentGain, createAudioSource, connectAudioSource, getAudioContext } from '~/composables/audio/audio-api'
 
 import { createEventHook, refDefault, type EventHookOn, useEventListener } from '@vueuse/core'
-import { createAudioSource } from '~/composables/audio/audio-api'
-import { effectScope, reactive, ref, type Ref } from 'vue'
+import { effectScope, reactive, ref, type Ref, watch } from 'vue'
 
 import useLogger from '~/composables/useLogger'
 
@@ -18,7 +18,7 @@ export interface Sound {
   preload(): Promise<void>
   dispose(): Promise<void>
 
-  readonly audioNode: IAudioNode<IAudioContext>
+  readonly audioNode: IMediaElementAudioSourceNode<IAudioContext> | null
   readonly isErrored: Ref<boolean>
   readonly isLoaded: Ref<boolean>
   readonly isDisposed: Ref<boolean>
@@ -53,12 +53,21 @@ export class HTMLSound implements Sound {
   #soundEndEventHook = createEventHook<HTMLSound>()
   #ignoreError = false
   #scope = effectScope()
+  #sourceNode: IMediaElementAudioSourceNode<IAudioContext> | null = null
 
   readonly isErrored = ref(false)
   readonly isLoaded = ref(false)
   readonly isDisposed = ref(false)
 
-  audioNode = createAudioSource(this.#audio)
+  // Lazy-getter for audioNode to satisfy the Sound interface
+  get audioNode(): IMediaElementAudioSourceNode<IAudioContext> | null {
+    if (!this.#sourceNode && isWebAudioRequested.value) {
+      this.#sourceNode = createAudioSource(this.#audio)
+      connectAudioSource(this.#sourceNode)
+    }
+    return this.#sourceNode
+  }
+
   onSoundLoop: EventHookOn<HTMLSound>
   onSoundEnd: EventHookOn<HTMLSound>
 
@@ -80,7 +89,20 @@ export class HTMLSound implements Sound {
     logger.log('CREATED SOUND INSTANCE', this)
 
     this.#scope.run(() => {
+      watch([isWebAudioRequested, currentGain], ([webAudio, gain]) => {
+        if (webAudio || this.#sourceNode) {
+          // Web Audio mode: force native volume to 1, route through AudioContext
+          this.#audio.volume = 1
+          // Note: The global GAIN_NODE.gain is already being updated by setGain() in audio-api.ts
+          void this.audioNode
+        } else {
+          // Native mode: no source mode, audio goes directly to speakers
+          this.#audio.volume = gain
+        }
+      }, { immediate: true })
+
       useEventListener(this.#audio, 'ended', () => this.#soundEndEventHook.trigger(this))
+
       useEventListener(this.#audio, 'timeupdate', () => {
         if (this.#audio.currentTime === 0) {
           this.#soundLoopEventHook.trigger(this)
@@ -117,6 +139,12 @@ export class HTMLSound implements Sound {
     })
   }
 
+  #attachToDom () {
+    if (typeof document !== 'undefined' && !this.#audio.parentNode) {
+      document.body.appendChild(this.#audio)
+    }
+  }
+
   async preload () {
     this.isDisposed.value = false
     this.isErrored.value = false
@@ -124,29 +152,44 @@ export class HTMLSound implements Sound {
     this.#audio.load()
   }
 
-  async dispose () {
-    if (this.isDisposed.value) return
-
-    // Remove all event listeners
-    this.#scope.stop()
-
-    // Stop audio playback
-    this.audioNode.disconnect()
-    this.#audio.pause()
-
-    // Cancel any request downloading the source
-    this.#audio.src = ''
-    this.#audio.load()
-
-    this.isDisposed.value = true
-  }
-
   async play () {
     try {
+      // 1. Anchor to DOM to prevent iOS from killing the process on lock
+      this.#attachToDom()
+
+      // 2. Always resume AudioContext on play.
+      // iOS requires a running AudioContext to reliably activate/refresh
+      // MediaSession (lock screen) controls. Since we haven't called
+      // createMediaElementSource yet in native mode, this is a "silent"
+      // heartbeat that won't interfere with background playback.
+      if (isWebAudioRequested.value && getAudioContext().state === 'suspended') {
+        try {
+          await getAudioContext().resume()
+        } catch (resumeErr) {
+          logger.log('>> AudioContext resume failed (usually a browser policy)', resumeErr)
+        }
+      }
+
+      // 3. Ensure the element is ready to go
+      if (this.#audio.readyState === 0) { // HAVE_NOTHING
+        this.#audio.load()
+      }
+
+      // 4. Trigger the native playback
       await this.#audio.play()
-    } catch (err) {
-      logger.error('>> AUDIO PLAY ERROR', err, this)
-      this.isErrored.value = true
+
+    } catch (err: any) {
+      // Logic: If the error is just a browser policy (like a missed user interaction)
+      // or a quick skip (AbortError), we do NOT set isErrored.value to true.
+      // This keeps the "Track cannot be loaded" overlay from appearing.
+      const isInterrupted = err.name === 'NotAllowedError' || err.name === 'AbortError'
+
+      if (!isInterrupted) {
+        logger.error('>> AUDIO PLAY ERROR', err, this)
+        this.isErrored.value = true
+      } else {
+        logger.log(`>> Playback interrupted/blocked: ${err.name}`)
+      }
     }
   }
 
@@ -195,6 +238,28 @@ export class HTMLSound implements Sound {
 
   set looping (value: boolean) {
     this.#audio.loop = value
+  }
+
+  async dispose () {
+    if (this.isDisposed.value) return
+
+    // Remove all event listeners
+    this.#scope.stop()
+
+    if (this.#sourceNode) {
+      this.#sourceNode.disconnect()
+      this.#sourceNode = null
+    }
+
+    if (this.#audio.parentNode) {
+      this.#audio.parentNode.removeChild(this.#audio)
+    }
+
+    // Stop audio playback
+    this.#audio.pause()
+    this.#audio.src = ''
+    this.#audio.load()
+    this.isDisposed.value = true
   }
 }
 

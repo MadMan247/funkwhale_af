@@ -47,16 +47,29 @@ export const usePlayer = createGlobalState(() => {
 
   const pauseReason = ref(PauseReason.UserInput)
 
+  const duration = ref(0)
+  const currentTime = ref(0)
+
   watchEffect(() => {
     const sound = currentSound.value
     if (!sound) return
 
     if (isPlaying.value) {
-      return sound.play()
+      if (sound.isLoaded.value) {
+        return sound.play()
+      }
+      // Sound not loaded yet — play() will be called once it loads
+      return
     }
-
-    pauseReason.value = PauseReason.UserInput
+    // Don't pause if the sound is still loading — it's a track transition
+    if (!sound.isLoaded.value) return
     return sound.pause()
+  })
+
+  watch(() => currentSound.value?.isLoaded.value, (loaded) => {
+    if (loaded && isPlaying.value) {
+      currentSound.value?.play()
+    }
   })
 
   // Create first track when we initialize the page
@@ -105,20 +118,20 @@ export const usePlayer = createGlobalState(() => {
   })
 
   // Duration
-  const duration = ref(0)
   watchEffect(() => {
     const sound = currentSound.value
+    if (!sound) {
+      duration.value = 0
+      return
+    }
     if (sound?.isLoaded.value === true) {
       duration.value = sound.duration ?? 0
       currentTime.value = sound.currentTime
       return
     }
-
-    duration.value = 0
   })
 
   // Current time
-  const currentTime = ref(0)
   useIntervalFn(() => {
     const sound = currentSound.value
     if (!sound) {

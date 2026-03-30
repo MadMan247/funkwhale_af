@@ -29,6 +29,8 @@ const soundCache = shallowRef(new LRUCache<number, Sound>({
 
 const currentTrack = ref<QueueTrack>()
 
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream
+
 export const fetchTrackSources = async (id: number): Promise<[QueueTrackSource, ...QueueTrackSource[]]> => {
   const { uploads } = await axios.get(`tracks/${id}/`)
     .then(response => response.data as Track, () => ({ uploads: [] as Upload[] }))
@@ -166,6 +168,7 @@ export const useTracks = createGlobalState(() => {
 
   // Preload next track
   const { start: preload, stop: abortPreload } = useTimeoutFn(async (track: QueueTrack) => {
+    if (isIOS) return
     const sound = await createSound(track)
     await sound.preload()
   }, 100, { immediate: false })
@@ -174,7 +177,7 @@ export const useTracks = createGlobalState(() => {
   const createTrack = async (index: number) => {
     abortSoundUnplayableTimeout()
 
-    const { queue, currentIndex } = useQueue()
+    const { queue } = useQueue()
     if (queue.value.length <= index || index === -1) return
     logger.log('LOADING TRACK', index)
 
@@ -188,12 +191,10 @@ export const useTracks = createGlobalState(() => {
 
     logger.log('CONNECTING NODE', sound)
 
-    sound.audioNode.disconnect()
-    connectAudioSource(sound.audioNode)
-
-    const { isPlaying } = usePlayer()
-    if (isPlaying.value && index === currentIndex.value) {
-      await sound.play()
+    const node = sound.audioNode
+    if (node !== null) {
+      node.disconnect()
+      connectAudioSource(node)
     }
   }
 

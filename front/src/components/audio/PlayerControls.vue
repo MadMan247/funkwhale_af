@@ -27,7 +27,7 @@ const labels = computed(() => ({
       :aria-label="labels.previous"
       round
       ghost
-      class="control tablet-and-up"
+      class="control"
       icon="bi-skip-backward-fill"
       @click.prevent.stop="playPrevious()"
     />

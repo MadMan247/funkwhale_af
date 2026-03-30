@@ -49,10 +49,6 @@ else if (!scope.value)
       page-heading
       :h1="labels.title"
     />
-    <Spacer />
-
-    <!-- Results -->
-
     <Nav
       :model-value="tabs"
       tab-query-field="scope"

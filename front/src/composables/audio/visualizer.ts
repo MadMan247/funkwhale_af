@@ -1,6 +1,6 @@
 import type { Ref } from 'vue'
 
-import { AUDIO_CONTEXT, GAIN_NODE } from './audio-api'
+import { getAudioContext, getGainNode } from './audio-api'
 import { useResizeObserver, useStorage } from '@vueuse/core'
 import { watchEffect, ref, markRaw } from 'vue'
 
@@ -38,7 +38,7 @@ export const useMilkDrop = (canvas: Ref<HTMLCanvasElement>) => {
   }
 
   const initialize = (canvas: HTMLCanvasElement, width: number, height: number) => {
-    visualizer.value = markRaw(butterchurn.createVisualizer(AUDIO_CONTEXT, canvas, {
+    visualizer.value = markRaw(butterchurn.createVisualizer(getAudioContext(), canvas, {
       width,
       height
     }))
@@ -47,7 +47,7 @@ export const useMilkDrop = (canvas: Ref<HTMLCanvasElement>) => {
       presetName.value = getRandomPreset()
     }
 
-    visualizer.value.connectAudio(GAIN_NODE)
+    visualizer.value.connectAudio(getGainNode())
     visualizer.value.setInternalMeshSize(128, 96)
   }
 

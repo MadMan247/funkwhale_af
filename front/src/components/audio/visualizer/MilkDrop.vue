@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useMilkDrop } from '~/composables/audio/visualizer'
+import { isWebAudioRequested } from '~/composables/audio/audio-api'
 
 import { onScopeDispose, ref, watch } from 'vue'
 import { useRafFn } from '@vueuse/core'
@@ -18,6 +19,9 @@ watch(isVisible, (visible) => visible
 
 onScopeDispose(() => {
   pause()
+  // Auto-disable Web Audio when the component unmounts to return to Native Mode
+  isWebAudioRequested.value = false
+
   if (visualizer.value) {
     visualizer.value.loseGLContext()
   }

@@ -2,8 +2,7 @@
 import { usePlayer } from '~/composables/audio/player'
 import { useQueue } from '~/composables/audio/queue'
 
-import { useMouse, useWindowSize } from '@vueuse/core'
-import { computed, ref } from 'vue'
+import { computed, ref, onUnmounted } from 'vue'
 import { useStore } from '~/store'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
@@ -99,14 +98,80 @@ const labels = computed(() => ({
   addArtistContentFilter: t('components.audio.Player.label.addArtistContentFilter')
 }))
 
-const progressBar = ref()
-const touchProgress = (event: MouseEvent) => {
-  const time = ((event.clientX - ((event.target as Element).closest('.progress')?.getBoundingClientRect().left ?? 0)) / progressBar.value.offsetWidth) * duration.value
-  seekTo(time)
+const progressBar = ref<HTMLElement | null>(null)
+const seekPosition = ref(0)
+const isDragging = ref(false)
+
+/** * Central logic for calculating seek percentage.
+ * Works for both Mouse and Touch events.
+ */
+const touchProgress = (event: MouseEvent | TouchEvent) => {
+  if (!event || !progressBar.value) return
+
+  let clientX: number
+  if ('targetTouches' in event) {
+    const touch = event.targetTouches[0] || event.changedTouches?.[0]
+    if (!touch) return
+    clientX = touch.clientX
+  } else {
+    clientX = (event as MouseEvent).clientX
+  }
+
+  const rect = progressBar.value.getBoundingClientRect()
+  const percentage = Math.max(0, Math.min((clientX - rect.left) / rect.width, 1))
+
+  seekPosition.value = percentage * 100
+  seekTo(percentage * (duration.value || 0))
 }
 
-const { x } = useMouse({ type: 'client' })
-const { width: screenWidth } = useWindowSize({ includeScrollbar: false })
+// --- Desktop Mouse Handlers ---
+
+const onMouseDown = (event: MouseEvent) => {
+  event.stopPropagation() // Prevent immediate togglePlayer
+  isDragging.value = true
+
+  touchProgress(event)
+
+  window.addEventListener('mousemove', onMouseMove)
+  window.addEventListener('mouseup', onMouseUp)
+}
+
+const onMouseMove = (event: MouseEvent) => {
+  if (isDragging.value) {
+    touchProgress(event)
+  }
+}
+
+const onMouseUp = () => {
+  isDragging.value = false
+  window.removeEventListener('mousemove', onMouseMove)
+  window.removeEventListener('mouseup', onMouseUp)
+}
+
+// --- Mobile Touch Handlers ---
+
+const onTouchStart = (event: TouchEvent) => {
+  event.stopPropagation()
+  isDragging.value = true
+  touchProgress(event)
+}
+
+const onTouchMove = (event: TouchEvent) => {
+  if (event.cancelable) event.preventDefault()
+  event.stopPropagation()
+  touchProgress(event)
+}
+
+const onTouchEnd = (event: TouchEvent) => {
+  // Final update to set the seek position at the exact release point
+  touchProgress(event)
+  isDragging.value = false
+}
+
+onUnmounted(() => {
+  window.removeEventListener('mousemove', onMouseMove)
+  window.removeEventListener('mouseup', onMouseUp)
+})
 
 initializeFirstTrack()
 
@@ -119,18 +184,17 @@ const loopingTitle = computed(() => {
       : t('components.audio.Player.label.loopingWholeQueue')
 })
 
-// TODO: check if still useful for filtering
-// const hideArtist = () => {
-//   if (currentTrack.value.artistId !== -1 && currentTrack.value.artistCredit) {
-//     return store.dispatch('moderation/hide', {
-//       type: 'artist',
-//       target: {
-//         id: currentTrack.value.artistCredit[0].artist.id,
-//         name: currentTrack.value.artistCredit[0].artist.name
-//       }
-//     })
-//   }
-// }
+const hideArtist = () => {
+  if (currentTrack.value && currentTrack.value.artistId !== -1 && currentTrack.value.artistCredit) {
+    return store.dispatch('moderation/hide', {
+      type: 'artist',
+      target: {
+        id: currentTrack.value.artistCredit[0]?.artist.id,
+        name: currentTrack.value.artistCredit[0]?.artist.name
+      }
+    })
+  }
+}
 </script>
 
 <template>
@@ -142,9 +206,10 @@ const loopingTitle = computed(() => {
   >
     <h1
       id="player-label"
-      t="'components.audio.Player.header.player'"
       class="visually-hidden"
-    />
+    >
+      {{ t('components.audio.Player.header.player') }}
+    </h1>
     <div
       class="ui inverted segment fixed-controls"
       @click.prevent.stop="togglePlayer"
@@ -152,18 +217,38 @@ const loopingTitle = computed(() => {
       <div
         ref="progressBar"
         :class="['ui', 'top attached', 'small', 'inverted', {'indicating': isLoadingAudio}, 'progress']"
-        @click.prevent.stop="touchProgress"
+        :style="{
+          '--fw-track-progress': isDragging
+            ? `${seekPosition}%`
+            : `${(currentTime / (duration || 1)) * 100}%`
+        }"
+        @mousedown="onMouseDown"
+        @touchstart.passive="onTouchStart"
+        @touchmove.prevent="onTouchMove"
+        @touchend.prevent="onTouchEnd"
+        @click.stop
       >
         <div
           class="buffer bar"
-          :style="{ 'transform': `translateX(${bufferProgress - 100}%)` }"
+          :style="{ 'transform': `translate3d(${bufferProgress - 100}%, 0, 0)` }"
         />
-        <div class="position bar" />
+        <div
+          class="position bar"
+        />
         <div
           class="seek bar"
-          :style="{ 'transform': `translateX(${x / screenWidth * 100 - 100}%)` }"
+          :style="{ 'transform': `translate3d(${seekPosition - 100}%, 0, 0)` }"
         />
       </div>
+
+      <Teleport to="body">
+        <div
+          v-if="isDragging"
+          style="position: fixed; inset: 0; z-index: 99999; cursor: grabbing;"
+          @mousemove="onMouseMove"
+          @mouseup="onMouseUp"
+        />
+      </Teleport>
       <div class="controls-row">
         <div class="controls track-controls queue-not-focused desktop-and-up">
           <div
@@ -219,7 +304,10 @@ const loopingTitle = computed(() => {
             </div>
           </div>
         </div>
-        <div class="controls track-controls queue-not-focused desktop-and-below">
+        <div
+          v-if="store.state.ui.queueFocused !== 'player' && store.state.ui.queueFocused !== 'queue'"
+          class="controls track-controls queue-not-focused desktop-and-below"
+        >
           <div class="ui tiny image">
             <!-- TODO: Use smaller covers -->
             <img
@@ -263,18 +351,75 @@ const loopingTitle = computed(() => {
             ghost
             :track="currentTrack"
           />
-          <!-- <Button
+          <Button
             round
             ghost
             icon="bi-eye-slash"
             :aria-label="labels.addArtistContentFilter"
             :title="labels.addArtistContentFilter"
             @click="hideArtist"
-          >
-          </Button> -->
+          />
         </div>
-        <player-controls class="controls queue-not-focused" />
-        <div class="controls progress-controls queue-not-focused tablet-and-up small align-left">
+
+        <div
+          v-if="store.state.ui.queueFocused"
+          class="controls desktop-and-below"
+        >
+          <Button
+            :class="{ looping: looping !== LoopingMode.None }"
+            ghost
+            round
+            :aria-label="loopingTitle"
+            :disabled="!currentTrack"
+            :icon="looping === LoopingMode.LoopTrack ? 'bi-repeat-1' : 'bi-repeat'"
+            @click.prevent.stop="toggleLooping"
+          />
+
+          <Button
+            round
+            ghost
+            :class="{ shuffling: isShuffled }"
+            :disabled="queue.length === 0"
+            :aria-label="labels.shuffle"
+            icon="bi-shuffle"
+            @click.prevent.stop="shuffle()"
+          />
+        </div>
+
+        <player-controls class="controls" />
+
+        <div
+          v-if="store.state.ui.queueFocused === 'player' || store.state.ui.queueFocused === 'queue'"
+          class="controls desktop-and-below queue-not-focused"
+        >
+          <Button
+            icon="bi-music-note-list"
+            ghost
+            tiny
+            :class="['desktop-and-below', { 'close-control': store.state.ui.queueFocused === 'queue' }]"
+            :is-active="store.state.ui.queueFocused === 'queue'"
+            @click.stop="switchTab"
+          >
+            <i18n-t keypath="components.audio.Player.meta.position">
+              <template #index>
+                {{ currentIndex + 1 }}
+              </template>
+              <template #length>
+                {{ queue.length }}
+              </template>
+            </i18n-t>
+          </Button>
+
+          <Button
+            v-if="store.state.ui.queueFocused === 'player' || store.state.ui.queueFocused === 'queue'"
+            ghost
+            class="close-control"
+            icon="bi bi-chevron-down"
+            @click.stop="store.commit('ui/queueFocused', null)"
+          />
+        </div>
+
+        <div class="controls progress-controls queue-not-focused tablet-and-up small align-right">
           <div class="timer">
             <template v-if="!isLoadingAudio">
               <span
@@ -288,12 +433,13 @@ const loopingTitle = computed(() => {
             </template>
           </div>
         </div>
+
         <div class="controls queue-controls when-queue-focused align-right">
           <div class="group">
             <volume-control class="expandable" />
+
             <Button
               :class="{ looping: looping !== LoopingMode.None }"
-              :title="loopingTitle"
               ghost
               round
               :aria-label="loopingTitle"
@@ -307,21 +453,21 @@ const loopingTitle = computed(() => {
               ghost
               :class="{ shuffling: isShuffled }"
               :disabled="queue.length === 0"
-              :title="labels.shuffle"
               :aria-label="labels.shuffle"
               icon="bi-shuffle"
               @click.prevent.stop="shuffle()"
             />
           </div>
-
           <!-- TODO: Remove fake responsive elements -->
           <div class="group">
             <div class="fake-dropdown">
               <Button
                 aria-expanded="true"
                 ghost
-                round
                 icon="bi-music-note-list"
+                class="desktop-and-up"
+                :aria-label="labels.expandQueue"
+                :is-active="store.state.ui.queueFocused === 'player'"
                 @click.stop="togglePlayer"
               >
                 <i18n-t keypath="components.audio.Player.meta.position">
@@ -334,8 +480,12 @@ const loopingTitle = computed(() => {
                 </i18n-t>
               </Button>
               <Button
-                class="position circular control button desktop-and-below"
                 icon="bi-music-note-list"
+                ghost
+                tiny
+                :class="['desktop-and-below', { 'close-control': store.state.ui.queueFocused }]"
+                :is-active="store.state.ui.queueFocused === 'queue'"
+                @click.stop="switchTab"
               >
                 <i18n-t keypath="components.audio.Player.meta.position">
                   <template #index>
@@ -348,25 +498,20 @@ const loopingTitle = computed(() => {
               </Button>
 
               <Button
+                v-if="store.state.ui.queueFocused === 'player' || store.state.ui.queueFocused === 'queue'"
                 ghost
-                :class="['desktop-and-up', { 'close-control': store.state.ui.queueFocused }]"
-                :icon="store.state.ui.queueFocused ? 'bi-chevron-down' : 'bi-chevron-up'"
-                :aria-pressed="store.state.ui.queueFocused ? true : undefined"
-                @click.stop="togglePlayer"
+                class="close-control"
+                icon="bi bi-chevron-down"
+                @click.stop="store.commit('ui/queueFocused', null)"
               />
               <Button
+                v-else
                 ghost
-                :class="['desktop-and-below', { 'close-control': store.state.ui.queueFocused === 'player' }]"
-                :icon="store.state.ui.queueFocused === 'queue' ? 'bi-chevron-down' : 'bi-chevron-up'"
-                :aria-pressed="store.state.ui.queueFocused ? true : undefined"
-                @click.stop="switchTab"
+                class="desktop-and-up"
+                icon="bi bi-chevron-up"
+                @click.stop="togglePlayer"
               />
             </div>
-            <Button
-              class="close-control desktop-and-below"
-              icon="bi-x"
-              @click.stop="store.commit('ui/queueFocused', null)"
-            />
           </div>
         </div>
       </div>
@@ -375,5 +520,46 @@ const loopingTitle = computed(() => {
 </template>
 
 <style lang="scss" scoped>
+.ui.progress {
+  position: relative;
+  cursor: pointer;
+  overflow: visible !important; /* Ensure the hit area isn't clipped */
+}
 
+/* Create a generous 24px invisible hit area for lumpy fingers on small mobile screens */
+.ui.progress::after {
+  content: '';
+  position: absolute;
+  top: -5px;    /* Slight overlap above */
+  bottom: -15px; /* Large area below for easier thumb access */
+  left: 0;
+  right: 0;
+  z-index: 20;
+}
+
+.progress-area {
+  cursor: pointer;
+  // Ensure the container is easy to hit
+  padding: 10px 0;
+}
+
+.fake-dropdown {
+  border: 1px solid gray;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 8em;
+  z-index: 2;
+  > .control.button {
+    padding: 0.5em;
+
+  }
+  .position.control {
+    flex-grow: 1;
+  }
+  .angle.icon {
+    margin-right: 0;
+  }
+}
 </style>
