@@ -9,6 +9,14 @@ This changelog is viewable on the web at <https://docs.funkwhale.audio/changelog
 
 <!-- towncrier -->
 
+## 2.0.1 (2026-03-31)
+
+Upgrade instructions are available at https://docs.funkwhale.audio/administrator/upgrade/index.html
+
+Features:
+
+- Add external links to platforms like Bandcamp, Spotify, SoundCloud, and more to artist and channel profiles with automatic icon and color detection. Links can be manually edited on channel profiles and automatically fetched from MusicBrainz for artists via the new `update_artist_links` management command.
+
 ## 2.0.0 (2026-03-20)
 
 Carefully read [this blog post](https://blog.funkwhale.audio/funkwhale-200-release.html) before upgrading. This release might break your db if the migration is interrupted.

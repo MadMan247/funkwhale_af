@@ -1,1 +1,0 @@
-Add external links to platforms like Bandcamp, Spotify, SoundCloud, and more to artist and channel profiles with automatic icon and color detection. Links can be manually edited on channel profiles and automatically fetched from MusicBrainz for artists via the new `update_artist_links` management command.
