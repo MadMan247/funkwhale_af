@@ -33,10 +33,13 @@ Funkwhale can be run in Docker containers for local development. You can work on
    ::::
 
 6. Activate the pre-commit hook:
+
    ```sh
    pre-commit install
    ```
+
 7. Finally, initialise the environment:
+
    ```sh
    cp .env.example .env
    ```
@@ -50,9 +53,11 @@ Funkwhale provides a `compose.yml` file following the default file naming conven
 To set up your Docker environment:
 
 1. Create a network for federation support via the web proxy:
+
    ```sh
    docker network create web
    ```
+
 2. Then build the application containers. Run this command any time there are upstream changes or dependency changes to ensure you're up-to-date.
 
    ```sh
@@ -85,16 +90,18 @@ The services bind to the following ports on the default Docker bridge network:
 1. Create a wildcard certificate for the Common Name (CN) `funkwhale.test` and
    the Subject Alternative Name (SAN) `*.funkwhale.test` which will be
    installed into your system and browser trust stores with:
+
    ```sh
    mkcert -install -cert-file compose/var/test.crt -key-file compose/var/test.key "funkwhale.test" "*.funkwhale.test"
    ```
+
    It will be used by Træefik to secure connections, which is needed for
    ActivityPub to work locally.
 
 Then run the network services used for convenient access to application
 containers.
 
-2. Launch the Træfik web proxy, the dnsmasq resolver and the nullmailer using
+1. Launch the Træfik web proxy, the dnsmasq resolver and the nullmailer using
    the `net` manifest:
 
    ```sh
@@ -118,7 +125,7 @@ containers.
 
    </details>
 
-3. Add the DNS search domain for `~funkwhale.test` to your system. This allows your system to dereference our domain names `funkwhale.funkwhale.test`, `node1.funkwhale.test`, `node2.…`, `…` to the IP address of the Træfik reverse proxy listening at `172.17.0.1`.
+2. Add the DNS search domain for `~funkwhale.test` to your system. This allows your system to dereference our domain names `funkwhale.funkwhale.test`, `node1.funkwhale.test`, `node2.…`, `…` to the IP address of the Træfik reverse proxy listening at `172.17.0.1`.
 
    ::::{tab-set}
 
@@ -229,7 +236,13 @@ already attached to it, comment out the `net.helpers.docker0.yml` rule in
 
 ## Set up application services
 
-Once you have set up the dependencies, launch all services to start developing:
+Once you have set up the dependencies, migrate the database :
+
+```sh
+docker compose run --rm api funkwhale-manage migrate
+```
+
+And launch all services to start developing :
 
 ```sh
 docker compose up -d
