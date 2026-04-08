@@ -150,9 +150,10 @@ div { color:var(--fw-text-color); }
   padding: 0px 8px;
   border: none;
   align-items: center;
-  color: var(--color) !important;
+  color: var(--color-over-transparent, var(--color)) !important;
   &:hover {
     background-color: var(--hover-background-color) !important;
+    color: var(--hover-color, var(--color)) !important;
   }
   i:first-child {
     margin-right: 0px;
