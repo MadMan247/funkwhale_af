@@ -90,7 +90,6 @@ server {
     }
 
     location / {
-        expires 1d;
         include /etc/nginx/funkwhale_proxy.conf;
         proxy_pass http://funkwhale-front;
     }
