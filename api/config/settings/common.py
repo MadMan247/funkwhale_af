@@ -465,7 +465,7 @@ DATABASES = {
 }
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 DB_CONN_MAX_AGE = DATABASES["default"]["CONN_MAX_AGE"] = env(
-    "DB_CONN_MAX_AGE", default=60 * 5
+    "DB_CONN_MAX_AGE", default=0
 )
 """
 The maximum time in seconds before database connections close.
