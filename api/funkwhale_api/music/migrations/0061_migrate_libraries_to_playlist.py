@@ -50,14 +50,7 @@ def migrate_libraries_to_playlist(apps, schema_editor):
         ):
             continue
 
-        if (
-            hasattr(library, "playlist")
-            and library.playlist
-            and library.uploads.all().exists()
-        ):
-            uploads = library.uploads.all()
-            with transaction.atomic():
-                insert_tracks_to_playlist(apps, library.playlist, uploads)
+        if hasattr(library, "playlist"):
             continue
 
         if (
