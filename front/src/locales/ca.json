@@ -1213,6 +1213,30 @@
           "more": "Mostra més"
         }
       },
+      "ExternalLinksBuilder": {
+        "button": {
+          "add": "Afegeix un enllaç"
+        },
+        "help": {
+          "externalLinks": "Afegeix enllaços externs (per exemple, Bandcamp, SoundCloud, YouTube, etc.)"
+        },
+        "label": {
+          "delete": "Esborra l'enllaç",
+          "externalLinks": "Enllaços externs",
+          "newLink": "Enllaç {linkNumber}"
+        },
+        "placeholder": {
+          "label": "Etiqueta de l'enllaç",
+          "url": "https://example.com"
+        },
+        "table": {
+          "header": {
+            "actions": "Accions",
+            "label": "Etiqueta",
+            "url": "URL"
+          }
+        }
+      },
       "InlineSearchBar": {
         "button": {
           "clear": "Netejar"
