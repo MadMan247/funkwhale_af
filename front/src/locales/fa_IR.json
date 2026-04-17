@@ -335,6 +335,7 @@
       },
       "ChannelForm": {
         "help": {
+          "discography": "موسیقی‌های ساخته‌شدهٔ خود را به‌صورت یک دفترچهٔ جامع و خوش‌آرا از جُنگ ها و تک‌آهنگ‌ها منتشر کنید.",
           "username": "برای استفاده در نشانی‌ها و پی‌گرفتن این کانال در فدیورس. در آینده قابل تغییر نیست."
         },
         "label": {
@@ -438,7 +439,8 @@
         },
         "header": {
           "albums": "جُنگ‌ها",
-          "artists": "هنرمندان"
+          "artists": "هنرمندان",
+          "search": "جست‌وجو برای یافتن موسیقی"
         },
         "placeholder": {
           "search": "هنرمند, جُنگ , اثر…"
@@ -744,6 +746,12 @@
           "confirmNewPassword": "درخواست گذرواژه",
           "newPassword": "درخواست گذرواژه"
         },
+        "description": {
+          "subsonic": {
+            "paragraph1": "فانک‌وِیل با سایر پخش‌کننده‌های موسیقی که از رابطه برنامه‌نویسی کاربردی (API) سابسونیک پشتیبانی می‌کنند، سازگار است.",
+            "paragraph2": "می‌توانید از آن‌ها برای گوش‌سپردن به سیاهه پخش و موسیقی خود در حالت آفلاین، مثلاً روی گوشی هوشمند یا تبلت، استفاده کنید."
+          }
+        },
         "message": {
           "passwordUpdated": "به‌روزرسانی گذرواژه"
         }
@@ -927,7 +935,7 @@
           "login": "ورود",
           "logout": "خروج",
           "notifications": "آگاهی‌ها",
-          "profile": "نما",
+          "profile": "نمایه",
           "settings": "تنظیمات",
           "signup": "نام‌نویسی",
           "support": "کمک"
@@ -954,7 +962,7 @@
           "login": "ورود",
           "logout": "خروج",
           "notifications": "آگاهی‌ها",
-          "profile": "نما",
+          "profile": "نمایه",
           "settings": "تنظیمات",
           "signup": "نام‌نویسی",
           "support": "کمک"
@@ -1064,7 +1072,8 @@
         "link": {
           "discogs": "جست‌و‌جو در دیسکوگز",
           "domain": "مشاهده در {domain}",
-          "moderation": "گشودن در کارنمایِ میان‌داری"
+          "moderation": "گشودن در کارنمایِ میان‌داری",
+          "musicbrainz": "مشاهده در MusicBrainz"
         },
         "modal": {
           "delete": {
@@ -1124,7 +1133,8 @@
         "link": {
           "discogs": "جست‌و‌جو در دیسکوگز",
           "domain": "به روز شده در { date }",
-          "moderation": "گشودن در کارنمایِ میان‌داری"
+          "moderation": "گشودن در کارنمایِ میان‌داری",
+          "musicbrainz": "مشاهده در MusicBrainz"
         },
         "meta": {
           "albums": "0 جُنگ‌ها | {n} جُنگ | {n} جُنگ‌ها"
@@ -1217,6 +1227,9 @@
         "button": {
           "cancel": "لغو",
           "retry": "بارگذاری‌های ناموفق را دوباره امتحان کنید"
+        },
+        "header": {
+          "server": "درون‌ریزی موسیقی از کارساز شما"
         },
         "link": {
           "processing": "پردازش",
@@ -1565,7 +1578,7 @@
           "ordering": {
             "direction": {
               "ascending": "صعودی",
-              "descending": "پایین‏رو",
+              "descending": "نزولی",
               "label": "جهت مرتب‌سازی"
             },
             "label": "مرتب‌سازی"
@@ -1587,7 +1600,7 @@
           "ordering": {
             "direction": {
               "ascending": "صعودی",
-              "descending": "پایین‏رو",
+              "descending": "نزولی",
               "label": "نظم"
             },
             "label": "مرتب‌سازی"
@@ -1603,7 +1616,7 @@
           "ordering": {
             "direction": {
               "ascending": "صعودی",
-              "descending": "پایین‏رو",
+              "descending": "نزولی",
               "label": "جهت مرتب‌سازی"
             },
             "label": "مرتب‌سازی"
@@ -1633,7 +1646,7 @@
           "ordering": {
             "direction": {
               "ascending": "صعودی",
-              "descending": "پایین‏رو",
+              "descending": "نزولی",
               "label": "جهت مرتب‌سازی"
             },
             "label": "مرتب‌سازی"
@@ -1663,7 +1676,7 @@
           "ordering": {
             "direction": {
               "ascending": "صعودی",
-              "descending": "پایین‏رو",
+              "descending": "نزولی",
               "label": "جهت مرتب‌سازی"
             },
             "label": "مرتب‌سازی"
@@ -1685,7 +1698,7 @@
           "ordering": {
             "direction": {
               "ascending": "صعودی",
-              "descending": "پایین‏رو",
+              "descending": "نزولی",
               "label": "جهت مرتب‌سازی"
             },
             "label": "مرتب‌سازی"
@@ -1720,8 +1733,22 @@
             },
             "label": "مرتب‌سازی"
           },
+          "pagination": {
+            "results": "نمایشِ نتیجه‌ها از {start} تا {end} از میانِ {total}"
+          },
+          "placeholder": {
+            "search": "جست‌وجو بر پایهٔ دامنه، نامِ کاربری، زندگینامهٔ کوتاه…"
+          },
           "table": {
             "account": {
+              "header": {
+                "domain": "دامنه",
+                "firstSeen": "نخستین رؤیت",
+                "lastSeen": "آخرین رؤیت",
+                "moderationRule": "مشمولِ شرایط میان‌داری",
+                "name": "نام",
+                "uploads": "بارگذاری‌ها"
+              },
               "moderationRule": "بله"
             }
           }
@@ -1736,7 +1763,7 @@
           "ordering": {
             "direction": {
               "ascending": "صعودی",
-              "descending": "پایین‏رو",
+              "descending": "نزولی",
               "label": "جهت مرتب‌سازی"
             },
             "label": "مرتب‌سازی"
@@ -1871,7 +1898,7 @@
           "ordering": {
             "direction": {
               "ascending": "صعودی",
-              "descending": "پایین‏رو",
+              "descending": "نزولی",
               "label": "جهت مرتب‌سازی"
             },
             "label": "مرتب‌سازی"
@@ -1881,7 +1908,12 @@
           },
           "table": {
             "user": {
+              "accountStatus": {
+                "active": "فعال",
+                "inactive": "غیرفعال"
+              },
               "header": {
+                "accountStatus": "وضعیت حساب",
                 "username": "نام کاربری"
               }
             }
@@ -2155,6 +2187,7 @@
       },
       "CommonList": {
         "title": {
+          "accounts": "حساب‌ها",
           "albums": "جُنگ ها",
           "channels": "کانال‌ها",
           "tags": "برچسب ها",
@@ -2171,7 +2204,8 @@
           "qualityFilters": "پالایه‌هایِ کیفیتِ صفحهٔ کاوش",
           "security": "امنیت",
           "settings": "تنظیمات نمونه",
-          "signups": "نام‌نویسی‌ها"
+          "signups": "نام‌نویسی‌ها",
+          "ui": "رابط کاربری"
         }
       },
       "library": {
@@ -2292,9 +2326,29 @@
       },
       "moderation": {
         "AccountsDetail": {
+          "button": {
+            "addPolicy": "افزودن سیاست میان‌داری"
+          },
+          "description": {
+            "policy": "سیاست‌های میان‌داری به شما کمک می‌کنند تا نحوهٔ تعامل نمونهٔ خود را با یک دامنه یا حساب مشخص کنترل کنید."
+          },
+          "header": {
+            "accountData": "داده‌های حساب",
+            "activePolicy": "این دامنه تابعِ شرایط میان‌داریِ خاصی است.",
+            "activity": "فعالیت",
+            "audioContent": "محتوای صوتی",
+            "localAccount": "حساب محلی",
+            "noPolicy": "شما برای این حساب هیچ قاعده‌ای تعریف نکرده‌اید."
+          },
           "link": {
             "albums": "جُنگ ها",
-            "channels": "کانال‌ها"
+            "artists": "هنرمند‌ها",
+            "channels": "کانال‌ها",
+            "django": "مشاهده در پنل مدیریت جانگو",
+            "domain": "دامنه",
+            "libraries": "کتابخانه‌ها",
+            "linkedReports": "گزارش‌های مرتبط",
+            "openProfile": "باز کردن نمایه"
           },
           "option": {
             "permission": {
@@ -2337,7 +2391,7 @@
           "ordering": {
             "direction": {
               "ascending": "صعودی",
-              "descending": "پایین‏رو",
+              "descending": "نزولی",
               "label": "نظم"
             },
             "label": "مرتب‌سازی"
@@ -2353,7 +2407,7 @@
           "ordering": {
             "direction": {
               "ascending": "صعودی",
-              "descending": "پایین‏رو",
+              "descending": "نزولی",
               "label": "نظم"
             },
             "label": "مرتب‌سازی"
@@ -2526,7 +2580,7 @@
           "ordering": {
             "direction": {
               "ascending": "صعودی",
-              "descending": "پایین‏رو",
+              "descending": "نزولی",
               "label": "جهت مرتب‌سازی"
             },
             "label": "مرتب‌سازی"
@@ -2636,7 +2690,7 @@
           "noResults": "هیچ نتیجه‌ٔ جورسازی با پُرسمان جست‌و‌جو شما یافت نشد"
         },
         "header": {
-          "browse": "مرور سیاهه‌های‌پخش"
+          "browse": "مرور سیاهه‌های‌ پخش"
         },
         "label": {
           "search": "جست‌و‌جو"
@@ -2644,7 +2698,7 @@
         "ordering": {
           "direction": {
             "ascending": "صعودی",
-            "descending": "پایین‏رو",
+            "descending": "نزولی",
             "label": "نظم"
           },
           "label": "مرتب‌سازی"
