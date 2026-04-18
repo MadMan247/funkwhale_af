@@ -258,6 +258,7 @@
         "language": "زبان",
         "main": "منوی اصلی",
         "play": "پخش این اثر",
+        "reports": "گزارش‌های در انتظار بازبینی",
         "theme": "زمینه"
       },
       "link": {
@@ -2571,7 +2572,8 @@
       "ProfileBase": {
         "link": {
           "domainView": "",
-          "edit": "ویرایش نمایه"
+          "edit": "ویرایش نمایه",
+          "manageUploads": "مدیریت بارگذاری‌ها"
         }
       },
       "ProfileContent": {
