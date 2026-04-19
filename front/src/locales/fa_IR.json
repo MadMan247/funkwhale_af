@@ -334,6 +334,11 @@
         },
         "title": "به روز شده در { date }"
       },
+      "ChannelEntries": {
+        "help": {
+          "subscribe": "ممکن است برای دیدن محتوای این کانال نیاز باشد در آن مشترک شوید."
+        }
+      },
       "ChannelForm": {
         "help": {
           "discography": "موسیقی‌های ساخته‌شدهٔ خود را به‌صورت یک دفترچهٔ جامع و خوش‌آرا از جُنگ ها و تک‌آهنگ‌ها منتشر کنید.",
@@ -368,6 +373,9 @@
       "ChannelSeries": {
         "button": {
           "showMore": "نمایش بیشتر"
+        },
+        "help": {
+          "subscribe": "ممکن است برای دیدن محتوای این کانال نیاز باشد در آن مشترک شوید."
         }
       },
       "ChannelsWidget": {
@@ -387,6 +395,9 @@
         },
         "message": {
           "copy": "متن در کلیپ‌بورد رونوشت شد!"
+        },
+        "warning": {
+          "anonymous": "اشتراک‌گذاری کار نخواهد کرد زیرا این پاد به کاربران ناشناس اجازهٔ دسترسی به محتوا را نمی‌دهد."
         }
       },
       "LibraryFollowButton": {
@@ -2242,7 +2253,7 @@
     "Notifications": {
       "header": {
         "messages": "پیام های شما",
-        "notifications": "اعلان های شما"
+        "notifications": "آگاهی‌ها"
       },
       "label": {
         "reminder": "به من یادآوری کن در:"
@@ -2271,16 +2282,19 @@
     "admin": {
       "ChannelDetail": {
         "button": {
+          "openRemote": "گشودن نمایهٔ دوردست",
           "refresh": "به‌روزرسانی از کارساز راه دور"
         },
         "header": {
-          "activity": "فعالیت"
+          "activity": "فعالیت",
+          "audioContent": "محتوای صوتی"
         },
         "label": {
           "federated": "فیدیورس",
           "local": "محلی"
         },
         "link": {
+          "localProfile": "نمایهٔ محلی را باز کنید",
           "rss": "خوراک‌‌وب"
         },
         "table": {
@@ -2294,6 +2308,8 @@
           },
           "audioContent": {
             "albums": "جُنگ ها",
+            "cachedSize": "اندازهٔ انباره‌ای",
+            "totalSize": "اندازهٔ کل",
             "tracks": "اثرها",
             "uploads": "بارگذاری"
           },
@@ -2347,9 +2363,9 @@
             "domain": "دامنه",
             "edits": "ویرایش‌ها",
             "libraries": "کتابخانه‌ها",
-            "localProfile": "باز کردن نمایهٔ محلی",
+            "localProfile": "گشودن نمایهٔ محلی",
             "musicbrainz": "در MusicBrainz باز کن",
-            "remoteProfile": "باز کردن نمایهٔ از راه دور",
+            "remoteProfile": "گشودن نمایهٔ از راه دور",
             "reports": "گزارش‌های مرتبط",
             "tracks": "اثرها",
             "uploads": "بارگذاری"
@@ -2374,7 +2390,7 @@
               "title": "عنوان"
             },
             "audioContent": {
-              "cachedSize": "اندازهٔ حافظهٔ نهان",
+              "cachedSize": "اندازهٔ انباره‌ای",
               "totalSize": "اندازه کل"
             }
           }
@@ -2384,11 +2400,14 @@
             "remoteRefresh": "به‌روزرسانی از کارساز راه دور"
           },
           "header": {
-            "activity": "فعالیت"
+            "activity": "فعالیت",
+            "audioContent": "محتوای صوتی"
           },
           "link": {
             "albums": "جُنگ ها",
-            "musicbrainz": "در MusicBrainz باز کن"
+            "localProfile": "گشودن نمایهٔ محلی",
+            "musicbrainz": "در MusicBrainz باز کن",
+            "remoteProfile": "گشودن نمایهٔ از راه دور"
           },
           "table": {
             "activity": {
@@ -2399,6 +2418,10 @@
             },
             "artist": {
               "name": "نام"
+            },
+            "audioContent": {
+              "cachedSize": "اندازهٔ انباره‌‌ای",
+              "totalSize": "اندازهٔ کل"
             }
           },
           "warning": {
@@ -2417,16 +2440,22 @@
         },
         "LibraryDetail": {
           "header": {
-            "activity": "فعالیت"
+            "activity": "فعالیت",
+            "audioContent": "محتوای صوتی"
           },
           "link": {
             "albums": "جُنگ ها",
+            "remoteProfile": "گشودن نمایهٔ از راه دور",
             "reports": "گزارش‌های مرتبط"
           },
           "table": {
             "activity": {
               "firstSeen": "نخستین بار دیده‌ شده",
               "followers": "پی‌گیر‌ها"
+            },
+            "audioContent": {
+              "cachedSize": "اندازهٔ انباره‌‌ای",
+              "totalSize": "اندازهٔ کل"
             },
             "library": {
               "name": "نام"
@@ -2441,7 +2470,8 @@
             "activity": "فعالیت"
           },
           "link": {
-            "albums": "جُنگ ها"
+            "albums": "جُنگ ها",
+            "localProfile": "گشودن نمایهٔ محلی"
           },
           "table": {
             "activity": {
@@ -2462,7 +2492,9 @@
           "link": {
             "album": "جُنگ",
             "albumArtist": "هنرمند جُنگ",
+            "localProfile": "گشودن نمایهٔ محلی",
             "musicbrainz": "در MusicBrainz باز کنید",
+            "remoteProfile": "گشودن نمایهٔ از راه دور",
             "reports": "گزارش‌های مرتبط"
           },
           "table": {
@@ -2475,6 +2507,10 @@
             "track": {
               "copyright": "حق نشر",
               "title": "عنوان"
+            },
+            "trackData": {
+              "cachedSize": "اندازهٔ انباره‌‌ای",
+              "totalSize": "اندازهٔ کل"
             }
           },
           "warning": {
@@ -2485,10 +2521,16 @@
           "header": {
             "activity": "فعالیت"
           },
+          "link": {
+            "remoteProfile": "گشودن نمایهٔ از راه دور"
+          },
           "table": {
             "activity": {
               "accessedDate": "تاریخ دسترسی",
               "firstSeen": "نخستین بار دیده‌ شده"
+            },
+            "audioContent": {
+              "cachedSize": "اندازهٔ انباره‌‌ای"
             },
             "upload": {
               "name": "نام"
@@ -2520,7 +2562,8 @@
             "domain": "دامنه",
             "libraries": "کتابخانه‌ها",
             "linkedReports": "گزارش‌های مرتبط",
-            "openProfile": "باز کردن نمایه"
+            "openProfile": "گشودن نمایه",
+            "remoteProfile": "گشودن نمایهٔ از راه دور"
           },
           "option": {
             "permission": {
@@ -2532,6 +2575,15 @@
               "displayName": "نام نمایشی",
               "email": "نشانی رایانامه",
               "lastActivity": "آخرین فعالیت",
+              "lastChecked": "آخرین بررسی",
+              "loginStatus": {
+                "disabled": "غیرفعال",
+                "enabled": "فعال شده",
+                "label": "وضعیت ورود"
+              },
+              "permissions": "مجوزها",
+              "signupDate": "تاریخ نام‌نویسی",
+              "userType": "نوع",
               "username": "نام کاربری"
             },
             "activity": {
@@ -2541,6 +2593,8 @@
               "receivedFollows": "کتابخانهٔ دریافت‌ شده در ادامه آمده است"
             },
             "audioContent": {
+              "cachedSize": "اندازهٔ انباره‌‌ای",
+              "totalSize": "اندازهٔ کل",
               "uploadQuota": "سهمیهٔ بارگذاری"
             }
           },
@@ -2570,6 +2624,10 @@
               "emittedMessages": "پیام‌های ارسال‌ شده",
               "firstSeen": "اولین مشاهده",
               "receivedFollows": "کتابخانهٔ دریافت‌ شده در ادامه آمده است"
+            },
+            "audioContent": {
+              "cachedSize": "اندازهٔ انباره‌‌ای",
+              "totalSize": "اندازهٔ کل"
             },
             "instanceData": {
               "inAllowList": {
@@ -2695,7 +2753,8 @@
           "activity": "فعالیت",
           "domainView": "",
           "edit": "ویرایش نمایه",
-          "manageUploads": "مدیریت بارگذاری‌ها"
+          "manageUploads": "مدیریت بارگذاری‌ها",
+          "moderation": "گشودن در کارنمایِ میان‌داری"
         }
       },
       "ProfileContent": {
@@ -2790,6 +2849,9 @@
         "Card": {
           "button": {
             "upload": "بارگذاری"
+          },
+          "label": {
+            "size": "اندازهٔ کل پرونده‌ها در این کتابخانه"
           }
         },
         "FilesTable": {
