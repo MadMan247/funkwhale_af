@@ -694,7 +694,7 @@
           "avatar": "چهرک",
           "avatarFailure": "چهرک شما قابل ذخیره نیست",
           "changeEmail": "تغییر نشانی رایانامهٔ من",
-          "changePassword": "گذرواژه‌ٔ من را تغییر بده",
+          "changePassword": "تغییر گذرواژه",
           "contentFilters": "پالایه‌‌های محتوا",
           "deleteAccount": "حساب کاربری من را حذف کنید",
           "hiddenArtists": "هنرمندان پنهان",
@@ -1769,6 +1769,9 @@
             },
             "label": "مرتب‌سازی"
           },
+          "pagination": {
+            "results": "نمایشِ نتیجه‌ها از {start} تا {end} از میانِ {total}"
+          },
           "placeholder": {
             "search": "جست‌وجو بر پایهٔ دامنه، نام، شناسهٔ MusicBrainz و…"
           },
@@ -1777,6 +1780,8 @@
               "header": {
                 "album": "جُنگ",
                 "creationDate": "تاریخ ایجاد",
+                "domain": "دامنه",
+                "license": "پروانه",
                 "title": "عنوان"
               }
             }
@@ -1871,10 +1876,22 @@
           }
         },
         "DomainsTable": {
+          "action": {
+            "purge": {
+              "label": "پاکسازی"
+            },
+            "remove": {
+              "label": "حذف از فهرست مجاز"
+            }
+          },
+          "empty": {
+            "noPods": "هیچ پاد دیگری یافت نشد"
+          },
           "label": {
             "search": "جست‌و‌جو"
           },
           "option": {
+            "all": "همه",
             "yes": "بله"
           },
           "ordering": {
@@ -1891,6 +1908,8 @@
           "table": {
             "domain": {
               "header": {
+                "name": "نام",
+                "receivedMessages": "پیام‌های دریافتی",
                 "users": "کاربرها"
               },
               "moderationRule": "بله"
@@ -1898,6 +1917,9 @@
           }
         },
         "InstancePolicyCard": {
+          "button": {
+            "edit": "ویرایش"
+          },
           "header": {
             "rule": "شرایط همزیستی"
           },
@@ -1939,7 +1961,8 @@
             "delete": {
               "content": {
                 "warning": "این اقدام برگشت‌ناپذیر است"
-              }
+              },
+              "header": "حذف این قاعدهٔ میان‌داری؟"
             }
           },
           "tooltip": {
@@ -1951,6 +1974,11 @@
           "button": {
             "close": "بستن",
             "show": "شرایط همزیستی میان‌دار"
+          }
+        },
+        "NotesThread": {
+          "button": {
+            "delete": "حذف"
           }
         },
         "ReportCard": {
@@ -1986,9 +2014,22 @@
           }
         },
         "UserRequestCard": {
+          "header": {
+            "signup": "پیام"
+          },
+          "link": {
+            "request": "درخواست {id}"
+          },
+          "message": {
+            "signup": "این کاربر می‌خواهد در پاد شما نام‌نویسی کند."
+          },
+          "notApplicable": "N/A",
           "table": {
             "request": {
               "creationDate": "تاریخ ایجاد"
+            },
+            "status": {
+              "approved": "تأییدشده"
             }
           }
         }
@@ -2007,7 +2048,11 @@
           "table": {
             "invitation": {
               "header": {
-                "creationDate": "تاریخ ایجاد"
+                "code": "کد",
+                "creationDate": "تاریخ ایجاد",
+                "owner": "دارنده",
+                "status": "وضعیت",
+                "user": "کاربر"
               }
             }
           }
@@ -2024,6 +2069,11 @@
             },
             "label": "مرتب‌سازی"
           },
+          "permission": {
+            "library": "کتابخانه",
+            "moderation": "میان‌داری",
+            "settings": "تنظیمات"
+          },
           "placeholder": {
             "search": "جست‌و‌جو بر اساس نام‌کاربری، نشانی‌رایانامه، نام و …"
           },
@@ -2035,7 +2085,10 @@
               },
               "header": {
                 "accountStatus": "وضعیت حساب",
+                "email": "ایمیل",
                 "lastActivity": "آخرین فعالیت",
+                "signup": "نام‌نویسی",
+                "status": "وضعیت",
                 "username": "نام کاربری"
               }
             }
@@ -2749,7 +2802,7 @@
       },
       "PasswordResetConfirm": {
         "button": {
-          "update": "تغییر پسورد"
+          "update": "به‌روز‌رسانی گذرواژه"
         },
         "header": {
           "success": "گذرواژه با موفقیت به‌روزرسانی شد"
