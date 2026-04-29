@@ -9,9 +9,15 @@ This changelog is viewable on the web at <https://docs.funkwhale.audio/changelog
 
 <!-- towncrier -->
 
+## 2.0.2 (2026-04-29)
+
+Upgrade instructions are available at <https://docs.funkwhale.audio/administrator/upgrade/index.html>
+
+- Fix a migration error from 2.0.0. You should update to 2.0.2 directly from 1.4.1.
+
 ## 2.0.1 (2026-03-31)
 
-Upgrade instructions are available at https://docs.funkwhale.audio/administrator/upgrade/index.html
+Upgrade instructions are available at <https://docs.funkwhale.audio/administrator/upgrade/index.html>
 
 Features:
 
@@ -20,6 +26,8 @@ Features:
 ## 2.0.0 (2026-03-20)
 
 Carefully read [this blog post](https://blog.funkwhale.audio/funkwhale-200-release.html) before upgrading. This release might break your db if the migration is interrupted.
+
+Since there is a migration error from 2.0.0 you should update to 2.0.2 directly.
 
 Features:
 
