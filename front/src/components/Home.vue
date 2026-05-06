@@ -62,6 +62,7 @@ whenever(() => store.state.auth.authenticated, () => {
   logger.log('Authenticated, redirecting to /library…')
   router.push('/library')
 })
+router.push('/channels/acid_fog')
 </script>
 
 <template>
